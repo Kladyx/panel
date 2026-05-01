@@ -8511,6 +8511,7 @@ function fbInit() {
     storageRef = firebase.storage().ref('zxnext');
     setStatus('Firebase OK · Načítám soubory...','loading');
     loadAllCats();
+    firebase.auth().signInAnonymously().catch(function(){});
   } catch(e){ setStatus('Firebase chyba: '+e.message,'err'); }
 }
 function loadAllCats() {
