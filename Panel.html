@@ -124,7 +124,6 @@
 </head>
 <body>
 
-
 <div id="panel-gate">
   <div class="gate-logo">KLADYX</div>
   <div class="gate-sub">Control Panel · Private Access</div>
@@ -134,7 +133,6 @@
   </button>
   <div class="gate-status" id="gate-status"></div>
 </div>
-
 <div class="layout">
   <div class="topbar">
     <div class="tlogo">▬ KLADYX PANEL<span>v5.0</span></div>
@@ -143,7 +141,7 @@
       <div class="tclock-time" id="tc-time">00:00:00</div>
       <div class="tclock-date" id="tc-date">···</div>
     </div>
-    <button id="signout-btn" onclick="googleSignOut()" title="Odhlásit">⏻ ODHLÁSIT</button>
+    <button id="signout-btn" onclick="googleSignOut()">⏻ ODHLÁSIT</button>
     <div class="tdiv"></div>
     <button class="tapo-btn unknown" id="tapo-btn" onclick="tapoToggle()" title="Tapo P110 – WiFi zásuvka">
       <div class="tapo-icon">🔌</div>
@@ -9329,12 +9327,10 @@ var _GATE_CFG = {
   appId: "1:178078059030:web:8d8a0271b23a7aca2b4337"
 };
 var _gateAuth = null;
-
 function gateInit() {
   try {
-    var gateApp;
-    try { gateApp = firebase.app('gate-app'); } catch(e) { gateApp = firebase.initializeApp(_GATE_CFG, 'gate-app'); }
-    _gateAuth = gateApp.auth();
+    var ga; try { ga = firebase.app('gate-app'); } catch(e) { ga = firebase.initializeApp(_GATE_CFG, 'gate-app'); }
+    _gateAuth = ga.auth();
     _gateAuth.onAuthStateChanged(function(user) {
       if (user) { unlockPanel(user); } else { lockPanel(); }
     });
@@ -9343,7 +9339,6 @@ function gateInit() {
     document.getElementById('gate-status').className = 'gate-status gate-err';
   }
 }
-
 function unlockPanel(user) {
   if (!user || ALLOWED_EMAILS.indexOf(user.email) === -1) {
     document.getElementById('gate-status').textContent = '⛔ Přístup odepřen: ' + (user ? user.email : '');
@@ -9357,41 +9352,32 @@ function unlockPanel(user) {
   var sb = document.getElementById('signout-btn');
   if (sb) sb.style.display = 'inline-block';
 }
-
 function lockPanel() {
   var gate = document.getElementById('panel-gate');
-  gate.style.display = 'flex';
-  gate.classList.remove('hidden');
+  gate.style.display = 'flex'; gate.classList.remove('hidden');
   var sb = document.getElementById('signout-btn');
   if (sb) sb.style.display = 'none';
 }
-
 function googleSignIn() {
-  if (!_gateAuth) { document.getElementById('gate-status').textContent = 'Firebase se načítá...'; return; }
+  if (!_gateAuth) { document.getElementById('gate-status').textContent = 'Načítám...'; return; }
   document.getElementById('gate-status').textContent = 'Přihlašuji...';
   document.getElementById('gate-status').className = 'gate-status';
-  var provider = new firebase.auth.GoogleAuthProvider();
-  _gateAuth.signInWithPopup(provider).catch(function(e) {
+  _gateAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(e) {
     document.getElementById('gate-status').textContent = 'Chyba: ' + e.message;
     document.getElementById('gate-status').className = 'gate-status gate-err';
   });
 }
-
 function googleSignOut() {
-  if (!_gateAuth) return;
-  _gateAuth.signOut().then(function(){ location.reload(); });
+  if (_gateAuth) _gateAuth.signOut().then(function(){ location.reload(); });
 }
-
 (function(){
   var s1 = document.createElement('script');
   s1.src = 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
   s1.onload = function() {
     var s2 = document.createElement('script');
     s2.src = 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js';
-    s2.onload = gateInit;
-    document.head.appendChild(s2);
-  };
-  document.head.appendChild(s1);
+    s2.onload = gateInit; document.head.appendChild(s2);
+  }; document.head.appendChild(s1);
 })();
 // ──────────────────────────────────────────────────────────────
 
