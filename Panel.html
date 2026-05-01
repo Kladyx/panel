@@ -8285,187 +8285,85 @@ APP_HTML["zxnext"] = `<!DOCTYPE html>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #070b14;
-      --card: #0d1425;
-      --border: rgba(0,229,255,0.18);
-      --cyan: #00e5ff;
-      --cyan2: #00b8d4;
-      --green: #00ff88;
-      --red: #ff3c5a;
-      --yellow: #ffe000;
-      --muted: #4a5570;
-      --text: #c8d8f0;
+      --bg: #070b14; --card: #0d1425; --border: rgba(0,229,255,0.18);
+      --cyan: #00e5ff; --green: #00ff88; --red: #ff3c5a; --yellow: #ffe000;
+      --muted: #4a5570; --text: #c8d8f0;
     }
-    html, body { width:100%; min-height:100vh; background:var(--bg); font-family:"Courier New",monospace; color:var(--text); }
-
-    /* ── HEADER ── */
-    .header {
-      display: flex; align-items: center; gap: 14px;
-      padding: 16px 20px 12px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(0,229,255,0.03);
-    }
-    .header-logo {
-      font-size: 1.35rem; font-weight: 900; letter-spacing: 3px;
-      color: var(--cyan); text-shadow: 0 0 16px var(--cyan)88;
-    }
-    .header-sub { font-size: 0.55rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-top:2px; }
-    .header-badge {
-      margin-left: auto; font-size: 0.55rem; letter-spacing: 2px;
-      border: 1px solid var(--border); padding: 3px 10px;
-      color: var(--muted); border-radius: 3px;
-    }
-
-    /* ── TABS ── */
-    .tabs {
-      display: flex; gap: 0;
-      border-bottom: 1px solid var(--border);
-      padding: 0 16px;
-    }
-    .tab {
-      padding: 10px 22px; font-size: 0.72rem; letter-spacing: 2px;
-      cursor: pointer; border-bottom: 2px solid transparent;
-      color: var(--muted); transition: color .2s, border-color .2s;
-      text-transform: uppercase; user-select: none;
-    }
-    .tab:hover { color: var(--text); }
-    .tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
-    .tab-count {
-      display: inline-block; background: rgba(0,229,255,0.12);
-      color: var(--cyan); font-size: 0.6rem; padding: 1px 6px;
-      border-radius: 10px; margin-left: 6px; min-width: 20px; text-align: center;
-    }
-
-    /* ── UPLOAD ZONE ── */
-    .upload-zone {
-      margin: 16px; border: 2px dashed var(--border);
-      border-radius: 8px; padding: 22px 16px; text-align: center;
-      cursor: pointer; transition: border-color .2s, background .2s;
-      background: rgba(0,229,255,0.02);
-      position: relative;
-    }
-    .upload-zone:hover, .upload-zone.drag { border-color: var(--cyan); background: rgba(0,229,255,0.06); }
-    .upload-zone input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
-    .upload-icon { font-size: 1.6rem; margin-bottom: 6px; }
-    .upload-text { font-size: 0.7rem; letter-spacing: 1px; color: var(--muted); }
-    .upload-text strong { color: var(--cyan); }
-    .upload-formats { font-size: 0.58rem; letter-spacing: 1px; color: var(--muted); margin-top: 4px; opacity: .7; }
-
-    /* ── PROGRESS ── */
-    .progress-wrap { margin: 0 16px 10px; display:none; }
-    .progress-wrap.visible { display:block; }
-    .progress-bar-bg { background: rgba(0,229,255,0.08); border-radius: 4px; height: 6px; overflow:hidden; }
-    .progress-bar { height:100%; background: var(--cyan); border-radius:4px; width:0%; transition: width .2s; }
-    .progress-label { font-size: 0.6rem; color: var(--muted); margin-top: 4px; letter-spacing: 1px; }
-
-    /* ── FILE LIST ── */
-    .file-list { padding: 0 16px 20px; }
-    .file-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 12px; border: 1px solid var(--border);
-      border-radius: 6px; margin-bottom: 7px;
-      background: var(--card);
-      transition: border-color .2s;
-    }
-    .file-item:hover { border-color: rgba(0,229,255,0.35); }
-    .file-ext {
-      font-size: 0.58rem; font-weight: 900; letter-spacing: 1px;
-      padding: 3px 7px; border-radius: 4px; flex-shrink: 0; min-width: 40px; text-align:center;
-    }
-    .ext-tap { background: rgba(0,229,255,0.12); color: var(--cyan); border: 1px solid rgba(0,229,255,0.3); }
-    .ext-tzx { background: rgba(0,229,255,0.08); color: var(--cyan2); border: 1px solid rgba(0,180,212,0.3); }
-    .ext-nex { background: rgba(255,224,0,0.1); color: var(--yellow); border: 1px solid rgba(255,224,0,0.3); }
-    .ext-other { background: rgba(74,85,112,0.2); color: var(--muted); border: 1px solid rgba(74,85,112,0.3); }
-    .file-info { flex: 1; min-width: 0; }
-    .file-name { font-size: 0.78rem; color: var(--text); white-space: nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .file-meta { font-size: 0.58rem; color: var(--muted); margin-top: 2px; }
-    .file-actions { display:flex; gap:6px; flex-shrink:0; }
-    .btn-dl, .btn-del {
-      font-family: "Courier New",monospace; font-size: 0.6rem; letter-spacing: 1px;
-      padding: 4px 10px; border-radius: 4px; cursor: pointer; border: 1px solid;
-      transition: background .2s, color .2s;
-    }
-    .btn-dl { border-color: rgba(0,229,255,0.3); color: var(--cyan); background: transparent; }
-    .btn-dl:hover { background: rgba(0,229,255,0.12); }
-    .btn-del { border-color: rgba(255,60,90,0.3); color: var(--red); background: transparent; }
-    .btn-del:hover { background: rgba(255,60,90,0.1); }
-
-    /* ── EMPTY / STATUS ── */
-    .empty { text-align:center; padding: 40px 20px; color: var(--muted); font-size: 0.7rem; letter-spacing: 1px; }
-    .status-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      padding: 6px 16px; background: rgba(7,11,20,0.95);
-      border-top: 1px solid var(--border);
-      font-size: 0.6rem; letter-spacing: 1px; color: var(--muted);
-      display: flex; align-items: center; gap: 8px;
-    }
-    .status-dot { width:6px; height:6px; border-radius:50%; background: var(--muted); flex-shrink:0; }
-    .status-dot.ok { background: var(--green); box-shadow: 0 0 6px var(--green); }
-    .status-dot.err { background: var(--red); }
-    .status-dot.loading { background: var(--yellow); animation: blink .8s infinite; }
+    html, body { width:100%; min-height:100vh; background:var(--bg); font-family:"Courier New",monospace; color:var(--text); padding-bottom:40px; }
+    .header { display:flex; align-items:center; gap:14px; padding:16px 20px 12px; border-bottom:1px solid var(--border); background:rgba(0,229,255,0.03); }
+    .header-logo { font-size:1.35rem; font-weight:900; letter-spacing:3px; color:var(--cyan); text-shadow:0 0 16px var(--cyan)88; }
+    .header-sub { font-size:0.55rem; letter-spacing:3px; color:var(--muted); text-transform:uppercase; margin-top:2px; }
+    .header-badge { margin-left:auto; font-size:0.55rem; letter-spacing:2px; border:1px solid var(--border); padding:3px 10px; color:var(--muted); border-radius:3px; }
+    .tabs { display:flex; border-bottom:1px solid var(--border); padding:0 16px; }
+    .tab { padding:10px 22px; font-size:0.72rem; letter-spacing:2px; cursor:pointer; border-bottom:2px solid transparent; color:var(--muted); transition:color .2s,border-color .2s; text-transform:uppercase; }
+    .tab:hover { color:var(--text); }
+    .tab.active { color:var(--cyan); border-bottom-color:var(--cyan); }
+    .tab-count { display:inline-block; background:rgba(0,229,255,0.12); color:var(--cyan); font-size:0.6rem; padding:1px 6px; border-radius:10px; margin-left:6px; min-width:20px; text-align:center; }
+    .file-list { padding:12px 16px 20px; }
+    .file-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border); border-radius:6px; margin-bottom:7px; background:var(--card); transition:border-color .2s; }
+    .file-item:hover { border-color:rgba(0,229,255,0.35); }
+    .file-ext { font-size:0.58rem; font-weight:900; letter-spacing:1px; padding:3px 7px; border-radius:4px; flex-shrink:0; min-width:40px; text-align:center; }
+    .ext-tap { background:rgba(0,229,255,0.12); color:var(--cyan); border:1px solid rgba(0,229,255,0.3); }
+    .ext-tzx { background:rgba(0,180,212,0.1); color:#00b8d4; border:1px solid rgba(0,180,212,0.3); }
+    .ext-nex { background:rgba(255,224,0,0.1); color:var(--yellow); border:1px solid rgba(255,224,0,0.3); }
+    .ext-other { background:rgba(74,85,112,0.2); color:var(--muted); border:1px solid rgba(74,85,112,0.3); }
+    .file-info { flex:1; min-width:0; }
+    .file-name { font-size:0.78rem; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .file-meta { font-size:0.58rem; color:var(--muted); margin-top:2px; }
+    .btn-dl { font-family:"Courier New",monospace; font-size:0.6rem; letter-spacing:1px; padding:4px 10px; border-radius:4px; cursor:pointer; border:1px solid rgba(0,229,255,0.3); color:var(--cyan); background:transparent; flex-shrink:0; }
+    .btn-dl:hover { background:rgba(0,229,255,0.12); }
+    .empty { text-align:center; padding:40px 20px; color:var(--muted); font-size:0.7rem; letter-spacing:1px; line-height:2; }
+    .gdrive-btn { display:inline-block; margin-top:12px; padding:8px 20px; border:1px solid rgba(0,229,255,0.3); color:var(--cyan); font-family:"Courier New",monospace; font-size:0.65rem; letter-spacing:2px; cursor:pointer; border-radius:4px; text-decoration:none; }
+    .status-bar { position:fixed; bottom:0; left:0; right:0; padding:6px 16px; background:rgba(7,11,20,0.95); border-top:1px solid var(--border); font-size:0.6rem; letter-spacing:1px; color:var(--muted); display:flex; align-items:center; gap:8px; }
+    .status-dot { width:6px; height:6px; border-radius:50%; background:var(--muted); flex-shrink:0; }
+    .status-dot.ok { background:var(--green); box-shadow:0 0 6px var(--green); }
+    .status-dot.err { background:var(--red); }
+    .status-dot.loading { background:var(--yellow); animation:blink .8s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .info-box { margin:12px 16px; padding:10px 14px; border:1px solid rgba(0,229,255,0.15); border-radius:6px; background:rgba(0,229,255,0.03); font-size:0.62rem; color:var(--muted); line-height:1.8; }
+    .info-box a { color:var(--cyan); text-decoration:none; }
   </style>
 </head>
 <body>
-
 <div class="header">
   <div>
     <div class="header-logo">🕹️ ZX NEXT</div>
-    <div class="header-sub">File Manager · Firebase Storage</div>
+    <div class="header-sub">Google Drive · KS3</div>
   </div>
   <div class="header-badge" id="fileCount">— souborů</div>
 </div>
 
 <div class="tabs">
-  <div class="tab active" data-cat="hry" onclick="switchTab('hry')">Hry <span class="tab-count" id="cnt-hry">0</span></div>
-  <div class="tab" data-cat="utils" onclick="switchTab('utils')">Utils <span class="tab-count" id="cnt-utils">0</span></div>
-  <div class="tab" data-cat="other" onclick="switchTab('other')">Other <span class="tab-count" id="cnt-other">0</span></div>
+  <div class="tab active" data-cat="all" onclick="switchTab('all')">Vše <span class="tab-count" id="cnt-all">0</span></div>
+  <div class="tab" data-cat="tap" onclick="switchTab('tap')">.TAP/TZX <span class="tab-count" id="cnt-tap">0</span></div>
+  <div class="tab" data-cat="nex" onclick="switchTab('nex')">.NEX <span class="tab-count" id="cnt-nex">0</span></div>
+  <div class="tab" data-cat="other" onclick="switchTab('other')">Ostatní <span class="tab-count" id="cnt-other">0</span></div>
 </div>
 
-<div class="upload-zone" id="dropZone">
-  <input type="file" id="fileInput" multiple accept="*/*" onchange="handleFiles(this.files)"/>
-  <div class="upload-icon">📂</div>
-  <div class="upload-text">Přetáhni soubory nebo <strong>klikni pro výběr</strong></div>
-  <div class="upload-formats">.tap · .tzx · .nex · .z80 · .sna · .trd · .dsk</div>
+<div class="info-box">
+  📁 Soubory přidej přímo do <a href="https://drive.google.com/drive/folders/1fhG941J2Uzfrrib_cxe4yWqFrH9TzSQ_" target="_blank">Google Drive složky ZX Next KS3</a> — panel je zobrazí automaticky po obnovení.
 </div>
 
-<div class="progress-wrap" id="progressWrap">
-  <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
-  <div class="progress-label" id="progressLabel">Nahrávám...</div>
-</div>
-
-<div class="file-list" id="fileList"></div>
+<div class="file-list" id="fileList"><div class="empty">Načítám soubory...</div></div>
 
 <div class="status-bar">
   <div class="status-dot loading" id="statusDot"></div>
-  <span id="statusText">Připojování k Firebase...</span>
+  <span id="statusText">Připojování...</span>
+  <span style="margin-left:auto;cursor:pointer;color:var(--cyan)" onclick="loadFiles()">↻ Obnovit</span>
 </div>
 
 <script>
-var CATS = ['hry','utils','other'];
-var currentCat = 'hry';
-var allFiles = { hry:[], utils:[], other:[] };
-var storageRef = null;
-var FB_CONFIG = {
-  apiKey: "AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",
-  authDomain: "kladyxland.firebaseapp.com",
-  projectId: "kladyxland",
-  storageBucket: "kladyxland.firebasestorage.app",
-  messagingSenderId: "178078059030",
-  appId: "1:178078059030:web:8d8a0271b23a7aca2b4337"
-};
+var FOLDER_ID = '1fhG941J2Uzfrrib_cxe4yWqFrH9TzSQ_';
+var API_KEY = 'AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8';
+var currentTab = 'all';
+var allFiles = [];
 
-// ── UI helpers ──
 function setStatus(msg, state) {
   document.getElementById('statusText').textContent = msg;
   var d = document.getElementById('statusDot');
   d.className = 'status-dot' + (state ? ' '+state : '');
 }
-function switchTab(cat) {
-  currentCat = cat;
-  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('active', t.dataset.cat===cat); });
-  renderList();
-}
+
 function extClass(name) {
   var e = name.split('.').pop().toLowerCase();
   if(e==='tap') return 'ext-tap';
@@ -8473,154 +8371,73 @@ function extClass(name) {
   if(e==='nex') return 'ext-nex';
   return 'ext-other';
 }
+
+function getCategory(name) {
+  var e = name.split('.').pop().toLowerCase();
+  if(e==='tap'||e==='tzx') return 'tap';
+  if(e==='nex') return 'nex';
+  return 'other';
+}
+
 function fmtSize(b) {
+  b = parseInt(b)||0;
   if(b<1024) return b+'B';
   if(b<1048576) return (b/1024).toFixed(1)+'KB';
   return (b/1048576).toFixed(2)+'MB';
 }
+
+function switchTab(cat) {
+  currentTab = cat;
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('active', t.dataset.cat===cat); });
+  renderList();
+}
+
 function renderList() {
-  var list = allFiles[currentCat];
+  var filtered = currentTab==='all' ? allFiles : allFiles.filter(function(f){ return getCategory(f.name)===currentTab; });
   var el = document.getElementById('fileList');
-  if(!list.length){ el.innerHTML='<div class="empty">Žádné soubory v kategorii '+currentCat.toUpperCase()+'</div>'; return; }
-  el.innerHTML = list.map(function(f){
+  
+  // Update counts
+  document.getElementById('cnt-all').textContent = allFiles.length;
+  document.getElementById('cnt-tap').textContent = allFiles.filter(function(f){ return getCategory(f.name)==='tap'; }).length;
+  document.getElementById('cnt-nex').textContent = allFiles.filter(function(f){ return getCategory(f.name)==='nex'; }).length;
+  document.getElementById('cnt-other').textContent = allFiles.filter(function(f){ return getCategory(f.name)==='other'; }).length;
+  document.getElementById('fileCount').textContent = allFiles.length+' souborů';
+
+  if(!filtered.length) {
+    el.innerHTML = '<div class="empty">Žádné soubory<br><a class="gdrive-btn" href="https://drive.google.com/drive/folders/'+FOLDER_ID+'" target="_blank">📁 Otevřít Google Drive</a></div>';
+    return;
+  }
+  el.innerHTML = filtered.map(function(f){
     var ext = f.name.split('.').pop().toUpperCase();
+    var dlUrl = 'https://drive.google.com/uc?export=download&id='+f.id;
+    var viewUrl = 'https://drive.google.com/file/d/'+f.id+'/view';
     return '<div class="file-item">'+
       '<div class="file-ext '+extClass(f.name)+'">'+ext+'</div>'+
       '<div class="file-info">'+
         '<div class="file-name" title="'+f.name+'">'+f.name+'</div>'+
-        '<div class="file-meta">'+fmtSize(f.size||0)+' · '+f.updated+'</div>'+
+        '<div class="file-meta">'+fmtSize(f.size)+'</div>'+
       '</div>'+
-      '<div class="file-actions">'+
-        '<button class="btn-dl" onclick="dlFile(\''+encodeURIComponent(f.name)+'\',\''+currentCat+'\')">⬇ DL</button>'+
-        '<button class="btn-del" onclick="delFile(\''+encodeURIComponent(f.name)+'\',\''+currentCat+'\')">✕</button>'+
-      '</div>'+
+      '<a class="btn-dl" href="'+dlUrl+'" target="_blank">⬇ DL</a>'+
     '</div>';
   }).join('');
-  // update counts
-  CATS.forEach(function(c){
-    document.getElementById('cnt-'+c).textContent = allFiles[c].length;
-  });
-  var total = allFiles.hry.length+allFiles.utils.length+allFiles.other.length;
-  document.getElementById('fileCount').textContent = total+' souborů';
 }
 
-// ── Firebase load ──
-function fbInit() {
-  try {
-    if(!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
-    storageRef = firebase.storage().ref('zxnext');
-    setStatus('Firebase OK · Načítám soubory...','loading');
-    loadAllCats();
-    firebase.auth().signInAnonymously().catch(function(){});
-  } catch(e){ setStatus('Firebase chyba: '+e.message,'err'); }
-}
-function loadAllCats() {
-  var done = 0;
-  CATS.forEach(function(cat){
-    storageRef.child(cat).listAll().then(function(res){
-      var promises = res.items.map(function(item){
-        return item.getMetadata().then(function(meta){
-          return { name: item.name, size: meta.size, updated: new Date(meta.updated).toLocaleDateString('cs-CZ'), ref: item };
-        });
-      });
-      return Promise.all(promises);
-    }).then(function(files){
-      allFiles[cat] = files;
-      done++;
-      if(done===CATS.length){ renderList(); setStatus('Připojeno · '+allFiles.hry.length+allFiles.utils.length+allFiles.other.length+' souborů','ok');
-      if(!autoTimer) startAutoRefresh(); }
-    }).catch(function(e){ done++; setStatus('Chyba načítání: '+e.message,'err'); });
-  });
+function loadFiles() {
+  setStatus('Načítám soubory...','loading');
+  var url = 'https://www.googleapis.com/drive/v3/files?q=%22'+FOLDER_ID+'%22+in+parents+and+trashed%3Dfalse&fields=files(id,name,size,mimeType)&key='+API_KEY+'&pageSize=100';
+  fetch(url)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data.error) { setStatus('Chyba: '+data.error.message,'err'); return; }
+      allFiles = data.files || [];
+      renderList();
+      setStatus('OK · '+allFiles.length+' souborů · Google Drive','ok');
+    })
+    .catch(function(e){ setStatus('Chyba: '+e.message,'err'); });
 }
 
-// ── Upload ──
-var dropZone = document.getElementById('dropZone');
-dropZone.addEventListener('dragover', function(e){ e.preventDefault(); dropZone.classList.add('drag'); });
-dropZone.addEventListener('dragleave', function(){ dropZone.classList.remove('drag'); });
-dropZone.addEventListener('drop', function(e){ e.preventDefault(); dropZone.classList.remove('drag'); handleFiles(e.dataTransfer.files); });
-
-function handleFiles(files) {
-  if(!storageRef){ setStatus('Firebase není připraveno','err'); return; }
-  var arr = Array.from(files);
-  if(!arr.length) return;
-  var i=0, total=arr.length;
-  var pw = document.getElementById('progressWrap');
-  var pb = document.getElementById('progressBar');
-  var pl = document.getElementById('progressLabel');
-  pw.classList.add('visible');
-  function uploadNext(){
-    if(i>=total){ pw.classList.remove('visible'); pb.style.width='0%'; loadAllCats(); return; }
-    var file = arr[i];
-    var path = currentCat+'/'+file.name;
-    pl.textContent = '['+(i+1)+'/'+total+'] '+file.name;
-    var task = storageRef.child(path).put(file);
-    task.on('state_changed',
-      function(snap){ pb.style.width=(snap.bytesTransferred/snap.totalBytes*100)+'%'; },
-      function(e){ setStatus('Chyba uploadu: '+e.message,'err'); i++; uploadNext(); },
-      function(){ i++; uploadNext(); }
-    );
-  }
-  uploadNext();
-}
-
-// ── Download ──
-// ── Auto-refresh ──
-var AUTO_INTERVAL = 30; // seconds
-var autoTimer = null;
-var countdown = AUTO_INTERVAL;
-
-function startAutoRefresh() {
-  if(autoTimer) clearInterval(autoTimer);
-  countdown = AUTO_INTERVAL;
-  updateCountdown();
-  autoTimer = setInterval(function(){
-    countdown--;
-    updateCountdown();
-    if(countdown <= 0){ countdown = AUTO_INTERVAL; loadAllCats(); }
-  }, 1000);
-}
-function updateCountdown() {
-  var el = document.getElementById('syncCountdown');
-  if(el) el.textContent = '↻ sync za '+countdown+'s';
-}
-function manualRefresh() {
-  countdown = AUTO_INTERVAL;
-  updateCountdown();
-  loadAllCats();
-  var btn = document.getElementById('refreshBtn');
-  if(btn){ btn.textContent='↻ ...'; setTimeout(function(){ btn.textContent='↻ REFRESH'; },800); }
-}
-
-// ── Download ──
-function dlFile(encodedName, cat) {
-  var name = decodeURIComponent(encodedName);
-  storageRef.child(cat+'/'+name).getDownloadURL().then(function(url){
-    var a = document.createElement('a'); a.href=url; a.download=name; a.target='_blank'; a.click();
-  }).catch(function(e){ setStatus('DL chyba: '+e.message,'err'); });
-}
-
-// ── Delete ──
-function delFile(encodedName, cat) {
-  var name = decodeURIComponent(encodedName);
-  if(!confirm('Smazat '+name+'?')) return;
-  storageRef.child(cat+'/'+name).delete().then(function(){
-    allFiles[cat] = allFiles[cat].filter(function(f){ return f.name!==name; });
-    renderList();
-    setStatus('Smazáno: '+name,'ok');
-  }).catch(function(e){ setStatus('Chyba smazání: '+e.message,'err'); });
-}
-
-// ── Load Firebase SDK ──
-(function(){
-  var s1=document.createElement('script'); s1.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
-  s1.onload=function(){
-    var s2=document.createElement('script'); s2.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js';
-    s2.onload=function(){
-      var s3=document.createElement('script'); s3.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js';
-      s3.onload=fbInit; document.head.appendChild(s3);
-    }; document.head.appendChild(s2);
-  }; document.head.appendChild(s1);
-})();
+loadFiles();
+setInterval(loadFiles, 60000);
 <\/script>
 </body>
 </html>
