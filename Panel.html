@@ -8510,11 +8510,9 @@ function renderList() {
 function fbInit() {
   try {
     if(!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
-    firebase.auth().signInAnonymously().then(function(){
-      storageRef = firebase.storage().ref('zxnext');
-      setStatus('Firebase OK · Načítám soubory...','loading');
-      loadAllCats();
-    }).catch(function(e){ setStatus('Auth chyba: '+e.message,'err'); });
+    storageRef = firebase.storage().ref('zxnext');
+    setStatus('Firebase OK · Načítám soubory...','loading');
+    loadAllCats();
   } catch(e){ setStatus('Firebase chyba: '+e.message,'err'); }
 }
 function loadAllCats() {
@@ -9322,7 +9320,7 @@ async function wsocketToggle(){try{var r=await fetch(TAPO+'/toggle',{signal:Abor
 wsocketRefresh();setInterval(wsocketRefresh,10000);
 
 
-// ── GOOGLE LOGIN GATE ──────────────────────────────────────────
+// ── GOOGLE LOGIN GATE ──
 var ALLOWED_EMAILS = ['kovalcikmichal@post.cz', 'kladyx@seznam.cz', 'kovalcikmichal78@gmail.com'];
 var _GATE_CFG = {
   apiKey: "AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",
