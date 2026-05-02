@@ -8611,6 +8611,9 @@ APP_HTML["kalendar"] = `<!DOCTYPE html>
 <html lang="cs"><head><meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>KALENDÁŘ</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#0a0c10;color:#c8d8e8;font-family:monospace;padding:12px;user-select:none;}
@@ -9066,7 +9069,7 @@ var _activeDay=null;
 function getSvatek(d,m){return SVATKY[(d)+'.'+(m+1)] || '';}
 
 // ── Firebase Sync poznámek ────────────────────────────────────
-var _db=null, _uid=null, _notes={};
+var _db=null, _notes={}, _kalSav=false;
 
 function dbKey(y,m,d){return y+'_'+(m+1)+'_'+d;}
 function getNote(y,m,d){var k=dbKey(y,m,d);return(_notes[k]&&_notes[k].t)||'';}
@@ -9080,46 +9083,29 @@ function syncStatus(s){
 }
 
 function startFirebase(){
-  // Načti Firebase skripty sám – nepoužívej window.parent.firebase (parent nemá database-compat)
-  var scripts=[
-    'https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js',
-    'https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js',
-    'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js'
-  ];
-  function loadNext(i){
-    if(i>=scripts.length){initKalFB();return;}
-    var s=document.createElement('script');
-    s.src=scripts[i];
-    s.onload=function(){loadNext(i+1);};
-    s.onerror=function(){syncStatus('err');try{var r=localStorage.getItem('kalNotes_local');if(r)_notes=JSON.parse(r);}catch(_){}};
-    document.head.appendChild(s);
-  }
-  loadNext(0);
-}
-
-function initKalFB(){
+  // Stejný pattern jako CD/HW/LP – Firebase skripty jsou v <head>, init přímý
   try{
     var cfg={apiKey:'AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8',authDomain:'kladyxland.firebaseapp.com',
       databaseURL:'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app',
       projectId:'kladyxland',storageBucket:'kladyxland.firebasestorage.app',
       messagingSenderId:'178078059030',appId:'1:178078059030:web:8d8a0271b23a7aca2b4337'};
-    var app;try{app=firebase.app('kal');}catch(e){app=firebase.initializeApp(cfg,'kal');}
-    _db=app.database();
-    var _auth=app.auth();
-    var _offTimer=setTimeout(function(){syncStatus('err');try{var r=localStorage.getItem('kalNotes_local');if(r)_notes=JSON.parse(r);render();}catch(_){}},8000);
-    _auth.signInAnonymously().catch(function(){clearTimeout(_offTimer);syncStatus('err');});
-    _auth.onAuthStateChanged(function(user){
+    if(!firebase.apps.length)firebase.initializeApp(cfg);
+    firebase.auth().signInAnonymously().catch(function(e){syncStatus('err');});
+    _db=firebase.database();
+    var _FL=true;
+    setTimeout(function(){if(_FL){_FL=false;syncStatus('err');}},8000);
+    firebase.auth().onAuthStateChanged(function(user){
       if(!user)return;
-      clearTimeout(_offTimer);
-      syncStatus('wait');
       _db.ref('kalNotes/data').on('value',function(snap){
+        if(_kalSav)return;
         _notes=snap.val()||{};
+        if(_FL){_FL=false;}
         syncStatus('ok');
         render();
       },function(){syncStatus('err');});
     });
   }catch(e){
-    console.warn('Kalendář Firebase init error:',e);
+    console.warn('Kalendář Firebase error:',e);
     syncStatus('err');
     try{var r=localStorage.getItem('kalNotes_local');if(r)_notes=JSON.parse(r);}catch(_){}
   }
@@ -9195,8 +9181,10 @@ function saveNote(){
   updateCellDot(_activeDay,!!txt);
   // Ulož do Firebase nebo localStorage
   if(_db){
+    _kalSav=true;
     var ref=_db.ref('kalNotes/data/'+k);
-    if(txt){ref.set({t:txt,u:Date.now()});}else{ref.remove();}
+    if(txt){ref.set({t:txt,u:Date.now()}).then(function(){_kalSav=false;}).catch(function(){_kalSav=false;});}
+    else{ref.remove().then(function(){_kalSav=false;}).catch(function(){_kalSav=false;});}
   }else{
     try{localStorage.setItem('kalNotes_local',JSON.stringify(_notes));}catch(_){}
   }
