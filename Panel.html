@@ -8611,9 +8611,6 @@ APP_HTML["kalendar"] = `<!DOCTYPE html>
 <html lang="cs"><head><meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>KALENDÁŘ</title>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#0a0c10;color:#c8d8e8;font-family:monospace;padding:12px;user-select:none;}
@@ -9083,137 +9080,48 @@ function syncStatus(s){
 }
 
 function startFirebase(){
-  // Stejný pattern jako CD/HW/LP – Firebase skripty jsou v <head>, init přímý
+  var _scripts=[
+    'https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js',
+    'https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js',
+    'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js'
+  ];
+  function _loadNext(i){
+    if(i>=_scripts.length){_initKal();return;}
+    var s=document.createElement('script');
+    s.src=_scripts[i];
+    s.onload=function(){_loadNext(i+1);};
+    s.onerror=function(){syncStatus('err');try{var r=localStorage.getItem('kalNotes_local');if(r){_notes=JSON.parse(r);render();}}catch(_){}};
+    document.head.appendChild(s);
+  }
+  _loadNext(0);
+}
+
+function _initKal(){
   try{
     var cfg={apiKey:'AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8',authDomain:'kladyxland.firebaseapp.com',
       databaseURL:'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app',
       projectId:'kladyxland',storageBucket:'kladyxland.firebasestorage.app',
       messagingSenderId:'178078059030',appId:'1:178078059030:web:8d8a0271b23a7aca2b4337'};
-    var _kalApp;try{_kalApp=firebase.app('kal');}catch(e){_kalApp=firebase.initializeApp(cfg,'kal');}
-    _kalApp.auth().signInAnonymously().catch(function(e){syncStatus('err');});
-    _db=_kalApp.database();
-    var _FL=true;
-    setTimeout(function(){if(_FL){_FL=false;syncStatus('err');}},8000);
-    _kalApp.auth().onAuthStateChanged(function(user){
+    var _app;try{_app=firebase.app('kal');}catch(e){_app=firebase.initializeApp(cfg,'kal');}
+    _db=_app.database();
+    var _offTimer=setTimeout(function(){syncStatus('err');try{var r=localStorage.getItem('kalNotes_local');if(r){_notes=JSON.parse(r);render();}}catch(_){}},8000);
+    _app.auth().signInAnonymously().catch(function(){clearTimeout(_offTimer);syncStatus('err');});
+    _app.auth().onAuthStateChanged(function(user){
       if(!user)return;
+      clearTimeout(_offTimer);
+      syncStatus('wait');
       _db.ref('kalNotes/data').on('value',function(snap){
         if(_kalSav)return;
         _notes=snap.val()||{};
-        if(_FL){_FL=false;}
         syncStatus('ok');
         render();
       },function(){syncStatus('err');});
     });
   }catch(e){
-    console.warn('Kalendář Firebase error:',e);
     syncStatus('err');
-    try{var r=localStorage.getItem('kalNotes_local');if(r)_notes=JSON.parse(r);}catch(_){}
+    try{var r=localStorage.getItem('kalNotes_local');if(r){_notes=JSON.parse(r);render();}}catch(_){}
   }
 }
-
-function render(){
-  var g=document.getElementById('grid');
-  g.innerHTML='';
-  ['Po','Út','St','Čt','Pá','So','Ne'].forEach(function(d,i){
-    var h=document.createElement('div');
-    h.className='day-hdr'+(i>=5?' we':'');
-    h.textContent=d;
-    g.appendChild(h);
-  });
-  var first=new Date(curY,curM,1);
-  var startDay=(first.getDay()+6)%7;
-  var daysInMonth=new Date(curY,curM+1,0).getDate();
-  for(var i=0;i<startDay;i++){
-    var e=document.createElement('div');e.className='cell empty';g.appendChild(e);
-  }
-  for(var d=1;d<=daysInMonth;d++){
-    var date=new Date(curY,curM,d);
-    var dow=date.getDay();
-    var isWe=(dow===0||dow===6);
-    var isToday=(d===now.getDate()&&curM===now.getMonth()&&curY===now.getFullYear());
-    var sv=getSvatek(d,curM);
-    var hasNote=!!getNote(curY,curM,d);
-    var cell=document.createElement('div');
-    cell.className='cell'+(isToday?' today':'')+(isWe?' weekend':'')+(sv?' svatek':'');
-    cell.innerHTML='<span class="dn">'+d+'</span>'+(sv?'<span class="sn">'+sv+'</span>':'')+(hasNote?'<span class="note-dot"></span>':'');
-    (function(dd,ss){cell.onclick=function(){showInfo(dd,ss);};})(d,sv);
-    g.appendChild(cell);
-  }
-  document.getElementById('monthTitle').textContent=MESICE[curM];
-  document.getElementById('yearTitle').textContent=curY;
-  closeInfo();
-}
-
-function updateCellDot(day,has){
-  var ch=document.getElementById('grid').children;
-  var cnt=0;
-  for(var i=7;i<ch.length;i++){
-    if(!ch[i].classList.contains('empty')){
-      cnt++;
-      if(cnt===day){
-        var dot=ch[i].querySelector('.note-dot');
-        if(has&&!dot){var s=document.createElement('span');s.className='note-dot';ch[i].appendChild(s);}
-        if(!has&&dot){dot.remove();}
-        break;
-      }
-    }
-  }
-}
-
-function showInfo(d,sv){
-  _activeDay=d;
-  var date=new Date(curY,curM,d);
-  var dow=DNY[date.getDay()];
-  document.getElementById('infoDate').textContent=dow+' '+d+'. '+MESICE[curM]+' '+curY;
-  document.getElementById('infoSvatek').textContent=sv?'🎂 Svátek: '+sv:'Žádný svátek';
-  document.getElementById('noteTextarea').value=getNote(curY,curM,d);
-  document.getElementById('noteSavedMsg').style.opacity='0';
-  document.getElementById('infoBox').className='info-box show';
-  setTimeout(function(){document.getElementById('noteTextarea').focus();},80);
-}
-
-function saveNote(){
-  if(_activeDay===null)return;
-  var txt=document.getElementById('noteTextarea').value.trim();
-  var k=dbKey(curY,curM,_activeDay);
-  // Optimistická aktualizace UI
-  if(txt){_notes[k]={t:txt};}else{delete _notes[k];}
-  updateCellDot(_activeDay,!!txt);
-  // Ulož do Firebase nebo localStorage
-  if(_db){
-    _kalSav=true;
-    var ref=_db.ref('kalNotes/data/'+k);
-    if(txt){ref.set({t:txt,u:Date.now()}).then(function(){_kalSav=false;}).catch(function(){_kalSav=false;});}
-    else{ref.remove().then(function(){_kalSav=false;}).catch(function(){_kalSav=false;});}
-  }else{
-    try{localStorage.setItem('kalNotes_local',JSON.stringify(_notes));}catch(_){}
-  }
-  var msg=document.getElementById('noteSavedMsg');
-  msg.style.opacity='1';
-  setTimeout(function(){msg.style.opacity='0';},1800);
-}
-
-function deleteNote(){
-  if(_activeDay===null)return;
-  document.getElementById('noteTextarea').value='';
-  saveNote();
-}
-
-function closeInfo(){_activeDay=null;document.getElementById('infoBox').className='info-box';}
-
-function changeMonth(dir){
-  curM+=dir;
-  if(curM<0){curM=11;curY--;}
-  if(curM>11){curM=0;curY++;}
-  render();
-}
-
-// Dnešní info
-var todaySv=getSvatek(now.getDate(),now.getMonth());
-var todayDow=DNY[now.getDay()];
-document.getElementById('todayDate').textContent=todayDow+' '+now.getDate()+'. '+MESICE[now.getMonth()]+' '+now.getFullYear();
-document.getElementById('todaySvatek').textContent=todaySv?'🎂 Svátek: '+todaySv:'Dnes nikdo neslaví svátek';
-
 render();
 startFirebase();
 <\/script>
