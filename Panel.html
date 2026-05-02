@@ -151,7 +151,7 @@
 </div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v6.6</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v5.0</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -208,7 +208,8 @@
       <div class="bd"></div><div class="bi">🔴</div><div class="bl">OBS</div>
     </button>
     <button class="app-btn" id="btn-pocasi" style="--ac:#00b4ff;--ac-rgb:0,180,255" onclick="openApp('pocasi')">
-      <div class="bd"></div><div class="bi">🌤️</div><div class="bl">Počasí</div>
+      <span class="btn-icon">🌤️</span>
+      <span class="btn-label">Počasí</span>
     </button>
 
   </div>
@@ -247,7 +248,7 @@
       </div>
       <div style="margin-top:22px;display:flex;align-items:center;justify-content:center;gap:24px;padding:12px 20px;border:1px solid rgba(0,212,255,0.1);border-radius:8px;background:rgba(255,255,255,0.025);">
         <span style="font-size:0.38rem;letter-spacing:2px;color:rgba(90,100,136,0.55);text-transform:uppercase;">POWERED BY</span>
-        <img src="data:image/jpeg;base64,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" alt="PreSonus" style="height:44px;width:auto;object-fit:contain;display:block;" />
+        <img src="data:image/jpeg;base64,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" alt="PreSonus" style="height:50px;width:auto;object-fit:contain;display:block;" />
         <span style="width:1px;height:30px;background:rgba(0,212,255,0.15);display:inline-block;"></span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 38" width="120" height="38"><defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dddddd"/></linearGradient></defs><ellipse cx="14" cy="19" rx="10" ry="13" fill="url(#fg1)" opacity="0.9"/><ellipse cx="14" cy="19" rx="6" ry="9" fill="#1a1a2e"/><ellipse cx="14" cy="19" rx="2.5" ry="2.5" fill="url(#fg1)"/><line x1="14" y1="6" x2="14" y2="32" stroke="#ffffff44" stroke-width="0.7"/><text x="30" y="17" font-family="Georgia,serif" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" font-style="italic">FENDER</text><text x="30" y="29" font-family="Arial,sans-serif" font-size="6" fill="#ffffff88" letter-spacing="3">GUITARS &amp; BASSES</text></svg>
       </div>
@@ -339,8 +340,8 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       align-items: center;
       gap: 8px;
       margin-bottom: 28px;
-      background: rgba(0,255,136,0.10);
-      border: 1px solid rgba(0,255,136,0.4);
+      background: rgba(255,60,90,0.12);
+      border: 1px solid rgba(255,60,90,0.4);
       border-radius: 20px;
       padding: 6px 16px;
     }
@@ -348,8 +349,8 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     .live-dot {
       width: 10px; height: 10px;
       border-radius: 50%;
-      background: var(--accent-green);
-      box-shadow: 0 0 8px var(--accent-green);
+      background: var(--accent-red);
+      box-shadow: 0 0 8px var(--accent-red);
       animation: blink 1.4s infinite;
     }
 
@@ -361,7 +362,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     .live-badge span {
       font-size: 0.78rem;
       letter-spacing: 2px;
-      color: var(--accent-green);
+      color: var(--accent-red);
     }
 
     /* NOW PLAYING CARD */
@@ -563,7 +564,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
   </div>
 
   <script>
-    var songHistory = [];
+    var history = [];
     var countdownVal = 30;
     var countdownTimer = null;
     var lastSong = '';
@@ -651,15 +652,13 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       var allPromises = [];
 
       // Zkus KAŽDÝ endpoint s KAŽDÝM proxy
-      var cacheBust = '?_t=' + Date.now();
       ENDPOINTS.forEach(function(ep) {
-        var bustedUrl = ep.url + cacheBust;
         PROXY_URLS.forEach(function(proxyFn) {
-          var proxyUrl = proxyFn ? proxyFn(bustedUrl) : bustedUrl;
+          var proxyUrl = proxyFn ? proxyFn(ep.url) : ep.url;
           var isAllorigins = proxyUrl.indexOf('allorigins') !== -1;
           var source = ep.type + (proxyFn ? ' (proxy)' : ' (direct)');
 
-          var p = fetchWithTimeout(proxyUrl, 2500, { cache: 'no-store' })
+          var p = fetchWithTimeout(proxyUrl, 2500, {})
             .then(function(r) {
               if (!r.ok) throw new Error('HTTP ' + r.status);
               return isAllorigins ? r.json() : r.text();
@@ -794,19 +793,19 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       lastSong = full;
 
       var now = new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' });
-      songHistory.unshift({ artist: artist, song: song, time: now });
-      if (songHistory.length > 12) songHistory.pop();
+      history.unshift({ artist: artist, song: song, time: now });
+      if (history.length > 12) history.pop();
       renderHistory();
     }
 
     function renderHistory() {
-      if (songHistory.length < 2) return;
+      if (history.length < 2) return;
       var wrap = document.getElementById('historyWrap');
       var list = document.getElementById('historyList');
       wrap.style.display = 'block';
       var html = '';
-      for (var i = 1; i < songHistory.length; i++) {
-        var h = songHistory[i];
+      for (var i = 1; i < history.length; i++) {
+        var h = history[i];
         html += '<div class="history-item">' +
           '<div><div class="history-song">' + escHtml(h.song) + '</div>' +
           '<div class="history-artist">' + escHtml(h.artist) + '</div></div>' +
@@ -8298,20 +8297,25 @@ APP_HTML["pocasi"] = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Počasí Příbor</title>
+  <title>Počasí</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root { --bg:#070b14; --card:#0d1425; --border:rgba(0,180,255,0.18); --cyan:#00b4ff; --green:#00ff88; --red:#ff3c5a; --muted:#4a5570; --text:#c8d8f0; }
     html, body { width:100%; min-height:100vh; background:var(--bg); font-family:"Courier New",monospace; color:var(--text); padding-bottom:40px; }
-    .header { padding:16px 20px 12px; border-bottom:1px solid var(--border); background:rgba(0,180,255,0.03); }
+    .header { padding:14px 20px 10px; border-bottom:1px solid var(--border); background:rgba(0,180,255,0.03); }
     .header-logo { font-size:1.2rem; font-weight:900; letter-spacing:3px; color:var(--cyan); text-shadow:0 0 16px var(--cyan)88; }
     .header-sub { font-size:0.55rem; letter-spacing:3px; color:var(--muted); text-transform:uppercase; margin-top:2px; }
+    .city-search { display:flex; gap:8px; margin-top:10px; }
+    .city-search input { flex:1; background:rgba(0,180,255,0.05); border:1px solid rgba(0,180,255,0.25); border-radius:5px; padding:7px 10px; color:var(--text); font-family:"Courier New",monospace; font-size:0.75rem; letter-spacing:1px; outline:none; }
+    .city-search input:focus { border-color:var(--cyan); }
+    .city-search button { background:rgba(0,180,255,0.12); border:1px solid rgba(0,180,255,0.3); border-radius:5px; color:var(--cyan); font-family:"Courier New",monospace; font-size:0.7rem; letter-spacing:1px; padding:7px 12px; cursor:pointer; white-space:nowrap; }
+    .city-search button:hover { background:rgba(0,180,255,0.22); }
     .main { padding:20px; display:flex; flex-direction:column; align-items:center; gap:16px; }
     .temp-big { font-size:5rem; font-weight:900; color:#fff; letter-spacing:-2px; line-height:1; text-align:center; }
     .temp-big span { font-size:2rem; color:var(--cyan); }
     .weather-icon { font-size:4rem; text-align:center; }
     .desc { font-size:0.9rem; letter-spacing:3px; color:var(--cyan); text-transform:uppercase; text-align:center; }
-    .city { font-size:0.6rem; letter-spacing:4px; color:var(--muted); text-align:center; }
+    .city-name { font-size:0.6rem; letter-spacing:4px; color:var(--muted); text-align:center; }
     .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:400px; }
     .stat { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px; text-align:center; }
     .stat-label { font-size:0.55rem; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
@@ -8336,7 +8340,11 @@ APP_HTML["pocasi"] = `<!DOCTYPE html>
 <body>
 <div class="header">
   <div class="header-logo">🌤️ POČASÍ</div>
-  <div class="header-sub">Příbor · OpenWeatherMap</div>
+  <div class="header-sub" id="header-sub">OpenWeatherMap</div>
+  <div class="city-search">
+    <input type="text" id="city-input" placeholder="Zadej město..." autocomplete="off" onkeydown="if(event.key==='Enter')searchCity()"/>
+    <button onclick="searchCity()">🔍 Hledat</button>
+  </div>
 </div>
 <div class="main" id="main"><div class="loading-msg">Načítám počasí...</div></div>
 <div class="status-bar">
@@ -8347,11 +8355,42 @@ APP_HTML["pocasi"] = `<!DOCTYPE html>
 <script>
 var KEY = 'cb372882c247779717e8249a690f6be4';
 var LAT = '49.6439', LON = '18.1464';
+var CITY_NAME = 'Příbor';
+
+// Načti uložené město
+(function(){
+  try {
+    var saved = localStorage.getItem('kp_weather_city');
+    if(saved) { var c = JSON.parse(saved); LAT=c.lat; LON=c.lon; CITY_NAME=c.name; }
+  } catch(e){}
+  document.getElementById('city-input').value = CITY_NAME;
+  document.getElementById('header-sub').textContent = CITY_NAME + ' · OpenWeatherMap';
+})();
 
 function setStatus(msg, state) {
   document.getElementById('status').textContent = msg;
   var d = document.getElementById('dot');
   d.className = 'dot' + (state ? ' '+state : '');
+}
+
+function searchCity() {
+  var q = document.getElementById('city-input').value.trim();
+  if(!q) return;
+  setStatus('Hledám město...','loading');
+  document.getElementById('main').innerHTML = '<div class="loading-msg">Hledám ' + q + '...</div>';
+  fetch('https://api.openweathermap.org/geo/1.0/direct?q='+encodeURIComponent(q)+'&limit=1&appid='+KEY)
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data||data.length===0){setStatus('Město nenalezeno','err');document.getElementById('main').innerHTML='<div class="loading-msg">❌ Město "'+q+'" nenalezeno.</div>';return;}
+      LAT = ''+data[0].lat;
+      LON = ''+data[0].lon;
+      CITY_NAME = data[0].local_names&&data[0].local_names.cs ? data[0].local_names.cs : data[0].name;
+      try { localStorage.setItem('kp_weather_city', JSON.stringify({lat:LAT,lon:LON,name:CITY_NAME})); } catch(e){}
+      document.getElementById('header-sub').textContent = CITY_NAME + ' · OpenWeatherMap';
+      document.getElementById('city-input').value = CITY_NAME;
+      load();
+    })
+    .catch(function(e){setStatus('Chyba geocoding: '+e.message,'err');});
 }
 
 function icon(id, n) {
@@ -8384,7 +8423,7 @@ function load() {
         '<div class="weather-icon">'+ic+'</div>'+
         '<div class="temp-big">'+t+'<span>°C</span></div>'+
         '<div class="desc">'+d.weather[0].description+'</div>'+
-        '<div class="city">📍 '+d.name+'</div>'+
+        '<div class="city-name">📍 '+d.name+'</div>'+
         '<div class="grid">'+
           '<div class="stat"><div class="stat-label">Pocitová</div><div class="stat-val">'+f+'<span class="stat-unit">°C</span></div></div>'+
           '<div class="stat"><div class="stat-label">Vlhkost</div><div class="stat-val">'+d.main.humidity+'<span class="stat-unit">%</span></div></div>'+
@@ -8601,10 +8640,21 @@ h1{font-size:1.05rem;font-weight:900;color:#00b4ff;text-align:center;margin-bott
 .today-dot{width:8px;height:8px;border-radius:50%;background:#00b4ff;flex-shrink:0;}
 .today-info{font-size:.72rem;color:rgba(200,216,232,.7);}
 .today-name{font-size:.72rem;color:#00b4ff;font-weight:700;}
+/* POZNÁMKY */
+.note-dot{position:absolute;bottom:3px;right:3px;width:6px;height:6px;border-radius:50%;background:#ff9800;box-shadow:0 0 5px rgba(255,152,0,.7);}
+.note-section{margin-top:8px;border-top:1px solid rgba(0,180,255,.15);padding-top:8px;}
+.note-label{font-size:.65rem;color:rgba(0,180,255,.7);letter-spacing:.05em;margin-bottom:4px;}
+.note-textarea{width:100%;background:#060a14;border:1px solid rgba(0,180,255,.25);border-radius:5px;color:#c8d8e8;font-family:monospace;font-size:.75rem;padding:6px 8px;resize:vertical;min-height:60px;outline:none;transition:border-color .2s;}
+.note-textarea:focus{border-color:rgba(0,180,255,.6);}
+.note-save{background:rgba(0,180,255,.12);border:1px solid rgba(0,180,255,.35);color:#00b4ff;border-radius:4px;padding:4px 14px;cursor:pointer;font-family:monospace;font-size:.7rem;margin-top:5px;transition:background .15s;}
+.note-save:hover{background:rgba(0,180,255,.25);}
+.note-del{background:rgba(255,60,90,.08);border:1px solid rgba(255,60,90,.3);color:#ff3c5a;border-radius:4px;padding:4px 10px;cursor:pointer;font-family:monospace;font-size:.7rem;margin-top:5px;margin-left:6px;transition:background .15s;}
+.note-del:hover{background:rgba(255,60,90,.2);}
+.note-saved-msg{font-size:.6rem;color:#00ff88;margin-left:8px;opacity:0;transition:opacity .3s;}
 </style>
 </head>
 <body>
-<h1>📅 KALENDÁŘ</h1>
+<h1>📅 KALENDÁŘ <span id="kalSyncDot" style="font-size:.55rem;letter-spacing:.05em;margin-left:6px;vertical-align:middle;color:#5a6488;">☁ ...</span></h1>
 <div class="today-bar">
   <div class="today-dot"></div>
   <div>
@@ -8624,7 +8674,18 @@ h1{font-size:1.05rem;font-weight:900;color:#00b4ff;text-align:center;margin-bott
 <div class="info-box" id="infoBox">
   <div class="info-date" id="infoDate"></div>
   <div class="info-svatek" id="infoSvatek"></div>
-  <button class="info-close" onclick="closeInfo()">✕ zavřít</button>
+  <div class="note-section">
+    <div class="note-label">📝 POZNÁMKA</div>
+    <textarea class="note-textarea" id="noteTextarea" placeholder="Např. Zubař 10:00, narozeniny..."></textarea>
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-top:4px;">
+      <button class="note-save" onclick="saveNote()">💾 Uložit</button>
+      <button class="note-del" onclick="deleteNote()">🗑 Smazat</button>
+      <span class="note-saved-msg" id="noteSavedMsg">✓ Uloženo</span>
+    </div>
+  </div>
+  <div style="margin-top:8px;">
+    <button class="info-close" onclick="closeInfo()">✕ zavřít</button>
+  </div>
 </div>
 <script>
 var MESICE=['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopadu','Prosinec'];
@@ -8918,8 +8979,57 @@ var SVATKY={
 };
 
 var now=new Date(), curY=now.getFullYear(), curM=now.getMonth();
+var _activeDay=null;
 
 function getSvatek(d,m){return SVATKY[(d)+'.'+(m+1)] || '';}
+
+// ── Firebase Sync poznámek ────────────────────────────────────
+var _db=null, _uid=null, _notes={};
+
+function dbKey(y,m,d){return y+'_'+(m+1)+'_'+d;}
+function getNote(y,m,d){var k=dbKey(y,m,d);return(_notes[k]&&_notes[k].t)||'';}
+
+function syncStatus(s){
+  var el=document.getElementById('kalSyncDot');
+  if(!el)return;
+  if(s==='ok'){el.textContent='☁ sync';el.style.color='#00ff88';}
+  else if(s==='wait'){el.textContent='↻ ...';el.style.color='#ff9800';}
+  else{el.textContent='✗ offline';el.style.color='#ff3c5a';}
+}
+
+function startFirebase(){
+  try{
+    // Zkus napojit na Firebase z parent okna (sdílená instance panelu)
+    var p=window.parent;
+    var auth=p._gateAuth;
+    var fbCfg={apiKey:'AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8',authDomain:'kladyxland.firebaseapp.com',
+      databaseURL:'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app',
+      projectId:'kladyxland',appId:'1:178078059030:web:8d8a0271b23a7aca2b4337'};
+    var fbLib=p.firebase||firebase;
+    var app; try{app=fbLib.app('kal-notes');}catch(e){app=fbLib.initializeApp(fbCfg,'kal-notes');}
+    _db=app.database();
+    syncStatus('wait');
+
+    function startListen(uid){
+      _uid=uid;
+      _db.ref('kalNotes/'+uid).on('value',function(snap){
+        _notes=snap.val()||{};
+        syncStatus('ok');
+        render(); // překresli — aktualizuje oranžové tečky na všech zařízeních
+      },function(){syncStatus('err');});
+    }
+
+    // Získej UID — buď hned z currentUser, nebo čekej na authStateChanged
+    var cu=auth&&auth.currentUser;
+    if(cu){startListen(cu.uid);}
+    else if(auth){auth.onAuthStateChanged(function(u){if(u)startListen(u.uid);});}
+  }catch(e){
+    console.warn('Kalendář: Firebase nedostupný, fallback na localStorage',e);
+    syncStatus('err');
+    // Fallback: načti z localStorage
+    try{var raw=localStorage.getItem('kalNotes_local');if(raw)_notes=JSON.parse(raw);}catch(_){}
+  }
+}
 
 function render(){
   var g=document.getElementById('grid');
@@ -8931,7 +9041,7 @@ function render(){
     g.appendChild(h);
   });
   var first=new Date(curY,curM,1);
-  var startDay=(first.getDay()+6)%7; // Pondělí=0
+  var startDay=(first.getDay()+6)%7;
   var daysInMonth=new Date(curY,curM+1,0).getDate();
   for(var i=0;i<startDay;i++){
     var e=document.createElement('div');e.className='cell empty';g.appendChild(e);
@@ -8942,9 +9052,10 @@ function render(){
     var isWe=(dow===0||dow===6);
     var isToday=(d===now.getDate()&&curM===now.getMonth()&&curY===now.getFullYear());
     var sv=getSvatek(d,curM);
+    var hasNote=!!getNote(curY,curM,d);
     var cell=document.createElement('div');
     cell.className='cell'+(isToday?' today':'')+(isWe?' weekend':'')+(sv?' svatek':'');
-    cell.innerHTML='<span class="dn">'+d+'</span>'+(sv?'<span class="sn">'+sv+'</span>':'');
+    cell.innerHTML='<span class="dn">'+d+'</span>'+(sv?'<span class="sn">'+sv+'</span>':'')+(hasNote?'<span class="note-dot"></span>':'');
     (function(dd,ss){cell.onclick=function(){showInfo(dd,ss);};})(d,sv);
     g.appendChild(cell);
   }
@@ -8953,15 +9064,60 @@ function render(){
   closeInfo();
 }
 
+function updateCellDot(day,has){
+  var ch=document.getElementById('grid').children;
+  var cnt=0;
+  for(var i=7;i<ch.length;i++){
+    if(!ch[i].classList.contains('empty')){
+      cnt++;
+      if(cnt===day){
+        var dot=ch[i].querySelector('.note-dot');
+        if(has&&!dot){var s=document.createElement('span');s.className='note-dot';ch[i].appendChild(s);}
+        if(!has&&dot){dot.remove();}
+        break;
+      }
+    }
+  }
+}
+
 function showInfo(d,sv){
+  _activeDay=d;
   var date=new Date(curY,curM,d);
   var dow=DNY[date.getDay()];
   document.getElementById('infoDate').textContent=dow+' '+d+'. '+MESICE[curM]+' '+curY;
   document.getElementById('infoSvatek').textContent=sv?'🎂 Svátek: '+sv:'Žádný svátek';
+  document.getElementById('noteTextarea').value=getNote(curY,curM,d);
+  document.getElementById('noteSavedMsg').style.opacity='0';
   document.getElementById('infoBox').className='info-box show';
+  setTimeout(function(){document.getElementById('noteTextarea').focus();},80);
 }
 
-function closeInfo(){document.getElementById('infoBox').className='info-box';}
+function saveNote(){
+  if(_activeDay===null)return;
+  var txt=document.getElementById('noteTextarea').value.trim();
+  var k=dbKey(curY,curM,_activeDay);
+  // Optimistická aktualizace UI
+  if(txt){_notes[k]={t:txt};}else{delete _notes[k];}
+  updateCellDot(_activeDay,!!txt);
+  // Ulož do Firebase nebo localStorage
+  if(_db&&_uid){
+    var ref=_db.ref('kalNotes/'+_uid+'/'+k);
+    if(txt){ref.set({t:txt,u:Date.now()});}else{ref.remove();}
+  }else{
+    try{localStorage.setItem('kalNotes_local',JSON.stringify(_notes));}catch(_){}
+  }
+  var msg=document.getElementById('noteSavedMsg');
+  msg.style.opacity='1';
+  setTimeout(function(){msg.style.opacity='0';},1800);
+}
+
+function deleteNote(){
+  if(_activeDay===null)return;
+  document.getElementById('noteTextarea').value='';
+  saveNote();
+}
+
+function closeInfo(){_activeDay=null;document.getElementById('infoBox').className='info-box';}
 
 function changeMonth(dir){
   curM+=dir;
@@ -8977,6 +9133,7 @@ document.getElementById('todayDate').textContent=todayDow+' '+now.getDate()+'. '
 document.getElementById('todaySvatek').textContent=todaySv?'🎂 Svátek: '+todaySv:'Dnes nikdo neslaví svátek';
 
 render();
+startFirebase();
 <\/script>
 </body></html>
 `;
@@ -9114,10 +9271,10 @@ setInterval(tapoStatus, 15000);
 })();
 
 // SOCKET
-var TAPO_URLS=['http://192.168.0.3:7788','http://localhost:7788'];
-function wsocketSet(st){var c=document.getElementById('wsocket-card'),s=document.getElementById('wsocket-status');if(!c||!s)return;if(st==='on'){c.className='wsocket wsocket-on';s.textContent='● ZAPNUTO';}else if(st==='off'){c.className='wsocket wsocket-off';s.textContent='● VYPNUTO';}else{c.className='wsocket';s.textContent='Nedostupné';}}
-async function wsocketRefresh(){for(var i=0;i<TAPO_URLS.length;i++){try{var r=await fetch(TAPO_URLS[i]+'/status',{signal:AbortSignal.timeout(2000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');return;}catch(e){}}wsocketSet('x');}
-async function wsocketToggle(){for(var i=0;i<TAPO_URLS.length;i++){try{var r=await fetch(TAPO_URLS[i]+'/toggle',{signal:AbortSignal.timeout(5000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');return;}catch(e){}}wsocketSet('x');}
+var TAPO='http://localhost:7788';
+function wsocketSet(st){var c=document.getElementById('wsocket-card'),s=document.getElementById('wsocket-status');if(!c||!s)return;if(st==='on'){c.className='wsocket wsocket-on';s.textContent='● ZAPNUTO';}else if(st==='off'){c.className='wsocket wsocket-off';s.textContent='● VYPNUTO';}else{c.className='wsocket';s.textContent='Server offline';}}
+async function wsocketRefresh(){try{var r=await fetch(TAPO+'/status',{signal:AbortSignal.timeout(3000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){wsocketSet('x');}}
+async function wsocketToggle(){try{var r=await fetch(TAPO+'/toggle',{signal:AbortSignal.timeout(5000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){wsocketSet('x');}}
 wsocketRefresh();setInterval(wsocketRefresh,10000);
 
 
