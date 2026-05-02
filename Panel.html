@@ -3457,31 +3457,22 @@ APP_HTML["hardware"] = `<!DOCTYPE html>
 </body>
 </html>
 `;
-APP_HTML["architektura"] = `<!DOCTYPE html>
+APP_HTML["architektura"] = `
+<!DOCTYPE html>
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KLADYXLAND – Architektura v2.6.0</title>
+<title>KLADYXLAND – Architektura v2.2.0</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap');
-
   *{margin:0;padding:0;box-sizing:border-box;}
   body{background:#030812;color:#c0d8f0;font-family:'Exo 2',sans-serif;min-height:100vh;overflow-x:hidden;}
-
   .page{max-width:1100px;margin:0 auto;padding:40px 24px 80px;}
-
-  h1{font-family:'Orbitron',monospace;font-size:1.6rem;letter-spacing:.2em;text-transform:uppercase;
-     background:linear-gradient(135deg,#00f5ff,#ff6600);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
-     margin-bottom:4px;}
+  h1{font-family:'Orbitron',monospace;font-size:1.6rem;letter-spacing:.2em;text-transform:uppercase;background:linear-gradient(135deg,#00f5ff,#ff6600);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;}
   .subtitle{font-size:.78rem;color:#556;letter-spacing:.15em;margin-bottom:48px;font-family:'Orbitron',monospace;}
-
-  /* Section headers */
-  .sh{font-family:'Orbitron',monospace;font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:#ff8800;
-      border-bottom:1px solid rgba(255,136,0,.2);padding-bottom:8px;margin:48px 0 20px;}
+  .sh{font-family:'Orbitron',monospace;font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:#ff8800;border-bottom:1px solid rgba(255,136,0,.2);padding-bottom:8px;margin:48px 0 20px;}
   .sh:first-of-type{margin-top:0;}
-
-  /* Stack diagram */
   .stack{display:flex;flex-direction:column;gap:2px;margin-bottom:36px;}
   .stack-row{display:flex;align-items:stretch;gap:2px;min-height:64px;}
   .stack-box{flex:1;padding:14px 16px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;}
@@ -3489,38 +3480,28 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
   .stack-box{border:1px solid color-mix(in srgb, var(--clr,#00f5ff) 30%, transparent);}
   .stack-box .label{font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:.15em;color:var(--clr,#00f5ff);text-transform:uppercase;margin-bottom:4px;}
   .stack-box .val{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#e0ecf8;line-height:1.5;}
-
-  /* Node table */
   .ntable{width:100%;border-collapse:collapse;font-size:.78rem;}
-  .ntable th{font-family:'Orbitron',monospace;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;
-             color:#ff8800;text-align:left;padding:10px 12px;border-bottom:1px solid rgba(255,136,0,.25);}
+  .ntable th{font-family:'Orbitron',monospace;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:#ff8800;text-align:left;padding:10px 12px;border-bottom:1px solid rgba(255,136,0,.25);}
   .ntable td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;}
   .ntable tr:hover td{background:rgba(0,245,255,.03);}
   .node-name{font-family:'JetBrains Mono',monospace;color:#00f5ff;font-weight:600;font-size:.76rem;white-space:nowrap;}
   .td-rw{font-family:'JetBrains Mono',monospace;font-size:.68rem;}
   .rw-all{color:#4ade80;}
   .rw-auth{color:#fbbf24;}
-  .tag{display:inline-block;font-family:'Orbitron',monospace;font-size:.48rem;letter-spacing:.08em;padding:2px 7px;
-       border-radius:2px;margin:1px 2px;white-space:nowrap;}
+  .tag{display:inline-block;font-family:'Orbitron',monospace;font-size:.48rem;letter-spacing:.08em;padding:2px 7px;border-radius:2px;margin:1px 2px;white-space:nowrap;}
   .tag-r{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:#4ade80;}
   .tag-w{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);color:#fbbf24;}
   .tag-wa{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.15);color:#d4a017;}
-
-  /* Flow */
+  .tag-priv{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#ef4444;}
   .flow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:20px 0 36px;}
-  .flow-box{font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:10px 16px;border:1px solid rgba(0,245,255,.2);
-            background:rgba(0,245,255,.04);color:#00f5ff;white-space:nowrap;}
+  .flow-box{font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:10px 16px;border:1px solid rgba(0,245,255,.2);background:rgba(0,245,255,.04);color:#00f5ff;white-space:nowrap;}
   .flow-arr{color:#334;font-size:1.2rem;}
-
-  /* Services */
   .svc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:24px;}
   .svc{padding:16px;border:1px solid rgba(255,136,0,.15);background:rgba(255,136,0,.03);position:relative;}
   .svc .label{font-family:'Orbitron',monospace;font-size:.52rem;letter-spacing:.12em;color:#ff8800;margin-bottom:6px;}
   .svc .val{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#c0d8f0;line-height:1.5;}
-
-  /* Notes */
   .note{font-size:.72rem;color:#556;line-height:1.6;margin-top:8px;padding-left:12px;border-left:2px solid rgba(255,136,0,.2);}
-
+  .badge-new{font-family:'Orbitron',monospace;font-size:.42rem;letter-spacing:.08em;padding:1px 5px;border-radius:2px;background:rgba(0,245,255,.1);border:1px solid rgba(0,245,255,.3);color:#00f5ff;margin-left:5px;vertical-align:middle;}
   @media(max-width:600px){
     .page{padding:24px 14px 60px;}
     h1{font-size:1.1rem;}
@@ -3530,41 +3511,25 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
     .flow{gap:6px;}
     .flow-box{font-size:.6rem;padding:8px 10px;}
   }
-
-    /* Brand logos footer */
-    .app-brand-bar {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 22px;
-      padding: 7px 16px;
-      background: rgba(5,8,16,0.92);
-      backdrop-filter: blur(6px);
-      border-top: 1px solid rgba(0,212,255,0.12);
-      z-index: 9999;
-    }
-    .app-brand-bar svg { opacity: 0.75; transition: opacity .2s; filter: drop-shadow(0 0 4px rgba(255,140,0,0.2)); }
-    .app-brand-bar svg:hover { opacity: 1; }
-    .app-brand-bar-sep { width:1px; height:26px; background:rgba(0,212,255,0.15); }
-    .app-brand-bar-label { font-size:0.38rem; letter-spacing:2px; color:rgba(90,100,136,0.5); text-transform:uppercase; }
-    body { padding-bottom: 56px !important; }
 </style>
 </head>
 <body>
 <div class="page">
 
   <h1>KLADYXLAND</h1>
-  <div class="subtitle">Architektura systému · v2.6.0</div>
+  <div class="subtitle">Architektura systému · v2.2.0</div>
 
   <!-- STACK -->
   <div class="sh">Tech stack</div>
   <div class="stack">
     <div class="stack-row">
       <div class="stack-box" style="--clr:#00f5ff;">
-        <div class="label">Frontend</div>
+        <div class="label">Frontend – Web</div>
         <div class="val">Jeden index.html · GitHub Pages<br>Vanilla JS · CSS · Firebase SDK 10.12</div>
+      </div>
+      <div class="stack-box" style="--clr:#ff4fd8;">
+        <div class="label">Frontend – Panel</div>
+        <div class="val">KladyxPanel v6.7 · lokální HTML soubor<br>Vanilla JS · multi-app iframe architektura<br>16 appek: HouseTime · CD · LP · HW · Mixcloud · Odečty · Platby · Jídlo · Glukóza · Poznámky · Kalendář · OBS · Počasí · Architektura · Manuály</div>
       </div>
       <div class="stack-box" style="--clr:#ff6600;">
         <div class="label">Hosting</div>
@@ -3574,27 +3539,27 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
     <div class="stack-row">
       <div class="stack-box" style="--clr:#fbbf24;">
         <div class="label">Backend / BaaS</div>
-        <div class="val">Firebase (Spark / free tier)<br>Region: europe-west1</div>
+        <div class="val">Firebase (Spark / free tier)<br>Region: europe-west1 (Belgie)</div>
       </div>
     </div>
     <div class="stack-row">
       <div class="stack-box" style="--clr:#4ade80;">
         <div class="label">Realtime Database</div>
-        <div class="val">13 uzlů · real-time listeners (onValue)</div>
+        <div class="val">15 uzlů · real-time listeners (onValue)</div>
       </div>
       <div class="stack-box" style="--clr:#a78bfa;">
         <div class="label">Auth</div>
-        <div class="val">Email/Password<br>1 admin účet</div>
+        <div class="val">Email/Password (admin)<br>Anonymous (návštěvníci + panel)</div>
       </div>
       <div class="stack-box" style="--clr:#f472b6;">
         <div class="label">Storage</div>
-        <div class="val">Galerie upload<br>GIF / MP4 / WebM / img<br>hardware/ · lp/ (s kompresí)</div>
+        <div class="val">Galerie upload<br>GIF / MP4 / WebM / img</div>
       </div>
     </div>
   </div>
 
   <!-- FIREBASE NODES -->
-  <div class="sh">Firebase RTDB – 13 uzlů</div>
+  <div class="sh">Firebase RTDB – 21 uzlů</div>
   <table class="ntable">
     <thead>
       <tr><th>Uzel</th><th>Účel</th><th>Data</th><th>Read</th><th>Write</th></tr>
@@ -3608,7 +3573,14 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
         <td><span class="tag tag-wa">AUTH</span></td>
       </tr>
       <tr>
-        <td class="node-name">countdown/target</td>
+        <td class="node-name">onair/startTime</td>
+        <td>Čas začátku vysílání (live timer)</td>
+        <td>timestamp (ms)</td>
+        <td><span class="tag tag-r">ALL</span></td>
+        <td><span class="tag tag-wa">AUTH</span></td>
+      </tr>
+      <tr>
+        <td class="node-name">countdown</td>
         <td>Odpočet do dalšího vysílání</td>
         <td>timestamp (ms)</td>
         <td><span class="tag tag-r">ALL</span></td>
@@ -3643,6 +3615,34 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
         <td><span class="tag tag-wa">AUTH</span></td>
       </tr>
       <tr>
+        <td class="node-name">hardwareDb</td>
+        <td>Hardware databáze</td>
+        <td>[{brand, name, cat, foto}]</td>
+        <td><span class="tag tag-r">ALL</span></td>
+        <td><span class="tag tag-wa">AUTH</span></td>
+      </tr>
+      <tr>
+        <td class="node-name">lpRecordsDb</td>
+        <td>LP vinylová sbírka</td>
+        <td>[{artist, title, year, ...}]</td>
+        <td><span class="tag tag-r">ALL</span></td>
+        <td><span class="tag tag-wa">AUTH</span></td>
+      </tr>
+      <tr>
+        <td class="node-name">cdRecordsDb</td>
+        <td>CD sbírka</td>
+        <td>[{artist, title, year, ...}]</td>
+        <td><span class="tag tag-r">ALL</span></td>
+        <td><span class="tag tag-wa">AUTH</span></td>
+      </tr>
+      <tr>
+        <td class="node-name">grayscale</td>
+        <td>Přepínač šedotónového režimu webu</td>
+        <td>boolean</td>
+        <td><span class="tag tag-r">ALL</span></td>
+        <td><span class="tag tag-wa">AUTH</span></td>
+      </tr>
+      <tr>
         <td class="node-name">presence</td>
         <td>Online návštěvníci (counter)</td>
         <td>{sessionId: timestamp}</td>
@@ -3664,56 +3664,154 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
         <td><span class="tag tag-wa">AUTH</span></td>
       </tr>
       <tr>
-        <td class="node-name">grayscale</td>
-        <td>Černobílý režim webu (auto/on/off)</td>
-        <td>null | true | false</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
+        <td class="node-name">odectyDb <span class="badge-new">PANEL</span></td>
+        <td>Odečty energií (voda, plyn, elektřina)</td>
+        <td>{water:[], gas:[], electric:[]}</td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
       </tr>
       <tr>
-        <td class="node-name">totalVisitors</td>
-        <td>Celkový počet návštěv (runTransaction)</td>
-        <td>number</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-r">ALL</span></td>
+        <td class="node-name">platbyDb <span class="badge-new">PANEL</span></td>
+        <td>Platby / finance 2026</td>
+        <td>{0:[...], 1:[...], ... 11:[...]}</td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
       </tr>
       <tr>
-        <td class="node-name">hardwareDb</td>
-        <td>Hardware databáze (Studio Manager)</td>
-        <td>{id_*: {name, brand, cat, photo, ...}}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
+        <td class="node-name">jidloDb <span class="badge-new">PANEL</span></td>
+        <td>Food tracker – jídlo a kalorie</td>
+        <td>{date: [{name, kcal, ts}]}</td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
       </tr>
       <tr>
-        <td class="node-name">lpRecordsDb</td>
-        <td>LP desky databáze</td>
-        <td>{id_*: {artist, title, genre, photo, ...}}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
+        <td class="node-name">glucoDb <span class="badge-new">PANEL</span></td>
+        <td>Glukóza – záznamy glukometru</td>
+        <td>[{val, ts, note}]</td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
+      </tr>
+      <tr>
+        <td class="node-name">kalNotes/data <span class="badge-new">PANEL</span></td>
+        <td>Kalendář – poznámky ke dnům, jmeniny</td>
+        <td>{YYYY-MM-DD: {note, ts}}</td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
+      </tr>
+      <tr>
+        <td class="node-name">notesDb <span class="badge-new">PANEL</span></td>
+        <td>Rychlé poznámky (Notepad)</td>
+        <td>{text, ts}</td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
+      </tr>
+      <tr>
+        <td class="node-name">tapoDb <span class="badge-new">PANEL</span></td>
+        <td>Tapo P110 – stav WiFi zásuvky</td>
+        <td>{on: boolean, ts}</td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
+        <td><span class="tag tag-priv">EMAIL</span></td>
       </tr>
     </tbody>
   </table>
-  <div class="note">ALL = kdokoliv · AUTH = jen přihlášený admin · Presence a Chat mají write pro všechny (návštěvníci musí zapisovat)</div>
+  <div class="note">ALL = kdokoliv · AUTH = přihlášený (anonymous i admin) · EMAIL = pouze kovalcikmichal@post.cz · PANEL uzly nejsou dostupné z webu</div>
+
+  <!-- AUTH FLOW -->
+  <div class="sh">Autentizace</div>
+  <div class="flow">
+    <div class="flow-box">Návštěvník webu</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">signInAnonymously()</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">Čtení RTDB (ALL uzly)</div>
+  </div>
+  <div class="flow">
+    <div class="flow-box">Admin (heslo)</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">signInWithEmailAndPassword()</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">Zápis do všech uzlů</div>
+  </div>
+  <div class="flow">
+    <div class="flow-box">KladyxPanel</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">Google Sign-In (OAuth popup)</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">ALLOWED_EMAILS whitelist</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">Všechny PANEL uzly</div>
+  </div>
 
   <!-- DATA FLOW -->
-  <div class="sh">Datový tok – vysílání</div>
+  <div class="sh">Signálový tok – Audio</div>
+
+  <div class="note" style="margin-bottom:16px;">DJ zdroje → mixpult → rozbočovač → interface → monitoring / vysílání</div>
+
   <div class="flow">
-    <div class="flow-box">DDJ-800 / CDJ / Reloop</div>
+    <div class="flow-box">Reloop RP-1000</div>
     <div class="flow-arr">→</div>
-    <div class="flow-box">Allen&Heath AR8C</div>
+    <div class="flow-box">DJM-300S · ch C1 (cinch)</div>
     <div class="flow-arr">→</div>
-    <div class="flow-box">PreSonus Quantum ES4</div>
+    <div class="flow-box">DJM-300S Master OUT</div>
     <div class="flow-arr">→</div>
-    <div class="flow-box">OBS (48kHz/24bit)</div>
+    <div class="flow-box">Allen&amp;Heath AR8C · ch 1/2 (XLR)</div>
+  </div>
+  <div class="flow">
+    <div class="flow-box">Pioneer DDJ-800</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">Allen&amp;Heath AR8C (XLR · Adam Hall 4s)</div>
+  </div>
+  <div class="flow">
+    <div class="flow-box">Pioneer CDJ-800 MK2</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">Allen&amp;Heath AR8C (cinch→jack · Klotz)</div>
+  </div>
+  <div class="flow">
+    <div class="flow-box">Allen&amp;Heath AR8C</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">Quantum ES4 · ch 3/4 (Adam Hall 4s)</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">OBS (48 kHz / 24 bit)</div>
     <div class="flow-arr">→</div>
     <div class="flow-box">Mixcloud LIVE</div>
   </div>
   <div class="flow">
-    <div class="flow-box">OBS Python script</div>
+    <div class="flow-box">AR8C Control Room OUT</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">Monitor Station V2 · ST2 (Cordial jack)</div>
+  </div>
+  <div class="flow">
+    <div class="flow-box">Quantum ES4 · OUT 1/2</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">Monitor Station V2 · ST1</div>
+  </div>
+  <div class="flow">
+    <div class="flow-box">Monitor Station V2 · OUT C</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">Eris Sub 8BT</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">Eris 4.5BT (satelity)</div>
+  </div>
+  <div class="flow">
+    <div class="flow-box">Monitor Station V2 · Main OUT</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">HP4 V1 (sluchátkový zesilovač)</div>
+  </div>
+  <div class="flow">
+    <div class="flow-box">DDJ-800 · HP OUT</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">HP4 V1 (DJ cueing)</div>
+  </div>
+
+  <div class="sh">Datový tok – vysílání</div>
+  <div class="flow">
+    <div class="flow-box">OBS WebSocket</div>
     <div class="flow-arr">→</div>
     <div class="flow-box">Firebase: onair/live = true</div>
     <div class="flow-arr">→</div>
     <div class="flow-box">Web: ON AIR stav</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">ntfy.sh notifikace</div>
   </div>
 
   <!-- SERVICES -->
@@ -3721,11 +3819,11 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
   <div class="svc-grid">
     <div class="svc">
       <div class="label">Firebase RTDB</div>
-      <div class="val">Real-time data<br>9 uzlů · onValue</div>
+      <div class="val">Real-time data<br>15 uzlů · onValue</div>
     </div>
     <div class="svc">
       <div class="label">Firebase Auth</div>
-      <div class="val">Email/Password<br>1 admin účet</div>
+      <div class="val">Email/Password + Anonymous<br>1 admin účet</div>
     </div>
     <div class="svc">
       <div class="label">Firebase Storage</div>
@@ -3733,19 +3831,27 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
     </div>
     <div class="svc">
       <div class="label">GitHub Pages</div>
-      <div class="val">Hosting<br>Statický deploy</div>
+      <div class="val">Hosting webu<br>Statický deploy</div>
+    </div>
+    <div class="svc">
+      <div class="label">KladyxPanel</div>
+      <div class="val">v6.7 · lokální HTML<br>Odečty · Platby · CD · LP · HW · Jídlo · Glukóza · Poznámky · Kalendář · Manuály</div>
     </div>
     <div class="svc">
       <div class="label">Mixcloud</div>
       <div class="val">Audio streaming<br>Embed player</div>
     </div>
     <div class="svc">
+      <div class="label">HouseTime.FM</div>
+      <div class="val">Now Playing tracker<br>Icecast · 4 zdroje + proxy fallback</div>
+    </div>
+    <div class="svc">
       <div class="label">OBS Studio</div>
-      <div class="val">Broadcast + Python<br>Auto ON AIR toggle</div>
+      <div class="val">Broadcast + WebSocket<br>Auto ON AIR toggle</div>
     </div>
     <div class="svc">
       <div class="label">ntfy.sh</div>
-      <div class="val">Push notifikace<br>Nový návštěvník → mobil</div>
+      <div class="val">Push notifikace<br>Nový návštěvník alert</div>
     </div>
     <div class="svc">
       <div class="label">UptimeRobot</div>
@@ -3760,46 +3866,37 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
   <div class="sh">Software</div>
   <div class="svc-grid">
     <div class="svc">
-      <div class="label">VirtualDJ</div>
-      <div class="val">Infinity Pro<br>Hlavní DJ software</div>
-    </div>
-    <div class="svc">
-      <div class="label">Rekordbox</div>
-      <div class="val">Pioneer DJ<br>Track management</div>
-    </div>
-    <div class="svc">
-      <div class="label">RadioDJ</div>
-      <div class="val">Automatické vysílání<br>Playlist scheduling</div>
+      <div class="label">VirtualDJ Pro Infinity</div>
+      <div class="val">Hlavní DJ software<br>DDJ-800 · CDJ-800 MK2 · RP-1000</div>
     </div>
     <div class="svc">
       <div class="label">Studio One 7</div>
       <div class="val">PreSonus DAW<br>Produkce / mastering</div>
     </div>
     <div class="svc">
-      <div class="label">Music Maker 2026 Pro</div>
+      <div class="label">Magix Music Maker Premium</div>
       <div class="val">MAGIX<br>Produkce</div>
     </div>
     <div class="svc">
-      <div class="label">Sound Forge</div>
-      <div class="val">MAGIX<br>Audio editor</div>
+      <div class="label">OBS Studio</div>
+      <div class="val">Broadcast + WebSocket<br>Auto ON AIR toggle · filter chain:<br>Span → Mvmeter2 → LoudMax64 → Youlean</div>
+    </div>
+    <div class="svc">
+      <div class="label">PreSonus UC Surface</div>
+      <div class="val">Ovládání AR8C mixpultu<br>Remote control přes Wi-Fi</div>
     </div>
   </div>
 
   <div class="sh">Principy</div>
   <div class="note" style="margin-top:0;">
-    Single-file architektura (index.html) · žádný build step · žádný vlastní server · iterativní vývoj s version bumpy · editace přes GitHub web editor · free tier Firebase (Spark) · OBS filter chain: Span → Mvmeter2 → LoudMax64 → YouLean
+    Single-file architektura (index.html) · žádný build step · žádný vlastní server · iterativní vývoj s version bumpy · editace přes GitHub web editor · free tier Firebase (Spark) · OBS filter chain: Span → Mvmeter2 → LoudMax64 → Youlean · KladyxPanel v6.7 jako lokální offline-capable admin nástroj · Panel auth: Google Sign-In s whitelist · Všechny PANEL uzly oddělené od veřejného webu
   </div>
 
 </div>
-<div class="app-brand-bar">
-    <span class="app-brand-bar-label">POWERED BY</span>
-    <img src="data:image/jpeg;base64,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" alt="PreSonus" style="height:50px;width:auto;object-fit:contain;display:block;" />
-    <span class="app-brand-bar-sep"></span>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 38" width="120" height="38"><defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dddddd"/></linearGradient></defs><ellipse cx="14" cy="19" rx="10" ry="13" fill="url(#fg1)" opacity="0.9"/><ellipse cx="14" cy="19" rx="6" ry="9" fill="#1a1a2e"/><ellipse cx="14" cy="19" rx="2.5" ry="2.5" fill="url(#fg1)"/><line x1="14" y1="6" x2="14" y2="32" stroke="#ffffff44" stroke-width="0.7"/><text x="30" y="17" font-family="Georgia,serif" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" font-style="italic">FENDER</text><text x="30" y="29" font-family="Arial,sans-serif" font-size="6" fill="#ffffff88" letter-spacing="3">GUITARS &amp; BASSES</text></svg>
-  </div>
 </body>
 </html>
 `;
+
 APP_HTML["lp"] = `<!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -9165,309 +9262,86 @@ APP_HTML["manualy"] = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Manual Vault</title>
+<title>Manuály</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;500;700&display=swap');
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:#0a0a0f;font-family:'Barlow Condensed',sans-serif;color:#dde4ff;padding:20px 12px 60px;min-height:100vh;}
-body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.02) 39px,rgba(255,255,255,.02) 40px);pointer-events:none;z-index:0;}
-
-.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;}
-.ey{text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:5px;color:#f97316;text-transform:uppercase;margin-bottom:6px;}
-h1{text-align:center;font-size:38px;font-weight:700;color:#fff;letter-spacing:-1px;line-height:1;margin-bottom:4px;}
-h1 b{color:#f97316;}
-.st{text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:#444;letter-spacing:2px;margin-bottom:22px;}
-.dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#f97316;margin-right:5px;vertical-align:middle;animation:bk 2s infinite;}
-@keyframes bk{0%,100%{opacity:1}50%{opacity:.3}}
-
-.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center;}
-.sw{flex:1;min-width:160px;position:relative;}
-.sw input{width:100%;background:#111118;border:1px solid #222;border-radius:4px;padding:9px 12px 9px 34px;font-family:'Share Tech Mono',monospace;font-size:12px;color:#fff;outline:none;transition:border-color .2s;}
-.sw input:focus{border-color:#f97316;}
-.sw input::placeholder{color:#333;}
-.sw:before{content:'⌕';position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#444;font-size:14px;}
-.tabs{display:flex;gap:4px;}
-.tab{padding:8px 14px;border-radius:4px;border:1px solid #222;background:#111118;color:#555;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:all .15s;}
-.tab:hover{color:#aaa;}
-.tab.on{background:#f97316;color:#000;border-color:#f97316;}
-.tab.fv.on{background:#facc15;color:#000;border-color:#facc15;}
-.badd{padding:8px 14px;border-radius:4px;border:none;background:#f97316;color:#000;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;}
-.badd:hover{opacity:.85;}
-
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
-.card{background:#0f0f17;border:1px solid #1e1e2e;border-radius:6px;overflow:hidden;transition:border-color .2s,transform .2s;}
-.card:hover{border-color:#2e2e40;transform:translateY(-2px);}
-.ch{display:flex;align-items:center;gap:7px;padding:10px 13px;border-bottom:1px solid #1a1a28;}
-.ci{font-size:17px;}
-.cn{font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
-.cc{margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:9px;color:#2a2a3a;}
-.btnab{background:none;border:none;color:#2a2a3a;cursor:pointer;font-size:15px;padding:2px 4px;border-radius:3px;line-height:1;transition:color .15s;}
-.btnab:hover{color:#f97316;}
-.btndb{background:none;border:none;color:#1a1a28;cursor:pointer;font-size:11px;padding:2px 4px;line-height:1;transition:color .15s;}
-.btndb:hover{color:#ef4444;}
-ul{list-style:none;padding:3px 0;}
-li{display:flex;align-items:center;}
-.ml{flex:1;display:flex;align-items:center;justify-content:space-between;padding:8px 13px;color:#888;text-decoration:none;font-size:13px;font-weight:500;transition:color .15s,background .15s;}
-.ml:hover{color:#fff;background:rgba(255,255,255,.04);}
-.ar{font-size:10px;opacity:.25;transition:opacity .15s,transform .15s;}
-.ml:hover .ar{opacity:1;transform:translateX(3px);}
-.sb{background:none;border:none;cursor:pointer;padding:7px 6px 7px 10px;font-size:12px;color:#2a2a3a;transition:color .2s,transform .15s;}
-.sb:hover{color:#aaa;transform:scale(1.2);}
-.sb.on{color:#facc15;text-shadow:0 0 6px #facc15;}
-.dm{background:none;border:none;cursor:pointer;padding:7px 10px 7px 0;font-size:10px;color:#1a1a28;transition:color .15s;}
-.dm:hover{color:#ef4444;}
-.empty{text-align:center;color:#2a2a3a;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;padding:40px 0;grid-column:1/-1;}
-
-.flab{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;color:#facc15;text-transform:uppercase;margin-bottom:14px;}
-.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
-.fc{display:flex;align-items:center;justify-content:space-between;background:#111108;border:1px solid #2a2408;border-radius:5px;padding:11px 13px;text-decoration:none;transition:border-color .15s,transform .15s;}
-.fc:hover{border-color:#facc15;transform:translateY(-1px);}
-.fcd{color:#fff;font-size:14px;font-weight:700;}
-.fcb{color:#555;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
-.fca{color:#facc15;font-size:12px;opacity:.5;}
-.fc:hover .fca{opacity:1;}
-.fempty{color:#333;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;text-align:center;padding:24px;}
-
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:100;padding:16px;}
-.ov.show{display:flex;}
-.mod{background:#111118;border:1px solid #2a2a3a;border-radius:8px;padding:22px;width:100%;max-width:400px;}
-.mt{font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;margin-bottom:16px;}
-.mt b{color:#f97316;}
-.fl{margin-bottom:12px;}
-.fl label{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#555;text-transform:uppercase;margin-bottom:5px;}
-.fl input{width:100%;background:#0a0a0f;border:1px solid #222;border-radius:4px;padding:8px 10px;font-family:'Share Tech Mono',monospace;font-size:12px;color:#fff;outline:none;transition:border-color .2s;}
-.fl input:focus{border-color:#f97316;}
-.urow{display:flex;gap:6px;align-items:stretch;}
-.urow input{flex:1;}
-.bsearch{padding:8px 12px;border-radius:4px;border:none;background:#1a1a2e;color:#00d4ff;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;border:1px solid rgba(0,212,255,.3);transition:background .15s;}
-.bsearch:hover{background:rgba(0,212,255,.1);}
-.hint{font-family:'Share Tech Mono',monospace;font-size:9px;color:#555;letter-spacing:1px;margin-top:4px;min-height:14px;}
-.ipp{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
-.ip{width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:#0a0a0f;border:1px solid #222;border-radius:3px;cursor:pointer;font-size:16px;transition:border-color .15s;}
-.ip.s{border-color:#f97316;background:#1a0f00;}
-.cpp{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
-.cp{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s,transform .15s;}
-.cp.s{border-color:#fff;transform:scale(1.15);}
-.mact{display:flex;gap:6px;justify-content:flex-end;margin-top:16px;}
-.bcancel{padding:7px 14px;border-radius:4px;border:1px solid #222;background:transparent;color:#666;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .15s;}
-.bcancel:hover{color:#aaa;border-color:#444;}
-.bok{padding:7px 14px;border-radius:4px;border:none;background:#f97316;color:#000;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:opacity .15s;}
-.bok:hover{opacity:.85;}
+body{margin:0;padding:16px;background:#0a0a0f;font-family:sans-serif;color:#dde4ff;}
+h2{color:#f97316;font-size:22px;margin:0 0 14px;}
+.sw{position:relative;margin-bottom:8px;}
+.sw input{width:100%;background:#111118;border:1px solid #333;border-radius:6px;padding:11px 14px 11px 38px;color:#fff;font-size:15px;outline:none;box-sizing:border-box;}
+.sw input:focus{border-color:#00d4ff;}
+.sw input::placeholder{color:#444;}
+.sw:before{content:"🔍";position:absolute;left:11px;top:50%;transform:translateY(-50%);}
+.btn-online{width:100%;margin-bottom:18px;padding:11px;background:#1a1a2e;color:#00d4ff;border:1px solid rgba(0,212,255,.35);border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:1px;}
+.btn-online:active{background:rgba(0,212,255,.12);}
+.brand{margin-bottom:18px;}
+.bt{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f97316;padding:5px 0;border-bottom:1px solid #1e1e2e;margin-bottom:4px;}
+.item a{display:flex;align-items:center;justify-content:space-between;padding:10px 4px;color:#bbb;text-decoration:none;font-size:15px;border-bottom:1px solid #0f0f17;}
+.item a:active{background:rgba(0,212,255,.07);}
+.item a span{color:#00d4ff;font-size:13px;font-weight:700;white-space:nowrap;margin-left:10px;}
+.empty{color:#555;text-align:center;padding:20px;font-size:14px;}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="ey">📂 Databáze dokumentace</div>
-  <h1>MANUAL <b>VAULT</b></h1>
-  <div class="st"><span class="dot"></span><span id="st">Načítám...</span></div>
-
-  <div class="bar">
-    <div class="sw"><input type="text" id="q" placeholder="Hledat zařízení nebo značku..." oninput="rg()"></div>
-    <div class="tabs">
-      <button class="tab on" id="ta" onclick="sv('all',this)">Všechny</button>
-      <button class="tab fv" id="tf" onclick="sv('fav',this)">★ Oblíbené</button>
-    </div>
-    <button class="badd" onclick="om('brand',null)">+ Přidat značku</button>
-  </div>
-
-  <div id="va"><div class="grid" id="gr"></div></div>
-  <div id="vf" style="display:none">
-    <div class="flab">★ Oblíbené manuály</div>
-    <div class="fgrid" id="fg"></div>
-  </div>
-</div>
-
-<div class="ov" id="ov" onclick="cm()">
-  <div class="mod" onclick="event.stopPropagation()">
-    <div class="mt" id="mtt">Přidat <b>značku</b></div>
-    <div id="mb"></div>
-    <div class="mact">
-      <button class="bcancel" onclick="cm()">Zrušit</button>
-      <button class="bok" onclick="sm()">Přidat</button>
-    </div>
-  </div>
-</div>
-
+<h2>📖 Manuály</h2>
+<div class="sw"><input type="text" id="q" placeholder="Hledat značku nebo zařízení..." oninput="f()"></div>
+<button class="btn-online" onclick="online()">🌐 Hledat manuál online (Google)</button>
+<div id="out"></div>
 <script>
-var IC=['🎛','💿','🎚','🎙','🔌','🔊','🎧','🖥','📻','🎹','🔧','📦','⚡','🎵','🎤'];
-var CL=['#f97316','#ef4444','#22d3ee','#a78bfa','#34d399','#fbbf24','#60a5fa','#f472b6','#4ade80','#fb923c'];
-var uid=function(){return Math.random().toString(36).slice(2,9);};
-
-var B=[
-  {id:'ps',nm:'PreSonus',cl:'#f97316',ic:'🎛',ms:[
-    {id:uid(),nm:'Quantum ES4',url:'https://pubs.presonus.com/quantum-es4/en/'},
-    {id:uid(),nm:'Monitor Station V2',url:'https://pubs.presonus.com/monitor-station-v2/en/'},
-    {id:uid(),nm:'TubePre V2',url:'https://pubs.presonus.com/TubePre-V2/en/'},
-    {id:uid(),nm:'Eris Sub 8BT',url:'https://pubs.presonus.com/Eris-Sub-8BT/en/'},
-    {id:uid(),nm:'Eris 4.5BT',url:'https://pubs.presonus.com/eris-4.5bt/en/'},
-    {id:uid(),nm:'HD9',url:'https://pubs.presonus.com/HD9/en/'},
-    {id:uid(),nm:'MicroStation BT',url:'https://pubs.presonus.com/MicroStation-BT/en/'},
-    {id:uid(),nm:'ATOM',url:'https://pubs.presonus.com/atom/en/'}
+var D=[
+  {b:"PreSonus",ms:[
+    ["Quantum ES4","https://pubs.presonus.com/quantum-es4/en/"],
+    ["Monitor Station V2","https://pubs.presonus.com/monitor-station-v2/en/"],
+    ["TubePre V2","https://pubs.presonus.com/TubePre-V2/en/"],
+    ["Eris Sub 8BT","https://pubs.presonus.com/Eris-Sub-8BT/en/"],
+    ["Eris 4.5BT","https://pubs.presonus.com/eris-4.5bt/en/"],
+    ["HD9","https://pubs.presonus.com/HD9/en/"],
+    ["MicroStation BT","https://pubs.presonus.com/MicroStation-BT/en/"],
+    ["ATOM","https://pubs.presonus.com/atom/en/"]
   ]},
-  {id:'pj',nm:'Pioneer DJ',cl:'#ef4444',ic:'💿',ms:[
-    {id:uid(),nm:'DDJ-800',url:'https://www.pioneerdj.com/en/support/documents/ddj-800/'},
-    {id:uid(),nm:'DJM-300S',url:'https://www.pioneerdj.com/en/support/documents/djm-300s/'},
-    {id:uid(),nm:'CDJ-800 MK2',url:'https://www.pioneerdj.com/en/support/documents/cdj-800mk2/'}
+  {b:"Pioneer DJ",ms:[
+    ["DDJ-800","https://www.pioneerdj.com/en/support/documents/ddj-800/"],
+    ["DJM-300S","https://www.pioneerdj.com/en/support/documents/djm-300s/"],
+    ["CDJ-800 MK2","https://www.pioneerdj.com/en/support/documents/cdj-800mk2/"]
   ]},
-  {id:'rl',nm:'Reloop',cl:'#22d3ee',ic:'🎚',ms:[
-    {id:uid(),nm:'RP-1000 MK2',url:'https://www.reloop.com/reloop-rp-1000-mk2.html'},
-    {id:uid(),nm:'Neon',url:'https://www.reloop.com/reloop-neon.html'}
+  {b:"Reloop",ms:[
+    ["RP-1000 MK2","https://www.reloop.com/reloop-rp-1000-mk2.html"],
+    ["Neon","https://www.reloop.com/reloop-neon.html"]
   ]},
-  {id:'rd',nm:'Rode',cl:'#a78bfa',ic:'🎙',ms:[
-    {id:uid(),nm:'NT1',url:'https://rode.com/en/user-guides/microphones/nt1'},
-    {id:uid(),nm:'PodMic',url:'https://rode.com/en/user-guides/microphones/podmic'},
-    {id:uid(),nm:'PSA1+',url:'https://rode.com/en/user-guides/accessories/psa1-plus'},
-    {id:uid(),nm:'RodeCaster Duo',url:'https://rode.com/en/user-guides/rodecasterduo'}
+  {b:"Rode",ms:[
+    ["NT1","https://rode.com/en/user-guides/microphones/nt1"],
+    ["PodMic","https://rode.com/en/user-guides/microphones/podmic"],
+    ["PSA1+","https://rode.com/en/user-guides/accessories/psa1-plus"],
+    ["RodeCaster Duo","https://rode.com/en/user-guides/rodecasterduo"]
   ]},
-  {id:'bh',nm:'Behringer',cl:'#34d399',ic:'🔌',ms:[
-    {id:uid(),nm:'DI20',url:'https://www.behringer.com/downloads.html'}
+  {b:"Behringer",ms:[
+    ["DI20","https://www.behringer.com/downloads.html"]
   ]},
-  {id:'nb',nm:'Nobsound',cl:'#fbbf24',ic:'🔊',ms:[
-    {id:uid(),nm:'L3-3 (Amazon)',url:'https://www.amazon.com/dp/B07D5QT4YP'}
+  {b:"Nobsound",ms:[
+    ["L3-3","https://www.amazon.com/dp/B07D5QT4YP"]
   ]}
 ];
-
-var F={};
-var mode=null;
-var tgt=null;
-var si='🎛';
-var sc='#f97316';
-
-function e(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function tm(){return B.reduce(function(a,b){return a+b.ms.length;},0);}
-function fc(){return Object.keys(F).filter(function(k){return F[k];}).length;}
-function us(){document.getElementById('st').textContent='KLADYX STUDIO \u00b7 '+tm()+' MANUALU \u00b7 '+fc()+' OBLIBENYICH';}
-
-function rg(){
-  var q=document.getElementById('q').value.toLowerCase();
-  var g=document.getElementById('gr');
-  if(!g)return;
-  var h='';var n=0;
-  for(var i=0;i<B.length;i++){
-    var b=B[i];
-    var ms=[];
-    for(var j=0;j<b.ms.length;j++){
-      var m=b.ms[j];
-      if(m.nm.toLowerCase().indexOf(q)>=0||b.nm.toLowerCase().indexOf(q)>=0) ms.push(m);
-    }
-    if(!ms.length) continue;
-    n++;
-    h+='<div class="card"><div class="ch">';
-    h+='<span class="ci">'+b.ic+'</span>';
-    h+='<span class="cn" style="color:'+b.cl+'">'+e(b.nm)+'</span>';
-    h+='<span class="cc">'+ms.length+' docs</span>';
-    h+='<button class="btnab" onclick="om(\'manual\',\''+b.id+'\')" title="Pridat manual">+</button>';
-    h+='<button class="btndb" onclick="db(\''+b.id+'\')" title="Smazat znacku">x</button>';
-    h+='</div><ul>';
-    for(var k=0;k<ms.length;k++){
-      var m=ms[k];
-      var iF=!!F[m.id];
-      h+='<li>';
-      h+='<button class="sb'+(iF?' on':'')+'" onclick="tf(\''+m.id+'\')">\u2605</button>';
-      h+='<a class="ml" href="'+e(m.url)+'" target="_blank">'+e(m.nm)+'<span class="ar">\u2192</span></a>';
-      h+='<button class="dm" onclick="dm(\''+b.id+'\',\''+m.id+'\')">x</button>';
-      h+='</li>';
-    }
-    h+='</ul></div>';
+function f(){
+  var q=document.getElementById("q").value.toLowerCase();
+  var h="";var n=0;
+  for(var i=0;i<D.length;i++){
+    var ms=D[i].ms.filter(function(m){return !q||m[0].toLowerCase().indexOf(q)>=0||D[i].b.toLowerCase().indexOf(q)>=0;});
+    if(!ms.length)continue;n++;
+    h+='<div class="brand"><div class="bt">'+D[i].b+'</div>';
+    for(var j=0;j<ms.length;j++)
+      h+='<div class="item"><a href="'+ms[j][1]+'" target="_blank">'+ms[j][0]+'<span>OTEVRIT</span></a></div>';
+    h+='</div>';
   }
-  if(!n) h='<div class="empty">// Zadne vysledky pro "'+e(document.getElementById('q').value)+'"</div>';
-  g.innerHTML=h;
-  us();
+  if(!n&&q)h='<div class="empty">V seznamu nenalezeno.<br>Zkus tlacitko Hledat online vys.</div>';
+  document.getElementById("out").innerHTML=h;
 }
-
-function rf(){
-  var fg=document.getElementById('fg');
-  if(!fg)return;
-  var items=[];
-  for(var i=0;i<B.length;i++){
-    for(var j=0;j<B[i].ms.length;j++){
-      if(F[B[i].ms[j].id]) items.push({m:B[i].ms[j],b:B[i]});
-    }
-  }
-  if(!items.length){fg.innerHTML='<div class="fempty">// Zatim zadne oblibene \u2014 klikni na \u2605 u manualu</div>';return;}
-  var h='';
-  for(var i=0;i<items.length;i++){
-    var x=items[i];
-    h+='<a class="fc" href="'+e(x.m.url)+'" target="_blank"><div><div class="fcd">'+e(x.m.nm)+'</div><div class="fcb">'+e(x.b.nm)+'</div></div><span class="fca">\u2192</span></a>';
-  }
-  fg.innerHTML=h;
-  us();
+function online(){
+  var q=document.getElementById("q").value.trim();
+  window.open("https://www.google.com/search?q="+encodeURIComponent((q||"manual")+" manual"),"_blank");
 }
-
-function tf(mid){F[mid]=!F[mid];rg();if(document.getElementById('vf').style.display!=='none')rf();}
-function db(bid){B=B.filter(function(b){return b.id!==bid;});rg();}
-function dm(bid,mid){
-  for(var i=0;i<B.length;i++){if(B[i].id===bid){B[i].ms=B[i].ms.filter(function(m){return m.id!==mid;});break;}}
-  delete F[mid];rg();
-}
-
-function sv(v,btn){
-  document.getElementById('ta').className='tab'+(v==='all'?' on':'');
-  document.getElementById('tf').className='tab fv'+(v==='fav'?' on':'');
-  document.getElementById('va').style.display=v==='all'?'':'none';
-  document.getElementById('vf').style.display=v==='fav'?'':'none';
-  if(v==='fav')rf();
-}
-
-function hledat(){
-  var n=(document.getElementById('mn')||{value:''}).value;
-  if(!n.trim()){alert('Zadej nazev zarizeni');return;}
-  var q=encodeURIComponent(n.trim()+' manual filetype:pdf OR site:manualslib.com');
-  window.open('https://www.google.com/search?q='+q,'_blank');
-}
-
-function om(m,bid){
-  mode=m;tgt=bid;si='🎛';sc='#f97316';
-  var mt=document.getElementById('mtt');
-  var mb=document.getElementById('mb');
-  if(m==='brand'){
-    mt.innerHTML='Pridat <b>znacku</b>';
-    var ips=IC.map(function(ic){return '<div class="ip'+(ic===si?' s':'')+'" onclick="pi(this,\''+ic+'\')" style="font-size:16px">'+ic+'</div>';}).join('');
-    var cps=CL.map(function(c){return '<div class="cp'+(c===sc?' s':'')+'" style="background:'+c+'" onclick="pc(this,\''+c+'\')"></div>';}).join('');
-    mb.innerHTML='<div class="fl"><label>Nazev znacky</label><input id="mn" placeholder="napr. Focusrite"></div>'
-      +'<div class="fl"><label>Ikona</label><div class="ipp">'+ips+'</div></div>'
-      +'<div class="fl"><label>Barva</label><div class="cpp">'+cps+'</div></div>';
-  } else {
-    mt.innerHTML='Pridat <b>manual</b>';
-    mb.innerHTML='<div class="fl"><label>Nazev zarizeni</label><input id="mn" placeholder="napr. Scarlett 2i2" oninput="sh()"></div>'
-      +'<div class="fl"><label>URL manualu</label><div class="urow"><input id="mu" placeholder="https://..."><button class="bsearch" onclick="hledat()">🔍 Hledat online</button></div></div>'
-      +'<div class="hint" id="hn"></div>';
-  }
-  document.getElementById('ov').className='ov show';
-  setTimeout(function(){var x=document.getElementById('mn');if(x)x.focus();},60);
-}
-
-function sh(){
-  var n=(document.getElementById('mn')||{value:''}).value;
-  var h=document.getElementById('hn');
-  if(h)h.textContent=n.trim()?'Zadej URL nebo klikni Hledat online pro "'+n.trim()+'"':'';
-}
-
-function cm(){document.getElementById('ov').className='ov';}
-function pi(el,ic){si=ic;document.querySelectorAll('.ip').forEach(function(e){e.className='ip';});el.className='ip s';}
-function pc(el,c){sc=c;document.querySelectorAll('.cp').forEach(function(e){e.className='cp';});el.className='cp s';}
-
-function sm(){
-  var n=(document.getElementById('mn')||{value:''}).value.trim();
-  if(!n)return;
-  if(mode==='brand'){
-    B.push({id:uid(),nm:n,ic:si,cl:sc,ms:[]});
-  } else {
-    var u=(document.getElementById('mu')||{value:''}).value.trim();
-    if(!u)return;
-    if(u.indexOf('http')!==0)u='https://'+u;
-    for(var i=0;i<B.length;i++){if(B[i].id===tgt){B[i].ms.push({id:uid(),nm:n,url:u});break;}}
-  }
-  cm();rg();
-}
-
-document.addEventListener('keydown',function(ev){if(ev.key==='Escape')cm();});
-rg();
+f();
 <\/script>
 </body></html>
 `;
-
-
 function openApp(id) {
   try {
     document.getElementById("welcome").classList.add("hidden");
