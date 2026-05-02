@@ -8978,88 +8978,7 @@ var SVATKY={
 '28.12':'Bohumila',
 '29.12':'Judita',
 '30.12':'David',
-'31.12':'Silvestr',
-'2.1':'Karina',
-'3.1':'Radmila',
-'4.1':'Diana',
-'5.1':'Dalimil',
-'7.1':'Vilma',
-'8.1':'Čestmír',
-'9.1':'Vladan',
-'10.1':'Břetislav',
-'11.1':'Bohdana',
-'12.1':'Pravoslav',
-'13.1':'Edita',
-'14.1':'Radovan',
-'15.1':'Alice',
-'16.1':'Ctirad',
-'18.1':'Vladislav',
-'20.1':'Ilona',
-'22.1':'Slavomír',
-'23.1':'Zdeněk',
-'26.1':'Zora',
-'27.1':'Ingrid',
-'28.1':'Otýlie',
-'30.1':'Robin',
-'31.1':'Marika',
-'2.2':'Nela',
-'3.2':'Blažej',
-'4.2':'Jarmila',
-'6.2':'Vanda',
-'7.2':'Veronika',
-'9.2':'Apolena',
-'10.2':'Mojmír',
-'11.2':'Dezider',
-'13.2':'Věnceslava',
-'15.2':'Jiřina',
-'16.2':'Ljuba',
-'17.2':'Miloslava',
-'19.2':'Patrik',
-'20.2':'Oldřiška',
-'22.2':'Petr',
-'23.2':'Svatopluk',
-'24.2':'Matěj',
-'26.2':'Dorota',
-'27.2':'Alexandr',
-'29.2':'Horymír',
-'2.3':'Anežka',
-'3.3':'Kamil',
-'5.3':'Kazimír',
-'6.3':'Miroslav',
-'7.3':'Tomáš',
-'10.3':'Viktorie',
-'11.3':'Anděla',
-'13.3':'Růžena',
-'15.3':'Ida',
-'16.3':'Elena',
-'18.3':'Eduard',
-'22.3':'Leona',
-'23.3':'Ivona',
-'26.3':'Emanuel',
-'27.3':'Dita',
-'30.3':'Arnošt',
-'31.3':'Benjamín',
-'2.4':'Erika',
-'3.4':'Richard',
-'5.4':'Miroslava',
-'9.4':'Dušan',
-'10.4':'Dáša',
-'13.4':'Aleš',
-'15.4':'Anastázie',
-'17.4':'Rudolf',
-'18.4':'Valerie',
-'20.4':'Marcela',
-'21.4':'Alexandra',
-'26.4':'Oto',
-'27.4':'Jaroslav',
-'29.4':'Robert',
-'2.5':'Zikmund',
-'5.5':'Klaudie',
-'21.5':'Monika',
-'26.5':'Filip',
-'2.6':'Jarmil',
-'3.6':'Tamara',
-'10.7':'Libuše'
+'31.12':'Silvestr'
 };
 
 var now=new Date(), curY=now.getFullYear(), curM=now.getMonth();
@@ -9124,12 +9043,303 @@ function _initKal(){
     try{var r=localStorage.getItem('kalNotes_local');if(r){_notes=JSON.parse(r);render();}}catch(_){}
   }
 }
+
+
+function render(){
+  var g=document.getElementById('grid');
+  g.innerHTML='';
+  ['Po','Út','St','Čt','Pá','So','Ne'].forEach(function(d,i){
+    var h=document.createElement('div');
+    h.className='day-hdr'+(i>=5?' we':'');
+    h.textContent=d;
+    g.appendChild(h);
+  });
+  var first=new Date(curY,curM,1);
+  var startDay=(first.getDay()+6)%7;
+  var daysInMonth=new Date(curY,curM+1,0).getDate();
+  for(var i=0;i<startDay;i++){
+    var e=document.createElement('div');e.className='cell empty';g.appendChild(e);
+  }
+  for(var d=1;d<=daysInMonth;d++){
+    var date=new Date(curY,curM,d);
+    var dow=date.getDay();
+    var isWe=(dow===0||dow===6);
+    var isToday=(d===now.getDate()&&curM===now.getMonth()&&curY===now.getFullYear());
+    var sv=getSvatek(d,curM);
+    var hasNote=!!getNote(curY,curM,d);
+    var cell=document.createElement('div');
+    cell.className='cell'+(isToday?' today':'')+(isWe?' weekend':'')+(sv?' svatek':'');
+    cell.innerHTML='<span class="dn">'+d+'</span>'+(sv?'<span class="sn">'+sv+'</span>':'')+(hasNote?'<span class="note-dot"></span>':'');
+    (function(dd,ss){cell.onclick=function(){showInfo(dd,ss);};})(d,sv);
+    g.appendChild(cell);
+  }
+  document.getElementById('monthTitle').textContent=MESICE[curM];
+  document.getElementById('yearTitle').textContent=curY;
+  closeInfo();
+}
+
+function updateCellDot(day,has){
+  var ch=document.getElementById('grid').children;
+  var cnt=0;
+  for(var i=7;i<ch.length;i++){
+    if(!ch[i].classList.contains('empty')){
+      cnt++;
+      if(cnt===day){
+        var dot=ch[i].querySelector('.note-dot');
+        if(has&&!dot){var s=document.createElement('span');s.className='note-dot';ch[i].appendChild(s);}
+        if(!has&&dot){dot.remove();}
+        break;
+      }
+    }
+  }
+}
+
+function showInfo(d,sv){
+  _activeDay=d;
+  var date=new Date(curY,curM,d);
+  var dow=DNY[date.getDay()];
+  document.getElementById('infoDate').textContent=dow+' '+d+'. '+MESICE[curM]+' '+curY;
+  document.getElementById('infoSvatek').textContent=sv?'🎂 Svátek: '+sv:'Žádný svátek';
+  document.getElementById('noteTextarea').value=getNote(curY,curM,d);
+  document.getElementById('noteSavedMsg').style.opacity='0';
+  document.getElementById('infoBox').className='info-box show';
+  setTimeout(function(){document.getElementById('noteTextarea').focus();},80);
+}
+
+function saveNote(){
+  if(_activeDay===null)return;
+  var txt=document.getElementById('noteTextarea').value.trim();
+  var k=dbKey(curY,curM,_activeDay);
+  // Optimistická aktualizace UI
+  if(txt){_notes[k]={t:txt};}else{delete _notes[k];}
+  updateCellDot(_activeDay,!!txt);
+  // Ulož do Firebase nebo localStorage
+  if(_db){
+    _kalSav=true;
+    var ref=_db.ref('kalNotes/data/'+k);
+    if(txt){ref.set({t:txt,u:Date.now()}).then(function(){_kalSav=false;}).catch(function(){_kalSav=false;});}
+    else{ref.remove().then(function(){_kalSav=false;}).catch(function(){_kalSav=false;});}
+  }else{
+    _kalSav=false;
+    try{localStorage.setItem('kalNotes_local',JSON.stringify(_notes));}catch(_){}
+  }
+  var msg=document.getElementById('noteSavedMsg');
+  msg.style.opacity='1';
+  setTimeout(function(){msg.style.opacity='0';},1800);
+}
+
+function deleteNote(){
+  if(_activeDay===null)return;
+  document.getElementById('noteTextarea').value='';
+  saveNote();
+}
+
+function closeInfo(){_activeDay=null;document.getElementById('infoBox').className='info-box';}
+
+function changeMonth(dir){
+  curM+=dir;
+  if(curM<0){curM=11;curY--;}
+  if(curM>11){curM=0;curY++;}
+  render();
+}
+
+// Dnešní info
+var todaySv=getSvatek(now.getDate(),now.getMonth());
+var todayDow=DNY[now.getDay()];
+document.getElementById('todayDate').textContent=todayDow+' '+now.getDate()+'. '+MESICE[now.getMonth()]+' '+now.getFullYear();
+document.getElementById('todaySvatek').textContent=todaySv?'🎂 Svátek: '+todaySv:'Dnes nikdo neslaví svátek';
+
 render();
 startFirebase();
 <\/script>
 </body></html>
 `;
 
+function openApp(id) {
+  try {
+    document.getElementById("welcome").classList.add("hidden");
+    document.querySelectorAll(".app-frame").forEach(function(f){ f.classList.remove("visible"); });
+    document.querySelectorAll(".app-btn").forEach(function(b){ b.classList.remove("active"); });
+    var btn = document.getElementById("btn-" + id);
+    if (btn) btn.classList.add("active");
+    var frame = document.getElementById("frame-" + id);
+    if (frame) {
+      if (!loaded[id]) {
+        var html = APP_HTML[id];
+        // srcdoc je spolehlivější při načítání z content:// na Androidu
+        try {
+          frame.srcdoc = html;
+        } catch(e) {
+          // Fallback: Blob URL
+          try {
+            if (frame._blobUrl) URL.revokeObjectURL(frame._blobUrl);
+            frame._blobUrl = _makeBlobUrl(html);
+            frame.src = frame._blobUrl;
+          } catch(e2) {
+            console.error('Chyba při načítání aplikace:', e2);
+            alert('Chyba: Aplikace se nepodařilo načíst');
+            return;
+          }
+        }
+        loaded[id] = true;
+      } else {
+        // Pokud appka hlasi offline/chybu, automaticky ji znovu nacti
+        try {
+          var fw = frame.contentWindow;
+          var dot = fw && fw.document && fw.document.getElementById('sync-dot');
+          if (dot && (dot.textContent.indexOf('Offline') !== -1 || dot.textContent.indexOf('❌') !== -1)) {
+            loaded[id] = false;
+            frame.srcdoc = APP_HTML[id];
+            loaded[id] = true;
+          }
+        } catch(e) {}
+      }
+      frame.classList.add("visible");
+    }
+    try { localStorage.setItem("kladyx-panel-last", id); } catch(e) {
+      console.warn('localStorage nedostupný:', e);
+    }
+  } catch(err) {
+    console.error("Kritická chyba:", err);
+    alert("Chyba: " + (err.message || err));
+  }
+}
+function goHome() {
+  try {
+    document.getElementById("welcome").classList.remove("hidden");
+    document.querySelectorAll(".app-frame").forEach(function(f){ f.classList.remove("visible"); });
+    document.querySelectorAll(".app-btn").forEach(function(b){ b.classList.remove("active"); });
+    var homeBtn = document.getElementById("btn-home");
+    if (homeBtn) homeBtn.classList.add("active");
+    try { localStorage.setItem("kladyx-panel-last", "home"); } catch(e) {}
+  } catch(err) {
+    alert("Chyba: " + err.message);
+  }
+}
+try {
+  var last = localStorage.getItem("kladyx-panel-last");
+  if (last && APP_HTML[last]) openApp(last);
+} catch(e) {
+  console.warn("LocalStorage unavailable:", e);
+}
+
+// Fallback: Pokud se něco stane, alespoň se stránka nezbourá
+window.addEventListener('error', function(event) {
+  console.error('Chyba v aplikaci:', event.error);
+});
+
+window.addEventListener('unhandledrejection', function(event) {
+  console.error('Unhandled promise rejection:', event.reason);
+});
+
+// HODINY + DATUM
+(function() {
+  const DNY = ['NEDĚLE','PONDĚLÍ','ÚTERÝ','STŘEDA','ČTVRTEK','PÁTEK','SOBOTA'];
+  const MESICE = ['LEDNA','ÚNORA','BŘEZNA','DUBNA','KVĚTNA','ČERVNA','ČERVENCE','SRPNA','ZÁŘÍ','ŘÍJNA','LISTOPADU','PROSINCE'];
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('tc-time').textContent = h + ':' + m + ':' + s;
+    document.getElementById('tc-date').textContent = DNY[now.getDay()] + ' · ' + now.getDate() + '. ' + MESICE[now.getMonth()] + ' ' + now.getFullYear();
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+})();
+
+// TAPO P110 – ovládání přes lokální server
+const TAPO_URL = 'http://192.168.0.3:7788';
+
+function tapoSetState(state) {
+  const btn = document.getElementById('tapo-btn');
+  const lbl = document.getElementById('tapo-label');
+  btn.className = 'tapo-btn ' + (state === 'on' ? 'on' : state === 'off' ? 'off' : 'unknown');
+  lbl.textContent = state === 'on' ? 'ZAP' : state === 'off' ? 'VYP' : '···';
+}
+
+async function tapoStatus() {
+  try {
+    const r = await fetch(TAPO_URL + '/status', { signal: AbortSignal.timeout(3000) });
+    const d = await r.json();
+    tapoSetState(d.ok ? d.status : 'unknown');
+  } catch { tapoSetState('unknown'); }
+}
+
+async function tapoToggle() {
+  const lbl = document.getElementById('tapo-label');
+  lbl.textContent = '...';
+  try {
+    const r = await fetch(TAPO_URL + '/toggle', { signal: AbortSignal.timeout(5000) });
+    const d = await r.json();
+    tapoSetState(d.ok ? d.status : 'unknown');
+  } catch { tapoSetState('unknown'); }
+}
+
+// Načti stav hned + každých 15 sekund
+tapoStatus();
+setInterval(tapoStatus, 15000);
+
+// WELCOME CLOCK
+(function(){
+  var D=['NE','PO','ÚT','ST','ČT','PÁ','SO'],M=['LED','ÚNO','BŘE','DUB','KVĚ','ČVN','ČVC','SRP','ZÁŘ','ŘÍJ','LIS','PRO'];
+  function tick(){var n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0');var e=document.getElementById('wclock-time'),e2=document.getElementById('wclock-date');if(e)e.textContent=h+':'+m+':'+s;if(e2)e2.textContent=D[n.getDay()]+' · '+n.getDate()+'. '+M[n.getMonth()]+' '+n.getFullYear();}
+  tick();setInterval(tick,1000);
+})();
+
+// SOCKET
+var TAPO='http://localhost:7788';
+function wsocketSet(st){var c=document.getElementById('wsocket-card'),s=document.getElementById('wsocket-status');if(!c||!s)return;if(st==='on'){c.className='wsocket wsocket-on';s.textContent='● ZAPNUTO';}else if(st==='off'){c.className='wsocket wsocket-off';s.textContent='● VYPNUTO';}else{c.className='wsocket';s.textContent='Server offline';}}
+async function wsocketRefresh(){try{var r=await fetch(TAPO+'/status',{signal:AbortSignal.timeout(3000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){wsocketSet('x');}}
+async function wsocketToggle(){try{var r=await fetch(TAPO+'/toggle',{signal:AbortSignal.timeout(5000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){wsocketSet('x');}}
+wsocketRefresh();setInterval(wsocketRefresh,10000);
+
+
+// ── GOOGLE LOGIN GATE ──
+var ALLOWED_EMAILS = ['kovalcikmichal@post.cz', 'kladyx@seznam.cz', 'kovalcikmichal78@gmail.com'];
+var _GATE_CFG = { apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8", authDomain:"kladyxland.firebaseapp.com", projectId:"kladyxland", appId:"1:178078059030:web:8d8a0271b23a7aca2b4337" };
+var _gateAuth = null;
+function gateInit() {
+  try {
+    var ga; try { ga = firebase.app('gate-app'); } catch(e) { ga = firebase.initializeApp(_GATE_CFG, 'gate-app'); }
+    _gateAuth = ga.auth();
+    _gateAuth.onAuthStateChanged(function(user) { if(user){unlockPanel(user);}else{lockPanel();} });
+  } catch(e) { document.getElementById('gate-status').textContent='Chyba: '+e.message; document.getElementById('gate-status').className='gate-status gate-err'; }
+}
+function unlockPanel(user) {
+  if(!user||ALLOWED_EMAILS.indexOf(user.email)===-1) {
+    document.getElementById('gate-status').textContent='⛔ Přístup odepřen: '+(user?user.email:'');
+    document.getElementById('gate-status').className='gate-status gate-err';
+    if(_gateAuth)_gateAuth.signOut(); return;
+  }
+  var gate=document.getElementById('panel-gate');
+  gate.classList.add('hidden'); setTimeout(function(){gate.style.display='none';},400);
+  var sb=document.getElementById('signout-btn'); if(sb)sb.style.display='inline-block';
+}
+function lockPanel() {
+  var gate=document.getElementById('panel-gate'); gate.style.display='flex'; gate.classList.remove('hidden');
+  var sb=document.getElementById('signout-btn'); if(sb)sb.style.display='none';
+}
+function googleSignIn() {
+  if(!_gateAuth){document.getElementById('gate-status').textContent='Načítám...';return;}
+  document.getElementById('gate-status').textContent='Přihlašuji...';
+  document.getElementById('gate-status').className='gate-status';
+  _gateAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(e){
+    document.getElementById('gate-status').textContent='Chyba: '+e.message;
+    document.getElementById('gate-status').className='gate-status gate-err';
+  });
+}
+function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){location.reload();}); }
+(function(){
+  var s1=document.createElement('script'); s1.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
+  s1.onload=function(){var s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js';s2.onload=gateInit;document.head.appendChild(s2);};
+  document.head.appendChild(s1);
+})();
+// ──────────────────────────────────────────────────────────────
+
+</script>
+</body>
+</html
 function openApp(id) {
   try {
     document.getElementById("welcome").classList.add("hidden");
