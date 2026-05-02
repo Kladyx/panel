@@ -7556,7 +7556,7 @@ function initFB(){
     REF=firebase.database().ref('jidloDb');
     var FL=true;
     setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},3000);
-    firebase.auth().onAuthStateChanged(function(user){
+    _kalApp.auth().onAuthStateChanged(function(user){
       if(!user)return;
       REF.on('value',function(s){
       var fb=s.val();
@@ -8167,7 +8167,7 @@ function initFB(){
     REF=firebase.database().ref('glucoDb');
     var FL=true;
     setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},3000);
-    firebase.auth().onAuthStateChanged(function(user){
+    _kalApp.auth().onAuthStateChanged(function(user){
       if(!user)return;
       REF.on('value',function(snap){
         var fb=snap.val();
@@ -8577,7 +8577,7 @@ function initFB(){
     var FL=true;
     var _offlineTimer=setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},8000);
     firebase.auth().signInAnonymously().catch(function(e){clearTimeout(_offlineTimer);SS('💾 Lokálně','#f39c12');});
-    firebase.auth().onAuthStateChanged(function(user){
+    _kalApp.auth().onAuthStateChanged(function(user){
       if(!user)return;
       clearTimeout(_offlineTimer);
       REF.on('value',function(snap){
@@ -9089,12 +9089,12 @@ function startFirebase(){
       databaseURL:'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app',
       projectId:'kladyxland',storageBucket:'kladyxland.firebasestorage.app',
       messagingSenderId:'178078059030',appId:'1:178078059030:web:8d8a0271b23a7aca2b4337'};
-    if(!firebase.apps.length)firebase.initializeApp(cfg);
-    firebase.auth().signInAnonymously().catch(function(e){syncStatus('err');});
-    _db=firebase.database();
+    var _kalApp;try{_kalApp=firebase.app('kal');}catch(e){_kalApp=firebase.initializeApp(cfg,'kal');}
+    _kalApp.auth().signInAnonymously().catch(function(e){syncStatus('err');});
+    _db=_kalApp.database();
     var _FL=true;
     setTimeout(function(){if(_FL){_FL=false;syncStatus('err');}},8000);
-    firebase.auth().onAuthStateChanged(function(user){
+    _kalApp.auth().onAuthStateChanged(function(user){
       if(!user)return;
       _db.ref('kalNotes/data').on('value',function(snap){
         if(_kalSav)return;
