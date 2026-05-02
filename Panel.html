@@ -651,13 +651,15 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       var allPromises = [];
 
       // Zkus KAŽDÝ endpoint s KAŽDÝM proxy
+      var cacheBust = '?_t=' + Date.now();
       ENDPOINTS.forEach(function(ep) {
+        var bustedUrl = ep.url + cacheBust;
         PROXY_URLS.forEach(function(proxyFn) {
-          var proxyUrl = proxyFn ? proxyFn(ep.url) : ep.url;
+          var proxyUrl = proxyFn ? proxyFn(bustedUrl) : bustedUrl;
           var isAllorigins = proxyUrl.indexOf('allorigins') !== -1;
           var source = ep.type + (proxyFn ? ' (proxy)' : ' (direct)');
 
-          var p = fetchWithTimeout(proxyUrl, 2500, {})
+          var p = fetchWithTimeout(proxyUrl, 2500, { cache: 'no-store' })
             .then(function(r) {
               if (!r.ok) throw new Error('HTTP ' + r.status);
               return isAllorigins ? r.json() : r.text();
