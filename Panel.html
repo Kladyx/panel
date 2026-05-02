@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v6.5</title>
+  <title>KLADYX PANEL v6.6</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -151,7 +151,7 @@
 </div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v5.0</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v6.6</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -208,8 +208,7 @@
       <div class="bd"></div><div class="bi">🔴</div><div class="bl">OBS</div>
     </button>
     <button class="app-btn" id="btn-pocasi" style="--ac:#00b4ff;--ac-rgb:0,180,255" onclick="openApp('pocasi')">
-      <span class="btn-icon">🌤️</span>
-      <span class="btn-label">Počasí</span>
+      <div class="bd"></div><div class="bi">🌤️</div><div class="bl">Počasí</div>
     </button>
 
   </div>
@@ -564,7 +563,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
   </div>
 
   <script>
-    var history = [];
+    var songHistory = [];
     var countdownVal = 30;
     var countdownTimer = null;
     var lastSong = '';
@@ -793,19 +792,19 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       lastSong = full;
 
       var now = new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' });
-      history.unshift({ artist: artist, song: song, time: now });
-      if (history.length > 12) history.pop();
+      songHistory.unshift({ artist: artist, song: song, time: now });
+      if (songHistory.length > 12) songHistory.pop();
       renderHistory();
     }
 
     function renderHistory() {
-      if (history.length < 2) return;
+      if (songHistory.length < 2) return;
       var wrap = document.getElementById('historyWrap');
       var list = document.getElementById('historyList');
       wrap.style.display = 'block';
       var html = '';
-      for (var i = 1; i < history.length; i++) {
-        var h = history[i];
+      for (var i = 1; i < songHistory.length; i++) {
+        var h = songHistory[i];
         html += '<div class="history-item">' +
           '<div><div class="history-song">' + escHtml(h.song) + '</div>' +
           '<div class="history-artist">' + escHtml(h.artist) + '</div></div>' +
