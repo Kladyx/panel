@@ -9414,8 +9414,9 @@ function openModal(mode,bid){
       +'<div class="field"><label>Barva</label><div class="color-picker">'+COLORS.map(function(c){return '<div class="cp'+(c===selColor?' sel':'')+'" style="background:'+c+'" onclick="pickColor(this,\''+c+'\')"></div>';}).join('')+'</div></div>';
   } else {
     mt.innerHTML='Přidat <span>manuál</span>';
-    body.innerHTML='<div class="field"><label>Název zařízení</label><input type="text" id="m-name" placeholder="např. Scarlett 2i2"></div>'
-      +'<div class="field"><label>URL odkaz</label><input type="text" id="m-url" placeholder="https://..."></div>';
+    body.innerHTML='<div class="field"><label>Název zařízení</label><input type="text" id="m-name" placeholder="např. Scarlett 2i2" oninput="updateSearchBtn()"></div>'
+      +'<div class="field"><label>URL odkaz</label><div style="display:flex;gap:6px;"><input type="text" id="m-url" placeholder="https://..." style="flex:1"><button class="btn-ok" id="btn-search-online" onclick="searchManualOnline()" style="white-space:nowrap;padding:8px 10px;font-size:11px;" title="Hledat manuál online">🔍 Hledat</button></div></div>'
+      +'<div id="search-hint" style="font-family:monospace;font-size:10px;color:#555;margin-top:-6px;letter-spacing:1px;"></div>';
   }
   document.getElementById('overlay').style.display='flex';
   setTimeout(function(){var inp=document.getElementById('m-name');if(inp)inp.focus();},50);
@@ -9424,8 +9425,18 @@ function closeModal(){document.getElementById('overlay').style.display='none';}
 function pickIcon(el,ic){selIcon=ic;document.querySelectorAll('.ip').forEach(function(e){e.classList.remove('sel');});el.classList.add('sel');}
 function pickColor(el,c){selColor=c;document.querySelectorAll('.cp').forEach(function(e){e.classList.remove('sel');});el.classList.add('sel');}
 
-function saveModal(){
-  var name=(document.getElementById('m-name')||{}).value||'';
+function updateSearchBtn(){
+  var n=(document.getElementById('m-name')||{}).value||'';
+  var hint=document.getElementById('search-hint');
+  if(hint)hint.textContent=n.trim()?'→ Klikni 🔍 pro hledání manuálu k "'+n.trim()+'"':'';
+}
+function searchManualOnline(){
+  var n=(document.getElementById('m-name')||{}).value||'';
+  if(!n.trim()){alert('Nejprve zadej název zařízení');return;}
+  var q=encodeURIComponent(n.trim()+' manual user guide PDF');
+  window.open('https://www.google.com/search?q='+q,'_blank');
+}
+function saveModal(){  var name=(document.getElementById('m-name')||{}).value||'';
   if(!name.trim())return;
   if(modalMode==='brand'){
     brands.push({id:uid(),name:name.trim(),icon:selIcon,color:selColor,manuals:[]});
