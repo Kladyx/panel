@@ -7558,7 +7558,7 @@ function initFB(){
     REF=firebase.database().ref('jidloDb');
     var FL=true;
     setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},3000);
-    _kalApp.auth().onAuthStateChanged(function(user){
+    firebase.auth().onAuthStateChanged(function(user){
       if(!user)return;
       REF.on('value',function(s){
       var fb=s.val();
@@ -8169,7 +8169,7 @@ function initFB(){
     REF=firebase.database().ref('glucoDb');
     var FL=true;
     setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},3000);
-    _kalApp.auth().onAuthStateChanged(function(user){
+    firebase.auth().onAuthStateChanged(function(user){
       if(!user)return;
       REF.on('value',function(snap){
         var fb=snap.val();
@@ -8579,7 +8579,7 @@ function initFB(){
     var FL=true;
     var _offlineTimer=setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},8000);
     firebase.auth().signInAnonymously().catch(function(e){clearTimeout(_offlineTimer);SS('💾 Lokálně','#f39c12');});
-    _kalApp.auth().onAuthStateChanged(function(user){
+    firebase.auth().onAuthStateChanged(function(user){
       if(!user)return;
       clearTimeout(_offlineTimer);
       REF.on('value',function(snap){
