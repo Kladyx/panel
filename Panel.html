@@ -8297,154 +8297,22 @@ APP_HTML["pocasi"] = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Počasí — Příbor</title>
+  <title>Počasí Příbor</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --bg:#070b14; --card:#0d1425; --border:rgba(0,180,255,0.18); --cyan:#00b4ff; --green:#00ff88; --red:#ff3c5a; --muted:#4a5570; --text:#c8d8f0; }
-    html, body { width:100%; min-height:100vh; background:var(--bg); font-family:"Courier New",monospace; color:var(--text); }
-    .header { padding:18px 20px 14px; border-bottom:1px solid var(--border); background:rgba(0,180,255,0.03); }
-    .header-logo { font-size:1.2rem; font-weight:900; letter-spacing:3px; color:var(--cyan); text-shadow:0 0 16px var(--cyan)88; }
-    .header-sub { font-size:0.55rem; letter-spacing:3px; color:var(--muted); text-transform:uppercase; margin-top:2px; }
-    .main { padding:24px 20px; display:flex; flex-direction:column; align-items:center; gap:20px; }
-    .temp-big { font-size:5rem; font-weight:900; color:#fff; letter-spacing:-2px; line-height:1; text-align:center; }
-    .temp-big span { font-size:2rem; color:var(--cyan); }
-    .weather-icon { font-size:4rem; text-align:center; }
-    .desc { font-size:0.9rem; letter-spacing:3px; color:var(--cyan); text-transform:uppercase; text-align:center; }
-    .city { font-size:0.6rem; letter-spacing:4px; color:var(--muted); text-align:center; margin-top:-8px; }
-    .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:400px; }
-    .stat { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px; text-align:center; }
-    .stat-label { font-size:0.55rem; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
-    .stat-val { font-size:1.2rem; font-weight:900; color:var(--text); }
-    .stat-unit { font-size:0.6rem; color:var(--muted); }
-    .forecast { width:100%; max-width:400px; }
-    .forecast-title { font-size:0.6rem; letter-spacing:3px; color:var(--muted); text-transform:uppercase; margin-bottom:10px; }
-    .forecast-row { display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border:1px solid var(--border); border-radius:6px; margin-bottom:6px; background:var(--card); font-size:0.75rem; }
-    .fc-day { color:var(--muted); width:60px; }
-    .fc-icon { font-size:1.2rem; }
-    .fc-temp { color:var(--text); font-weight:bold; }
-    .fc-desc { color:var(--muted); font-size:0.6rem; flex:1; text-align:center; }
-    .status-bar { position:fixed; bottom:0; left:0; right:0; padding:6px 16px; background:rgba(7,11,20,0.95); border-top:1px solid var(--border); font-size:0.6rem; letter-spacing:1px; color:var(--muted); display:flex; align-items:center; gap:8px; }
-    .dot { width:6px; height:6px; border-radius:50%; background:var(--muted); flex-shrink:0; }
-    .dot.ok { background:var(--green); box-shadow:0 0 6px var(--green); }
-    .dot.err { background:var(--red); }
-    .dot.loading { background:#ffe000; animation:blink .8s infinite; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-    .refresh-btn { margin-left:auto; color:var(--cyan); cursor:pointer; }
-    .loading-msg { text-align:center; padding:60px 20px; color:var(--muted); font-size:0.8rem; letter-spacing:2px; }
+    html, body { width:100%; height:100vh; background:#070b14; font-family:"Courier New",monospace; color:#c8d8f0; display:flex; flex-direction:column; }
+    .header { padding:14px 20px 10px; border-bottom:1px solid rgba(0,180,255,0.18); background:rgba(0,180,255,0.03); flex-shrink:0; }
+    .header-logo { font-size:1.1rem; font-weight:900; letter-spacing:3px; color:#00b4ff; text-shadow:0 0 16px #00b4ff88; }
+    .header-sub { font-size:0.55rem; letter-spacing:3px; color:#4a5570; text-transform:uppercase; margin-top:2px; }
+    iframe { flex:1; border:none; width:100%; background:#070b14; }
   </style>
 </head>
 <body>
 <div class="header">
   <div class="header-logo">🌤️ POČASÍ</div>
-  <div class="header-sub">Příbor · OpenWeatherMap</div>
+  <div class="header-sub">Příbor · wttr.in</div>
 </div>
-
-<div class="main" id="main">
-  <div class="loading-msg">Načítám počasí...</div>
-</div>
-
-<div class="status-bar">
-  <div class="dot loading" id="dot"></div>
-  <span id="status">Připojování...</span>
-  <span class="refresh-btn" onclick="loadWeather()">↻ Obnovit</span>
-</div>
-
-<script>
-var API_KEY = 'cb372882c247779717e8249a690f6be4';
-var CITY = 'Příbor';
-var CITY_ID = '3067140';
-
-function setStatus(msg, state) {
-  document.getElementById('status').textContent = msg;
-  var d = document.getElementById('dot');
-  d.className = 'dot' + (state ? ' '+state : '');
-}
-
-function getIcon(id, pod) {
-  if(id >= 200 && id < 300) return '⛈️';
-  if(id >= 300 && id < 400) return '🌦️';
-  if(id >= 500 && id < 600) return id===511 ? '🌨️' : '🌧️';
-  if(id >= 600 && id < 700) return '❄️';
-  if(id >= 700 && id < 800) return '🌫️';
-  if(id === 800) return pod==='n' ? '🌙' : '☀️';
-  if(id === 801) return '🌤️';
-  if(id === 802) return '⛅';
-  if(id >= 803) return '☁️';
-  return '🌡️';
-}
-
-function getDayName(dt) {
-  var days = ['Ne','Po','Út','St','Čt','Pá','So'];
-  return days[new Date(dt*1000).getDay()];
-}
-
-function loadWeather() {
-  setStatus('Načítám...','loading');
-  fetch('https://api.openweathermap.org/data/2.5/weather?lat=49.6439&lon=18.1464&appid='+API_KEY+'&units=metric&lang=cz'+CITY_ID+'&appid='+API_KEY+'&units=metric&lang=cz')
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      if(d.cod !== 200) { setStatus('Chyba: '+d.message,'err'); return; }
-      var temp = Math.round(d.main.temp);
-      var feels = Math.round(d.main.feels_like);
-      var icon = getIcon(d.weather[0].id, d.weather[0].icon.slice(-1));
-      var desc = d.weather[0].description;
-      var wind = Math.round(d.wind.speed * 3.6);
-      var humidity = d.main.humidity;
-      var pressure = d.main.pressure;
-      var visibility = d.visibility ? Math.round(d.visibility/1000) : '—';
-
-      document.getElementById('main').innerHTML =
-        '<div class="weather-icon">'+icon+'</div>'+
-        '<div class="temp-big">'+temp+'<span>°C</span></div>'+
-        '<div class="desc">'+desc+'</div>'+
-        '<div class="city">📍 '+d.name+'</div>'+
-        '<div class="grid">'+
-          '<div class="stat"><div class="stat-label">Pocitová</div><div class="stat-val">'+feels+'<span class="stat-unit">°C</span></div></div>'+
-          '<div class="stat"><div class="stat-label">Vlhkost</div><div class="stat-val">'+humidity+'<span class="stat-unit">%</span></div></div>'+
-          '<div class="stat"><div class="stat-label">Vítr</div><div class="stat-val">'+wind+'<span class="stat-unit"> km/h</span></div></div>'+
-          '<div class="stat"><div class="stat-label">Tlak</div><div class="stat-val">'+pressure+'<span class="stat-unit"> hPa</span></div></div>'+
-        '</div>';
-
-      setStatus('Aktualizováno · '+new Date().toLocaleTimeString('cs-CZ'),'ok');
-      loadForecast();
-    })
-    .catch(function(e){ setStatus('Chyba: '+e.message,'err'); });
-}
-
-function loadForecast() {
-  fetch('https://api.openweathermap.org/data/2.5/forecast?lat=49.6439&lon=18.1464&appid='+API_KEY+'&units=metric&lang=cz&cnt=40'+API_KEY+'&units=metric&lang=cz&cnt=40')
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      if(!d.list) return;
-      var days = {};
-      d.list.forEach(function(item) {
-        var day = new Date(item.dt*1000).toDateString();
-        if(!days[day]) days[day] = { dt:item.dt, temps:[], id:item.weather[0].id, desc:item.weather[0].description };
-        days[day].temps.push(item.main.temp);
-      });
-      var keys = Object.keys(days).slice(0,5);
-      var html = '<div class="forecast"><div class="forecast-title">Předpověď 5 dní</div>';
-      keys.forEach(function(k) {
-        var day = days[k];
-        var min = Math.round(Math.min.apply(null, day.temps));
-        var max = Math.round(Math.max.apply(null, day.temps));
-        var icon = getIcon(day.id, 'd');
-        html += '<div class="forecast-row">'+
-          '<div class="fc-day">'+getDayName(day.dt)+'</div>'+
-          '<div class="fc-icon">'+icon+'</div>'+
-          '<div class="fc-desc">'+day.desc+'</div>'+
-          '<div class="fc-temp">'+min+'°/'+max+'°</div>'+
-        '</div>';
-      });
-      html += '</div>';
-      document.getElementById('main').insertAdjacentHTML('beforeend', html);
-    })
-    .catch(function(){});
-}
-
-loadWeather();
-setInterval(loadWeather, 600000);
-<\/script>
+<iframe src="https://wttr.in/Pribor?lang=cs&theme=dark" loading="lazy"></iframe>
 </body>
 </html>
 `
