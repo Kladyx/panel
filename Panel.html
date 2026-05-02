@@ -211,6 +211,9 @@
       <span class="btn-icon">🌤️</span>
       <span class="btn-label">Počasí</span>
     </button>
+    <button class="app-btn" id="btn-manualy" style="--ac:#f97316;--ac-rgb:249,115,22" onclick="openApp('manualy')">
+      <div class="bd"></div><div class="bi">📖</div><div class="bl">Manuály</div>
+    </button>
 
   </div>
   <div class="iframe-wrap">
@@ -244,6 +247,7 @@
         <div class="wcard" onclick="openApp('kalendar')" onmouseover="this.style.borderColor='#00b4ff';this.style.boxShadow='0 0 14px rgba(0,180,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">📅</div><div class="wn">Kalendář</div><div class="wd">Svátky & Dny</div></div>
         <div class="wcard" onclick="openApp('obs')" onmouseover="this.style.borderColor='#ff4444';this.style.boxShadow='0 0 14px rgba(255,68,68,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🔴</div><div class="wn">OBS Status</div><div class="wd">Stream Monitor</div></div>
         <div class="wcard" onclick="openApp('pocasi')" onmouseover="this.style.borderColor='#00b4ff';this.style.boxShadow='0 0 14px rgba(0,180,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🌤️</div><div class="wn">Počasí</div><div class="wd">Příbor</div></div>
+        <div class="wcard" onclick="openApp('manualy')" onmouseover="this.style.borderColor='#f97316';this.style.boxShadow='0 0 14px rgba(249,115,22,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">📖</div><div class="wn">Manuály</div><div class="wd">Manual Vault</div></div>
 
       </div>
       <div style="margin-top:22px;display:flex;align-items:center;justify-content:center;gap:24px;padding:12px 20px;border:1px solid rgba(0,212,255,0.1);border-radius:8px;background:rgba(255,255,255,0.025);">
@@ -269,6 +273,7 @@
     <iframe id="frame-kalendar" class="app-frame" title="kalendar" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
     <iframe id="frame-obs" class="app-frame" title="obs" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox"  allowfullscreen></iframe>
     <iframe id="frame-pocasi" class="app-frame" title="pocasi" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
+    <iframe id="frame-manualy" class="app-frame" title="manualy" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
 
   </div>
 </div>
@@ -8274,20 +8279,20 @@ APP_HTML["obs"] = `<!DOCTYPE html>
   }
   function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } timer.textContent = ''; }
 
-  function setStatus(streaming, startTime) {
+  function setStatus(streaming, updatedAt) {
     badge.className = 'status-badge ' + (streaming ? 'live' : 'offline');
-    label.textContent = streaming ? 'ON AIR' : 'OFFLINE';
+    label.textContent = streaming ? 'IN AIR' : 'OFFLINE';
     timerWrap.className = 'timer-wrap ' + (streaming ? 'live' : '');
-    if (streaming) { streamStartTime = startTime || Date.now(); startTimer(); }
+    if (streaming) { if (!streamStartTime) streamStartTime = Date.now(); startTimer(); }
     else { streamStartTime = null; stopTimer(); }
-    const now = new Date().toLocaleTimeString('cs-CZ', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-    meta.textContent = (streaming ? '● ŽIVÝ PŘENOS' : '● OFFLINE') + ' · sync ' + now;
+    const ago = updatedAt ? Math.round((Date.now()/1000) - updatedAt) : 0;
+    meta.textContent = (streaming ? '● ŽIVÝ PŘENOS' : '● OFFLINE') + ' · sync před ' + ago + 's';
   }
 
-  db.ref('onair').on('value', snap => {
+  db.ref('obs_status').on('value', snap => {
     const data = snap.val();
-    if (!data) { badge.className = 'status-badge'; label.textContent = '– – –'; meta.textContent = 'Čekám na data...'; return; }
-    setStatus(data.live === true, data.startTime);
+    if (!data) { badge.className = 'status-badge'; label.textContent = '– – –'; meta.textContent = 'Čekám na data z PC...'; return; }
+    setStatus(data.streaming, data.updated_at);
   }, err => { meta.textContent = '❌ Firebase: ' + err.message; });
 <\/script>
 </body>
@@ -9152,6 +9157,292 @@ document.getElementById('todaySvatek').textContent=todaySv?'🎂 Svátek: '+toda
 render();
 startFirebase();
 <\/script>
+</body></html>
+`;
+
+APP_HTML["manualy"] = `<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Manual Vault</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;500;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0a0a0f;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.025) 39px,rgba(255,255,255,.025) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.025) 39px,rgba(255,255,255,.025) 40px);font-family:'Barlow Condensed',sans-serif;color:#dde4ff;min-height:100vh;padding:28px 14px 60px;}
+h1{text-align:center;font-size:36px;font-weight:700;letter-spacing:-1px;color:#fff;margin-bottom:2px;}
+h1 span{color:#f97316;}
+.sub{text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:#444;margin-bottom:24px;}
+.dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#f97316;margin-right:5px;vertical-align:middle;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.eyebrow{text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:5px;color:#f97316;text-transform:uppercase;margin-bottom:8px;}
+
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;max-width:1080px;margin:0 auto 24px;align-items:center;}
+.search-wrap{flex:1;min-width:160px;position:relative;}
+.si{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#444;font-size:14px;pointer-events:none;}
+input[type=text]{width:100%;background:#111118;border:1px solid #222;border-radius:4px;padding:9px 12px 9px 34px;font-family:'Share Tech Mono',monospace;font-size:12px;color:#fff;outline:none;transition:border-color .2s;}
+input[type=text]:focus{border-color:#f97316;}
+input[type=text]::placeholder{color:#333;}
+
+.tabs{display:flex;gap:4px;}
+.tab{padding:8px 14px;border-radius:4px;border:1px solid #222;background:#111118;color:#555;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:all .15s;white-space:nowrap;}
+.tab:hover{color:#aaa;border-color:#333;}
+.tab.active{background:#f97316;color:#000;border-color:#f97316;}
+.tab.fav.active{background:#facc15;color:#000;border-color:#facc15;}
+.btn-add{padding:8px 14px;border-radius:4px;border:none;background:#f97316;color:#000;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:opacity .15s;}
+.btn-add:hover{opacity:.85;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px;max-width:1080px;margin:0 auto;}
+.card{background:#0f0f17;border:1px solid #1e1e2e;border-radius:6px;overflow:hidden;transition:border-color .2s,transform .2s;}
+.card:hover{border-color:#2e2e40;transform:translateY(-2px);}
+.card-head{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid #1e1e2e;}
+.ci{font-size:17px;line-height:1;}
+.cn{font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.cc{margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:9px;color:#333;letter-spacing:1px;}
+.ab{background:none;border:none;color:#333;cursor:pointer;font-size:15px;padding:2px 3px;border-radius:3px;transition:color .15s;}
+.ab:hover{color:#f97316;}
+.db{background:none;border:none;color:#1e1e2e;cursor:pointer;font-size:12px;padding:2px 3px;border-radius:3px;transition:color .15s;}
+.db:hover{color:#ef4444;}
+ul{list-style:none;padding:3px 0;}
+li{display:flex;align-items:center;}
+a.ml{flex:1;display:flex;align-items:center;justify-content:space-between;padding:8px 14px;color:#999;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.3px;transition:color .15s,background .15s;}
+a.ml:hover{color:#fff;background:rgba(255,255,255,.04);}
+.ar{font-size:10px;opacity:.3;transition:opacity .15s,transform .15s;}
+a.ml:hover .ar{opacity:1;transform:translateX(3px);}
+.sb{background:none;border:none;cursor:pointer;padding:7px 8px 7px 3px;font-size:13px;opacity:.2;transition:opacity .2s,transform .15s;}
+.sb:hover{opacity:.6;transform:scale(1.2);}
+.sb.on{opacity:1;filter:drop-shadow(0 0 4px #facc15);}
+.dm{background:none;border:none;cursor:pointer;padding:7px 8px 7px 0;font-size:10px;color:#2a2a3a;transition:color .15s;}
+.dm:hover{color:#ef4444;}
+
+.fav-section{max-width:1080px;margin:0 auto;}
+.fav-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;color:#facc15;text-transform:uppercase;margin-bottom:14px;}
+.fav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
+.fc{background:#111108;border:1px solid #2a2408;border-radius:5px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;transition:border-color .15s,transform .15s;}
+.fc:hover{border-color:#facc15;transform:translateY(-1px);}
+.fc-l{display:flex;flex-direction:column;gap:2px;}
+.fc-d{color:#fff;font-size:14px;font-weight:700;letter-spacing:.4px;}
+.fc-b{color:#555;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;}
+.fa{color:#facc15;font-size:13px;opacity:.5;}
+.fc:hover .fa{opacity:1;}
+.fav-empty{color:#333;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;text-align:center;padding:28px;}
+
+.empty{text-align:center;color:#333;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;margin-top:50px;grid-column:1/-1;}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px;}
+.modal{background:#111118;border:1px solid #2a2a3a;border-radius:8px;padding:24px;width:100%;max-width:400px;}
+.mt{font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;margin-bottom:18px;}
+.mt span{color:#f97316;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#555;text-transform:uppercase;margin-bottom:5px;}
+.field input,.field select{width:100%;background:#0a0a0f;border:1px solid #222;border-radius:4px;padding:8px 11px;font-family:'Share Tech Mono',monospace;font-size:12px;color:#fff;outline:none;transition:border-color .2s;}
+.field input:focus{border-color:#f97316;}
+.icon-picker{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px;}
+.ip{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#0a0a0f;border:1px solid #222;border-radius:4px;cursor:pointer;font-size:16px;transition:border-color .15s;}
+.ip.sel{border-color:#f97316;background:#1a0f00;}
+.color-picker{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px;}
+.cp{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s,transform .15s;}
+.cp.sel{border-color:#fff;transform:scale(1.15);}
+.modal-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:18px;}
+.btn-ghost{padding:7px 14px;border-radius:4px;border:1px solid #222;background:transparent;color:#666;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:all .15s;}
+.btn-ghost:hover{color:#aaa;border-color:#444;}
+.btn-ok{padding:7px 14px;border-radius:4px;border:none;background:#f97316;color:#000;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:opacity .15s;}
+.btn-ok:hover{opacity:.85;}
+</style>
+</head>
+<body>
+<div class="eyebrow">📂 Databáze dokumentace</div>
+<h1>MANUAL <span>VAULT</span></h1>
+<div class="sub"><span class="dot"></span><span id="stat">···</span></div>
+
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="si">⌕</span>
+    <input type="text" id="q" placeholder="Hledat zařízení nebo značku...">
+  </div>
+  <div class="tabs">
+    <button class="tab active" id="tab-all" onclick="setView('all',this)">Všechny</button>
+    <button class="tab fav" id="tab-fav" onclick="setView('fav',this)">★ Oblíbené</button>
+  </div>
+  <button class="btn-add" onclick="openModal('brand')">+ Přidat značku</button>
+</div>
+
+<div id="view-all">
+  <div class="grid" id="grid"></div>
+</div>
+<div id="view-fav" style="display:none">
+  <div class="fav-section">
+    <div class="fav-label">★ Oblíbené manuály</div>
+    <div class="fav-grid" id="fav-grid"></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" style="display:none" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mt" id="mt">Přidat <span>značku</span></div>
+    <div id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Zrušit</button>
+      <button class="btn-ok" onclick="saveModal()">Přidat</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var ICONS=['🎛','💿','🎚','🎙','🔌','🔊','🎧','🖥','📻','🎹','🔧','📦','⚡','🎵','🎤'];
+var COLORS=['#f97316','#ef4444','#22d3ee','#a78bfa','#34d399','#fbbf24','#60a5fa','#f472b6','#4ade80','#fb923c'];
+var uid=function(){return Math.random().toString(36).slice(2,9);};
+
+var brands=[
+  {id:'presonus',name:'PreSonus',color:'#f97316',icon:'🎛',manuals:[
+    {id:uid(),name:'Quantum ES4',url:'https://pubs.presonus.com/quantum-es4/en/'},
+    {id:uid(),name:'Monitor Station V2',url:'https://pubs.presonus.com/monitor-station-v2/en/'},
+    {id:uid(),name:'TubePre V2',url:'https://pubs.presonus.com/TubePre-V2/en/'},
+    {id:uid(),name:'Eris Sub 8BT',url:'https://pubs.presonus.com/Eris-Sub-8BT/en/'},
+    {id:uid(),name:'Eris 4.5BT',url:'https://pubs.presonus.com/eris-4.5bt/en/'},
+    {id:uid(),name:'HD9',url:'https://pubs.presonus.com/HD9/en/'},
+    {id:uid(),name:'MicroStation BT',url:'https://pubs.presonus.com/MicroStation-BT/en/'},
+    {id:uid(),name:'ATOM',url:'https://pubs.presonus.com/atom/en/'}
+  ]},
+  {id:'pioneer',name:'Pioneer DJ',color:'#ef4444',icon:'💿',manuals:[
+    {id:uid(),name:'DDJ-800',url:'https://www.pioneerdj.com/en/support/documents/ddj-800/'},
+    {id:uid(),name:'DJM-300S',url:'https://www.pioneerdj.com/en/support/documents/djm-300s/'},
+    {id:uid(),name:'CDJ-800 MK2',url:'https://www.pioneerdj.com/en/support/documents/cdj-800mk2/'}
+  ]},
+  {id:'reloop',name:'Reloop',color:'#22d3ee',icon:'🎚',manuals:[
+    {id:uid(),name:'RP-1000 MK2',url:'https://www.reloop.com/reloop-rp-1000-mk2.html'},
+    {id:uid(),name:'Neon',url:'https://www.reloop.com/reloop-neon.html'}
+  ]},
+  {id:'rode',name:'Rode',color:'#a78bfa',icon:'🎙',manuals:[
+    {id:uid(),name:'NT1',url:'https://rode.com/en/user-guides/microphones/nt1'},
+    {id:uid(),name:'PodMic',url:'https://rode.com/en/user-guides/microphones/podmic'},
+    {id:uid(),name:'PSA1+',url:'https://rode.com/en/user-guides/accessories/psa1-plus'},
+    {id:uid(),name:'RodeCaster Duo',url:'https://rode.com/en/user-guides/rodecasterduo'}
+  ]},
+  {id:'behringer',name:'Behringer',color:'#34d399',icon:'🔌',manuals:[
+    {id:uid(),name:'DI20',url:'https://www.behringer.com/downloads.html#DI20'}
+  ]},
+  {id:'nobsound',name:'Nobsound',color:'#fbbf24',icon:'🔊',manuals:[
+    {id:uid(),name:'L3-3 (Amazon)',url:'https://www.amazon.com/dp/B07D5QT4YP'}
+  ]}
+];
+
+var favs={};
+var curView='all';
+var modalMode=null;
+var targetBrand=null;
+var selIcon='🎛';
+var selColor='#f97316';
+
+function totalM(){return brands.reduce(function(a,b){return a+b.manuals.length;},0);}
+function favCount(){return Object.keys(favs).filter(function(k){return favs[k];}).length;}
+function updateStat(){document.getElementById('stat').textContent='KLADYX STUDIO · '+totalM()+' MANUÁLŮ · '+favCount()+' OBLÍBENÝCH';}
+
+function render(){
+  updateStat();
+  renderGrid();
+  renderFavGrid();
+}
+
+function renderGrid(){
+  var q=document.getElementById('q').value.toLowerCase();
+  var g=document.getElementById('grid');
+  var html='';
+  var shown=0;
+  brands.forEach(function(b){
+    var ms=b.manuals.filter(function(m){return m.name.toLowerCase().indexOf(q)>=0||b.name.toLowerCase().indexOf(q)>=0;});
+    if(!ms.length)return;
+    shown++;
+    html+='<div class="card"><div class="card-head">';
+    html+='<span class="ci">'+b.icon+'</span>';
+    html+='<span class="cn" style="color:'+b.color+'">'+esc(b.name)+'</span>';
+    html+='<span class="cc">'+ms.length+' docs</span>';
+    html+='<button class="ab" title="Přidat manuál" onclick="openModal(\'manual\',\''+b.id+'\')">＋</button>';
+    html+='<button class="db" title="Smazat značku" onclick="delBrand(\''+b.id+'\')">✕</button>';
+    html+='</div><ul>';
+    ms.forEach(function(m){
+      var isFav=!!favs[m.id];
+      html+='<li>';
+      html+='<button class="sb'+(isFav?' on':'')+'" onclick="toggleFav(\''+m.id+'\')" title="'+(isFav?'Odebrat z oblíbených':'Přidat do oblíbených')+'" style="margin-left:6px">★</button>';
+      html+='<a class="ml" href="'+esc(m.url)+'" target="_blank" rel="noopener noreferrer">'+esc(m.name)+'<span class="ar">→</span></a>';
+      html+='<button class="dm" title="Smazat" onclick="delManual(\''+b.id+'\',\''+m.id+'\')">✕</button>';
+      html+='</li>';
+    });
+    html+='</ul></div>';
+  });
+  if(!shown) html='<div class="empty">// Žádné výsledky pro "'+esc(document.getElementById('q').value)+'"</div>';
+  g.innerHTML=html;
+}
+
+function renderFavGrid(){
+  var fg=document.getElementById('fav-grid');
+  var items=[];
+  brands.forEach(function(b){b.manuals.forEach(function(m){if(favs[m.id])items.push({m:m,b:b});});});
+  if(!items.length){fg.innerHTML='<div class="fav-empty">// Zatím žádné oblíbené — klikni na ★ u manuálu</div>';return;}
+  fg.innerHTML=items.map(function(x){
+    return '<a class="fc" href="'+esc(x.m.url)+'" target="_blank" rel="noopener noreferrer"><div class="fc-l"><div class="fc-d">'+esc(x.m.name)+'</div><div class="fc-b">'+esc(x.b.name)+'</div></div><span class="fa">→</span></a>';
+  }).join('');
+}
+
+function toggleFav(mid){favs[mid]=!favs[mid];render();}
+function delBrand(bid){brands=brands.filter(function(b){return b.id!==bid;});render();}
+function delManual(bid,mid){
+  brands=brands.map(function(b){if(b.id!==bid)return b;return Object.assign({},b,{manuals:b.manuals.filter(function(m){return m.id!==mid;})});});
+  delete favs[mid];render();
+}
+
+function setView(v,btn){
+  curView=v;
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('view-all').style.display=v==='all'?'':'none';
+  document.getElementById('view-fav').style.display=v==='fav'?'':'none';
+  if(v==='fav')renderFavGrid();
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function openModal(mode,bid){
+  modalMode=mode; targetBrand=bid||null;
+  selIcon='🎛'; selColor='#f97316';
+  var body=document.getElementById('modal-body');
+  var mt=document.getElementById('mt');
+  if(mode==='brand'){
+    mt.innerHTML='Přidat <span>značku</span>';
+    body.innerHTML='<div class="field"><label>Název značky</label><input type="text" id="m-name" placeholder="např. Focusrite"></div>'
+      +'<div class="field"><label>Ikona</label><div class="icon-picker">'+ICONS.map(function(ic){return '<div class="ip'+(ic===selIcon?' sel':'')+'" onclick="pickIcon(this,\''+ic+'\')">'+ic+'</div>';}).join('')+'</div></div>'
+      +'<div class="field"><label>Barva</label><div class="color-picker">'+COLORS.map(function(c){return '<div class="cp'+(c===selColor?' sel':'')+'" style="background:'+c+'" onclick="pickColor(this,\''+c+'\')"></div>';}).join('')+'</div></div>';
+  } else {
+    mt.innerHTML='Přidat <span>manuál</span>';
+    body.innerHTML='<div class="field"><label>Název zařízení</label><input type="text" id="m-name" placeholder="např. Scarlett 2i2"></div>'
+      +'<div class="field"><label>URL odkaz</label><input type="text" id="m-url" placeholder="https://..."></div>';
+  }
+  document.getElementById('overlay').style.display='flex';
+  setTimeout(function(){var inp=document.getElementById('m-name');if(inp)inp.focus();},50);
+}
+function closeModal(){document.getElementById('overlay').style.display='none';}
+function pickIcon(el,ic){selIcon=ic;document.querySelectorAll('.ip').forEach(function(e){e.classList.remove('sel');});el.classList.add('sel');}
+function pickColor(el,c){selColor=c;document.querySelectorAll('.cp').forEach(function(e){e.classList.remove('sel');});el.classList.add('sel');}
+
+function saveModal(){
+  var name=(document.getElementById('m-name')||{}).value||'';
+  if(!name.trim())return;
+  if(modalMode==='brand'){
+    brands.push({id:uid(),name:name.trim(),icon:selIcon,color:selColor,manuals:[]});
+  } else {
+    var urlEl=document.getElementById('m-url');
+    var url=(urlEl?urlEl.value:'').trim();
+    if(!url)return;
+    if(url.indexOf('http')!==0)url='https://'+url;
+    brands=brands.map(function(b){if(b.id!==targetBrand)return b;return Object.assign({},b,{manuals:b.manuals.concat([{id:uid(),name:name.trim(),url:url}])});});
+  }
+  closeModal();render();
+}
+
+document.getElementById('q').addEventListener('input',renderGrid);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+render();
+</script>
 </body></html>
 `;
 
