@@ -9425,17 +9425,6 @@ function closeModal(){document.getElementById('overlay').style.display='none';}
 function pickIcon(el,ic){selIcon=ic;document.querySelectorAll('.ip').forEach(function(e){e.classList.remove('sel');});el.classList.add('sel');}
 function pickColor(el,c){selColor=c;document.querySelectorAll('.cp').forEach(function(e){e.classList.remove('sel');});el.classList.add('sel');}
 
-function updateSearchBtn(){
-  var n=(document.getElementById('m-name')||{}).value||'';
-  var hint=document.getElementById('search-hint');
-  if(hint)hint.textContent=n.trim()?'→ Klikni 🔍 pro hledání manuálu k "'+n.trim()+'"':'';
-}
-function searchManualOnline(){
-  var n=(document.getElementById('m-name')||{}).value||'';
-  if(!n.trim()){alert('Nejprve zadej název zařízení');return;}
-  var q=encodeURIComponent(n.trim()+' manual user guide PDF');
-  window.open('https://www.google.com/search?q='+q,'_blank');
-}
 function saveModal(){  var name=(document.getElementById('m-name')||{}).value||'';
   if(!name.trim())return;
   if(modalMode==='brand'){
@@ -9452,6 +9441,17 @@ function saveModal(){  var name=(document.getElementById('m-name')||{}).value||'
 
 document.getElementById('q').addEventListener('input',renderGrid);
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+function updateSearchBtn(){
+  var n=(document.getElementById('m-name')||{}).value||'';
+  var hint=document.getElementById('search-hint');
+  if(hint)hint.textContent=n.trim()?'→ Klikni \uD83D\uDD0D pro hledání manuálu: "'+n.trim()+'"':'';
+}
+function searchManualOnline(){
+  var n=(document.getElementById('m-name')||{}).value||'';
+  if(!n.trim()){alert('Nejprve zadej název zařízení');return;}
+  var q=encodeURIComponent(n.trim()+' manual user guide PDF site:manualslib.com OR site:manualpdf.com OR filetype:pdf');
+  window.open('https://www.google.com/search?q='+q,'_blank');
+}
 render();
 <\/script>
 </body></html>
