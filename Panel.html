@@ -9111,9 +9111,8 @@ function initKalFB(){
     _auth.onAuthStateChanged(function(user){
       if(!user)return;
       clearTimeout(_offTimer);
-      _uid=user.uid;
       syncStatus('wait');
-      _db.ref('kalNotes/'+_uid).on('value',function(snap){
+      _db.ref('kalNotes/data').on('value',function(snap){
         _notes=snap.val()||{};
         syncStatus('ok');
         render();
@@ -9195,8 +9194,8 @@ function saveNote(){
   if(txt){_notes[k]={t:txt};}else{delete _notes[k];}
   updateCellDot(_activeDay,!!txt);
   // Ulož do Firebase nebo localStorage
-  if(_db&&_uid){
-    var ref=_db.ref('kalNotes/'+_uid+'/'+k);
+  if(_db){
+    var ref=_db.ref('kalNotes/data/'+k);
     if(txt){ref.set({t:txt,u:Date.now()});}else{ref.remove();}
   }else{
     try{localStorage.setItem('kalNotes_local',JSON.stringify(_notes));}catch(_){}
