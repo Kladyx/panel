@@ -9114,10 +9114,10 @@ setInterval(tapoStatus, 15000);
 })();
 
 // SOCKET
-var TAPO='http://localhost:7788';
-function wsocketSet(st){var c=document.getElementById('wsocket-card'),s=document.getElementById('wsocket-status');if(!c||!s)return;if(st==='on'){c.className='wsocket wsocket-on';s.textContent='● ZAPNUTO';}else if(st==='off'){c.className='wsocket wsocket-off';s.textContent='● VYPNUTO';}else{c.className='wsocket';s.textContent='Server offline';}}
-async function wsocketRefresh(){try{var r=await fetch(TAPO+'/status',{signal:AbortSignal.timeout(3000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){wsocketSet('x');}}
-async function wsocketToggle(){try{var r=await fetch(TAPO+'/toggle',{signal:AbortSignal.timeout(5000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){wsocketSet('x');}}
+var TAPO_URLS=['http://192.168.0.3:7788','http://localhost:7788'];
+function wsocketSet(st){var c=document.getElementById('wsocket-card'),s=document.getElementById('wsocket-status');if(!c||!s)return;if(st==='on'){c.className='wsocket wsocket-on';s.textContent='● ZAPNUTO';}else if(st==='off'){c.className='wsocket wsocket-off';s.textContent='● VYPNUTO';}else{c.className='wsocket';s.textContent='Nedostupné';}}
+async function wsocketRefresh(){for(var i=0;i<TAPO_URLS.length;i++){try{var r=await fetch(TAPO_URLS[i]+'/status',{signal:AbortSignal.timeout(2000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');return;}catch(e){}}wsocketSet('x');}
+async function wsocketToggle(){for(var i=0;i<TAPO_URLS.length;i++){try{var r=await fetch(TAPO_URLS[i]+'/toggle',{signal:AbortSignal.timeout(5000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');return;}catch(e){}}wsocketSet('x');}
 wsocketRefresh();setInterval(wsocketRefresh,10000);
 
 
