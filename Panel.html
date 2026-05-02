@@ -9169,293 +9169,304 @@ APP_HTML["manualy"] = `<!DOCTYPE html>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;500;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#0a0a0f;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.025) 39px,rgba(255,255,255,.025) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.025) 39px,rgba(255,255,255,.025) 40px);font-family:'Barlow Condensed',sans-serif;color:#dde4ff;min-height:100vh;padding:28px 14px 60px;}
-h1{text-align:center;font-size:36px;font-weight:700;letter-spacing:-1px;color:#fff;margin-bottom:2px;}
-h1 span{color:#f97316;}
-.sub{text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:#444;margin-bottom:24px;}
-.dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#f97316;margin-right:5px;vertical-align:middle;animation:blink 2s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.eyebrow{text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:5px;color:#f97316;text-transform:uppercase;margin-bottom:8px;}
+body{background:#0a0a0f;font-family:'Barlow Condensed',sans-serif;color:#dde4ff;padding:20px 12px 60px;min-height:100vh;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.02) 39px,rgba(255,255,255,.02) 40px);pointer-events:none;z-index:0;}
 
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;max-width:1080px;margin:0 auto 24px;align-items:center;}
-.search-wrap{flex:1;min-width:160px;position:relative;}
-.si{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#444;font-size:14px;pointer-events:none;}
-input[type=text]{width:100%;background:#111118;border:1px solid #222;border-radius:4px;padding:9px 12px 9px 34px;font-family:'Share Tech Mono',monospace;font-size:12px;color:#fff;outline:none;transition:border-color .2s;}
-input[type=text]:focus{border-color:#f97316;}
-input[type=text]::placeholder{color:#333;}
+.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;}
+.ey{text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:5px;color:#f97316;text-transform:uppercase;margin-bottom:6px;}
+h1{text-align:center;font-size:38px;font-weight:700;color:#fff;letter-spacing:-1px;line-height:1;margin-bottom:4px;}
+h1 b{color:#f97316;}
+.st{text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:#444;letter-spacing:2px;margin-bottom:22px;}
+.dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#f97316;margin-right:5px;vertical-align:middle;animation:bk 2s infinite;}
+@keyframes bk{0%,100%{opacity:1}50%{opacity:.3}}
 
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center;}
+.sw{flex:1;min-width:160px;position:relative;}
+.sw input{width:100%;background:#111118;border:1px solid #222;border-radius:4px;padding:9px 12px 9px 34px;font-family:'Share Tech Mono',monospace;font-size:12px;color:#fff;outline:none;transition:border-color .2s;}
+.sw input:focus{border-color:#f97316;}
+.sw input::placeholder{color:#333;}
+.sw:before{content:'⌕';position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#444;font-size:14px;}
 .tabs{display:flex;gap:4px;}
-.tab{padding:8px 14px;border-radius:4px;border:1px solid #222;background:#111118;color:#555;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:all .15s;white-space:nowrap;}
-.tab:hover{color:#aaa;border-color:#333;}
-.tab.active{background:#f97316;color:#000;border-color:#f97316;}
-.tab.fav.active{background:#facc15;color:#000;border-color:#facc15;}
-.btn-add{padding:8px 14px;border-radius:4px;border:none;background:#f97316;color:#000;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:opacity .15s;}
-.btn-add:hover{opacity:.85;}
+.tab{padding:8px 14px;border-radius:4px;border:1px solid #222;background:#111118;color:#555;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:all .15s;}
+.tab:hover{color:#aaa;}
+.tab.on{background:#f97316;color:#000;border-color:#f97316;}
+.tab.fv.on{background:#facc15;color:#000;border-color:#facc15;}
+.badd{padding:8px 14px;border-radius:4px;border:none;background:#f97316;color:#000;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;}
+.badd:hover{opacity:.85;}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px;max-width:1080px;margin:0 auto;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
 .card{background:#0f0f17;border:1px solid #1e1e2e;border-radius:6px;overflow:hidden;transition:border-color .2s,transform .2s;}
 .card:hover{border-color:#2e2e40;transform:translateY(-2px);}
-.card-head{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid #1e1e2e;}
-.ci{font-size:17px;line-height:1;}
-.cn{font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
-.cc{margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:9px;color:#333;letter-spacing:1px;}
-.ab{background:none;border:none;color:#333;cursor:pointer;font-size:15px;padding:2px 3px;border-radius:3px;transition:color .15s;}
-.ab:hover{color:#f97316;}
-.db{background:none;border:none;color:#1e1e2e;cursor:pointer;font-size:12px;padding:2px 3px;border-radius:3px;transition:color .15s;}
-.db:hover{color:#ef4444;}
+.ch{display:flex;align-items:center;gap:7px;padding:10px 13px;border-bottom:1px solid #1a1a28;}
+.ci{font-size:17px;}
+.cn{font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.cc{margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:9px;color:#2a2a3a;}
+.btnab{background:none;border:none;color:#2a2a3a;cursor:pointer;font-size:15px;padding:2px 4px;border-radius:3px;line-height:1;transition:color .15s;}
+.btnab:hover{color:#f97316;}
+.btndb{background:none;border:none;color:#1a1a28;cursor:pointer;font-size:11px;padding:2px 4px;line-height:1;transition:color .15s;}
+.btndb:hover{color:#ef4444;}
 ul{list-style:none;padding:3px 0;}
 li{display:flex;align-items:center;}
-a.ml{flex:1;display:flex;align-items:center;justify-content:space-between;padding:8px 14px;color:#999;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.3px;transition:color .15s,background .15s;}
-a.ml:hover{color:#fff;background:rgba(255,255,255,.04);}
-.ar{font-size:10px;opacity:.3;transition:opacity .15s,transform .15s;}
-a.ml:hover .ar{opacity:1;transform:translateX(3px);}
-.sb{background:none;border:none;cursor:pointer;padding:7px 8px 7px 3px;font-size:13px;opacity:.2;transition:opacity .2s,transform .15s;}
-.sb:hover{opacity:.6;transform:scale(1.2);}
-.sb.on{opacity:1;filter:drop-shadow(0 0 4px #facc15);}
-.dm{background:none;border:none;cursor:pointer;padding:7px 8px 7px 0;font-size:10px;color:#2a2a3a;transition:color .15s;}
+.ml{flex:1;display:flex;align-items:center;justify-content:space-between;padding:8px 13px;color:#888;text-decoration:none;font-size:13px;font-weight:500;transition:color .15s,background .15s;}
+.ml:hover{color:#fff;background:rgba(255,255,255,.04);}
+.ar{font-size:10px;opacity:.25;transition:opacity .15s,transform .15s;}
+.ml:hover .ar{opacity:1;transform:translateX(3px);}
+.sb{background:none;border:none;cursor:pointer;padding:7px 6px 7px 10px;font-size:12px;color:#2a2a3a;transition:color .2s,transform .15s;}
+.sb:hover{color:#aaa;transform:scale(1.2);}
+.sb.on{color:#facc15;text-shadow:0 0 6px #facc15;}
+.dm{background:none;border:none;cursor:pointer;padding:7px 10px 7px 0;font-size:10px;color:#1a1a28;transition:color .15s;}
 .dm:hover{color:#ef4444;}
+.empty{text-align:center;color:#2a2a3a;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;padding:40px 0;grid-column:1/-1;}
 
-.fav-section{max-width:1080px;margin:0 auto;}
-.fav-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;color:#facc15;text-transform:uppercase;margin-bottom:14px;}
-.fav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
-.fc{background:#111108;border:1px solid #2a2408;border-radius:5px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;transition:border-color .15s,transform .15s;}
+.flab{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;color:#facc15;text-transform:uppercase;margin-bottom:14px;}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
+.fc{display:flex;align-items:center;justify-content:space-between;background:#111108;border:1px solid #2a2408;border-radius:5px;padding:11px 13px;text-decoration:none;transition:border-color .15s,transform .15s;}
 .fc:hover{border-color:#facc15;transform:translateY(-1px);}
-.fc-l{display:flex;flex-direction:column;gap:2px;}
-.fc-d{color:#fff;font-size:14px;font-weight:700;letter-spacing:.4px;}
-.fc-b{color:#555;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;}
-.fa{color:#facc15;font-size:13px;opacity:.5;}
-.fc:hover .fa{opacity:1;}
-.fav-empty{color:#333;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;text-align:center;padding:28px;}
+.fcd{color:#fff;font-size:14px;font-weight:700;}
+.fcb{color:#555;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.fca{color:#facc15;font-size:12px;opacity:.5;}
+.fc:hover .fca{opacity:1;}
+.fempty{color:#333;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;text-align:center;padding:24px;}
 
-.empty{text-align:center;color:#333;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;margin-top:50px;grid-column:1/-1;}
-
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px;}
-.modal{background:#111118;border:1px solid #2a2a3a;border-radius:8px;padding:24px;width:100%;max-width:400px;}
-.mt{font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;margin-bottom:18px;}
-.mt span{color:#f97316;}
-.field{margin-bottom:12px;}
-.field label{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#555;text-transform:uppercase;margin-bottom:5px;}
-.field input,.field select{width:100%;background:#0a0a0f;border:1px solid #222;border-radius:4px;padding:8px 11px;font-family:'Share Tech Mono',monospace;font-size:12px;color:#fff;outline:none;transition:border-color .2s;}
-.field input:focus{border-color:#f97316;}
-.icon-picker{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px;}
-.ip{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#0a0a0f;border:1px solid #222;border-radius:4px;cursor:pointer;font-size:16px;transition:border-color .15s;}
-.ip.sel{border-color:#f97316;background:#1a0f00;}
-.color-picker{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px;}
-.cp{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s,transform .15s;}
-.cp.sel{border-color:#fff;transform:scale(1.15);}
-.modal-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:18px;}
-.btn-ghost{padding:7px 14px;border-radius:4px;border:1px solid #222;background:transparent;color:#666;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:all .15s;}
-.btn-ghost:hover{color:#aaa;border-color:#444;}
-.btn-ok{padding:7px 14px;border-radius:4px;border:none;background:#f97316;color:#000;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:opacity .15s;}
-.btn-ok:hover{opacity:.85;}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:100;padding:16px;}
+.ov.show{display:flex;}
+.mod{background:#111118;border:1px solid #2a2a3a;border-radius:8px;padding:22px;width:100%;max-width:400px;}
+.mt{font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;margin-bottom:16px;}
+.mt b{color:#f97316;}
+.fl{margin-bottom:12px;}
+.fl label{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#555;text-transform:uppercase;margin-bottom:5px;}
+.fl input{width:100%;background:#0a0a0f;border:1px solid #222;border-radius:4px;padding:8px 10px;font-family:'Share Tech Mono',monospace;font-size:12px;color:#fff;outline:none;transition:border-color .2s;}
+.fl input:focus{border-color:#f97316;}
+.urow{display:flex;gap:6px;align-items:stretch;}
+.urow input{flex:1;}
+.bsearch{padding:8px 12px;border-radius:4px;border:none;background:#1a1a2e;color:#00d4ff;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;border:1px solid rgba(0,212,255,.3);transition:background .15s;}
+.bsearch:hover{background:rgba(0,212,255,.1);}
+.hint{font-family:'Share Tech Mono',monospace;font-size:9px;color:#555;letter-spacing:1px;margin-top:4px;min-height:14px;}
+.ipp{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
+.ip{width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:#0a0a0f;border:1px solid #222;border-radius:3px;cursor:pointer;font-size:16px;transition:border-color .15s;}
+.ip.s{border-color:#f97316;background:#1a0f00;}
+.cpp{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
+.cp{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s,transform .15s;}
+.cp.s{border-color:#fff;transform:scale(1.15);}
+.mact{display:flex;gap:6px;justify-content:flex-end;margin-top:16px;}
+.bcancel{padding:7px 14px;border-radius:4px;border:1px solid #222;background:transparent;color:#666;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .15s;}
+.bcancel:hover{color:#aaa;border-color:#444;}
+.bok{padding:7px 14px;border-radius:4px;border:none;background:#f97316;color:#000;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:opacity .15s;}
+.bok:hover{opacity:.85;}
 </style>
 </head>
 <body>
-<div class="eyebrow">📂 Databáze dokumentace</div>
-<h1>MANUAL <span>VAULT</span></h1>
-<div class="sub"><span class="dot"></span><span id="stat">···</span></div>
+<div class="wrap">
+  <div class="ey">📂 Databáze dokumentace</div>
+  <h1>MANUAL <b>VAULT</b></h1>
+  <div class="st"><span class="dot"></span><span id="st">Načítám...</span></div>
 
-<div class="toolbar">
-  <div class="search-wrap">
-    <span class="si">⌕</span>
-    <input type="text" id="q" placeholder="Hledat zařízení nebo značku...">
+  <div class="bar">
+    <div class="sw"><input type="text" id="q" placeholder="Hledat zařízení nebo značku..." oninput="rg()"></div>
+    <div class="tabs">
+      <button class="tab on" id="ta" onclick="sv('all',this)">Všechny</button>
+      <button class="tab fv" id="tf" onclick="sv('fav',this)">★ Oblíbené</button>
+    </div>
+    <button class="badd" onclick="om('brand',null)">+ Přidat značku</button>
   </div>
-  <div class="tabs">
-    <button class="tab active" id="tab-all" onclick="setView('all',this)">Všechny</button>
-    <button class="tab fav" id="tab-fav" onclick="setView('fav',this)">★ Oblíbené</button>
-  </div>
-  <button class="btn-add" onclick="openModal('brand')">+ Přidat značku</button>
-</div>
 
-<div id="view-all">
-  <div class="grid" id="grid"></div>
-</div>
-<div id="view-fav" style="display:none">
-  <div class="fav-section">
-    <div class="fav-label">★ Oblíbené manuály</div>
-    <div class="fav-grid" id="fav-grid"></div>
+  <div id="va"><div class="grid" id="gr"></div></div>
+  <div id="vf" style="display:none">
+    <div class="flab">★ Oblíbené manuály</div>
+    <div class="fgrid" id="fg"></div>
   </div>
 </div>
 
-<div class="overlay" id="overlay" style="display:none" onclick="closeModal()">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="mt" id="mt">Přidat <span>značku</span></div>
-    <div id="modal-body"></div>
-    <div class="modal-actions">
-      <button class="btn-ghost" onclick="closeModal()">Zrušit</button>
-      <button class="btn-ok" onclick="saveModal()">Přidat</button>
+<div class="ov" id="ov" onclick="cm()">
+  <div class="mod" onclick="event.stopPropagation()">
+    <div class="mt" id="mtt">Přidat <b>značku</b></div>
+    <div id="mb"></div>
+    <div class="mact">
+      <button class="bcancel" onclick="cm()">Zrušit</button>
+      <button class="bok" onclick="sm()">Přidat</button>
     </div>
   </div>
 </div>
 
 <script>
-var ICONS=['🎛','💿','🎚','🎙','🔌','🔊','🎧','🖥','📻','🎹','🔧','📦','⚡','🎵','🎤'];
-var COLORS=['#f97316','#ef4444','#22d3ee','#a78bfa','#34d399','#fbbf24','#60a5fa','#f472b6','#4ade80','#fb923c'];
+var IC=['🎛','💿','🎚','🎙','🔌','🔊','🎧','🖥','📻','🎹','🔧','📦','⚡','🎵','🎤'];
+var CL=['#f97316','#ef4444','#22d3ee','#a78bfa','#34d399','#fbbf24','#60a5fa','#f472b6','#4ade80','#fb923c'];
 var uid=function(){return Math.random().toString(36).slice(2,9);};
 
-var brands=[
-  {id:'presonus',name:'PreSonus',color:'#f97316',icon:'🎛',manuals:[
-    {id:uid(),name:'Quantum ES4',url:'https://pubs.presonus.com/quantum-es4/en/'},
-    {id:uid(),name:'Monitor Station V2',url:'https://pubs.presonus.com/monitor-station-v2/en/'},
-    {id:uid(),name:'TubePre V2',url:'https://pubs.presonus.com/TubePre-V2/en/'},
-    {id:uid(),name:'Eris Sub 8BT',url:'https://pubs.presonus.com/Eris-Sub-8BT/en/'},
-    {id:uid(),name:'Eris 4.5BT',url:'https://pubs.presonus.com/eris-4.5bt/en/'},
-    {id:uid(),name:'HD9',url:'https://pubs.presonus.com/HD9/en/'},
-    {id:uid(),name:'MicroStation BT',url:'https://pubs.presonus.com/MicroStation-BT/en/'},
-    {id:uid(),name:'ATOM',url:'https://pubs.presonus.com/atom/en/'}
+var B=[
+  {id:'ps',nm:'PreSonus',cl:'#f97316',ic:'🎛',ms:[
+    {id:uid(),nm:'Quantum ES4',url:'https://pubs.presonus.com/quantum-es4/en/'},
+    {id:uid(),nm:'Monitor Station V2',url:'https://pubs.presonus.com/monitor-station-v2/en/'},
+    {id:uid(),nm:'TubePre V2',url:'https://pubs.presonus.com/TubePre-V2/en/'},
+    {id:uid(),nm:'Eris Sub 8BT',url:'https://pubs.presonus.com/Eris-Sub-8BT/en/'},
+    {id:uid(),nm:'Eris 4.5BT',url:'https://pubs.presonus.com/eris-4.5bt/en/'},
+    {id:uid(),nm:'HD9',url:'https://pubs.presonus.com/HD9/en/'},
+    {id:uid(),nm:'MicroStation BT',url:'https://pubs.presonus.com/MicroStation-BT/en/'},
+    {id:uid(),nm:'ATOM',url:'https://pubs.presonus.com/atom/en/'}
   ]},
-  {id:'pioneer',name:'Pioneer DJ',color:'#ef4444',icon:'💿',manuals:[
-    {id:uid(),name:'DDJ-800',url:'https://www.pioneerdj.com/en/support/documents/ddj-800/'},
-    {id:uid(),name:'DJM-300S',url:'https://www.pioneerdj.com/en/support/documents/djm-300s/'},
-    {id:uid(),name:'CDJ-800 MK2',url:'https://www.pioneerdj.com/en/support/documents/cdj-800mk2/'}
+  {id:'pj',nm:'Pioneer DJ',cl:'#ef4444',ic:'💿',ms:[
+    {id:uid(),nm:'DDJ-800',url:'https://www.pioneerdj.com/en/support/documents/ddj-800/'},
+    {id:uid(),nm:'DJM-300S',url:'https://www.pioneerdj.com/en/support/documents/djm-300s/'},
+    {id:uid(),nm:'CDJ-800 MK2',url:'https://www.pioneerdj.com/en/support/documents/cdj-800mk2/'}
   ]},
-  {id:'reloop',name:'Reloop',color:'#22d3ee',icon:'🎚',manuals:[
-    {id:uid(),name:'RP-1000 MK2',url:'https://www.reloop.com/reloop-rp-1000-mk2.html'},
-    {id:uid(),name:'Neon',url:'https://www.reloop.com/reloop-neon.html'}
+  {id:'rl',nm:'Reloop',cl:'#22d3ee',ic:'🎚',ms:[
+    {id:uid(),nm:'RP-1000 MK2',url:'https://www.reloop.com/reloop-rp-1000-mk2.html'},
+    {id:uid(),nm:'Neon',url:'https://www.reloop.com/reloop-neon.html'}
   ]},
-  {id:'rode',name:'Rode',color:'#a78bfa',icon:'🎙',manuals:[
-    {id:uid(),name:'NT1',url:'https://rode.com/en/user-guides/microphones/nt1'},
-    {id:uid(),name:'PodMic',url:'https://rode.com/en/user-guides/microphones/podmic'},
-    {id:uid(),name:'PSA1+',url:'https://rode.com/en/user-guides/accessories/psa1-plus'},
-    {id:uid(),name:'RodeCaster Duo',url:'https://rode.com/en/user-guides/rodecasterduo'}
+  {id:'rd',nm:'Rode',cl:'#a78bfa',ic:'🎙',ms:[
+    {id:uid(),nm:'NT1',url:'https://rode.com/en/user-guides/microphones/nt1'},
+    {id:uid(),nm:'PodMic',url:'https://rode.com/en/user-guides/microphones/podmic'},
+    {id:uid(),nm:'PSA1+',url:'https://rode.com/en/user-guides/accessories/psa1-plus'},
+    {id:uid(),nm:'RodeCaster Duo',url:'https://rode.com/en/user-guides/rodecasterduo'}
   ]},
-  {id:'behringer',name:'Behringer',color:'#34d399',icon:'🔌',manuals:[
-    {id:uid(),name:'DI20',url:'https://www.behringer.com/downloads.html#DI20'}
+  {id:'bh',nm:'Behringer',cl:'#34d399',ic:'🔌',ms:[
+    {id:uid(),nm:'DI20',url:'https://www.behringer.com/downloads.html'}
   ]},
-  {id:'nobsound',name:'Nobsound',color:'#fbbf24',icon:'🔊',manuals:[
-    {id:uid(),name:'L3-3 (Amazon)',url:'https://www.amazon.com/dp/B07D5QT4YP'}
+  {id:'nb',nm:'Nobsound',cl:'#fbbf24',ic:'🔊',ms:[
+    {id:uid(),nm:'L3-3 (Amazon)',url:'https://www.amazon.com/dp/B07D5QT4YP'}
   ]}
 ];
 
-var favs={};
-var curView='all';
-var modalMode=null;
-var targetBrand=null;
-var selIcon='🎛';
-var selColor='#f97316';
+var F={};
+var mode=null;
+var tgt=null;
+var si='🎛';
+var sc='#f97316';
 
-function totalM(){return brands.reduce(function(a,b){return a+b.manuals.length;},0);}
-function favCount(){return Object.keys(favs).filter(function(k){return favs[k];}).length;}
-function updateStat(){document.getElementById('stat').textContent='KLADYX STUDIO · '+totalM()+' MANUÁLŮ · '+favCount()+' OBLÍBENÝCH';}
+function e(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function tm(){return B.reduce(function(a,b){return a+b.ms.length;},0);}
+function fc(){return Object.keys(F).filter(function(k){return F[k];}).length;}
+function us(){document.getElementById('st').textContent='KLADYX STUDIO \u00b7 '+tm()+' MANUALU \u00b7 '+fc()+' OBLIBENYICH';}
 
-function render(){
-  updateStat();
-  renderGrid();
-  renderFavGrid();
-}
-
-function renderGrid(){
+function rg(){
   var q=document.getElementById('q').value.toLowerCase();
-  var g=document.getElementById('grid');
-  var html='';
-  var shown=0;
-  brands.forEach(function(b){
-    var ms=b.manuals.filter(function(m){return m.name.toLowerCase().indexOf(q)>=0||b.name.toLowerCase().indexOf(q)>=0;});
-    if(!ms.length)return;
-    shown++;
-    html+='<div class="card"><div class="card-head">';
-    html+='<span class="ci">'+b.icon+'</span>';
-    html+='<span class="cn" style="color:'+b.color+'">'+esc(b.name)+'</span>';
-    html+='<span class="cc">'+ms.length+' docs</span>';
-    html+='<button class="ab" title="Přidat manuál" onclick="openModal(\'manual\',\''+b.id+'\')">＋</button>';
-    html+='<button class="db" title="Smazat značku" onclick="delBrand(\''+b.id+'\')">✕</button>';
-    html+='</div><ul>';
-    ms.forEach(function(m){
-      var isFav=!!favs[m.id];
-      html+='<li>';
-      html+='<button class="sb'+(isFav?' on':'')+'" onclick="toggleFav(\''+m.id+'\')" title="'+(isFav?'Odebrat z oblíbených':'Přidat do oblíbených')+'" style="margin-left:6px">★</button>';
-      html+='<a class="ml" href="'+esc(m.url)+'" target="_blank" rel="noopener noreferrer">'+esc(m.name)+'<span class="ar">→</span></a>';
-      html+='<button class="dm" title="Smazat" onclick="delManual(\''+b.id+'\',\''+m.id+'\')">✕</button>';
-      html+='</li>';
-    });
-    html+='</ul></div>';
-  });
-  if(!shown) html='<div class="empty">// Žádné výsledky pro "'+esc(document.getElementById('q').value)+'"</div>';
-  g.innerHTML=html;
+  var g=document.getElementById('gr');
+  if(!g)return;
+  var h='';var n=0;
+  for(var i=0;i<B.length;i++){
+    var b=B[i];
+    var ms=[];
+    for(var j=0;j<b.ms.length;j++){
+      var m=b.ms[j];
+      if(m.nm.toLowerCase().indexOf(q)>=0||b.nm.toLowerCase().indexOf(q)>=0) ms.push(m);
+    }
+    if(!ms.length) continue;
+    n++;
+    h+='<div class="card"><div class="ch">';
+    h+='<span class="ci">'+b.ic+'</span>';
+    h+='<span class="cn" style="color:'+b.cl+'">'+e(b.nm)+'</span>';
+    h+='<span class="cc">'+ms.length+' docs</span>';
+    h+='<button class="btnab" onclick="om(\'manual\',\''+b.id+'\')" title="Pridat manual">+</button>';
+    h+='<button class="btndb" onclick="db(\''+b.id+'\')" title="Smazat znacku">x</button>';
+    h+='</div><ul>';
+    for(var k=0;k<ms.length;k++){
+      var m=ms[k];
+      var iF=!!F[m.id];
+      h+='<li>';
+      h+='<button class="sb'+(iF?' on':'')+'" onclick="tf(\''+m.id+'\')">\u2605</button>';
+      h+='<a class="ml" href="'+e(m.url)+'" target="_blank">'+e(m.nm)+'<span class="ar">\u2192</span></a>';
+      h+='<button class="dm" onclick="dm(\''+b.id+'\',\''+m.id+'\')">x</button>';
+      h+='</li>';
+    }
+    h+='</ul></div>';
+  }
+  if(!n) h='<div class="empty">// Zadne vysledky pro "'+e(document.getElementById('q').value)+'"</div>';
+  g.innerHTML=h;
+  us();
 }
 
-function renderFavGrid(){
-  var fg=document.getElementById('fav-grid');
+function rf(){
+  var fg=document.getElementById('fg');
+  if(!fg)return;
   var items=[];
-  brands.forEach(function(b){b.manuals.forEach(function(m){if(favs[m.id])items.push({m:m,b:b});});});
-  if(!items.length){fg.innerHTML='<div class="fav-empty">// Zatím žádné oblíbené — klikni na ★ u manuálu</div>';return;}
-  fg.innerHTML=items.map(function(x){
-    return '<a class="fc" href="'+esc(x.m.url)+'" target="_blank" rel="noopener noreferrer"><div class="fc-l"><div class="fc-d">'+esc(x.m.name)+'</div><div class="fc-b">'+esc(x.b.name)+'</div></div><span class="fa">→</span></a>';
-  }).join('');
-}
-
-function toggleFav(mid){favs[mid]=!favs[mid];render();}
-function delBrand(bid){brands=brands.filter(function(b){return b.id!==bid;});render();}
-function delManual(bid,mid){
-  brands=brands.map(function(b){if(b.id!==bid)return b;return Object.assign({},b,{manuals:b.manuals.filter(function(m){return m.id!==mid;})});});
-  delete favs[mid];render();
-}
-
-function setView(v,btn){
-  curView=v;
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
-  btn.classList.add('active');
-  document.getElementById('view-all').style.display=v==='all'?'':'none';
-  document.getElementById('view-fav').style.display=v==='fav'?'':'none';
-  if(v==='fav')renderFavGrid();
-}
-
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
-function openModal(mode,bid){
-  modalMode=mode; targetBrand=bid||null;
-  selIcon='🎛'; selColor='#f97316';
-  var body=document.getElementById('modal-body');
-  var mt=document.getElementById('mt');
-  if(mode==='brand'){
-    mt.innerHTML='Přidat <span>značku</span>';
-    body.innerHTML='<div class="field"><label>Název značky</label><input type="text" id="m-name" placeholder="např. Focusrite"></div>'
-      +'<div class="field"><label>Ikona</label><div class="icon-picker">'+ICONS.map(function(ic){return '<div class="ip'+(ic===selIcon?' sel':'')+'" onclick="pickIcon(this,\''+ic+'\')">'+ic+'</div>';}).join('')+'</div></div>'
-      +'<div class="field"><label>Barva</label><div class="color-picker">'+COLORS.map(function(c){return '<div class="cp'+(c===selColor?' sel':'')+'" style="background:'+c+'" onclick="pickColor(this,\''+c+'\')"></div>';}).join('')+'</div></div>';
-  } else {
-    mt.innerHTML='Přidat <span>manuál</span>';
-    body.innerHTML='<div class="field"><label>Název zařízení</label><input type="text" id="m-name" placeholder="např. Scarlett 2i2" oninput="updateSearchBtn()"></div>'
-      +'<div class="field"><label>URL odkaz</label><div style="display:flex;gap:6px;"><input type="text" id="m-url" placeholder="https://..." style="flex:1"><button class="btn-ok" id="btn-search-online" onclick="searchManualOnline()" style="white-space:nowrap;padding:8px 10px;font-size:11px;" title="Hledat manuál online">🔍 Hledat</button></div></div>'
-      +'<div id="search-hint" style="font-family:monospace;font-size:10px;color:#555;margin-top:-6px;letter-spacing:1px;"></div>';
+  for(var i=0;i<B.length;i++){
+    for(var j=0;j<B[i].ms.length;j++){
+      if(F[B[i].ms[j].id]) items.push({m:B[i].ms[j],b:B[i]});
+    }
   }
-  document.getElementById('overlay').style.display='flex';
-  setTimeout(function(){var inp=document.getElementById('m-name');if(inp)inp.focus();},50);
-}
-function closeModal(){document.getElementById('overlay').style.display='none';}
-function pickIcon(el,ic){selIcon=ic;document.querySelectorAll('.ip').forEach(function(e){e.classList.remove('sel');});el.classList.add('sel');}
-function pickColor(el,c){selColor=c;document.querySelectorAll('.cp').forEach(function(e){e.classList.remove('sel');});el.classList.add('sel');}
-
-function saveModal(){  var name=(document.getElementById('m-name')||{}).value||'';
-  if(!name.trim())return;
-  if(modalMode==='brand'){
-    brands.push({id:uid(),name:name.trim(),icon:selIcon,color:selColor,manuals:[]});
-  } else {
-    var urlEl=document.getElementById('m-url');
-    var url=(urlEl?urlEl.value:'').trim();
-    if(!url)return;
-    if(url.indexOf('http')!==0)url='https://'+url;
-    brands=brands.map(function(b){if(b.id!==targetBrand)return b;return Object.assign({},b,{manuals:b.manuals.concat([{id:uid(),name:name.trim(),url:url}])});});
+  if(!items.length){fg.innerHTML='<div class="fempty">// Zatim zadne oblibene \u2014 klikni na \u2605 u manualu</div>';return;}
+  var h='';
+  for(var i=0;i<items.length;i++){
+    var x=items[i];
+    h+='<a class="fc" href="'+e(x.m.url)+'" target="_blank"><div><div class="fcd">'+e(x.m.nm)+'</div><div class="fcb">'+e(x.b.nm)+'</div></div><span class="fca">\u2192</span></a>';
   }
-  closeModal();render();
+  fg.innerHTML=h;
+  us();
 }
 
-document.getElementById('q').addEventListener('input',renderGrid);
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
-function updateSearchBtn(){
-  var n=(document.getElementById('m-name')||{}).value||'';
-  var hint=document.getElementById('search-hint');
-  if(hint)hint.textContent=n.trim()?'→ Klikni \uD83D\uDD0D pro hledání manuálu: "'+n.trim()+'"':'';
+function tf(mid){F[mid]=!F[mid];rg();if(document.getElementById('vf').style.display!=='none')rf();}
+function db(bid){B=B.filter(function(b){return b.id!==bid;});rg();}
+function dm(bid,mid){
+  for(var i=0;i<B.length;i++){if(B[i].id===bid){B[i].ms=B[i].ms.filter(function(m){return m.id!==mid;});break;}}
+  delete F[mid];rg();
 }
-function searchManualOnline(){
-  var n=(document.getElementById('m-name')||{}).value||'';
-  if(!n.trim()){alert('Nejprve zadej název zařízení');return;}
-  var q=encodeURIComponent(n.trim()+' manual user guide PDF site:manualslib.com OR site:manualpdf.com OR filetype:pdf');
+
+function sv(v,btn){
+  document.getElementById('ta').className='tab'+(v==='all'?' on':'');
+  document.getElementById('tf').className='tab fv'+(v==='fav'?' on':'');
+  document.getElementById('va').style.display=v==='all'?'':'none';
+  document.getElementById('vf').style.display=v==='fav'?'':'none';
+  if(v==='fav')rf();
+}
+
+function hledat(){
+  var n=(document.getElementById('mn')||{value:''}).value;
+  if(!n.trim()){alert('Zadej nazev zarizeni');return;}
+  var q=encodeURIComponent(n.trim()+' manual filetype:pdf OR site:manualslib.com');
   window.open('https://www.google.com/search?q='+q,'_blank');
 }
-render();
+
+function om(m,bid){
+  mode=m;tgt=bid;si='🎛';sc='#f97316';
+  var mt=document.getElementById('mtt');
+  var mb=document.getElementById('mb');
+  if(m==='brand'){
+    mt.innerHTML='Pridat <b>znacku</b>';
+    var ips=IC.map(function(ic){return '<div class="ip'+(ic===si?' s':'')+'" onclick="pi(this,\''+ic+'\')" style="font-size:16px">'+ic+'</div>';}).join('');
+    var cps=CL.map(function(c){return '<div class="cp'+(c===sc?' s':'')+'" style="background:'+c+'" onclick="pc(this,\''+c+'\')"></div>';}).join('');
+    mb.innerHTML='<div class="fl"><label>Nazev znacky</label><input id="mn" placeholder="napr. Focusrite"></div>'
+      +'<div class="fl"><label>Ikona</label><div class="ipp">'+ips+'</div></div>'
+      +'<div class="fl"><label>Barva</label><div class="cpp">'+cps+'</div></div>';
+  } else {
+    mt.innerHTML='Pridat <b>manual</b>';
+    mb.innerHTML='<div class="fl"><label>Nazev zarizeni</label><input id="mn" placeholder="napr. Scarlett 2i2" oninput="sh()"></div>'
+      +'<div class="fl"><label>URL manualu</label><div class="urow"><input id="mu" placeholder="https://..."><button class="bsearch" onclick="hledat()">🔍 Hledat online</button></div></div>'
+      +'<div class="hint" id="hn"></div>';
+  }
+  document.getElementById('ov').className='ov show';
+  setTimeout(function(){var x=document.getElementById('mn');if(x)x.focus();},60);
+}
+
+function sh(){
+  var n=(document.getElementById('mn')||{value:''}).value;
+  var h=document.getElementById('hn');
+  if(h)h.textContent=n.trim()?'Zadej URL nebo klikni Hledat online pro "'+n.trim()+'"':'';
+}
+
+function cm(){document.getElementById('ov').className='ov';}
+function pi(el,ic){si=ic;document.querySelectorAll('.ip').forEach(function(e){e.className='ip';});el.className='ip s';}
+function pc(el,c){sc=c;document.querySelectorAll('.cp').forEach(function(e){e.className='cp';});el.className='cp s';}
+
+function sm(){
+  var n=(document.getElementById('mn')||{value:''}).value.trim();
+  if(!n)return;
+  if(mode==='brand'){
+    B.push({id:uid(),nm:n,ic:si,cl:sc,ms:[]});
+  } else {
+    var u=(document.getElementById('mu')||{value:''}).value.trim();
+    if(!u)return;
+    if(u.indexOf('http')!==0)u='https://'+u;
+    for(var i=0;i<B.length;i++){if(B[i].id===tgt){B[i].ms.push({id:uid(),nm:n,url:u});break;}}
+  }
+  cm();rg();
+}
+
+document.addEventListener('keydown',function(ev){if(ev.key==='Escape')cm();});
+window.addEventListener('load',function(){rg();});
 <\/script>
 </body></html>
 `;
+
 
 function openApp(id) {
   try {
