@@ -67,24 +67,22 @@
     .wn { font-size:0.56rem; letter-spacing:1px; text-transform:uppercase; color:var(--light); }
     .wd { font-size:0.5rem; color:var(--muted); }
     .eq-wrap{display:flex;gap:20px;justify-content:center;align-items:flex-end;margin:8px 0 4px;}
-    .dancer{width:32px;height:52px;position:relative;flex-shrink:0;}
-    .dancer svg{width:32px;height:52px;}
-    .dancer-g{animation:danceG 0.6s ease-in-out infinite alternate;}
-    .dancer-b{animation:danceB 0.6s ease-in-out infinite alternate;}
-    @keyframes danceG{
-      0%{transform:rotate(-12deg) translateY(0px);}
-      25%{transform:rotate(8deg) translateY(-4px);}
-      50%{transform:rotate(-6deg) translateY(-2px);}
-      75%{transform:rotate(10deg) translateY(-6px);}
-      100%{transform:rotate(-14deg) translateY(-1px);}
-    }
-    @keyframes danceB{
-      0%{transform:rotate(14deg) translateY(-2px);}
-      25%{transform:rotate(-10deg) translateY(-5px);}
-      50%{transform:rotate(8deg) translateY(-1px);}
-      75%{transform:rotate(-12deg) translateY(-4px);}
-      100%{transform:rotate(10deg) translateY(0px);}
-    }
+    .dancer{width:36px;height:56px;position:relative;flex-shrink:0;}
+    .dancer svg{width:36px;height:56px;overflow:visible;}
+    /* Zelený panáček - animace končetin */
+    .dancer-g .arm-l{transform-origin:16px 14px;animation:armLg 0.5s ease-in-out infinite alternate;}
+    .dancer-g .arm-r{transform-origin:16px 14px;animation:armRg 0.5s ease-in-out infinite alternate;}
+    .dancer-g .leg-l{transform-origin:16px 28px;animation:legLg 0.5s ease-in-out infinite alternate;}
+    .dancer-g .leg-r{transform-origin:16px 28px;animation:legRg 0.5s ease-in-out infinite alternate;}
+    /* Modrý panáček - animace končetin (opačná fáze) */
+    .dancer-b .arm-l{transform-origin:16px 14px;animation:armLg 0.5s ease-in-out infinite alternate-reverse;}
+    .dancer-b .arm-r{transform-origin:16px 14px;animation:armRg 0.5s ease-in-out infinite alternate-reverse;}
+    .dancer-b .leg-l{transform-origin:16px 28px;animation:legLg 0.5s ease-in-out infinite alternate-reverse;}
+    .dancer-b .leg-r{transform-origin:16px 28px;animation:legRg 0.5s ease-in-out infinite alternate-reverse;}
+    @keyframes armLg{0%{transform:rotate(-30deg);}100%{transform:rotate(30deg);}}
+    @keyframes armRg{0%{transform:rotate(30deg);}100%{transform:rotate(-30deg);}}
+    @keyframes legLg{0%{transform:rotate(-25deg);}100%{transform:rotate(25deg);}}
+    @keyframes legRg{0%{transform:rotate(25deg);}100%{transform:rotate(-25deg);}}
     .eq{display:flex;align-items:flex-end;gap:2px;height:36px;}
     .eq-bar{width:5px;border-radius:2px 2px 0 0;background:linear-gradient(to top,#00ff44,#00cc33);box-shadow:0 0 5px rgba(0,255,68,0.5);}
     .eq-bar:nth-child(1){animation:eqb1 0.4s ease-in-out infinite alternate;}
@@ -240,37 +238,25 @@
       <div class="wsub">CONTROL PANEL — VYBERTE APLIKACI</div>
       <div class="eq-wrap">
         <div class="dancer dancer-g">
-          <svg viewBox="0 0 32 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Hlava -->
-            <circle cx="16" cy="5" r="4" fill="#00ff44" stroke="#00ff44" stroke-width="0.5"/>
-            <!-- Tělo -->
+          <svg viewBox="0 0 32 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="5" r="4" fill="#00ff44"/>
             <line x1="16" y1="9" x2="16" y2="28" stroke="#00ff44" stroke-width="2.5" stroke-linecap="round"/>
-            <!-- Levá ruka -->
-            <line x1="16" y1="14" x2="5" y2="22" stroke="#00ff44" stroke-width="2" stroke-linecap="round"/>
-            <!-- Pravá ruka -->
-            <line x1="16" y1="14" x2="27" y2="18" stroke="#00ff44" stroke-width="2" stroke-linecap="round"/>
-            <!-- Levá noha -->
-            <line x1="16" y1="28" x2="7" y2="42" stroke="#00ff44" stroke-width="2" stroke-linecap="round"/>
-            <!-- Pravá noha -->
-            <line x1="16" y1="28" x2="24" y2="44" stroke="#00ff44" stroke-width="2" stroke-linecap="round"/>
+            <line class="arm-l" x1="16" y1="14" x2="4" y2="22" stroke="#00ff44" stroke-width="2" stroke-linecap="round"/>
+            <line class="arm-r" x1="16" y1="14" x2="28" y2="22" stroke="#00ff44" stroke-width="2" stroke-linecap="round"/>
+            <line class="leg-l" x1="16" y1="28" x2="6" y2="44" stroke="#00ff44" stroke-width="2" stroke-linecap="round"/>
+            <line class="leg-r" x1="16" y1="28" x2="26" y2="44" stroke="#00ff44" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
         <div class="eq"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
         <div class="eq"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
         <div class="dancer dancer-b">
-          <svg viewBox="0 0 32 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Hlava -->
-            <circle cx="16" cy="5" r="4" fill="#00d4ff" stroke="#00d4ff" stroke-width="0.5"/>
-            <!-- Tělo -->
+          <svg viewBox="0 0 32 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="5" r="4" fill="#00d4ff"/>
             <line x1="16" y1="9" x2="16" y2="28" stroke="#00d4ff" stroke-width="2.5" stroke-linecap="round"/>
-            <!-- Levá ruka -->
-            <line x1="16" y1="14" x2="4" y2="19" stroke="#00d4ff" stroke-width="2" stroke-linecap="round"/>
-            <!-- Pravá ruka -->
-            <line x1="16" y1="14" x2="27" y2="22" stroke="#00d4ff" stroke-width="2" stroke-linecap="round"/>
-            <!-- Levá noha -->
-            <line x1="16" y1="28" x2="8" y2="44" stroke="#00d4ff" stroke-width="2" stroke-linecap="round"/>
-            <!-- Pravá noha -->
-            <line x1="16" y1="28" x2="25" y2="42" stroke="#00d4ff" stroke-width="2" stroke-linecap="round"/>
+            <line class="arm-l" x1="16" y1="14" x2="4" y2="22" stroke="#00d4ff" stroke-width="2" stroke-linecap="round"/>
+            <line class="arm-r" x1="16" y1="14" x2="28" y2="22" stroke="#00d4ff" stroke-width="2" stroke-linecap="round"/>
+            <line class="leg-l" x1="16" y1="28" x2="6" y2="44" stroke="#00d4ff" stroke-width="2" stroke-linecap="round"/>
+            <line class="leg-r" x1="16" y1="28" x2="26" y2="44" stroke="#00d4ff" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
       </div>
