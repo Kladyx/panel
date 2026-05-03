@@ -9421,7 +9421,7 @@ setInterval(tapoStatus, 15000);
 // SOCKET
 var TAPO='http://localhost:7788';
 function wsocketSet(st){var c=document.getElementById('wsocket-card'),s=document.getElementById('wsocket-status');if(!c||!s)return;if(st==='on'){c.className='wsocket wsocket-on';s.textContent='● ZAPNUTO';}else if(st==='off'){c.className='wsocket wsocket-off';s.textContent='● VYPNUTO';}else{c.className='wsocket';s.textContent='Server offline';}}
-async function wsocketRefresh(){try{var r=await fetch(TAPO+'/status',{signal:AbortSignal.timeout(3000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){wsocketSet('x');}}
+async function wsocketRefresh(){try{var r=await fetch(TAPO+'/status',{signal:AbortSignal.timeout(3000)});var d=await r.json();var st=d.ok?d.status:'x';wsocketSet(st);if(window._tapoRef&&st!=='x')window._tapoRef.set({on:st==='on',ts:Date.now()});}catch(e){/* server nedostupny - stav prichazi z Firebase */}}
 async function wsocketToggle(){try{var r=await fetch(TAPO+'/toggle',{signal:AbortSignal.timeout(5000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){wsocketSet('x');}}
 wsocketRefresh();setInterval(wsocketRefresh,10000);
 
