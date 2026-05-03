@@ -9389,7 +9389,9 @@ async function tapoStatus() {
   try {
     const r = await fetch(TAPO_URL + '/status', { signal: AbortSignal.timeout(3000) });
     const d = await r.json();
-    tapoSetState(d.ok ? d.status : 'unknown');
+    const st = d.ok ? d.status : 'unknown';
+    tapoSetState(st);
+    if (window._tapoRef && st !== 'unknown') window._tapoRef.set({on: st === 'on', ts: Date.now()});
   } catch { tapoSetState('unknown'); }
 }
 
@@ -9399,7 +9401,9 @@ async function tapoToggle() {
   try {
     const r = await fetch(TAPO_URL + '/toggle', { signal: AbortSignal.timeout(5000) });
     const d = await r.json();
-    tapoSetState(d.ok ? d.status : 'unknown');
+    const st = d.ok ? d.status : 'unknown';
+    tapoSetState(st);
+    if (window._tapoRef && st !== 'unknown') window._tapoRef.set({on: st === 'on', ts: Date.now()});
   } catch { tapoSetState('unknown'); }
 }
 
@@ -9424,12 +9428,25 @@ wsocketRefresh();setInterval(wsocketRefresh,10000);
 
 // ── GOOGLE LOGIN GATE ──
 var ALLOWED_EMAILS = ['kovalcikmichal@post.cz', 'kladyx@seznam.cz', 'kovalcikmichal78@gmail.com'];
-var _GATE_CFG = { apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8", authDomain:"kladyxland.firebaseapp.com", projectId:"kladyxland", appId:"1:178078059030:web:8d8a0271b23a7aca2b4337" };
+var _GATE_CFG = { apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8", authDomain:"kladyxland.firebaseapp.com", projectId:"kladyxland", appId:"1:178078059030:web:8d8a0271b23a7aca2b4337", databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app" };
 var _gateAuth = null;
 function gateInit() {
   try {
     var ga; try { ga = firebase.app('gate-app'); } catch(e) { ga = firebase.initializeApp(_GATE_CFG, 'gate-app'); }
     _gateAuth = ga.auth();
+    // Firebase DB pro tapoDb sync (PC zapisuje, mobil čte)
+    try {
+      var _gateDb = ga.database();
+      var _tapoRef = _gateDb.ref('tapoDb');
+      window._tapoRef = _tapoRef;
+      _tapoRef.on('value', function(snap) {
+        var d = snap.val();
+        if (!d) return;
+        var st = d.on === true ? 'on' : 'off';
+        if (typeof tapoSetState === 'function') tapoSetState(st);
+        if (typeof wsocketSet === 'function') wsocketSet(st);
+      });
+    } catch(dbErr) { console.warn('tapoDb sync:', dbErr); }
     _gateAuth.onAuthStateChanged(function(user) { if(user){unlockPanel(user);}else{lockPanel();} });
   } catch(e) { document.getElementById('gate-status').textContent='Chyba: '+e.message; document.getElementById('gate-status').className='gate-status gate-err'; }
 }
@@ -9459,7 +9476,7 @@ function googleSignIn() {
 function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){location.reload();}); }
 (function(){
   var s1=document.createElement('script'); s1.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
-  s1.onload=function(){var s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js';s2.onload=gateInit;document.head.appendChild(s2);};
+  s1.onload=function(){var s1b=document.createElement('script');s1b.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js';s1b.onload=function(){var s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js';s2.onload=gateInit;document.head.appendChild(s2);};document.head.appendChild(s1b);};
   document.head.appendChild(s1);
 })();
 // ──────────────────────────────────────────────────────────────
