@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v6.8</title>
+  <title>KLADYX PANEL v6.9</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -167,7 +167,7 @@
 </div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v6.8</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v6.9</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -383,8 +383,8 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       align-items: center;
       gap: 8px;
       margin-bottom: 28px;
-      background: rgba(255,60,90,0.12);
-      border: 1px solid rgba(255,60,90,0.4);
+      background: rgba(0,255,136,0.12);
+      border: 1px solid rgba(0,255,136,0.4);
       border-radius: 20px;
       padding: 6px 16px;
     }
@@ -392,8 +392,8 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     .live-dot {
       width: 10px; height: 10px;
       border-radius: 50%;
-      background: var(--accent-red);
-      box-shadow: 0 0 8px var(--accent-red);
+      background: #00ff88;
+      box-shadow: 0 0 8px #00ff88;
       animation: blink 1.4s infinite;
     }
 
@@ -405,7 +405,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     .live-badge span {
       font-size: 0.78rem;
       letter-spacing: 2px;
-      color: var(--accent-red);
+      color: #00ff88;
     }
 
     /* NOW PLAYING CARD */
@@ -623,10 +623,9 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     ];
 
     // 🛡️ FALLBACK PROXY SERVERY — když přímý fetch selže
-    // Cache-buster: _t=timestamp zabrání proxy serverům vracet zastaralé cachované odpovědi
     function _cb(u) { return u + (u.indexOf('?') !== -1 ? '&' : '?') + '_t=' + Date.now(); }
     var PROXY_URLS = [
-      null, // Přímý fetch — PRVNÍ PRIORITA
+      null,
       function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(_cb(u)); },
       function(u) { return 'https://api.allorigins.win/get?url=' + encodeURIComponent(_cb(u)); },
       function(u) { return 'https://thingproxy.freeboard.io/fetch/' + _cb(u); },
