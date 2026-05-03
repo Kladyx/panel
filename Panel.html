@@ -8274,6 +8274,11 @@ APP_HTML["obs"] = `<!DOCTYPE html>
     .timer { font-size: 13px; letter-spacing: 0.2em; color: #ffffff33; font-variant-numeric: tabular-nums; min-height: 20px; transition: color 0.4s; }
     .timer-wrap { transition: color 0.4s; }
     .live .timer-wrap { color: var(--on-color)88; }
+    .controls { display: flex; gap: 16px; margin-top: 8px; }
+    .btn-start { background: rgba(0,255,102,0.12); border: 2px solid var(--on-color); color: var(--on-color); font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: 3px; padding: 14px 28px; cursor: pointer; text-transform: uppercase; transition: background 0.2s; }
+    .btn-start:hover { background: rgba(0,255,102,0.25); }
+    .btn-stop { background: rgba(255,34,68,0.12); border: 2px solid var(--off-color); color: var(--off-color); font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: 3px; padding: 14px 28px; cursor: pointer; text-transform: uppercase; transition: background 0.2s; }
+    .btn-stop:hover { background: rgba(255,34,68,0.25); }
   </style>
 </head>
 <body>
@@ -8286,6 +8291,10 @@ APP_HTML["obs"] = `<!DOCTYPE html>
     <div class="timer" id="timer"></div>
   </div>
   <div class="meta" id="meta">Připojuji se k Firebase...</div>
+  <div class="controls">
+    <button class="btn-start" onclick="setLive(true)">▶ ZAČÍT VYSÍLAT</button>
+    <button class="btn-stop" onclick="setLive(false)">■ UKONČIT</button>
+  </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"><\/script>
@@ -8332,6 +8341,13 @@ APP_HTML["obs"] = `<!DOCTYPE html>
     if (!data) { badge.className = 'status-badge'; label.textContent = '– – –'; meta.textContent = 'Čekám na data z PC...'; return; }
     setStatus(data.streaming, data.updated_at);
   }, err => { meta.textContent = '❌ Firebase: ' + err.message; });
+
+  function setLive(streaming) {
+    db.ref('obs_status').set({
+      streaming: streaming,
+      updated_at: Math.floor(Date.now() / 1000)
+    }).catch(err => { meta.textContent = '❌ Zápis selhal: ' + err.message; });
+  }
 <\/script>
 </body>
 </html>
