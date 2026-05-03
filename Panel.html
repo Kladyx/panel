@@ -9239,7 +9239,7 @@ h2{color:#f97316;font-size:22px;margin:0 0 14px;}
 <button class="btn-online" onclick="online()">🌐 Hledat manuál online (Google)</button>
 <div id="out"></div>
 <script>
-function g(q){return 'https://www.google.com/search?q='+encodeURIComponent(q+' manual user guide');}
+function g(q){return 'https://duckduckgo.com/?q='+encodeURIComponent(q+' manual user guide');}
 var D=[
   {b:"PreSonus",ms:[
     ["Quantum ES4",        g("PreSonus Quantum ES4")],
@@ -9289,7 +9289,7 @@ function f(){
 }
 function online(){
   var q=document.getElementById("q").value.trim();
-  window.open("https://www.google.com/search?q="+encodeURIComponent((q||"manual")+" manual"),"_blank");
+  window.open("https://duckduckgo.com/?q="+encodeURIComponent((q||"manual")+" manual"),"_blank");
 }
 f();
 <\/script>
