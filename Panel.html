@@ -593,7 +593,6 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
     <button class="station-tab" onclick="switchStation('blanik', this)">Rádio Blaník</button>
-    <button class="station-tab" onclick="switchStation('orion', this)">Hitrádio Orion</button>
   </div>
 
   <div class="live-badge">
@@ -635,7 +634,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
     // Icecast status endpointy pro non-HouseTime stanice
     var ICECAST_STATIONS = {
-      blanik: { label: 'Rádio Blaník',   apiUrl: 'https://radia.cz/api/stations/10/now-playing' },
+      blanik: { label: 'Rádio Blaník',   apiUrl: 'https://radia.cz/api/stations/218/now-playing' },
       orion:  { label: 'Hitrádio Orion', apiUrl: null }
     };
 
@@ -669,7 +668,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
     function fetchIcecastFallback(stationId) {
       var mounts = {
-        blanik: { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'blanikfm128' },
+        blanik: { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'blanikmorava128' },
         orion:  { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'orion128' }
       };
       var m = mounts[stationId];
