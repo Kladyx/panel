@@ -230,9 +230,6 @@
     <button class="app-btn" id="btn-manualy" style="--ac:#f97316;--ac-rgb:249,115,22" onclick="openApp('manualy')">
       <div class="bd"></div><div class="bi">📖</div><div class="bl">Manuály</div>
     </button>
-    <button class="app-btn" id="btn-zxnext" style="--ac:#00ff88;--ac-rgb:0,255,136" onclick="openApp('zxnext')">
-      <div class="bd"></div><div class="bi">🖥️</div><div class="bl">ZX Next</div>
-    </button>
 
   </div>
   <div class="iframe-wrap">
@@ -271,10 +268,6 @@
         <div class="wsocket-name">DJ Sound</div>
         <div class="wsocket-status" id="wsocket-status">Načítám...</div>
       </div>
-      <div style="display:flex;gap:8px;margin-top:4px;">
-        <button onclick="tapoFirebaseSet(true)"  style="flex:1;background:rgba(0,255,136,0.1);border:1px solid #00ff88;color:#00ff88;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;padding:6px 4px;cursor:pointer;">● ZAP</button>
-        <button onclick="tapoFirebaseSet(false)" style="flex:1;background:rgba(255,60,90,0.1);border:1px solid #ff3c5a;color:#ff3c5a;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;padding:6px 4px;cursor:pointer;">● VYP</button>
-      </div>
       <div class="wgrid">
         <div class="wcard" onclick="openApp('housetime')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🎵</div><div class="wn">HouseTime</div><div class="wd">Now Playing</div></div>
         <div class="wcard" onclick="openApp('odecty')" onmouseover="this.style.borderColor='#00ff88';this.style.boxShadow='0 0 14px rgba(0,255,136,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi" style="font-size:.9rem;letter-spacing:1px;">⚡💧🔥</div><div class="wn">Odečty</div><div class="wd">Utility Tracker</div></div>
@@ -291,7 +284,6 @@
         <div class="wcard" onclick="openApp('obs')" onmouseover="this.style.borderColor='#ff4444';this.style.boxShadow='0 0 14px rgba(255,68,68,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🔴</div><div class="wn">OBS Status</div><div class="wd">Stream Monitor</div></div>
         <div class="wcard" onclick="openApp('pocasi')" onmouseover="this.style.borderColor='#00b4ff';this.style.boxShadow='0 0 14px rgba(0,180,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🌤️</div><div class="wn">Počasí</div><div class="wd">Příbor</div></div>
         <div class="wcard" onclick="openApp('manualy')" onmouseover="this.style.borderColor='#f97316';this.style.boxShadow='0 0 14px rgba(249,115,22,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">📖</div><div class="wn">Manuály</div><div class="wd">Manual Vault</div></div>
-        <div class="wcard" onclick="openApp('zxnext')" onmouseover="this.style.borderColor='#00ff88';this.style.boxShadow='0 0 14px rgba(0,255,136,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🖥️</div><div class="wn">ZX Next</div><div class="wd">Diář & Novinky</div></div>
 
       </div>
       <div style="margin-top:22px;display:flex;align-items:center;justify-content:center;gap:24px;padding:12px 20px;border:1px solid rgba(0,212,255,0.1);border-radius:8px;background:rgba(255,255,255,0.025);">
@@ -318,7 +310,6 @@
     <iframe id="frame-obs" class="app-frame" title="obs" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox"  allowfullscreen></iframe>
     <iframe id="frame-pocasi" class="app-frame" title="pocasi" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
     <iframe id="frame-manualy" class="app-frame" title="manualy" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
-    <iframe id="frame-zxnext" class="app-frame" title="zxnext" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
 
   </div>
 </div>
@@ -9405,230 +9396,6 @@ startFirebase();
 </body></html>
 `;
 
-APP_HTML["zxnext"] = `<!DOCTYPE html>
-<html lang="cs">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ZX Spectrum Next – Diář</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-*{box-sizing:border-box;margin:0;padding:0;}
-html,body{width:100%;height:100%;background:#000;font-family:'Share Tech Mono',monospace;color:#00ff88;}
-body{display:flex;flex-direction:column;overflow:hidden;}
-.topbar{background:#000;border-bottom:2px solid #00ff88;padding:6px 10px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.topbar-logo{color:#00ffff;font-size:13px;letter-spacing:3px;text-shadow:0 0 8px #00ffff;}
-.topbar-logo span{color:#ffff00;}
-.topbar-sub{color:#004400;font-size:10px;letter-spacing:2px;flex:1;}
-.sync-dot{font-size:10px;letter-spacing:1px;}
-.sync-dot.ok{color:#00ff00;} .sync-dot.err{color:#ff2222;} .sync-dot.loading{color:#ffff00;}
-.tabs{display:flex;border-bottom:1px solid #003300;flex-shrink:0;}
-.tab{flex:1;padding:7px 4px;text-align:center;font-size:10px;letter-spacing:2px;cursor:pointer;color:#004400;border-right:1px solid #003300;transition:all .15s;}
-.tab:last-child{border-right:none;}
-.tab.active{color:#00ffff;background:rgba(0,255,255,0.07);border-bottom:2px solid #00ffff;}
-.tab:hover:not(.active){color:#00ff88;background:rgba(0,255,136,0.05);}
-.main{flex:1;overflow-y:auto;padding:10px;}
-.main::-webkit-scrollbar{width:4px;} .main::-webkit-scrollbar-track{background:#000;} .main::-webkit-scrollbar-thumb{background:#003300;}
-.form-section{background:rgba(0,20,0,.6);border:1px solid #003300;border-radius:4px;padding:10px;margin-bottom:10px;}
-.form-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
-.form-label{color:#004400;font-size:10px;letter-spacing:2px;min-width:60px;}
-.form-input{flex:1;background:#000;border:1px solid #003300;color:#00ff88;font-family:'Share Tech Mono',monospace;font-size:12px;padding:6px 8px;outline:none;}
-.form-input:focus{border-color:#00ffff;}
-.form-textarea{width:100%;background:#000;border:1px solid #003300;color:#00ff88;font-family:'Share Tech Mono',monospace;font-size:12px;padding:8px;resize:vertical;min-height:100px;outline:none;line-height:1.5;}
-.form-textarea:focus{border-color:#00ffff;}
-.form-select{background:#000;border:1px solid #003300;color:#00ff88;font-family:'Share Tech Mono',monospace;font-size:11px;padding:5px 8px;outline:none;}
-.btn-row{display:flex;gap:8px;margin-top:8px;}
-.btn{background:rgba(0,255,136,0.1);border:1px solid #00ff88;color:#00ff88;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;padding:7px 14px;cursor:pointer;}
-.btn:hover{background:rgba(0,255,136,0.25);}
-.btn.cyan{border-color:#00ffff;color:#00ffff;background:rgba(0,255,255,.08);}
-.btn.red{border-color:#ff3c5a;color:#ff3c5a;background:rgba(255,60,90,.08);}
-.entry-card{background:rgba(0,15,0,.7);border:1px solid #003300;border-radius:3px;padding:10px 12px;margin-bottom:8px;}
-.entry-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.entry-cat{font-size:9px;letter-spacing:2px;padding:2px 7px;border-radius:2px;}
-.cat-news{background:rgba(0,255,255,.15);color:#00ffff;border:1px solid rgba(0,255,255,.3);}
-.cat-prog{background:rgba(255,255,0,.1);color:#ffff00;border:1px solid rgba(255,255,0,.3);}
-.cat-diary{background:rgba(0,255,136,.1);color:#00ff88;border:1px solid rgba(0,255,136,.3);}
-.cat-link{background:rgba(255,0,255,.1);color:#ff00ff;border:1px solid rgba(255,0,255,.3);}
-.entry-date{color:#004400;font-size:9px;margin-left:auto;}
-.entry-title{color:#e8e8e8;font-size:13px;margin-bottom:4px;}
-.entry-body{color:#88cc88;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-word;}
-.entry-url{color:#00ffff;font-size:10px;margin-top:4px;word-break:break-all;cursor:pointer;text-decoration:underline;}
-.entry-actions{display:flex;gap:6px;margin-top:8px;}
-.entry-actions button{background:none;border:1px solid #003300;color:#004400;font-family:monospace;font-size:9px;padding:3px 8px;cursor:pointer;}
-.entry-actions button:hover{border-color:#ff3c5a;color:#ff3c5a;}
-.empty{text-align:center;color:#003300;font-size:12px;letter-spacing:3px;padding:40px 20px;}
-.gate{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:#004400;font-size:12px;letter-spacing:2px;}
-</style>
-</head>
-<body>
-<div class="topbar">
-  <div class="topbar-logo">ZX <span>NEXT</span> KS3</div>
-  <div class="topbar-sub">DIÁŘ & NOVINKY</div>
-  <div class="sync-dot loading" id="sync-dot">◉ INIT...</div>
-</div>
-<div class="tabs">
-  <div class="tab active" id="tab-list" onclick="showTab('list')">📋 ZÁZNAMY</div>
-  <div class="tab" id="tab-new" onclick="showTab('new')">✚ NOVÝ</div>
-  <div class="tab" id="tab-search" onclick="showTab('search')">🔍 HLEDAT</div>
-</div>
-<div class="main" id="main">
-  <div class="gate">[ PŘIPOJUJI K FIREBASE... ]</div>
-</div>
-<script>
-var _fbConfig = {
-  apiKey: "AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",
-  authDomain: "kladyxland.firebaseapp.com",
-  databaseURL: "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "kladyxland",
-  storageBucket: "kladyxland.firebasestorage.app",
-  messagingSenderId: "178078059030",
-  appId: "1:178078059030:web:8d8a0271b23a7aca2b4337"
-};
-var _db, ALL_ENTRIES = [], CURRENT_TAB = 'list', EDIT_ID = null;
-
-function setSyncDot(msg, state) {
-  var d = document.getElementById('sync-dot');
-  d.textContent = '◉ ' + msg;
-  d.className = 'sync-dot ' + (state || 'loading');
-}
-
-// Firebase init přes SDK (stejně jako ostatní appky)
-(function() {
-  function loadScript(src, cb) {
-    var s = document.createElement('script'); s.src = src; s.onload = cb; document.head.appendChild(s);
-  }
-  loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js', function() {
-    loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js', function() {
-      loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js', function() {
-        try {
-          var app; try { app = firebase.app('zxnext'); } catch(e) { app = firebase.initializeApp(_fbConfig, 'zxnext'); }
-          _db = app.database();
-          app.auth().onAuthStateChanged(function(user) {
-            if (user) {
-              setSyncDot('PŘIHLÁŠEN', 'ok');
-              loadEntries();
-            } else {
-              app.auth().signInAnonymously().catch(function(e) { setSyncDot('AUTH CHYBA', 'err'); });
-            }
-          });
-        } catch(e) { setSyncDot('CHYBA: ' + e.message, 'err'); }
-      });
-    });
-  });
-})();
-
-function genId() { return 'zx_' + Date.now() + '_' + Math.random().toString(36).slice(2,7); }
-function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-function loadEntries() {
-  setSyncDot('SYNC...', 'loading');
-  _db.ref('zxNextDiary').once('value').then(function(snap) {
-    var d = snap.val();
-    ALL_ENTRIES = d ? Object.entries(d).map(function(e){ return Object.assign({_id:e[0]},e[1]); }).sort(function(a,b){return b.ts-a.ts;}) : [];
-    setSyncDot('ONLINE · ' + ALL_ENTRIES.length + ' záz.', 'ok');
-    if (CURRENT_TAB === 'list') renderList(ALL_ENTRIES);
-    if (CURRENT_TAB === 'search') doSearch();
-  }).catch(function(e) { setSyncDot('OFFLINE', 'err'); });
-}
-
-function showTab(tab) {
-  CURRENT_TAB = tab;
-  ['list','new','search'].forEach(function(t){ document.getElementById('tab-'+t).classList.toggle('active', t===tab); });
-  if (tab==='list')   renderList(ALL_ENTRIES);
-  if (tab==='new')    renderForm(null);
-  if (tab==='search') renderSearch();
-}
-
-function catLabel(c) { return {news:'NOVINKA',prog:'PROGRAMOVÁNÍ',diary:'DIÁŘ',link:'ODKAZ'}[c]||c; }
-
-function entryHTML(e) {
-  var date = new Date(e.ts).toLocaleDateString('cs-CZ')+' '+new Date(e.ts).toLocaleTimeString('cs-CZ',{hour:'2-digit',minute:'2-digit'});
-  return '<div class="entry-card">'+
-    '<div class="entry-header"><span class="entry-cat cat-'+e.cat+'">'+catLabel(e.cat)+'</span><span class="entry-date">'+date+'</span></div>'+
-    '<div class="entry-title">'+escHtml(e.title)+'</div>'+
-    '<div class="entry-body">'+escHtml(e.body)+'</div>'+
-    (e.url?'<div class="entry-url" onclick="window.open(''+escHtml(e.url)+'','_blank')">🔗 '+escHtml(e.url)+'</div>':'')+
-    '<div class="entry-actions"><button onclick="editEntry(''+e._id+'')">✏️ UPRAVIT</button><button onclick="deleteEntry(''+e._id+'')">🗑 SMAZAT</button></div>'+
-  '</div>';
-}
-
-function renderList(entries) {
-  document.getElementById('main').innerHTML = entries.length ? entries.map(entryHTML).join('') : '<div class="empty">[ ŽÁDNÉ ZÁZNAMY ]<br><br>Přidej první →</div>';
-}
-
-function renderForm(entry) {
-  var isEdit = !!entry;
-  document.getElementById('main').innerHTML =
-    '<div class="form-section">'+
-      '<div class="form-row"><span class="form-label">KATEGORIE</span>'+
-        '<select class="form-select" id="f-cat">'+
-          '<option value="news"'+((!entry||entry.cat==='news')?' selected':'')+'>NOVINKA</option>'+
-          '<option value="prog"'+((entry&&entry.cat==='prog')?' selected':'')+'>PROGRAMOVÁNÍ</option>'+
-          '<option value="diary"'+((entry&&entry.cat==='diary')?' selected':'')+'>DIÁŘ</option>'+
-          '<option value="link"'+((entry&&entry.cat==='link')?' selected':'')+'>ODKAZ</option>'+
-        '</select></div>'+
-      '<div class="form-row"><span class="form-label">NÁZEV</span>'+
-        '<input class="form-input" id="f-title" type="text" placeholder="Název..." value="'+(entry?escHtml(entry.title):'')+'"/></div>'+
-      '<div class="form-row" style="align-items:flex-start;"><span class="form-label" style="padding-top:6px;">TEXT</span>'+
-        '<textarea class="form-textarea" id="f-body" placeholder="Vlož text, článek, kód...">'+((entry&&entry.body)?escHtml(entry.body):'')+'</textarea></div>'+
-      '<div class="form-row"><span class="form-label">URL</span>'+
-        '<input class="form-input" id="f-url" type="text" placeholder="https://..." value="'+(entry&&entry.url?escHtml(entry.url):'')+'"/></div>'+
-      '<div class="btn-row">'+
-        '<button class="btn cyan" onclick="saveEntry()">'+(isEdit?'💾 ULOŽIT':'✚ PŘIDAT')+'</button>'+
-        (isEdit?'<button class="btn red" onclick="cancelEdit()">✕ ZRUŠIT</button>':'')+
-      '</div></div>';
-}
-
-function renderSearch() {
-  document.getElementById('main').innerHTML =
-    '<div class="form-section"><div class="form-row">'+
-      '<input class="form-input" id="s-query" type="text" placeholder="Hledat..." oninput="doSearch()"/>'+
-    '</div></div><div id="search-results"></div>';
-}
-
-function doSearch() {
-  var q = (document.getElementById('s-query').value||'').toLowerCase();
-  var res = ALL_ENTRIES.filter(function(e){ return (e.title||'').toLowerCase().indexOf(q)!==-1||(e.body||'').toLowerCase().indexOf(q)!==-1; });
-  var el = document.getElementById('search-results');
-  if (el) el.innerHTML = res.length ? res.map(entryHTML).join('') : '<div class="empty">[ ŽÁDNÉ VÝSLEDKY ]</div>';
-}
-
-function saveEntry() {
-  var title = (document.getElementById('f-title').value||'').trim();
-  var body  = (document.getElementById('f-body').value||'').trim();
-  var url   = (document.getElementById('f-url').value||'').trim();
-  var cat   = document.getElementById('f-cat').value;
-  if (!title) { alert('Zadej název!'); return; }
-  var id = EDIT_ID || genId();
-  var orig = EDIT_ID ? (ALL_ENTRIES.find(function(e){return e._id===EDIT_ID;})||{}) : {};
-  var entry = { title:title, body:body, url:url, cat:cat, ts: orig.ts||Date.now(), updated:Date.now() };
-  EDIT_ID = null;
-  setSyncDot('UKLÁDÁM...', 'loading');
-  _db.ref('zxNextDiary/'+id).set(entry).then(function(){ loadEntries(); showTab('list'); }).catch(function(e){ setSyncDot('CHYBA!','err'); alert(e.message); });
-}
-
-function deleteEntry(id) {
-  if (!confirm('Smazat?')) return;
-  setSyncDot('MAŽU...','loading');
-  _db.ref('zxNextDiary/'+id).remove().then(function(){ loadEntries(); }).catch(function(){ setSyncDot('CHYBA!','err'); });
-}
-
-function editEntry(id) {
-  var e = ALL_ENTRIES.find(function(x){return x._id===id;});
-  if (!e) return;
-  EDIT_ID = id;
-  showTab('new');
-  renderForm(e);
-}
-
-function cancelEdit() { EDIT_ID=null; showTab('new'); renderForm(null); }
-setInterval(loadEntries, 60000);
-</script>
-</body>
-</html>
-`;
-
-
 APP_HTML["manualy"] = `<!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -9884,13 +9651,6 @@ function gateInit() {
     } catch(dbErr) { console.warn('tapoDb sync:', dbErr); }
     _gateAuth.onAuthStateChanged(function(user) { if(user){unlockPanel(user);}else{lockPanel();} });
   } catch(e) { document.getElementById('gate-status').textContent='Chyba: '+e.message; document.getElementById('gate-status').className='gate-status gate-err'; }
-}
-
-function tapoFirebaseSet(on) {
-  if (!window._tapoRef) { alert('Firebase není připojen'); return; }
-  window._tapoRef.set({ on: on, ts: Date.now() })
-    .then(function() { wsocketSet(on ? 'on' : 'off'); })
-    .catch(function(e) { alert('Chyba: ' + e.message); });
 }
 function unlockPanel(user) {
   if(!user||ALLOWED_EMAILS.indexOf(user.email)===-1) {
