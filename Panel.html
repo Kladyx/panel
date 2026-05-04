@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v6.9</title>
+  <title>KLADYX PANEL v7.0</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -167,7 +167,7 @@
 </div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v6.9</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v7.0</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -368,6 +368,12 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       margin-bottom: 8px;
       text-align: center;
     }
+
+    /* STATION TABS */
+    .station-tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; justify-content:center; }
+    .station-tab { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); color:var(--text-muted); font-family:'Courier New',monospace; font-size:0.62rem; letter-spacing:2px; padding:6px 12px; cursor:pointer; border-radius:4px; text-transform:uppercase; transition:all .2s; }
+    .station-tab:hover { border-color:var(--neon-cyan); color:var(--neon-cyan); }
+    .station-tab.active { border-color:var(--neon-cyan); color:var(--neon-cyan); background:rgba(0,212,255,0.1); box-shadow:0 0 8px rgba(0,212,255,0.2); }
 
     .version {
       font-size: 0.62rem;
@@ -581,8 +587,14 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 <body>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
-  <div class="station-name">HOUSETIME.FM</div>
+  <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
   <div class="version">v1.0.En</div>
+
+  <div class="station-tabs">
+    <button class="station-tab active" onclick="switchStation('housetime')">HouseTime</button>
+    <button class="station-tab" onclick="switchStation('pulsradio')">PulsRadio Dance</button>
+    <button class="station-tab" onclick="switchStation('blanik')">Rádio Blaník</button>
+  </div>
 
   <div class="live-badge">
     <div class="live-dot"></div>
@@ -612,6 +624,74 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     var countdownTimer = null;
     var lastSong = '';
     var fetchAttempts = 0;
+
+    // ── STANICE ──
+    var CURRENT_STATION = 'housetime';
+    var STATION_META = {
+      housetime: { label: 'HOUSETIME.FM', color: 'var(--neon-purple)' },
+      pulsradio: { label: 'PULSRADIO DANCE', color: '#ff6b35' },
+      blanik:    { label: 'RÁDIO BLANÍK', color: '#00ff88' }
+    };
+
+    // Icecast status endpointy pro non-HouseTime stanice
+    var ICECAST_STATIONS = {
+      pulsradio: { statusUrl: 'http://icecast.pulsradio.com/status-json.xsl', mount: 'puls80HD' },
+      blanik:    { statusUrl: 'http://ice.abradio.cz/status-json.xsl', mount: 'blanikfm128' }
+    };
+
+    function switchStation(id) {
+      CURRENT_STATION = id;
+      // Update tabs
+      document.querySelectorAll('.station-tab').forEach(function(b){ b.classList.remove('active'); });
+      event.target.classList.add('active');
+      // Update label
+      var m = STATION_META[id];
+      var lbl = document.getElementById('stationLabel');
+      lbl.textContent = m.label;
+      lbl.style.color = m.color;
+      // Clear and fetch
+      lastSong = '';
+      history = [];
+      document.getElementById('historyWrap').style.display = 'none';
+      document.getElementById('nowCard').innerHTML = '<div class="now-loading">⏳ NAČÍTÁM…</div>';
+      fetchNow();
+    }
+
+    function fetchIcecastStation(stationId) {
+      var st = ICECAST_STATIONS[stationId];
+      function _cb(u) { return u + (u.indexOf('?') !== -1 ? '&' : '?') + '_t=' + Date.now(); }
+      var proxies = [
+        'https://corsproxy.io/?' + encodeURIComponent(_cb(st.statusUrl)),
+        'https://api.allorigins.win/get?url=' + encodeURIComponent(_cb(st.statusUrl))
+      ];
+      var btn = document.getElementById('refreshBtn');
+      if (btn) btn.disabled = true;
+
+      function tryProxy(i) {
+        if (i >= proxies.length) {
+          document.getElementById('nowCard').innerHTML = '<div class="now-loading">❌ Nepodařilo se načíst</div>';
+          if (btn) btn.disabled = false;
+          resetCountdown();
+          return;
+        }
+        fetch(proxies[i], {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(raw) {
+          var data = raw.contents ? JSON.parse(raw.contents) : raw;
+          var sources = (data.icestats || data).source;
+          if (!sources) { tryProxy(i+1); return; }
+          if (!Array.isArray(sources)) sources = [sources];
+          var src = sources.find(function(s){ return s.listenurl && s.listenurl.indexOf(st.mount) !== -1; }) || sources[0];
+          if (!src || !src.title) { tryProxy(i+1); return; }
+          var parts = src.title.split(' - ');
+          var artist = parts[0] || '';
+          var song = parts.slice(1).join(' - ') || src.title;
+          showResult(artist, song);
+          addHistory(artist, song);
+          if (btn) btn.disabled = false;
+          resetCountdown();
+        }).catch(function(){ tryProxy(i+1); });
+      }
+      tryProxy(0);
+    }
 
     // 🔥 MAXIMUM RELIABILITY: 6 primárních zdrojů + 8 proxy fallbacků
     // VŠECHNY KOMBINACE se zkusí paralelně
@@ -668,6 +748,11 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     }
 
     function fetchNow() {
+      // Přepnout na správnou stanici
+      if (CURRENT_STATION !== 'housetime') {
+        fetchIcecastStation(CURRENT_STATION);
+        return;
+      }
       fetchAttempts = 0;
       var btn = document.getElementById('refreshBtn');
       btn.disabled = true;
@@ -9494,7 +9579,7 @@ setInterval(tapoStatus, 15000);
 // SOCKET
 var TAPO='http://localhost:7788';
 function wsocketSet(st){var c=document.getElementById('wsocket-card'),s=document.getElementById('wsocket-status');if(!c||!s)return;if(st==='on'){c.className='wsocket wsocket-on';s.textContent='● ZAPNUTO';}else if(st==='off'){c.className='wsocket wsocket-off';s.textContent='● VYPNUTO';}else{c.className='wsocket';s.textContent='Server offline';}}
-async function wsocketRefresh(){try{var r=await fetch(TAPO+'/status',{signal:AbortSignal.timeout(3000)});var d=await r.json();var st=d.ok?d.status:'x';wsocketSet(st);if(window._tapoRef&&st!=='x')window._tapoRef.set({on:st==='on',ts:Date.now()});}catch(e){/* server nedostupny - stav prichazi z Firebase */}}
+async function wsocketRefresh(){try{var r=await fetch(TAPO+'/status',{signal:AbortSignal.timeout(3000)});var d=await r.json();var st=d.ok?d.status:'x';wsocketSet(st);if(window._tapoRef&&st!=='x')window._tapoRef.set({on:st==='on',ts:Date.now()});}catch(e){wsocketSet('x');/* server nedostupny - zobrazit offline */}}
 async function wsocketToggle(){try{var r=await fetch(TAPO+'/toggle',{signal:AbortSignal.timeout(5000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){wsocketSet('x');}}
 wsocketRefresh();setInterval(wsocketRefresh,10000);
 
@@ -9517,7 +9602,7 @@ function gateInit() {
         if (!d) return;
         var st = d.on === true ? 'on' : 'off';
         if (typeof tapoSetState === 'function') tapoSetState(st);
-        if (typeof wsocketSet === 'function') wsocketSet(st);
+        // wsocketSet záměrně nevoláme — stav DJ Sound závisí jen na localhost serveru
       });
     } catch(dbErr) { console.warn('tapoDb sync:', dbErr); }
     _gateAuth.onAuthStateChanged(function(user) { if(user){unlockPanel(user);}else{lockPanel();} });
