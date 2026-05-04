@@ -635,9 +635,87 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
     // Icecast status endpointy pro non-HouseTime stanice
     var ICECAST_STATIONS = {
-      pulsradio: { statusUrl: 'http://icecast.pulsradio.com/status-json.xsl', mount: 'puls80HD' },
-      blanik:    { statusUrl: 'http://ice.abradio.cz/status-json.xsl', mount: 'blanikfm128' }
+      pulsradio: { label: 'PulsRadio Dance', apiUrl: 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.pulsradio.com/dance/') },
+      blanik:    { label: 'Rádio Blaník',    apiUrl: 'https://radia.cz/api/stations/10/now-playing' }
     };
+
+    function fetchIcecastStation(stationId) {
+      var st = ICECAST_STATIONS[stationId];
+      var btn = document.getElementById('refreshBtn');
+      if (btn) btn.disabled = true;
+
+      // Blaník — radia.cz má veřejné CORS JSON API
+      if (stationId === 'blanik') {
+        fetch(st.apiUrl + '?_t=' + Date.now(), {cache:'no-store'})
+          .then(function(r){ return r.json(); })
+          .then(function(d) {
+            var artist = (d.artist || d.interpret || '').trim();
+            var song   = (d.title  || d.name    || '').trim();
+            if (!song && !artist) { showResult('', 'Nelze načíst'); }
+            else { showResult(artist, song); addHistory(artist, song); }
+            if (btn) btn.disabled = false;
+            resetCountdown();
+          })
+          .catch(function() {
+            // fallback — zkus Icecast přes codetabs
+            fetchIcecastFallback(stationId);
+          });
+        return;
+      }
+
+      // Ostatní stanice — Icecast status JSON přes proxy
+      fetchIcecastFallback(stationId);
+    }
+
+    function fetchIcecastFallback(stationId) {
+      var mounts = {
+        pulsradio: { url: 'https://icecast.pulsradio.com/status-json.xsl', mount: 'puls80HD' },
+        blanik:    { url: 'https://ice.abradio.cz/status-json.xsl',        mount: 'blanikfm128' }
+      };
+      var m = mounts[stationId];
+      var ts = Date.now();
+      var proxies = [
+        m.url + '?_t=' + ts,
+        'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(m.url + '?_t=' + ts),
+        'https://thingproxy.freeboard.io/fetch/' + m.url + '?_t=' + ts,
+        'https://api.allorigins.win/get?url=' + encodeURIComponent(m.url + '?_t=' + ts)
+      ];
+      var btn = document.getElementById('refreshBtn');
+
+      function tryUrl(i) {
+        if (i >= proxies.length) {
+          document.getElementById('nowCard').innerHTML = '<div class="now-loading">❌ Stanice nedostupná</div>';
+          if (btn) btn.disabled = false;
+          resetCountdown();
+          return;
+        }
+        fetch(proxies[i], {cache:'no-store'})
+          .then(function(r){ return r.json(); })
+          .then(function(raw) {
+            var data = (raw && raw.contents) ? JSON.parse(raw.contents) : raw;
+            var icestats = (data && data.icestats) ? data.icestats : data;
+            var sources = icestats ? icestats.source : null;
+            if (!sources) { tryUrl(i+1); return; }
+            if (!Array.isArray(sources)) sources = [sources];
+            var src = null;
+            for (var j = 0; j < sources.length; j++) {
+              var lu = sources[j].listenurl || sources[j].server_url || '';
+              if (lu.indexOf(m.mount) !== -1) { src = sources[j]; break; }
+            }
+            if (!src) src = sources[0];
+            if (!src || !src.title) { tryUrl(i+1); return; }
+            var dash = src.title.indexOf(' - ');
+            var artist = dash !== -1 ? src.title.substring(0, dash).trim() : '';
+            var song   = dash !== -1 ? src.title.substring(dash+3).trim() : src.title.trim();
+            showResult(artist, song);
+            addHistory(artist, song);
+            if (btn) btn.disabled = false;
+            resetCountdown();
+          })
+          .catch(function(){ tryUrl(i+1); });
+      }
+      tryUrl(0);
+    }
 
     function switchStation(id, el) {
       CURRENT_STATION = id;
@@ -655,59 +733,6 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       document.getElementById('historyWrap').style.display = 'none';
       document.getElementById('nowCard').innerHTML = '<div class="now-loading">⏳ NAČÍTÁM…</div>';
       fetchNow();
-    }
-
-    function fetchIcecastStation(stationId) {
-      var st = ICECAST_STATIONS[stationId];
-      var ts = Date.now();
-      var urls = [
-        'https://api.allorigins.win/get?url=' + encodeURIComponent(st.statusUrl + '?_t=' + ts),
-        'https://corsproxy.io/?' + encodeURIComponent(st.statusUrl + '?_t=' + ts),
-        'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(st.statusUrl + '?_t=' + ts)
-      ];
-      var btn = document.getElementById('refreshBtn');
-      if (btn) btn.disabled = true;
-
-      function tryUrl(i) {
-        if (i >= urls.length) {
-          document.getElementById('nowCard').innerHTML = '<div class="now-loading">❌ Nepodařilo se načíst</div>';
-          if (btn) btn.disabled = false;
-          resetCountdown();
-          return;
-        }
-        fetch(urls[i], {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(raw) {
-          // allorigins vrací {contents: "...json string..."}, ostatní vrací přímo JSON
-          var data;
-          if (raw.contents) {
-            try { data = JSON.parse(raw.contents); } catch(e) { tryUrl(i+1); return; }
-          } else {
-            data = raw;
-          }
-          var icestats = data.icestats || data;
-          var sources = icestats.source;
-          if (!sources) { tryUrl(i+1); return; }
-          if (!Array.isArray(sources)) sources = [sources];
-          // Najdi správný mount point
-          var src = null;
-          for (var j = 0; j < sources.length; j++) {
-            var lu = sources[j].listenurl || sources[j].server_url || '';
-            if (lu.indexOf(st.mount) !== -1) { src = sources[j]; break; }
-          }
-          if (!src) src = sources[0];
-          if (!src) { tryUrl(i+1); return; }
-          var title = src.title || src.yp_currently_playing || '';
-          if (!title) { tryUrl(i+1); return; }
-          // Rozdělit na artist - song
-          var dash = title.indexOf(' - ');
-          var artist = dash !== -1 ? title.substring(0, dash).trim() : '';
-          var song = dash !== -1 ? title.substring(dash + 3).trim() : title.trim();
-          showResult(artist, song);
-          addHistory(artist, song);
-          if (btn) btn.disabled = false;
-          resetCountdown();
-        }).catch(function(){ tryUrl(i+1); });
-      }
-      tryUrl(0);
     }
 
     // 🔥 MAXIMUM RELIABILITY: 6 primárních zdrojů + 8 proxy fallbacků
@@ -9595,8 +9620,11 @@ setInterval(tapoStatus, 15000);
 
 // SOCKET
 var TAPO='http://localhost:7788';
-function wsocketSet(st){var c=document.getElementById('wsocket-card'),s=document.getElementById('wsocket-status');if(!c||!s)return;if(st==='on'){c.className='wsocket wsocket-on';s.textContent='● ZAPNUTO';}else if(st==='off'){c.className='wsocket wsocket-off';s.textContent='● VYPNUTO';}else{c.className='wsocket';s.textContent='Server offline';}}
-async function wsocketRefresh(){try{var r=await fetch(TAPO+'/status',{signal:AbortSignal.timeout(3000)});var d=await r.json();var st=d.ok?d.status:'x';wsocketSet(st);if(window._tapoRef&&st!=='x')window._tapoRef.set({on:st==='on',ts:Date.now()});}catch(e){/* server nedostupny - stav prichazi z Firebase */}}
+function wsocketSet(st){var c=document.getElementById('wsocket-card'),s=document.getElementById('wsocket-status');if(!c||!s)return;if(st==='on'){c.className='wsocket wsocket-on';s.textContent='● ZAPNUTO';}else if(st==='off'){c.className='wsocket wsocket-off';s.textContent='● VYPNUTO';}else{c.className='wsocket';s.textContent='···';}}
+async function wsocketRefresh(){
+  // Na HTTPS (GitHub Pages) je HTTP localhost blokován mixed-content → jen Firebase
+  if(location.protocol==='https:'){return;}
+  try{var r=await fetch(TAPO+'/status',{signal:AbortSignal.timeout(3000)});var d=await r.json();var st=d.ok?d.status:'x';wsocketSet(st);if(window._tapoRef&&st!=='x')window._tapoRef.set({on:st==='on',ts:Date.now()});}catch(e){/* server nedostupny */}}
 async function wsocketToggle(){try{var r=await fetch(TAPO+'/toggle',{signal:AbortSignal.timeout(5000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){wsocketSet('x');}}
 wsocketRefresh();setInterval(wsocketRefresh,10000);
 
@@ -9793,9 +9821,9 @@ setInterval(tapoStatus, 15000);
 
 // SOCKET
 var TAPO='http://localhost:7788';
-function wsocketSet(st){var c=document.getElementById('wsocket-card'),s=document.getElementById('wsocket-status');if(!c||!s)return;if(st==='on'){c.className='wsocket wsocket-on';s.textContent='● ZAPNUTO';}else if(st==='off'){c.className='wsocket wsocket-off';s.textContent='● VYPNUTO';}else{c.className='wsocket';s.textContent='Server offline';}}
-async function wsocketRefresh(){try{var r=await fetch(TAPO+'/status',{signal:AbortSignal.timeout(3000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){wsocketSet('x');}}
-async function wsocketToggle(){try{var r=await fetch(TAPO+'/toggle',{signal:AbortSignal.timeout(5000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){wsocketSet('x');}}
+function wsocketSet(st){var c=document.getElementById('wsocket-card'),s=document.getElementById('wsocket-status');if(!c||!s)return;if(st==='on'){c.className='wsocket wsocket-on';s.textContent='● ZAPNUTO';}else if(st==='off'){c.className='wsocket wsocket-off';s.textContent='● VYPNUTO';}else{c.className='wsocket';s.textContent='···';}}
+async function wsocketRefresh(){if(location.protocol==='https:'){return;}try{var r=await fetch(TAPO+'/status',{signal:AbortSignal.timeout(3000)});var d=await r.json();var st=d.ok?d.status:'x';wsocketSet(st);if(window._tapoRef&&st!=='x')window._tapoRef.set({on:st==='on',ts:Date.now()});}catch(e){/* server nedostupny – stav z Firebase */}}
+async function wsocketToggle(){try{var r=await fetch(TAPO+'/toggle',{signal:AbortSignal.timeout(5000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){/* nedostupny */}}
 wsocketRefresh();setInterval(wsocketRefresh,10000);
 
 
