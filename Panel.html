@@ -262,7 +262,7 @@
       </div>
       <div id="wclock-time" class="wclock">00:00:00</div>
       <div id="wclock-date" class="wdate">···</div>
-      <div class="wsocket" id="wsocket-card" onclick="wsocketToggle()">
+      <div class="wsocket" id="wsocket-card" onclick="if(!('ontouchstart' in window))wsocketToggle()" style="cursor: default;">
         <div class="wsocket-dot"></div>
         <div class="wsocket-icon">🔌</div>
         <div class="wsocket-name">DJ Sound</div>
