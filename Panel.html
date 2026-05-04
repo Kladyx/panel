@@ -591,9 +591,9 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
   <div class="version">v1.0.En</div>
 
   <div class="station-tabs">
-    <button class="station-tab active" onclick="switchStation('housetime')">HouseTime</button>
-    <button class="station-tab" onclick="switchStation('pulsradio')">PulsRadio Dance</button>
-    <button class="station-tab" onclick="switchStation('blanik')">Rádio Blaník</button>
+    <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
+    <button class="station-tab" onclick="switchStation('pulsradio', this)">PulsRadio Dance</button>
+    <button class="station-tab" onclick="switchStation('blanik', this)">Rádio Blaník</button>
   </div>
 
   <div class="live-badge">
@@ -639,11 +639,11 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       blanik:    { statusUrl: 'http://ice.abradio.cz/status-json.xsl', mount: 'blanikfm128' }
     };
 
-    function switchStation(id) {
+    function switchStation(id, el) {
       CURRENT_STATION = id;
       // Update tabs
       document.querySelectorAll('.station-tab').forEach(function(b){ b.classList.remove('active'); });
-      event.target.classList.add('active');
+      if (el) el.classList.add('active');
       // Update label
       var m = STATION_META[id];
       var lbl = document.getElementById('stationLabel');
@@ -659,38 +659,55 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
     function fetchIcecastStation(stationId) {
       var st = ICECAST_STATIONS[stationId];
-      function _cb(u) { return u + (u.indexOf('?') !== -1 ? '&' : '?') + '_t=' + Date.now(); }
-      var proxies = [
-        'https://corsproxy.io/?' + encodeURIComponent(_cb(st.statusUrl)),
-        'https://api.allorigins.win/get?url=' + encodeURIComponent(_cb(st.statusUrl))
+      var ts = Date.now();
+      var urls = [
+        'https://api.allorigins.win/get?url=' + encodeURIComponent(st.statusUrl + '?_t=' + ts),
+        'https://corsproxy.io/?' + encodeURIComponent(st.statusUrl + '?_t=' + ts),
+        'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(st.statusUrl + '?_t=' + ts)
       ];
       var btn = document.getElementById('refreshBtn');
       if (btn) btn.disabled = true;
 
-      function tryProxy(i) {
-        if (i >= proxies.length) {
+      function tryUrl(i) {
+        if (i >= urls.length) {
           document.getElementById('nowCard').innerHTML = '<div class="now-loading">❌ Nepodařilo se načíst</div>';
           if (btn) btn.disabled = false;
           resetCountdown();
           return;
         }
-        fetch(proxies[i], {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(raw) {
-          var data = raw.contents ? JSON.parse(raw.contents) : raw;
-          var sources = (data.icestats || data).source;
-          if (!sources) { tryProxy(i+1); return; }
+        fetch(urls[i], {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(raw) {
+          // allorigins vrací {contents: "...json string..."}, ostatní vrací přímo JSON
+          var data;
+          if (raw.contents) {
+            try { data = JSON.parse(raw.contents); } catch(e) { tryUrl(i+1); return; }
+          } else {
+            data = raw;
+          }
+          var icestats = data.icestats || data;
+          var sources = icestats.source;
+          if (!sources) { tryUrl(i+1); return; }
           if (!Array.isArray(sources)) sources = [sources];
-          var src = sources.find(function(s){ return s.listenurl && s.listenurl.indexOf(st.mount) !== -1; }) || sources[0];
-          if (!src || !src.title) { tryProxy(i+1); return; }
-          var parts = src.title.split(' - ');
-          var artist = parts[0] || '';
-          var song = parts.slice(1).join(' - ') || src.title;
+          // Najdi správný mount point
+          var src = null;
+          for (var j = 0; j < sources.length; j++) {
+            var lu = sources[j].listenurl || sources[j].server_url || '';
+            if (lu.indexOf(st.mount) !== -1) { src = sources[j]; break; }
+          }
+          if (!src) src = sources[0];
+          if (!src) { tryUrl(i+1); return; }
+          var title = src.title || src.yp_currently_playing || '';
+          if (!title) { tryUrl(i+1); return; }
+          // Rozdělit na artist - song
+          var dash = title.indexOf(' - ');
+          var artist = dash !== -1 ? title.substring(0, dash).trim() : '';
+          var song = dash !== -1 ? title.substring(dash + 3).trim() : title.trim();
           showResult(artist, song);
           addHistory(artist, song);
           if (btn) btn.disabled = false;
           resetCountdown();
-        }).catch(function(){ tryProxy(i+1); });
+        }).catch(function(){ tryUrl(i+1); });
       }
-      tryProxy(0);
+      tryUrl(0);
     }
 
     // 🔥 MAXIMUM RELIABILITY: 6 primárních zdrojů + 8 proxy fallbacků
@@ -9579,7 +9596,7 @@ setInterval(tapoStatus, 15000);
 // SOCKET
 var TAPO='http://localhost:7788';
 function wsocketSet(st){var c=document.getElementById('wsocket-card'),s=document.getElementById('wsocket-status');if(!c||!s)return;if(st==='on'){c.className='wsocket wsocket-on';s.textContent='● ZAPNUTO';}else if(st==='off'){c.className='wsocket wsocket-off';s.textContent='● VYPNUTO';}else{c.className='wsocket';s.textContent='Server offline';}}
-async function wsocketRefresh(){try{var r=await fetch(TAPO+'/status',{signal:AbortSignal.timeout(3000)});var d=await r.json();var st=d.ok?d.status:'x';wsocketSet(st);if(window._tapoRef&&st!=='x')window._tapoRef.set({on:st==='on',ts:Date.now()});}catch(e){wsocketSet('x');/* server nedostupny - zobrazit offline */}}
+async function wsocketRefresh(){try{var r=await fetch(TAPO+'/status',{signal:AbortSignal.timeout(3000)});var d=await r.json();var st=d.ok?d.status:'x';wsocketSet(st);if(window._tapoRef&&st!=='x')window._tapoRef.set({on:st==='on',ts:Date.now()});}catch(e){/* server nedostupny - stav prichazi z Firebase */}}
 async function wsocketToggle(){try{var r=await fetch(TAPO+'/toggle',{signal:AbortSignal.timeout(5000)});var d=await r.json();wsocketSet(d.ok?d.status:'x');}catch(e){wsocketSet('x');}}
 wsocketRefresh();setInterval(wsocketRefresh,10000);
 
@@ -9602,7 +9619,7 @@ function gateInit() {
         if (!d) return;
         var st = d.on === true ? 'on' : 'off';
         if (typeof tapoSetState === 'function') tapoSetState(st);
-        // wsocketSet záměrně nevoláme — stav DJ Sound závisí jen na localhost serveru
+        if (typeof wsocketSet === 'function') wsocketSet(st);
       });
     } catch(dbErr) { console.warn('tapoDb sync:', dbErr); }
     _gateAuth.onAuthStateChanged(function(user) { if(user){unlockPanel(user);}else{lockPanel();} });
