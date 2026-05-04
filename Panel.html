@@ -268,6 +268,10 @@
         <div class="wsocket-name">DJ Sound</div>
         <div class="wsocket-status" id="wsocket-status">Načítám...</div>
       </div>
+      <div style="display:flex;gap:8px;margin-top:4px;">
+        <button onclick="tapoFirebaseSet(true)"  style="flex:1;background:rgba(0,255,136,0.1);border:1px solid #00ff88;color:#00ff88;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;padding:6px 4px;cursor:pointer;">● ZAP</button>
+        <button onclick="tapoFirebaseSet(false)" style="flex:1;background:rgba(255,60,90,0.1);border:1px solid #ff3c5a;color:#ff3c5a;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;padding:6px 4px;cursor:pointer;">● VYP</button>
+      </div>
       <div class="wgrid">
         <div class="wcard" onclick="openApp('housetime')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🎵</div><div class="wn">HouseTime</div><div class="wd">Now Playing</div></div>
         <div class="wcard" onclick="openApp('odecty')" onmouseover="this.style.borderColor='#00ff88';this.style.boxShadow='0 0 14px rgba(0,255,136,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi" style="font-size:.9rem;letter-spacing:1px;">⚡💧🔥</div><div class="wn">Odečty</div><div class="wd">Utility Tracker</div></div>
@@ -9651,6 +9655,13 @@ function gateInit() {
     } catch(dbErr) { console.warn('tapoDb sync:', dbErr); }
     _gateAuth.onAuthStateChanged(function(user) { if(user){unlockPanel(user);}else{lockPanel();} });
   } catch(e) { document.getElementById('gate-status').textContent='Chyba: '+e.message; document.getElementById('gate-status').className='gate-status gate-err'; }
+}
+
+function tapoFirebaseSet(on) {
+  if (!window._tapoRef) { alert('Firebase není připojen'); return; }
+  window._tapoRef.set({ on: on, ts: Date.now() })
+    .then(function() { wsocketSet(on ? 'on' : 'off'); })
+    .catch(function(e) { alert('Chyba: ' + e.message); });
 }
 function unlockPanel(user) {
   if(!user||ALLOWED_EMAILS.indexOf(user.email)===-1) {
