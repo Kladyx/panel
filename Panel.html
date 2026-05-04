@@ -592,8 +592,8 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
-    <button class="station-tab" onclick="switchStation('pulsradio', this)">PulsRadio Dance</button>
     <button class="station-tab" onclick="switchStation('blanik', this)">Rádio Blaník</button>
+    <button class="station-tab" onclick="switchStation('dance', this)">Dance Radio CZ</button>
   </div>
 
   <div class="live-badge">
@@ -628,15 +628,15 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     // ── STANICE ──
     var CURRENT_STATION = 'housetime';
     var STATION_META = {
-      housetime: { label: 'HOUSETIME.FM', color: 'var(--neon-purple)' },
-      pulsradio: { label: 'PULSRADIO DANCE', color: '#ff6b35' },
-      blanik:    { label: 'RÁDIO BLANÍK', color: '#00ff88' }
+      housetime: { label: 'HOUSETIME.FM',    color: 'var(--neon-purple)' },
+      blanik:    { label: 'RÁDIO BLANÍK',    color: '#00ff88' },
+      dance:     { label: 'DANCE RADIO CZ',  color: '#ff6b35' }
     };
 
     // Icecast status endpointy pro non-HouseTime stanice
     var ICECAST_STATIONS = {
-      pulsradio: { label: 'PulsRadio Dance', apiUrl: 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.pulsradio.com/dance/') },
-      blanik:    { label: 'Rádio Blaník',    apiUrl: 'https://radia.cz/api/stations/10/now-playing' }
+      blanik: { label: 'Rádio Blaník',   apiUrl: 'https://radia.cz/api/stations/10/now-playing' },
+      dance:  { label: 'Dance Radio CZ', apiUrl: null }
     };
 
     function fetchIcecastStation(stationId) {
@@ -669,8 +669,8 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
     function fetchIcecastFallback(stationId) {
       var mounts = {
-        pulsradio: { url: 'https://icecast.pulsradio.com/status-json.xsl', mount: 'puls80HD' },
-        blanik:    { url: 'https://ice.abradio.cz/status-json.xsl',        mount: 'blanikfm128' }
+        blanik: { url: 'https://ice.abradio.cz/status-json.xsl',  mount: 'blanikfm128' },
+        dance:  { url: 'https://ice.actve.net/status-json.xsl',    mount: 'dance-radio128' }
       };
       var m = mounts[stationId];
       var ts = Date.now();
