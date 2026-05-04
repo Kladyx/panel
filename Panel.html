@@ -593,8 +593,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
     <button class="station-tab" onclick="switchStation('blanik', this)">Rádio Blaník</button>
-    <button class="station-tab" onclick="switchStation('dance', this)">Dance Radio CZ</button>
-    <button class="station-tab" onclick="switchStation('orion', this)">Hitradio Orion</button>
+    <button class="station-tab" onclick="switchStation('orion', this)">Hitrádio Orion</button>
   </div>
 
   <div class="live-badge">
@@ -629,17 +628,15 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     // ── STANICE ──
     var CURRENT_STATION = 'housetime';
     var STATION_META = {
-      housetime: { label: 'HOUSETIME.FM',    color: 'var(--neon-purple)' },
-      blanik:    { label: 'RÁDIO BLANÍK',    color: '#00ff88' },
-      dance:     { label: 'DANCE RADIO CZ',  color: '#ff6b35' },
-      orion:     { label: 'HITRADIO ORION',  color: '#00d4ff' }
+      housetime: { label: 'HOUSETIME.FM',   color: 'var(--neon-purple)' },
+      blanik:    { label: 'RÁDIO BLANÍK',   color: '#00ff88' },
+      orion:     { label: 'HITRÁDIO ORION', color: '#00d4ff' }
     };
 
     // Icecast status endpointy pro non-HouseTime stanice
     var ICECAST_STATIONS = {
       blanik: { label: 'Rádio Blaník',   apiUrl: 'https://radia.cz/api/stations/10/now-playing' },
-      dance:  { label: 'Dance Radio CZ', apiUrl: null },
-      orion:  { label: 'Hitradio Orion', apiUrl: null }
+      orion:  { label: 'Hitrádio Orion', apiUrl: null }
     };
 
     function fetchIcecastStation(stationId) {
@@ -672,9 +669,8 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
     function fetchIcecastFallback(stationId) {
       var mounts = {
-        blanik: { url: 'https://ice.abradio.cz/status-json.xsl',    mount: 'blanikfm128' },
-        dance:  { url: 'https://icecast2.play.cz/status-json.xsl',   mount: 'dance-radio128' },
-        orion:  { url: 'https://ice.abradio.cz/status-json.xsl',     mount: 'orion128' }
+        blanik: { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'blanikfm128' },
+        orion:  { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'orion128' }
       };
       var m = mounts[stationId];
       var ts = Date.now();
