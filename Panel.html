@@ -7327,7 +7327,7 @@ function _platbyLogin(){
       }
       document.getElementById('platby-pw').value='';
     })
-    .catch(()=>{err.textContent='✗ Špatné heslo';});
+    .catch(e=>{err.textContent='✗ '+(e.code||e.message||'Chyba přihlášení');});
 }
 
 let _dataInited=false;
@@ -7387,7 +7387,7 @@ function _startPlatbyListener(){
         _setSyncStatus('🔄 Aktualizuji...','#2ecc71');
       }
     }
-  },(err)=>{console.error(err);_setSyncStatus('❌ Offline','#e74c3c');});
+  },(err)=>{console.error(err);_setSyncStatus('❌ '+err.code,'#e74c3c');});
 }
 _startPlatbyListener();
 
@@ -7787,19 +7787,24 @@ function initFB(){
   try{
     var FC={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
     if(!firebase.apps.length)firebase.initializeApp(FC);
-    firebase.auth().signInAnonymously().catch(function(e){SS('💾 Lokálně','#f39c12');});
     REF=firebase.database().ref('jidloDb');
     var FL=true;
-    setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},3000);
-    firebase.auth().onAuthStateChanged(function(user){
-      if(!user)return;
+    var _timer=setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},8000);
+    function startSync(){
+      clearTimeout(_timer);
       REF.on('value',function(s){
-      var fb=s.val();
-      if(FL){FL=false;if(fb&&typeof fb==='object'){DAT=fb;try{localStorage.setItem('jidlo2',JSON.stringify(DAT));}catch(ex){}}RL();SS('✅ Sync','#2ecc71');return;}
-      if(SAV)return;
-      if(fb&&typeof fb==='object'&&JSON.stringify(fb)!==JSON.stringify(DAT)){DAT=fb;try{localStorage.setItem('jidlo2',JSON.stringify(DAT));}catch(ex){}RL();SS('🔄','#2ecc71');}
-    },function(e){SS('❌','#e74c3c');});
-    }); // onAuthStateChanged
+        var fb=s.val();
+        if(FL){FL=false;if(fb&&typeof fb==='object'){DAT=fb;try{localStorage.setItem('jidlo2',JSON.stringify(DAT));}catch(ex){}}RL();SS('✅ Sync','#2ecc71');return;}
+        if(SAV)return;
+        if(fb&&typeof fb==='object'&&JSON.stringify(fb)!==JSON.stringify(DAT)){DAT=fb;try{localStorage.setItem('jidlo2',JSON.stringify(DAT));}catch(ex){}RL();SS('🔄','#2ecc71');}
+      },function(e){SS('❌ '+e.code,'#e74c3c');});
+    }
+    // Zkus bez autentizace, pak s anonymous auth
+    REF.once('value').then(function(){startSync();}).catch(function(){
+      firebase.auth().signInAnonymously()
+        .then(function(){startSync();})
+        .catch(function(e){clearTimeout(_timer);SS('💾 Lokálně','#f39c12');});
+    });
   }catch(e){SS('💾 Lokálně','#f39c12');}
 }
 var s1=document.createElement('script');
@@ -8398,19 +8403,23 @@ function initFB(){
   try{
     var FC={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
     if(!firebase.apps.length)firebase.initializeApp(FC);
-    firebase.auth().signInAnonymously().catch(function(e){SS('💾 Lokálně','#f39c12');});
     REF=firebase.database().ref('glucoDb');
     var FL=true;
-    setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},3000);
-    firebase.auth().onAuthStateChanged(function(user){
-      if(!user)return;
+    var _timer=setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},8000);
+    function startSync(){
+      clearTimeout(_timer);
       REF.on('value',function(snap){
         var fb=snap.val();
         if(FL){FL=false;if(fb&&typeof fb==='object'){DAT=fb;try{localStorage.setItem('gluco2',JSON.stringify(DAT));}catch(ex){}}RL();SS('✅ Sync','#2ecc71');return;}
         if(SAV)return;
         if(fb&&typeof fb==='object'&&JSON.stringify(fb)!==JSON.stringify(DAT)){DAT=fb;try{localStorage.setItem('gluco2',JSON.stringify(DAT));}catch(ex){}RL();SS('🔄','#2ecc71');}
-      },function(){SS('❌','#e74c3c');});
-    }); // onAuthStateChanged
+      },function(e){SS('❌ '+e.code,'#e74c3c');});
+    }
+    REF.once('value').then(function(){startSync();}).catch(function(){
+      firebase.auth().signInAnonymously()
+        .then(function(){startSync();})
+        .catch(function(e){clearTimeout(_timer);SS('💾 Lokálně','#f39c12');});
+    });
   }catch(e){SS('💾 Lokálně','#f39c12');}
 }
 var s1=document.createElement('script');
@@ -8827,9 +8836,7 @@ function initFB(){
     REF=firebase.database().ref('notesDb');
     var FL=true;
     var _offlineTimer=setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},8000);
-    firebase.auth().signInAnonymously().catch(function(e){clearTimeout(_offlineTimer);SS('💾 Lokálně','#f39c12');});
-    firebase.auth().onAuthStateChanged(function(user){
-      if(!user)return;
+    function startSync(){
       clearTimeout(_offlineTimer);
       REF.on('value',function(snap){
         var fb=snap.val();
@@ -8845,8 +8852,13 @@ function initFB(){
           var nb=Array.isArray(fb)?fb:Object.values(fb).sort(function(a,b){return b.ts-a.ts;});
           if(JSON.stringify(nb)!==JSON.stringify(poz)){poz=nb;saveLocal();render();SS('🔄','#2ecc71');}
         }
-      },function(){SS('❌','#e74c3c');});
-    }); // onAuthStateChanged
+      },function(e){SS('❌ '+e.code,'#e74c3c');});
+    }
+    REF.once('value').then(function(){startSync();}).catch(function(){
+      firebase.auth().signInAnonymously()
+        .then(function(){startSync();})
+        .catch(function(e){clearTimeout(_offlineTimer);SS('💾 Lokálně','#f39c12');});
+    });
   }catch(e){SS('💾 Lokálně','#f39c12');}
 }
 var s1=document.createElement('script');
