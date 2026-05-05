@@ -747,65 +747,24 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
     // 🔥 MAXIMUM RELIABILITY: 6 primárních zdrojů + 8 proxy fallbacků
     // VŠECHNY KOMBINACE se zkusí paralelně
-    // Pouze Icecast status — nejspolehlivější zdroj
-    // ── HOUSETIME ENDPOINTS ──────────────────────────────────────────────────
-    // 1. Primární: Icecast status-json přes proxy
-    // 2. Fallback: Scraping www.housetime.fm trackliste stránky
-    var ICECAST_URL = 'https://listen.housetime.fm/status-json.xsl';
-    var TRACKLIST_URL = 'https://www.housetime.fm/';
-
-    function _cb(u) { return u + (u.indexOf('?') !== -1 ? '&' : '?') + '_t=' + Date.now(); }
-
-    // Proxy pro Icecast - allorigins blokuje listen.housetime.fm, ale corsproxy funguje
-    var ICECAST_PROXIES = [
-      null,                                                                               // přímý fetch
-      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(_cb(u)); },    // ✅ nejspolehlivější
-      function(u) { return 'https://thingproxy.freeboard.io/fetch/' + _cb(u); },        // záloha
-      function(u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(_cb(u)); },
-      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(u); },
-    ];
-
-    // Proxy pro www.housetime.fm stránku (allorigins funguje pro www subdoénu)
-    var PAGE_PROXIES = [
-      function(u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(_cb(u)); },
-      function(u) { return 'https://api.allorigins.win/get?url=' + encodeURIComponent(_cb(u)); },
-      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(_cb(u)); },
-      function(u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(_cb(u)); },
-    ];
-
-    // Parsování trackliste ze stránky housetime.fm
-    function parseHousetimePage(html) {
-      try {
-        // Hledá vzor: <a href="...housetime.fm/releases/...">Artist - Title</a>
-        var re = /href="[^"]*housetime\.fm\/releases\/[^"]*"[^>]*>\s*([^<\n]+?)\s*<\/a>/gi;
-        var m;
-        while ((m = re.exec(html)) !== null) {
-          var text = m[1].replace(/<[^>]+>/g, '').trim();
-          if (text.length > 5 && text.indexOf(' - ') !== -1) {
-            var parts = text.split(' - ');
-            var artist = parts[0].trim();
-            var song = parts.slice(1).join(' - ').trim();
-            if (artist && song) return { artist: artist, song: song };
-          }
-        }
-        // Fallback: hledá h2 s linkem na release
-        var re2 = /class="[^"]*tracklist[^"]*"[\s\S]{0,500}?<h[23][^>]*>\s*<a[^>]*>([^<]+)<\/a>/i;
-        var m2 = re2.exec(html);
-        if (m2) {
-          var text2 = m2[1].trim();
-          var parts2 = text2.split(' - ');
-          if (parts2.length >= 2) return { artist: parts2[0].trim(), song: parts2.slice(1).join(' - ').trim() };
-        }
-      } catch(e) {}
-      return null;
-    }
-
     var ENDPOINTS = [
-      { url: ICECAST_URL, type: 'icecast' },
+      { url: 'https://listen.housetime.fm/status-json.xsl', type: 'icecast', priority: 1 },
+      { url: 'https://www.housetime.fm/trackliste', type: 'trackliste', priority: 2 },
+      { url: 'https://housetime.fm/api/current', type: 'api', priority: 3 },
+      { url: 'https://weareone.fm/housetime', type: 'trackliste', priority: 4 },
     ];
 
-    // Aktivní a spolehlivé CORS proxy
-    var PROXY_URLS = ICECAST_PROXIES;
+    // 🛡️ FALLBACK PROXY SERVERY — když přímý fetch selže
+    function _cb(u) { return u + (u.indexOf('?') !== -1 ? '&' : '?') + '_t=' + Date.now(); }
+    var PROXY_URLS = [
+      null,
+      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(_cb(u)); },
+      function(u) { return 'https://api.allorigins.win/get?url=' + encodeURIComponent(_cb(u)); },
+      function(u) { return 'https://thingproxy.freeboard.io/fetch/' + _cb(u); },
+      function(u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(_cb(u)); },
+      function(u) { return 'https://jsonp.afeld.me/?url=' + encodeURIComponent(_cb(u)); },
+      function(u) { return 'https://yacdn.org/serve/' + encodeURIComponent(_cb(u)); },
+    ];
 
     function fetchWithTimeout(url, ms, opts) {
       var ctrl = new AbortController();
@@ -878,16 +837,16 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       ENDPOINTS.forEach(function(ep) {
         PROXY_URLS.forEach(function(proxyFn) {
           var proxyUrl = proxyFn ? proxyFn(ep.url) : ep.url;
-          var isAlloriginsGet = proxyUrl.indexOf('allorigins.win/get') !== -1;
+          var isAllorigins = proxyUrl.indexOf('allorigins') !== -1;
           var source = ep.type + (proxyFn ? ' (proxy)' : ' (direct)');
 
-          var p = fetchWithTimeout(proxyUrl, 6000, {})
+          var p = fetchWithTimeout(proxyUrl, 2500, {})
             .then(function(r) {
               if (!r.ok) throw new Error('HTTP ' + r.status);
-              return isAlloriginsGet ? r.json() : r.text();
+              return isAllorigins ? r.json() : r.text();
             })
             .then(function(data) {
-              var raw = isAlloriginsGet ? data.contents : data;
+              var raw = isAllorigins ? data.contents : data;
               if (!raw || raw.length < 5) throw new Error('empty');
               var result = parseResponse(raw, ep.type);
               if (!result || !result.song) throw new Error('no song data');
@@ -903,54 +862,24 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
         });
       });
 
-      // Pokud všechny selžou — zkus scraping stránky housetime.fm
+      // Pokud všechny selžou — zkus cache, jinak error
       Promise.allSettled(allPromises).then(function(results) {
-        if (resolved) return;
-        console.log('⚠ Icecast zdroje selhaly, zkouším scraping stránky...');
-        tryPageScraping();
-      });
-    }
-
-    function tryPageScraping() {
-      var resolvedPage = false;
-
-      function tryPageProxy(i) {
-        if (i >= PAGE_PROXIES.length) {
-          if (!resolvedPage) {
+        if (!resolved) {
+          var cached = loadCache();
+          if (cached && (cached.artist || cached.song)) {
+            // Máme cache — zobrazit ji
+            console.log('⚠ Všechny zdroje selhaly, zobrazuji cache');
             document.getElementById('refreshBtn').disabled = false;
-            var cached = loadCache();
-            if (cached && (cached.artist || cached.song)) {
-              showResult(cached.artist, cached.song);
-              showWarning('⚠ Data z mezipaměti');
-            } else {
-              showError('❌ Nepodařilo se načíst skladbu.<br>Zkus to znovu.');
-            }
+            showResult(cached.artist, cached.song);
+            showWarning('⚠ Data z mezipaměti (offline?)');
+          } else {
+            // Bez cache — error
+            document.getElementById('refreshBtn').disabled = false;
+            showError('❌ Nepodařilo se načíst skladbu.<br>Zkus to znovu.');
+            console.log('✗ Všechny zdroje selhaly, cache prázdná');
           }
-          return;
         }
-        var url = PAGE_PROXIES[i](TRACKLIST_URL);
-        var isAlloriginsGet = url.indexOf('allorigins.win/get') !== -1;
-        fetchWithTimeout(url, 8000, {})
-          .then(function(r) { return isAlloriginsGet ? r.json() : r.text(); })
-          .then(function(data) {
-            var html = isAlloriginsGet ? (data.contents || '') : data;
-            var result = parseHousetimePage(html);
-            if (!result || !result.song) throw new Error('no data');
-            if (resolvedPage) return;
-            resolvedPage = true;
-            console.log('✓ Scraped z housetime.fm stránky: ' + result.artist + ' - ' + result.song);
-            document.getElementById('refreshBtn').disabled = false;
-            showResult(result.artist, result.song);
-            addHistory(result.artist, result.song);
-            saveCache(result.artist, result.song);
-          })
-          .catch(function(e) {
-            console.log('✗ Page proxy ' + i + ' selhal: ' + e.message);
-            tryPageProxy(i + 1);
-          });
-      }
-
-      tryPageProxy(0);
+      });
     }
 
     function parseResponse(raw, type) {
