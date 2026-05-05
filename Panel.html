@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v7.3</title>
+  <title>KLADYX PANEL v7.4</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -167,7 +167,7 @@
 </div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v7.3</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v7.4</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -9601,6 +9601,7 @@ function entryHTML(e) {
     \'<div class="entry-header"><span class="entry-cat cat-\'+e.cat+\'">\'+catLabel(e.cat)+\'</span><span class="entry-date">\'+date+\'</span></div>\'+
     \'<div class="entry-title">\'+escHtml(e.title)+\'</div>\'+
     \'<div class="entry-body">\'+escHtml(e.body)+\'</div>\'+
+    (e.img?\'<div style="margin-top:8px;"><img src="\'+escHtml(e.img)+\'" style="max-width:100%;border:1px solid #003300;border-radius:3px;cursor:pointer;" onclick="window.open(\\\'\'+escHtml(e.img)+\'\\\',\\\'_blank\\\')" onerror="this.style.display=\\\'none\\\'"/></div>\':\'\')+
     (e.url?\'<div class="entry-url" onclick="window.open(\\\'\'+escHtml(e.url)+\'\\\',\\\'_blank\\\')">🔗 \'+escHtml(e.url)+\'</div>\':\'\')+
     \'<div class="entry-actions"><button onclick="editEntry(\\\'\'+e._id+\'\\\')">✏️ UPRAVIT</button><button onclick="deleteEntry(\\\'\'+e._id+\'\\\')">🗑 SMAZAT</button></div>\'+
   \'</div>\';
@@ -9628,6 +9629,8 @@ function renderForm(entry) {
         \'<textarea class="form-textarea" id="f-body" placeholder="Vlož text, článek, kód...">\'+((entry&&entry.body)?escHtml(entry.body):\'\')+\'</textarea></div>\'+
       \'<div class="form-row"><span class="form-label">URL</span>\'+
         \'<input class="form-input" id="f-url" type="text" placeholder="https://..." value="\'+(entry&&entry.url?escHtml(entry.url):\'\')+\'"/></div>\'+
+      \'<div class="form-row"><span class="form-label">OBRÁZEK</span>\'+
+        \'<input class="form-input" id="f-img" type="text" placeholder="https://...obrázek.jpg" value="\'+(entry&&entry.img?escHtml(entry.img):\'\')+\'"/></div>\'+
       \'<div class="btn-row">\'+
         \'<button class="btn cyan" onclick="saveEntry()">\'+(isEdit?\'💾 ULOŽIT\':\'✚ PŘIDAT\')+\'</button>\'+
         (isEdit?\'<button class="btn red" onclick="cancelEdit()">✕ ZRUŠIT</button>\':\'\')+
@@ -9654,11 +9657,12 @@ function saveEntry() {
   var title = (document.getElementById(\'f-title\').value||\'\').trim();
   var body  = (document.getElementById(\'f-body\').value||\'\').trim();
   var url   = (document.getElementById(\'f-url\').value||\'\').trim();
+  var img   = (document.getElementById(\'f-img\').value||\'\').trim();
   var cat   = document.getElementById(\'f-cat\').value;
   if (!title) { alert(\'Zadej název!\'); return; }
   var id = EDIT_ID || genId();
   var orig = EDIT_ID ? (ALL_ENTRIES[EDIT_ID]||{}) : {};
-  var entry = { title:title, body:body, url:url, cat:cat, ts: orig.ts||Date.now(), updated:Date.now() };
+  var entry = { title:title, body:body, url:url, img:img, cat:cat, ts: orig.ts||Date.now(), updated:Date.now() };
   EDIT_ID = null;
   ALL_ENTRIES[id] = entry;
   _saveLocal();
