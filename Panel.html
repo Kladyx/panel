@@ -747,65 +747,24 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
     // 🔥 MAXIMUM RELIABILITY: 6 primárních zdrojů + 8 proxy fallbacků
     // VŠECHNY KOMBINACE se zkusí paralelně
-    // Pouze Icecast status — nejspolehlivější zdroj
-    // ── HOUSETIME ENDPOINTS ──────────────────────────────────────────────────
-    // 1. Primární: Icecast status-json přes proxy
-    // 2. Fallback: Scraping www.housetime.fm trackliste stránky
-    var ICECAST_URL = 'https://listen.housetime.fm/status-json.xsl';
-    var TRACKLIST_URL = 'https://www.housetime.fm/';
-
-    function _cb(u) { return u + (u.indexOf('?') !== -1 ? '&' : '?') + '_t=' + Date.now(); }
-
-    // Proxy pro Icecast - allorigins blokuje listen.housetime.fm, ale corsproxy funguje
-    var ICECAST_PROXIES = [
-      null,                                                                               // přímý fetch
-      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(_cb(u)); },    // ✅ nejspolehlivější
-      function(u) { return 'https://thingproxy.freeboard.io/fetch/' + _cb(u); },        // záloha
-      function(u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(_cb(u)); },
-      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(u); },
-    ];
-
-    // Proxy pro www.housetime.fm stránku (allorigins funguje pro www subdoénu)
-    var PAGE_PROXIES = [
-      function(u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(_cb(u)); },
-      function(u) { return 'https://api.allorigins.win/get?url=' + encodeURIComponent(_cb(u)); },
-      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(_cb(u)); },
-      function(u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(_cb(u)); },
-    ];
-
-    // Parsování trackliste ze stránky housetime.fm
-    function parseHousetimePage(html) {
-      try {
-        // Hledá vzor: <a href="...housetime.fm/releases/...">Artist - Title</a>
-        var re = /href="[^"]*housetime\.fm\/releases\/[^"]*"[^>]*>\s*([^<\n]+?)\s*<\/a>/gi;
-        var m;
-        while ((m = re.exec(html)) !== null) {
-          var text = m[1].replace(/<[^>]+>/g, '').trim();
-          if (text.length > 5 && text.indexOf(' - ') !== -1) {
-            var parts = text.split(' - ');
-            var artist = parts[0].trim();
-            var song = parts.slice(1).join(' - ').trim();
-            if (artist && song) return { artist: artist, song: song };
-          }
-        }
-        // Fallback: hledá h2 s linkem na release
-        var re2 = /class="[^"]*tracklist[^"]*"[\s\S]{0,500}?<h[23][^>]*>\s*<a[^>]*>([^<]+)<\/a>/i;
-        var m2 = re2.exec(html);
-        if (m2) {
-          var text2 = m2[1].trim();
-          var parts2 = text2.split(' - ');
-          if (parts2.length >= 2) return { artist: parts2[0].trim(), song: parts2.slice(1).join(' - ').trim() };
-        }
-      } catch(e) {}
-      return null;
-    }
-
     var ENDPOINTS = [
-      { url: ICECAST_URL, type: 'icecast' },
+      { url: 'https://listen.housetime.fm/status-json.xsl', type: 'icecast', priority: 1 },
+      { url: 'https://www.housetime.fm/trackliste', type: 'trackliste', priority: 2 },
+      { url: 'https://housetime.fm/api/current', type: 'api', priority: 3 },
+      { url: 'https://weareone.fm/housetime', type: 'trackliste', priority: 4 },
     ];
 
-    // Aktivní a spolehlivé CORS proxy
-    var PROXY_URLS = ICECAST_PROXIES;
+    // 🛡️ FALLBACK PROXY SERVERY — když přímý fetch selže
+    function _cb(u) { return u + (u.indexOf('?') !== -1 ? '&' : '?') + '_t=' + Date.now(); }
+    var PROXY_URLS = [
+      null,
+      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(_cb(u)); },
+      function(u) { return 'https://api.allorigins.win/get?url=' + encodeURIComponent(_cb(u)); },
+      function(u) { return 'https://thingproxy.freeboard.io/fetch/' + _cb(u); },
+      function(u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(_cb(u)); },
+      function(u) { return 'https://jsonp.afeld.me/?url=' + encodeURIComponent(_cb(u)); },
+      function(u) { return 'https://yacdn.org/serve/' + encodeURIComponent(_cb(u)); },
+    ];
 
     function fetchWithTimeout(url, ms, opts) {
       var ctrl = new AbortController();
@@ -878,16 +837,16 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       ENDPOINTS.forEach(function(ep) {
         PROXY_URLS.forEach(function(proxyFn) {
           var proxyUrl = proxyFn ? proxyFn(ep.url) : ep.url;
-          var isAlloriginsGet = proxyUrl.indexOf('allorigins.win/get') !== -1;
+          var isAllorigins = proxyUrl.indexOf('allorigins') !== -1;
           var source = ep.type + (proxyFn ? ' (proxy)' : ' (direct)');
 
-          var p = fetchWithTimeout(proxyUrl, 6000, {})
+          var p = fetchWithTimeout(proxyUrl, 2500, {})
             .then(function(r) {
               if (!r.ok) throw new Error('HTTP ' + r.status);
-              return isAlloriginsGet ? r.json() : r.text();
+              return isAllorigins ? r.json() : r.text();
             })
             .then(function(data) {
-              var raw = isAlloriginsGet ? data.contents : data;
+              var raw = isAllorigins ? data.contents : data;
               if (!raw || raw.length < 5) throw new Error('empty');
               var result = parseResponse(raw, ep.type);
               if (!result || !result.song) throw new Error('no song data');
@@ -903,54 +862,24 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
         });
       });
 
-      // Pokud všechny selžou — zkus scraping stránky housetime.fm
+      // Pokud všechny selžou — zkus cache, jinak error
       Promise.allSettled(allPromises).then(function(results) {
-        if (resolved) return;
-        console.log('⚠ Icecast zdroje selhaly, zkouším scraping stránky...');
-        tryPageScraping();
-      });
-    }
-
-    function tryPageScraping() {
-      var resolvedPage = false;
-
-      function tryPageProxy(i) {
-        if (i >= PAGE_PROXIES.length) {
-          if (!resolvedPage) {
+        if (!resolved) {
+          var cached = loadCache();
+          if (cached && (cached.artist || cached.song)) {
+            // Máme cache — zobrazit ji
+            console.log('⚠ Všechny zdroje selhaly, zobrazuji cache');
             document.getElementById('refreshBtn').disabled = false;
-            var cached = loadCache();
-            if (cached && (cached.artist || cached.song)) {
-              showResult(cached.artist, cached.song);
-              showWarning('⚠ Data z mezipaměti');
-            } else {
-              showError('❌ Nepodařilo se načíst skladbu.<br>Zkus to znovu.');
-            }
+            showResult(cached.artist, cached.song);
+            showWarning('⚠ Data z mezipaměti (offline?)');
+          } else {
+            // Bez cache — error
+            document.getElementById('refreshBtn').disabled = false;
+            showError('❌ Nepodařilo se načíst skladbu.<br>Zkus to znovu.');
+            console.log('✗ Všechny zdroje selhaly, cache prázdná');
           }
-          return;
         }
-        var url = PAGE_PROXIES[i](TRACKLIST_URL);
-        var isAlloriginsGet = url.indexOf('allorigins.win/get') !== -1;
-        fetchWithTimeout(url, 8000, {})
-          .then(function(r) { return isAlloriginsGet ? r.json() : r.text(); })
-          .then(function(data) {
-            var html = isAlloriginsGet ? (data.contents || '') : data;
-            var result = parseHousetimePage(html);
-            if (!result || !result.song) throw new Error('no data');
-            if (resolvedPage) return;
-            resolvedPage = true;
-            console.log('✓ Scraped z housetime.fm stránky: ' + result.artist + ' - ' + result.song);
-            document.getElementById('refreshBtn').disabled = false;
-            showResult(result.artist, result.song);
-            addHistory(result.artist, result.song);
-            saveCache(result.artist, result.song);
-          })
-          .catch(function(e) {
-            console.log('✗ Page proxy ' + i + ' selhal: ' + e.message);
-            tryPageProxy(i + 1);
-          });
-      }
-
-      tryPageProxy(0);
+      });
     }
 
     function parseResponse(raw, type) {
@@ -9540,7 +9469,7 @@ APP_HTML["zxnext"] = `<!DOCTYPE html>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{width:100%;height:100%;background:#000;font-family:\'Share Tech Mono\',monospace;color:#00ff88;}
+html,body{width:100%;height:100%;background:#000;font-family:'Share Tech Mono',monospace;color:#00ff88;}
 body{display:flex;flex-direction:column;overflow:hidden;}
 .topbar{background:#000;border-bottom:2px solid #00ff88;padding:6px 10px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .topbar-logo{color:#00ffff;font-size:13px;letter-spacing:3px;text-shadow:0 0 8px #00ffff;}
@@ -9557,17 +9486,16 @@ body{display:flex;flex-direction:column;overflow:hidden;}
 .form-section{background:rgba(0,20,0,.6);border:1px solid #003300;border-radius:4px;padding:10px;margin-bottom:10px;}
 .form-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
 .form-label{color:#004400;font-size:10px;letter-spacing:2px;min-width:60px;}
-.form-input{flex:1;background:#000;border:1px solid #003300;color:#00ff88;font-family:\'Share Tech Mono\',monospace;font-size:12px;padding:6px 8px;outline:none;}
+.form-input{flex:1;background:#000;border:1px solid #003300;color:#00ff88;font-family:'Share Tech Mono',monospace;font-size:12px;padding:6px 8px;outline:none;}
 .form-input:focus{border-color:#00ffff;}
-.form-textarea{width:100%;background:#000;border:1px solid #003300;color:#00ff88;font-family:\'Share Tech Mono\',monospace;font-size:12px;padding:8px;resize:vertical;min-height:100px;outline:none;line-height:1.5;}
+.form-textarea{width:100%;background:#000;border:1px solid #003300;color:#00ff88;font-family:'Share Tech Mono',monospace;font-size:12px;padding:8px;resize:vertical;min-height:100px;outline:none;line-height:1.5;}
 .form-textarea:focus{border-color:#00ffff;}
-.form-select{background:#000;border:1px solid #003300;color:#00ff88;font-family:\'Share Tech Mono\',monospace;font-size:11px;padding:5px 8px;outline:none;}
-.btn-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
-.btn{background:rgba(0,255,136,0.1);border:1px solid #00ff88;color:#00ff88;font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:2px;padding:7px 14px;cursor:pointer;}
+.form-select{background:#000;border:1px solid #003300;color:#00ff88;font-family:'Share Tech Mono',monospace;font-size:11px;padding:5px 8px;outline:none;}
+.btn-row{display:flex;gap:8px;margin-top:8px;}
+.btn{background:rgba(0,255,136,0.1);border:1px solid #00ff88;color:#00ff88;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;padding:7px 14px;cursor:pointer;}
 .btn:hover{background:rgba(0,255,136,0.25);}
 .btn.cyan{border-color:#00ffff;color:#00ffff;background:rgba(0,255,255,.08);}
 .btn.red{border-color:#ff3c5a;color:#ff3c5a;background:rgba(255,60,90,.08);}
-.btn.yellow{border-color:#ffff00;color:#ffff00;background:rgba(255,255,0,.08);}
 .entry-card{background:rgba(0,15,0,.7);border:1px solid #003300;border-radius:3px;padding:10px 12px;margin-bottom:8px;}
 .entry-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
 .entry-cat{font-size:9px;letter-spacing:2px;padding:2px 7px;border-radius:2px;}
@@ -9579,20 +9507,10 @@ body{display:flex;flex-direction:column;overflow:hidden;}
 .entry-title{color:#e8e8e8;font-size:13px;margin-bottom:4px;}
 .entry-body{color:#88cc88;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-word;}
 .entry-url{color:#00ffff;font-size:10px;margin-top:4px;word-break:break-all;cursor:pointer;text-decoration:underline;}
-.entry-img{max-width:100%;border:1px solid #003300;border-radius:3px;margin-top:8px;display:block;cursor:pointer;}
 .entry-actions{display:flex;gap:6px;margin-top:8px;}
 .entry-actions button{background:none;border:1px solid #003300;color:#004400;font-family:monospace;font-size:9px;padding:3px 8px;cursor:pointer;}
 .entry-actions button:hover{border-color:#ff3c5a;color:#ff3c5a;}
 .empty{text-align:center;color:#003300;font-size:12px;letter-spacing:3px;padding:40px 20px;}
-.img-preview-wrap{margin-top:6px;position:relative;display:inline-block;}
-.img-preview{max-width:100%;max-height:180px;border:1px solid #00ff88;border-radius:3px;display:block;}
-.img-remove{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.8);border:1px solid #ff3c5a;color:#ff3c5a;font-size:11px;cursor:pointer;padding:2px 6px;font-family:monospace;}
-.img-upload-btn{display:inline-block;border:1px dashed #004400;color:#004400;font-size:10px;letter-spacing:2px;padding:8px 14px;cursor:pointer;margin-top:4px;}
-.img-upload-btn:hover{border-color:#00ffff;color:#00ffff;}
-.lightbox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);z-index:999;align-items:center;justify-content:center;}
-.lightbox.open{display:flex;}
-.lightbox img{max-width:95%;max-height:90vh;border:1px solid #00ff88;}
-.lightbox-close{position:fixed;top:12px;right:16px;color:#00ffff;font-size:24px;cursor:pointer;font-family:monospace;}
 </style>
 </head>
 <body>
@@ -9607,13 +9525,8 @@ body{display:flex;flex-direction:column;overflow:hidden;}
   <div class="tab" id="tab-search" onclick="showTab(\'search\')">🔍 HLEDAT</div>
 </div>
 <div class="main" id="main"><div class="empty">[ NAČÍTÁM... ]</div></div>
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <span class="lightbox-close">✕</span>
-  <img id="lightbox-img" src="" alt="">
-</div>
 <script>
 var _db, _zxRef, ALL_ENTRIES = {}, CURRENT_TAB = \'list\', EDIT_ID = null, _zxSav = false;
-var PENDING_IMG = null; // base64 of image to attach
 
 function setSyncDot(msg, state) {
   var d = document.getElementById(\'sync-dot\');
@@ -9699,27 +9612,13 @@ function genId() { return \'zx_\' + Date.now() + \'_\' + Math.random().toString(
 function escHtml(s) { return String(s||\'\').replace(/&/g,\'&amp;\').replace(/</g,\'&lt;\').replace(/>/g,\'&gt;\').replace(/"/g,\'&quot;\'); }
 function catLabel(c) { return {news:\'NOVINKA\',prog:\'PROGRAMOVÁNÍ\',diary:\'DIÁŘ\',link:\'ODKAZ\'}[c]||c; }
 
-function openLightbox(src) {
-  document.getElementById(\'lightbox-img\').src = src;
-  document.getElementById(\'lightbox\').classList.add(\'open\');
-}
-function closeLightbox() {
-  document.getElementById(\'lightbox\').classList.remove(\'open\');
-  document.getElementById(\'lightbox-img\').src = \'\';
-}
-
 function entryHTML(e) {
   var date = new Date(e.ts).toLocaleDateString(\'cs-CZ\')+\' \'+new Date(e.ts).toLocaleTimeString(\'cs-CZ\',{hour:\'2-digit\',minute:\'2-digit\'});
-  var imgHtml = \'\';
-  if (e.img) {
-    imgHtml = \'<img class="entry-img" src="\'+e.img+\'" alt="foto" onclick="openLightbox(\\\'\'+e.img+\'\\\')">\';
-  }
   return \'<div class="entry-card">\'+
     \'<div class="entry-header"><span class="entry-cat cat-\'+e.cat+\'">\'+catLabel(e.cat)+\'</span><span class="entry-date">\'+date+\'</span></div>\'+
     \'<div class="entry-title">\'+escHtml(e.title)+\'</div>\'+
     \'<div class="entry-body">\'+escHtml(e.body)+\'</div>\'+
     (e.url?\'<div class="entry-url" onclick="window.open(\\\'\'+escHtml(e.url)+\'\\\',\\\'_blank\\\')">🔗 \'+escHtml(e.url)+\'</div>\':\'\')+
-    imgHtml+
     \'<div class="entry-actions"><button onclick="editEntry(\\\'\'+e._id+\'\\\')">✏️ UPRAVIT</button><button onclick="deleteEntry(\\\'\'+e._id+\'\\\')">🗑 SMAZAT</button></div>\'+
   \'</div>\';
 }
@@ -9730,64 +9629,26 @@ function renderList() {
 }
 
 function renderForm(entry) {
-  PENDING_IMG = (entry && entry.img) ? entry.img : null;
   var isEdit = !!entry;
-  var imgPreviewHtml = PENDING_IMG
-    ? \'<div class="img-preview-wrap"><img class="img-preview" src="\'+PENDING_IMG+\'" alt="náhled"><button class="img-remove" onclick="removePendingImg()">✕</button></div>\'
-    : \'\';
   document.getElementById(\'main\').innerHTML =
     \'<div class="form-section">\'+
       \'<div class="form-row"><span class="form-label">KATEGORIE</span>\'+
         \'<select class="form-select" id="f-cat">\'+
-          \'<option value="news"\'+(((!entry)||entry.cat===\'news\')?\' selected\':\'\')+\'>NOVINKA</option>\'+
-          \'<option value="prog"\'+(( entry&&entry.cat===\'prog\')?\' selected\':\'\')+\'>PROGRAMOVÁNÍ</option>\'+
-          \'<option value="diary\"\'+(( entry&&entry.cat===\'diary\')?\' selected\':\'\')+\'>DIÁŘ</option>\'+
-          \'<option value="link"\'+(( entry&&entry.cat===\'link\')?\' selected\':\'\')+\'>ODKAZ</option>\'+
+          \'<option value="news"\'+((!entry||entry.cat===\'news\')?\' selected\':\'\')+\'>NOVINKA</option>\'+
+          \'<option value="prog"\'+((entry&&entry.cat===\'prog\')?\' selected\':\'\')+\'>PROGRAMOVÁNÍ</option>\'+
+          \'<option value="diary"\'+((entry&&entry.cat===\'diary\')?\' selected\':\'\')+\'>DIÁŘ</option>\'+
+          \'<option value="link"\'+((entry&&entry.cat===\'link\')?\' selected\':\'\')+\'>ODKAZ</option>\'+
         \'</select></div>\'+
       \'<div class="form-row"><span class="form-label">NÁZEV</span>\'+
-        \'<input class="form-input" id="f-title" type="text" placeholder="Název..." value="\''+'+(entry?escHtml(entry.title):\'\')+\'"/></div>\'+
+        \'<input class="form-input" id="f-title" type="text" placeholder="Název..." value="\'+(entry?escHtml(entry.title):\'\')+\'"/></div>\'+
       \'<div class="form-row" style="align-items:flex-start;"><span class="form-label" style="padding-top:6px;">TEXT</span>\'+
         \'<textarea class="form-textarea" id="f-body" placeholder="Vlož text, článek, kód...">\'+((entry&&entry.body)?escHtml(entry.body):\'\')+\'</textarea></div>\'+
       \'<div class="form-row"><span class="form-label">URL</span>\'+
         \'<input class="form-input" id="f-url" type="text" placeholder="https://..." value="\'+(entry&&entry.url?escHtml(entry.url):\'\')+\'"/></div>\'+
-      \'<div class="form-row" style="align-items:flex-start;"><span class="form-label" style="padding-top:6px;">FOTO</span>\'+
-        \'<div style="flex:1"><label class="img-upload-btn" for="f-img-input">📷 VYBRAT OBRÁZEK</label>\'+
-        \'<input type="file" id="f-img-input" accept="image/*" style="display:none" onchange="handleImgUpload(this)">\'+
-        \'<div id="img-preview-area">\'+imgPreviewHtml+\'</div></div></div>\'+
       \'<div class="btn-row">\'+
         \'<button class="btn cyan" onclick="saveEntry()">\'+(isEdit?\'💾 ULOŽIT\':\'✚ PŘIDAT\')+\'</button>\'+
         (isEdit?\'<button class="btn red" onclick="cancelEdit()">✕ ZRUŠIT</button>\':\'\')+
       \'</div></div>\';
-}
-
-function handleImgUpload(input) {
-  if (!input.files || !input.files[0]) return;
-  var file = input.files[0];
-  // Resize to max 1200px wide to keep Firebase size manageable
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var img = new Image();
-    img.onload = function() {
-      var maxW = 1200, maxH = 1200;
-      var w = img.width, h = img.height;
-      if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
-      if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
-      var canvas = document.createElement(\'canvas\');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext(\'2d\').drawImage(img, 0, 0, w, h);
-      PENDING_IMG = canvas.toDataURL(\'image/jpeg\', 0.82);
-      var area = document.getElementById(\'img-preview-area\');
-      if (area) area.innerHTML = \'<div class="img-preview-wrap"><img class="img-preview" src="\'+PENDING_IMG+\'" alt="náhled"><button class="img-remove" onclick="removePendingImg()">✕</button></div>\';
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function removePendingImg() {
-  PENDING_IMG = null;
-  var area = document.getElementById(\'img-preview-area\');
-  if (area) area.innerHTML = \'\';
 }
 
 function renderSearch() {
@@ -9815,9 +9676,7 @@ function saveEntry() {
   var id = EDIT_ID || genId();
   var orig = EDIT_ID ? (ALL_ENTRIES[EDIT_ID]||{}) : {};
   var entry = { title:title, body:body, url:url, cat:cat, ts: orig.ts||Date.now(), updated:Date.now() };
-  if (PENDING_IMG) entry.img = PENDING_IMG;
   EDIT_ID = null;
-  PENDING_IMG = null;
   ALL_ENTRIES[id] = entry;
   _saveLocal();
   if (_zxRef) {
@@ -9854,6 +9713,8 @@ _loadFb();
 </body>
 </html>
 `;
+
+
 APP_HTML["manualy"] = `<!DOCTYPE html>
 <html lang="cs">
 <head>
