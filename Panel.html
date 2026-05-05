@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v7.3</title>
+  <title>KLADYX PANEL v7.5</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -167,7 +167,7 @@
 </div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v7.3</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v7.5</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -755,12 +755,15 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     // Aktivní a spolehlivé CORS proxy (2025)
     function _cb(u) { return u + (u.indexOf('?') !== -1 ? '&' : '?') + '_t=' + Date.now(); }
     var PROXY_URLS = [
-      null,                                                                                          // přímý fetch (funguje pokud server má CORS)
-      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(_cb(u)); },               // ✅ spolehlivý
-      function(u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(_cb(u)); },  // ✅ raw (bez JSON wrapperu)
-      function(u) { return 'https://api.allorigins.win/get?url=' + encodeURIComponent(_cb(u)); },  // ✅ JSON wrapper
-      function(u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(_cb(u)); }, // záloha
-      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(u); },                   // corsproxy bez cache-busting
+      null,                                                                                                      // přímý fetch
+      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(_cb(u)); },                           // ✅ corsproxy
+      function(u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(_cb(u)); },              // ✅ allorigins raw
+      function(u) { return 'https://api.allorigins.win/get?url=' + encodeURIComponent(_cb(u)); },              // ✅ allorigins get
+      function(u) { return 'https://thingproxy.freeboard.io/fetch/' + _cb(u); },                              // thingproxy
+      function(u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(_cb(u)); },        // codetabs
+      function(u) { return 'https://cors.sh/?' + _cb(u); },                                                   // cors.sh
+      function(u) { return 'https://proxy.cors.sh/' + _cb(u); },                                              // proxy.cors.sh
+      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(u); },                               // corsproxy bez cb
     ];
 
     function fetchWithTimeout(url, ms, opts) {
@@ -7295,7 +7298,7 @@ let currentMonth=4, items=[], _platbySaving=false;
 const _fbCfg={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
 if(!firebase.apps.length) firebase.initializeApp(_fbCfg);
 const _db=firebase.database();
-let _platbyRef=_db.ref('platbyDb/'+currentYear);
+let _platbyRef=_db.ref('platby/'+currentYear);
 function _setSyncStatus(msg,color){const el=document.getElementById('sync-dot');if(el){el.textContent=msg;el.style.color=color||'#4a6d90';}}
 
 function _showLock(){
@@ -7409,14 +7412,14 @@ function renderMonthBar(){
   const btnP=document.createElement('button');
   btnP.textContent='◀';
   btnP.style.cssText='background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--muted);border-radius:4px;padding:1px 10px;cursor:pointer;font-size:.8rem;';
-  btnP.onclick=()=>{ currentYear--; _platbyRef=_db.ref('platbyDb/'+currentYear); items=loadMonth(currentMonth); renderMonthBar();renderCards();updateSummary(); };
+  btnP.onclick=()=>{ currentYear--; _platbyRef=_db.ref('platby/'+currentYear); items=loadMonth(currentMonth); renderMonthBar();renderCards();updateSummary(); };
   const yrSpan=document.createElement('span');
   yrSpan.textContent=currentYear;
   yrSpan.style.cssText='font-size:.9rem;letter-spacing:.08em;color:var(--fg);min-width:36px;text-align:center;';
   const btnN=document.createElement('button');
   btnN.textContent='▶';
   btnN.style.cssText='background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--muted);border-radius:4px;padding:1px 10px;cursor:pointer;font-size:.8rem;';
-  btnN.onclick=()=>{ currentYear++; _platbyRef=_db.ref('platbyDb/'+currentYear); items=loadMonth(currentMonth); renderMonthBar();renderCards();updateSummary(); };
+  btnN.onclick=()=>{ currentYear++; _platbyRef=_db.ref('platby/'+currentYear); items=loadMonth(currentMonth); renderMonthBar();renderCards();updateSummary(); };
   yr.appendChild(btnP);yr.appendChild(yrSpan);yr.appendChild(btnN);
   bar.appendChild(yr);
   MONTHS.forEach((name,i)=>{const b=document.createElement('button');b.className='month-btn'+(i===currentMonth?' active':'');b.textContent=name;b.onclick=()=>switchMonth(i);bar.appendChild(b);});
@@ -7787,7 +7790,7 @@ function initFB(){
   try{
     var FC={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
     if(!firebase.apps.length)firebase.initializeApp(FC);
-    REF=firebase.database().ref('jidloDb');
+    REF=firebase.database().ref('food');
     var FL=true;
     var _timer=setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},8000);
     function startSync(){
@@ -8403,7 +8406,7 @@ function initFB(){
   try{
     var FC={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
     if(!firebase.apps.length)firebase.initializeApp(FC);
-    REF=firebase.database().ref('glucoDb');
+    REF=firebase.database().ref('gluco');
     var FL=true;
     var _timer=setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},8000);
     function startSync(){
@@ -8833,7 +8836,7 @@ function initFB(){
   try{
     var FC={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
     if(!firebase.apps.length)firebase.initializeApp(FC);
-    REF=firebase.database().ref('notesDb');
+    REF=firebase.database().ref('notes');
     var FL=true;
     var _offlineTimer=setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},8000);
     function startSync(){
