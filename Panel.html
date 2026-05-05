@@ -6572,24 +6572,37 @@ firebase.auth().onAuthStateChanged(user => {
   if (!user) return;
   _odRef.on('value', (snapshot)=>{
   const fb = snapshot.val();
+  // Pomocná funkce: má FB smysluplná data?
+  function fbHasData(d){ return d && Array.isArray(d.water) && (d.water.length>0||d.gas.length>0||d.electric.length>0); }
+  // Pomocná funkce: má lokál smysluplná data?
+  function localHasData(d){ return d && ((d.water&&d.water.length>0)||(d.gas&&d.gas.length>0)||(d.electric&&d.electric.length>0)); }
+
   if(_firstLoad){
     _firstLoad=false;
-    if(fb && (fb.water||fb.gas||fb.electric)){
+    if(fbHasData(fb)){
+      // Firebase má data → načti z Firebase
       _records = {
         water: fb.water||[],
         gas: fb.gas||[],
         electric: fb.electric||[]
       };
       localStorage.setItem(SK, JSON.stringify(_records));
-    } else if(_records.water||_records.gas||_records.electric){
-      saveRecords(_records); // push local → Firebase
+    } else if(localHasData(_records)){
+      // Firebase prázdná, lokál má data → push do Firebase
+      saveRecords(_records);
+    } else {
+      // Oboje prázdné → inicializuj čistý stav v Firebase
+      const empty = {water:[],gas:[],electric:[]};
+      _records = empty;
+      localStorage.setItem(SK, JSON.stringify(empty));
+      _odRef.set(empty).catch(e=>{ console.error(e); _setSyncStatus('❌ Chyba sync','#e74c3c'); });
     }
     refresh();
     _setSyncStatus('✅ Synchronizováno', '#2ecc71');
     return;
   }
   if(_odSaving) return;
-  if(fb && (fb.water||fb.gas||fb.electric)){
+  if(fb){
     const incoming = {water:fb.water||[],gas:fb.gas||[],electric:fb.electric||[]};
     if(JSON.stringify(incoming)!==JSON.stringify(_records)){
       _records = incoming;
@@ -6597,6 +6610,13 @@ firebase.auth().onAuthStateChanged(user => {
       refresh();
       _setSyncStatus('🔄 Aktualizuji...', '#2ecc71');
     }
+  } else {
+    // Firebase je prázdná (smazaná) → resetuj lokál
+    const empty = {water:[],gas:[],electric:[]};
+    _records = empty;
+    localStorage.setItem(SK, JSON.stringify(empty));
+    refresh();
+    _setSyncStatus('✅ Synchronizováno', '#2ecc71');
   }
 },(err)=>{
   console.error(err);
