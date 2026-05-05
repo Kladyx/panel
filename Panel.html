@@ -6554,19 +6554,39 @@ function saveRecords(r){
   _odSaving = true;
   setTimeout(()=>{ _odSaving=false; }, 3000);
   _setSyncStatus('⏳ Ukládám...', '#f39c12');
-  _odRef.set(r)
-    .then(()=> _setSyncStatus('✅ Synchronizováno', '#2ecc71'))
-    .catch(e=>{ console.error(e); _setSyncStatus('❌ Chyba sync', '#e74c3c'); });
+  function doWrite(){
+    _odRef.set(r)
+      .then(()=> _setSyncStatus('✅ Synchronizováno', '#2ecc71'))
+      .catch(e=>{
+        console.error('Firebase write error:', e);
+        if(e.code==='PERMISSION_DENIED'||e.message&&e.message.includes('permission')){
+          // Zkus se znovu přihlásit anonymně a pak zapsat
+          firebase.auth().signInAnonymously()
+            .then(()=> _odRef.set(r))
+            .then(()=> _setSyncStatus('✅ Synchronizováno', '#2ecc71'))
+            .catch(e2=>{ console.error(e2); _setSyncStatus('❌ Chyba sync', '#e74c3c'); });
+        } else {
+          _setSyncStatus('❌ Chyba sync', '#e74c3c');
+        }
+      });
+  }
+  const u = firebase.auth().currentUser;
+  if(u){ doWrite(); }
+  else {
+    firebase.auth().signInAnonymously()
+      .then(()=> doWrite())
+      .catch(e=>{ console.error(e); _setSyncStatus('❌ Auth chyba', '#e74c3c'); });
+  }
 }
 
 // Firebase real-time listener
 let _firstLoad = true;
-setTimeout(function(){
+let _offTimer = setTimeout(function(){
   if(_firstLoad){
     _firstLoad=false;
     _setSyncStatus('📴 Offline','#e67e22');
   }
-},5000);
+},10000);
 
 firebase.auth().onAuthStateChanged(user => {
   if (!user) return;
