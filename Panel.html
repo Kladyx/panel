@@ -9511,6 +9511,8 @@ body{display:flex;flex-direction:column;overflow:hidden;}
 .entry-actions button{background:none;border:1px solid #003300;color:#004400;font-family:monospace;font-size:9px;padding:3px 8px;cursor:pointer;}
 .entry-actions button:hover{border-color:#ff3c5a;color:#ff3c5a;}
 .empty{text-align:center;color:#003300;font-size:12px;letter-spacing:3px;padding:40px 20px;}
+.entry-img{max-width:100%;max-height:280px;border:1px solid #003300;border-radius:3px;margin:6px 0;display:block;}
+.img-preview{max-width:100%;max-height:200px;border:1px solid #003300;border-radius:3px;margin-top:6px;display:block;}
 </style>
 </head>
 <body>
@@ -9527,6 +9529,7 @@ body{display:flex;flex-direction:column;overflow:hidden;}
 <div class="main" id="main"><div class="empty">[ NAČÍTÁM... ]</div></div>
 <script>
 var _db, _zxRef, ALL_ENTRIES = {}, CURRENT_TAB = \'list\', EDIT_ID = null, _zxSav = false;
+var FORM_IMG = null, FORM_IMG_CLEARED = false;
 
 function setSyncDot(msg, state) {
   var d = document.getElementById(\'sync-dot\');
@@ -9618,6 +9621,7 @@ function entryHTML(e) {
     \'<div class="entry-header"><span class="entry-cat cat-\'+e.cat+\'">\'+catLabel(e.cat)+\'</span><span class="entry-date">\'+date+\'</span></div>\'+
     \'<div class="entry-title">\'+escHtml(e.title)+\'</div>\'+
     \'<div class="entry-body">\'+escHtml(e.body)+\'</div>\'+
+    (e.img?\'<div><img class="entry-img" src="\'+(e.img)+\'"/></div>\':\'\')+
     (e.url?\'<div class="entry-url" onclick="window.open(\\\'\'+escHtml(e.url)+\'\\\',\\\'_blank\\\')">🔗 \'+escHtml(e.url)+\'</div>\':\'\')+
     \'<div class="entry-actions"><button onclick="editEntry(\\\'\'+e._id+\'\\\')">✏️ UPRAVIT</button><button onclick="deleteEntry(\\\'\'+e._id+\'\\\')">🗑 SMAZAT</button></div>\'+
   \'</div>\';
@@ -9629,6 +9633,8 @@ function renderList() {
 }
 
 function renderForm(entry) {
+  FORM_IMG = (entry && entry.img) ? entry.img : null;
+  FORM_IMG_CLEARED = false;
   var isEdit = !!entry;
   document.getElementById(\'main\').innerHTML =
     \'<div class="form-section">\'+
@@ -9645,10 +9651,17 @@ function renderForm(entry) {
         \'<textarea class="form-textarea" id="f-body" placeholder="Vlož text, článek, kód...">\'+((entry&&entry.body)?escHtml(entry.body):\'\')+\'</textarea></div>\'+
       \'<div class="form-row"><span class="form-label">URL</span>\'+
         \'<input class="form-input" id="f-url" type="text" placeholder="https://..." value="\'+(entry&&entry.url?escHtml(entry.url):\'\')+\'"/></div>\'+
+      \'<div class="form-row" style="align-items:flex-start;"><span class="form-label" style="padding-top:6px;">OBRÁZEK</span><div style="flex:1"><input type="file" id="f-img-file" accept="image/*" style="display:none" onchange="previewImg(this)"/><button type="button" class="btn cyan" onclick="triggerImgUpload()" style="font-size:9px;letter-spacing:1px;">📷 FOTO</button> <button type="button" class="btn red" id="f-img-clear" onclick="clearImg()" style="font-size:9px;letter-spacing:1px;display:none">✕ ODEBRAT</button><br/><img id="f-img-preview" class="img-preview" style="display:none"/></div></div>\'+
       \'<div class="btn-row">\'+
         \'<button class="btn cyan" onclick="saveEntry()">\'+(isEdit?\'💾 ULOŽIT\':\'✚ PŘIDAT\')+\'</button>\'+
         (isEdit?\'<button class="btn red" onclick="cancelEdit()">✕ ZRUŠIT</button>\':\'\')+
       \'</div></div>\';
+  if (FORM_IMG) {
+    var _p = document.getElementById(\'f-img-preview\');
+    if (_p) { _p.src = FORM_IMG; _p.style.display = \'block\'; }
+    var _c = document.getElementById(\'f-img-clear\');
+    if (_c) _c.style.display = \'inline-block\';
+  }
 }
 
 function renderSearch() {
@@ -9676,6 +9689,7 @@ function saveEntry() {
   var id = EDIT_ID || genId();
   var orig = EDIT_ID ? (ALL_ENTRIES[EDIT_ID]||{}) : {};
   var entry = { title:title, body:body, url:url, cat:cat, ts: orig.ts||Date.now(), updated:Date.now() };
+  if (FORM_IMG) { entry.img = FORM_IMG; } else if (EDIT_ID && orig.img && !FORM_IMG_CLEARED) { entry.img = orig.img; }
   EDIT_ID = null;
   ALL_ENTRIES[id] = entry;
   _saveLocal();
@@ -9708,6 +9722,43 @@ function editEntry(id) {
 
 function cancelEdit() { EDIT_ID=null; showTab(\'new\'); renderForm(null); }
 
+function triggerImgUpload() {
+  var el = document.getElementById(\'f-img-file\');
+  if (el) el.click();
+}
+function previewImg(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement(\'canvas\');
+      var maxW = 900, maxH = 900, w = img.width, h = img.height;
+      if (w > maxW) { h = Math.round(h*maxW/w); w = maxW; }
+      if (h > maxH) { w = Math.round(w*maxH/h); h = maxH; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext(\'2d\').drawImage(img, 0, 0, w, h);
+      FORM_IMG = canvas.toDataURL(\'image/jpeg\', 0.75);
+      var prev = document.getElementById(\'f-img-preview\');
+      if (prev) { prev.src = FORM_IMG; prev.style.display = \'block\'; }
+      var clr = document.getElementById(\'f-img-clear\');
+      if (clr) clr.style.display = \'inline-block\';
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function clearImg() {
+  FORM_IMG = null;
+  FORM_IMG_CLEARED = true;
+  var prev = document.getElementById(\'f-img-preview\');
+  if (prev) { prev.src = \'\'; prev.style.display = \'none\'; }
+  var clr = document.getElementById(\'f-img-clear\');
+  if (clr) clr.style.display = \'none\';
+  var fi = document.getElementById(\'f-img-file\');
+  if (fi) fi.value = \'\';
+}
 _loadFb();
 <\/script>
 </body>
