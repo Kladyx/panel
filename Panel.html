@@ -152,9 +152,19 @@
       bottom: 5px;
       right: 8px;
     }
+
+    /* ── HVĚZDIČKY NA POZADÍ ── */
+    #stars-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
 </style>
 </head>
 <body>
+<canvas id="stars-canvas"></canvas>
 
 <div id="panel-gate">
   <div class="gate-logo">KLADYX</div>
@@ -599,11 +609,16 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v1.0.En</div>
+  <div class="version">v1.3.En</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
     <button class="station-tab" onclick="switchStation('blanik', this)">Rádio Blaník</button>
+    <button class="station-tab" onclick="switchStation('evropa2', this)">Evropa 2</button>
+    <button class="station-tab" onclick="switchStation('impuls', this)">Impuls</button>
+    <button class="station-tab" onclick="switchStation('cas', this)">Rádio Čas</button>
+    <button class="station-tab" onclick="switchStation('dance', this)">Dance Radio</button>
+    <button class="station-tab" onclick="switchStation('cdm', this)">CDM Ibiza</button>
   </div>
 
   <div class="live-badge">
@@ -640,13 +655,23 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     var STATION_META = {
       housetime: { label: 'HOUSETIME.FM',   color: 'var(--neon-purple)' },
       blanik:    { label: 'RÁDIO BLANÍK',   color: '#00ff88' },
-      orion:     { label: 'HITRÁDIO ORION', color: '#00d4ff' }
+      orion:     { label: 'HITRÁDIO ORION', color: '#00d4ff' },
+      evropa2:   { label: 'EVROPA 2',        color: '#ff6b00' },
+      impuls:    { label: 'RÁDIO IMPULS',    color: '#e60012' },
+      cas:       { label: 'RÁDIO ČAS',       color: '#ffcc00' },
+      dance:     { label: 'DANCE RADIO',     color: '#cc00ff' },
+      cdm:       { label: 'CDM · IBIZA',     color: '#00ccaa' }
     };
 
     // Icecast status endpointy pro non-HouseTime stanice
     var ICECAST_STATIONS = {
-      blanik: { label: 'Rádio Blaník',   apiUrl: 'https://radia.cz/api/stations/218/now-playing' },
-      orion:  { label: 'Hitrádio Orion', apiUrl: null }
+      blanik:   { label: 'Rádio Blaník',   apiUrl: 'https://radia.cz/api/stations/218/now-playing' },
+      orion:    { label: 'Hitrádio Orion', apiUrl: null },
+      evropa2:  { label: 'Evropa 2',        apiUrl: 'https://radia.cz/api/stations/5/now-playing' },
+      impuls:   { label: 'Rádio Impuls',    apiUrl: 'https://radia.cz/api/stations/3/now-playing' },
+      cas:      { label: 'Rádio Čas',       apiUrl: 'https://radia.cz/api/stations/10/now-playing' },
+      dance:    { label: 'Dance Radio',     apiUrl: 'https://radia.cz/api/stations/220/now-playing' },
+      cdm:      { label: 'CDM Ibiza',       apiUrl: null }
     };
 
     function fetchIcecastStation(stationId) {
@@ -655,7 +680,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       if (btn) btn.disabled = true;
 
       // Blaník — radia.cz má veřejné CORS JSON API
-      if (stationId === 'blanik') {
+      if ((stationId === 'blanik' || stationId === 'evropa2' || stationId === 'impuls' || stationId === 'cas' || stationId === 'dance') && st.apiUrl) {
         fetch(st.apiUrl + '?_t=' + Date.now(), {cache:'no-store'})
           .then(function(r){ return r.json(); })
           .then(function(d) {
@@ -679,8 +704,13 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
     function fetchIcecastFallback(stationId) {
       var mounts = {
-        blanik: { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'blanikmorava128' },
-        orion:  { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'orion128' }
+        blanik:   { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'blanikmorava128' },
+        orion:    { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'orion128' },
+        evropa2:  { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'evropa2128' },
+        impuls:   { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'impuls128' },
+        cas:      { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'cas128' },
+        dance:    { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'dance128' },
+        cdm:      { url: 'https://cdm-chillout.ice.infomaniak.ch/status-json.xsl', mount: 'cdm-chillout-128' }
       };
       var m = mounts[stationId];
       var ts = Date.now();
@@ -1042,6 +1072,74 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     <span class="app-brand-bar-sep"></span>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 38" width="120" height="38"><defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dddddd"/></linearGradient></defs><ellipse cx="14" cy="19" rx="10" ry="13" fill="url(#fg1)" opacity="0.9"/><ellipse cx="14" cy="19" rx="6" ry="9" fill="#1a1a2e"/><ellipse cx="14" cy="19" rx="2.5" ry="2.5" fill="url(#fg1)"/><line x1="14" y1="6" x2="14" y2="32" stroke="#ffffff44" stroke-width="0.7"/><text x="30" y="17" font-family="Georgia,serif" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" font-style="italic">FENDER</text><text x="30" y="29" font-family="Arial,sans-serif" font-size="6" fill="#ffffff88" letter-spacing="3">GUITARS &amp; BASSES</text></svg>
   </div>
+
+<script>
+(function(){
+  var canvas = document.getElementById('stars-canvas');
+  var ctx = canvas.getContext('2d');
+  var stars = [];
+  var N = 120;
+
+  function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function init(){
+    stars = [];
+    for(var i=0;i<N;i++){
+      stars.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        r: Math.random()*1.6+0.4,
+        alpha: Math.random(),
+        delta: (Math.random()*0.008+0.003) * (Math.random()<0.5?1:-1),
+        speed: Math.random()*0.15+0.05
+      });
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(var i=0;i<stars.length;i++){
+      var s=stars[i];
+      s.alpha += s.delta;
+      if(s.alpha<=0.05){s.alpha=0.05;s.delta=Math.abs(s.delta);}
+      if(s.alpha>=0.85){s.alpha=0.85;s.delta=-Math.abs(s.delta);}
+      s.y -= s.speed;
+      if(s.y < -4) s.y = canvas.height+4;
+
+      // Hvězdička — 4 ramena
+      ctx.save();
+      ctx.translate(s.x, s.y);
+      ctx.globalAlpha = s.alpha;
+      ctx.fillStyle = '#5bc8ff';
+      ctx.shadowColor = '#00aaff';
+      ctx.shadowBlur = s.r*4;
+      // střed
+      ctx.beginPath();
+      ctx.arc(0,0,s.r*0.7,0,Math.PI*2);
+      ctx.fill();
+      // 4 paprsky
+      var len = s.r*3.5;
+      ctx.strokeStyle = '#5bc8ff';
+      ctx.lineWidth = s.r*0.55;
+      ctx.beginPath();
+      ctx.moveTo(-len,0); ctx.lineTo(len,0);
+      ctx.moveTo(0,-len); ctx.lineTo(0,len);
+      ctx.stroke();
+      ctx.restore();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  init();
+  draw();
+  window.addEventListener('resize', function(){ resize(); init(); });
+})();
+</script>
+
 </body>
 </html>
 `;
@@ -6413,16 +6511,13 @@ header h1{font-family:'Orbitron',monospace;font-size:1.55rem;font-weight:900;let
     .app-brand-bar-label { font-size:0.38rem; letter-spacing:2px; color:rgba(90,100,136,0.5); text-transform:uppercase; }
     body { padding-bottom: 56px !important; }
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 </head>
 <body>
 
 <header>
   <div class="title-top">
     <div class="title-year">UTILITY TRACKER · 2026</div>
-    <div class="ver-badge">ver.3.6</div>
+    <div class="ver-badge">ver.3.7</div>
     <span id="sync-dot" style="font-size:.58rem;color:#4a6d90;letter-spacing:.05em;margin-left:4px;">⏳</span>
   </div>
   <h1>ODEČTY</h1>
@@ -6520,91 +6615,70 @@ const todayYM = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0
 
 let currentMonth = todayYM; // 'YYYY-MM'
 
-// ── FIREBASE SYNC ──
-const _fbConfig = {
-  apiKey: "AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",
-  authDomain: "kladyxland.firebaseapp.com",
-  databaseURL: "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "kladyxland",
-  storageBucket: "kladyxland.firebasestorage.app",
-  messagingSenderId: "178078059030",
-  appId: "1:178078059030:web:8d8a0271b23a7aca2b4337"
-};
-if (!firebase.apps.length) firebase.initializeApp(_fbConfig);
-firebase.auth().signInAnonymously().catch(e => console.warn('Auth:', e));
-const _db = firebase.database();
-const _odRef = _db.ref('odectyDb');
-let _odSaving = false;
-
-// Auto anonymous sign-in – nutné pro přístup k Firebase RTDB
-
-function _setSyncStatus(msg, color) {
-  const el = document.getElementById('sync-dot');
-  if (el) { el.textContent = msg; el.style.color = color || '#4a6d90'; }
-}
-
+// ── FIREBASE SYNC (stejný pattern jako jidlo/gluco) ──
 // ── STORAGE ──
 let _records = JSON.parse(localStorage.getItem(SK)||'{"water":[],"gas":[],"electric":[]}');
-
 function getRecords(){ return _records; }
 
+// Firebase arrays→objects fix: Firebase ukládá pole jako {0:{...},1:{...}}
+function _fbArrFix(v){if(!v)return[];if(Array.isArray(v))return v;return Object.values(v);}
+
+var REF=null, SAV=false;
+
+function SS(m,c){var e=document.getElementById('sync-dot');if(e){e.textContent=m;e.style.color=c||'#4a6d90';}}
+
 function saveRecords(r){
-  _records = r;
-  localStorage.setItem(SK, JSON.stringify(r));
-  _odSaving = true;
-  setTimeout(()=>{ _odSaving=false; }, 3000);
-  _setSyncStatus('⏳ Ukládám...', '#f39c12');
-  _odRef.set(r)
-    .then(()=> _setSyncStatus('✅ Synchronizováno', '#2ecc71'))
-    .catch(e=>{ console.error(e); _setSyncStatus('❌ Chyba sync', '#e74c3c'); });
+  _records=r;
+  try{localStorage.setItem(SK,JSON.stringify(r));}catch(e){}
+  if(!REF){SS('💾 Lokálně','#f39c12');return;}
+  SAV=true;setTimeout(function(){SAV=false;},3000);
+  SS('⏳','#f39c12');
+  REF.set(r).then(function(){SS('✅ Sync','#2ecc71');}).catch(function(){SS('❌','#e74c3c');});
 }
 
-// Firebase real-time listener
-let _firstLoad = true;
-setTimeout(function(){
-  if(_firstLoad){
-    _firstLoad=false;
-    _setSyncStatus('📴 Offline','#e67e22');
-  }
-},5000);
-
-firebase.auth().onAuthStateChanged(user => {
-  if (!user) return;
-  _odRef.on('value', (snapshot)=>{
-  const fb = snapshot.val();
-  if(_firstLoad){
-    _firstLoad=false;
-    if(fb && (fb.water||fb.gas||fb.electric)){
-      _records = {
-        water: fb.water||[],
-        gas: fb.gas||[],
-        electric: fb.electric||[]
-      };
-      localStorage.setItem(SK, JSON.stringify(_records));
-    } else if(_records.water||_records.gas||_records.electric){
-      saveRecords(_records); // push local → Firebase
+function initFB(){
+  try{
+    var FC={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
+    if(!firebase.apps.length)firebase.initializeApp(FC);
+    REF=firebase.database().ref('odectyDb');
+    var FL=true;
+    var _timer=setTimeout(function(){if(FL){FL=false;SS('📴 Offline','#e67e22');}},8000);
+    function startSync(){
+      clearTimeout(_timer);
+      REF.on('value',function(s){
+        var fb=s.val();
+        if(FL){
+          FL=false;
+          if(fb&&(fb.water||fb.gas||fb.electric)){
+            _records={water:_fbArrFix(fb.water),gas:_fbArrFix(fb.gas),electric:_fbArrFix(fb.electric)};
+            try{localStorage.setItem(SK,JSON.stringify(_records));}catch(ex){}
+          } else if(_records.water.length||_records.gas.length||_records.electric.length){
+            saveRecords(_records);
+          }
+          refresh();SS('✅ Sync','#2ecc71');return;
+        }
+        if(SAV)return;
+        if(fb&&(fb.water||fb.gas||fb.electric)){
+          var inc={water:_fbArrFix(fb.water),gas:_fbArrFix(fb.gas),electric:_fbArrFix(fb.electric)};
+          if(JSON.stringify(inc)!==JSON.stringify(_records)){_records=inc;try{localStorage.setItem(SK,JSON.stringify(_records));}catch(ex){}refresh();SS('🔄','#2ecc71');}
+        }
+      },function(e){SS('❌ '+e.code,'#e74c3c');});
     }
-    refresh();
-    _setSyncStatus('✅ Synchronizováno', '#2ecc71');
-    return;
-  }
-  if(_odSaving) return;
-  if(fb && (fb.water||fb.gas||fb.electric)){
-    const incoming = {water:fb.water||[],gas:fb.gas||[],electric:fb.electric||[]};
-    if(JSON.stringify(incoming)!==JSON.stringify(_records)){
-      _records = incoming;
-      localStorage.setItem(SK, JSON.stringify(_records));
-      refresh();
-      _setSyncStatus('🔄 Aktualizuji...', '#2ecc71');
-    }
-  }
-},(err)=>{
-  console.error(err);
-  _setSyncStatus('❌ Offline','#e74c3c');
-});
-}); // onAuthStateChanged
+    // Zkus bez autentizace, pak s anonymous auth
+    REF.once('value').then(function(){startSync();}).catch(function(){
+      firebase.auth().signInAnonymously()
+        .then(function(){startSync();})
+        .catch(function(e){clearTimeout(_timer);SS('💾 Lokálně','#f39c12');});
+    });
+  }catch(e){SS('💾 Lokálně','#f39c12');}
+}
+var s1=document.createElement('script');
+s1.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
+s1.onload=function(){var s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js';s2.onload=function(){var s3=document.createElement('script');s3.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js';s3.onload=initFB;s3.onerror=function(){SS('💾 Lokálně','#f39c12');};document.head.appendChild(s3);};s2.onerror=function(){SS('💾 Lokálně','#f39c12');};document.head.appendChild(s2);};
+s1.onerror=function(){SS('💾 Lokálně','#f39c12');};
+document.head.appendChild(s1);
 
-function getVal(records,type,ym){
+unction getVal(records,type,ym){
   const r=records[type].find(x=>x.date.startsWith(ym));
   return r?r.value:null;
 }
