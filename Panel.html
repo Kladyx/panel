@@ -46,6 +46,18 @@
       height: 8px;
     }
 
+    /* Hvězdičky na hlavním panelu (za layoutem) */
+    #main-stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    #main-stars .star-container {
+      position: absolute;
+    }
+
     * { margin:0; padding:0; box-sizing:border-box; }
     :root { --bg:#050810; --sidebar:#080d1c; --cyan:#00d4ff; --muted:#5a6488; --light:#dde4ff; --card:#0d1428; }
     html,body { width:100%; height:100%; background:var(--bg); font-family:"Courier New",monospace; color:var(--light); overflow:hidden; }
@@ -189,6 +201,7 @@
   </button>
   <div class="gate-status" id="gate-status"></div>
 </div>
+<div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
     <div class="tlogo">▬ KLADYX PANEL<span>v7.5</span></div>
@@ -10085,33 +10098,26 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
 
 // Star particles generator - starfield like website
 (function() {
-  function createStarParticles() {
-    var panelGate = document.getElementById('panel-gate');
-    if (!panelGate) return;
-    
-    var starCount = 40;
-    
-    for (var i = 0; i < starCount; i++) {
+  function spawnStars(container, count) {
+    for (var i = 0; i < count; i++) {
       var star = document.createElement('div');
       star.className = 'star-container';
-      
-      // Náhodně větší hvězdy
-      if (Math.random() > 0.7) {
-        star.classList.add('big');
-      }
-      
-      // Náhodné zpoždění animace
-      var randomDelay = Math.random() * 2;
-      star.style.animationDelay = randomDelay + 's';
-      
-      var randomX = Math.random() * 100;
-      var randomY = Math.random() * 100;
-      star.style.left = randomX + '%';
-      star.style.top = randomY + '%';
+      if (Math.random() > 0.7) star.classList.add('big');
+      star.style.animationDelay = (Math.random() * 3) + 's';
+      star.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+      star.style.left = (Math.random() * 100) + '%';
+      star.style.top  = (Math.random() * 100) + '%';
       star.style.transform = 'translate(-50%, -50%)';
-      
-      panelGate.appendChild(star);
+      container.appendChild(star);
     }
+  }
+
+  function createStarParticles() {
+    var panelGate = document.getElementById('panel-gate');
+    if (panelGate) spawnStars(panelGate, 40);
+
+    var mainStars = document.getElementById('main-stars');
+    if (mainStars) spawnStars(mainStars, 60);
   }
   
   if (document.readyState === 'loading') {
