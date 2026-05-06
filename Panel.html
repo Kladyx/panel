@@ -12,6 +12,7 @@
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       gap: 28px; transition: opacity 0.4s;
+      overflow: hidden;
     }
     #panel-gate.hidden { opacity: 0; pointer-events: none; }
     .gate-logo { font-size: 2.2rem; font-weight: 900; letter-spacing: 8px; color: #00d4ff; text-shadow: 0 0 30px #00d4ff; }
@@ -37,6 +38,7 @@
       animation: starPulse 2s ease-in-out infinite;
       will-change: opacity, transform;
       pointer-events: none;
+      z-index: 0;
     }
     
     .star-container.big {
