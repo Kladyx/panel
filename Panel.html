@@ -270,11 +270,8 @@
     <button class="app-btn" id="btn-zxnext" style="--ac:#00ff88;--ac-rgb:0,255,136" onclick="openApp('zxnext')">
       <div class="bd"></div><div class="bi">🖥️</div><div class="bl">ZX Next</div>
     </button>
-    <button class="app-btn" id="btn-ebook" style="--ac:#ffb84d;--ac-rgb:255,184,77" onclick="openApp('ebook')">
-      <div class="bd"></div><div class="bi">📚</div><div class="bl">EBOOK</div>
-    </button>
     <button class="app-btn" id="btn-reader" style="--ac:#a78bfa;--ac-rgb:167,139,250" onclick="openApp('reader')">
-      <div class="bd"></div><div class="bi">📖</div><div class="bl">Čtečka</div>
+      <div class="bd"></div><div class="bi">📚</div><div class="bl">Čtečka</div>
     </button>
 
   </div>
@@ -366,7 +363,6 @@
     <iframe id="frame-manualy" class="app-frame" title="manualy" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
     <iframe id="frame-zxnext" class="app-frame" title="zxnext" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
     <iframe id="frame-reader" class="app-frame" title="reader" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
-    <iframe id="frame-ebook" class="app-frame" title="ebook" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
 
   </div>
 </div>
@@ -10097,6 +10093,9 @@ APP_HTML["reader"] = `<!DOCTYPE html>
     .bm-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;}
     .bm-save-btn{width:100%;padding:11px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.35);border-radius:6px;color:var(--cyan);font-family:var(--font);font-size:.65rem;letter-spacing:2px;cursor:pointer;margin-bottom:10px;transition:.15s;}
     .bm-save-btn:hover{background:rgba(0,212,255,.2);}
+    #save-file-btn.saving { animation: saveBtnSaving 0.6s ease-in-out; }
+    #save-file-btn.saved { background:rgba(255,60,90,.2) !important; border-color:rgba(255,60,90,.4) !important; color:#ff3c5a !important; }
+    @keyframes saveBtnSaving { 0% { transform:scale(1); } 50% { transform:scale(1.05); } 100% { transform:scale(1); } }
     .bm-io-row{display:flex;gap:8px;margin-bottom:18px;}
     .bm-io-btn{flex:1;padding:9px 6px;border-radius:6px;font-family:var(--font);font-size:.6rem;letter-spacing:1.5px;cursor:pointer;transition:.15s;}
     .bm-io-btn.export{background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.3);color:#00ff88;}
@@ -10193,7 +10192,8 @@ APP_HTML["reader"] = `<!DOCTYPE html>
     <div class="bm-title">🔖 Záložky</div>
     <button class="bm-close" onclick="closeBookmarks()">✕</button>
   </div>
-  <button class="bm-save-btn" onclick="saveBookmark()">＋ ULOŽIT AKTUÁLNÍ POZICI</button>
+  <button class="bm-save-btn" id="save-file-btn" onclick="saveCurrentFile()" style="background:rgba(0,255,136,.15);border:1px solid rgba(0,255,136,.4);color:#00ff88;">💾 ULOŽIT SOUBOR</button>
+  <button class="bm-save-btn" onclick="saveBookmark()">🔖 ULOŽIT POZICI</button>
   <div class="bm-io-row">
     <button class="bm-io-btn export" onclick="exportBookmarks()">⬇ EXPORT JSON</button>
     <button class="bm-io-btn import" onclick="document.getElementById('bm-import-input').click()">⬆ IMPORT JSON</button>
@@ -10370,6 +10370,22 @@ function goToBookmark(bm){
     toast('⚠ Nejprve otevři: '+bm.title);closeBookmarks();
   }
 }
+function saveCurrentFile(){
+  if(!currentFile){toast('⛔ Žádná kniha není otevřena');return;}
+  var btn=document.getElementById('save-file-btn');
+  btn.classList.add('saving');
+  btn.textContent='💾 UKLÁDÁM...';
+  setTimeout(function(){
+    dbSaveBook(currentFile.name,currentFile.name,bookType,currentFile.data);
+    btn.classList.remove('saving');
+    btn.classList.add('saved');
+    btn.textContent='✓ ULOŽENO';
+    setTimeout(function(){
+      btn.classList.remove('saved');
+      btn.textContent='💾 ULOŽIT SOUBOR';
+    },2500);
+  },600);
+}
 function updateFontSize(v){document.getElementById('fs-val').textContent=v+'px';document.documentElement.style.setProperty('--fs',v+'px');applyEpubTheme();}
 function updateLineHeight(v){var lh=(v/100).toFixed(2);document.getElementById('lh-val').textContent=lh;document.documentElement.style.setProperty('--lh',lh);applyEpubTheme();}
 function updateMargin(v){document.getElementById('mx-val').textContent=v+'px';document.documentElement.style.setProperty('--mx',v+'px');applyEpubTheme();if(bookType==='pdf')renderPdfPage(pdfPage);}
@@ -10458,156 +10474,6 @@ function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').
 // ──────────────────────────────────────────────────────────────
 <\/script>
 </body></html>
-`;
-
-APP_HTML["ebook"] = `<!DOCTYPE html>
-<html lang="cs">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EBOOK ARCHIV</title>
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    :root { --bg:#050810; --surface:#0d1428; --cyan:#00d4ff; --muted:#5a6488; --light:#dde4ff; }
-    html,body { width:100%; height:100%; background:var(--bg); font-family:"Courier New",monospace; color:var(--light); overflow:hidden; }
-    .header { padding:16px; border-bottom:1px solid rgba(0,212,255,0.2); background:rgba(5,8,16,0.8); }
-    .header-title { font-size:0.95rem; font-weight:bold; letter-spacing:2px; color:var(--cyan); }
-    .content { overflow-y:auto; height:calc(100vh - 130px); padding:15px; }
-    .controls { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
-    .btn { padding:10px 16px; background:rgba(0,212,255,0.1); border:1px solid var(--cyan); color:var(--cyan); font-family:"Courier New",monospace; font-size:0.8rem; font-weight:bold; cursor:pointer; border-radius:5px; }
-    .btn:hover { background:rgba(0,212,255,0.2); }
-    #book-list { display:flex; flex-direction:column; gap:8px; }
-    .book-item { background:rgba(13,20,40,0.8); border-left:3px solid var(--cyan); padding:12px; border-radius:4px; display:flex; justify-content:space-between; align-items:center; }
-    .book-info { flex:1; }
-    .book-name { font-weight:bold; font-size:0.9rem; color:var(--light); }
-    .book-date { font-size:0.7rem; color:var(--muted); margin-top:3px; }
-    .book-actions { display:flex; gap:6px; }
-    .btn-small { padding:5px 10px; font-size:0.7rem; background:rgba(0,212,255,0.15); border:1px solid var(--cyan); color:var(--cyan); border-radius:3px; cursor:pointer; }
-    .btn-small:hover { background:rgba(0,212,255,0.3); }
-    .btn-del { border-color:#ff3c5a; color:#ff3c5a; background:rgba(255,60,90,0.1); }
-    .btn-del:hover { background:rgba(255,60,90,0.2); }
-    .empty { padding:40px 20px; text-align:center; color:var(--muted); }
-    .footer { position:absolute; bottom:0; left:0; right:0; padding:12px 15px; background:rgba(5,8,16,0.9); border-top:1px solid rgba(0,212,255,0.2); }
-    #import-file { display:none; }
-    .notification { position:fixed; top:15px; right:15px; padding:10px 15px; background:var(--cyan); color:var(--bg); border-radius:5px; font-size:0.8rem; font-weight:bold; z-index:1000; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <div class="header-title">📚 EBOOK ARCHIV</div>
-  </div>
-  <div class="content">
-    <div class="controls">
-      <button class="btn" onclick="document.getElementById('import-file').click()">📥 IMPORT</button>
-      <button class="btn" onclick="exportBooks()">📤 EXPORT</button>
-      <input type="file" id="import-file" accept=".json">
-    </div>
-    <div id="book-list"></div>
-  </div>
-  <div class="footer">
-    <small style="color:var(--muted);">Archiv se ukládá do paměti telefonu</small>
-  </div>
-  <script>
-    var ebookDB = null;
-    function initDB() {
-      return new Promise(function(resolve) {
-        var req = indexedDB.open('EbookArchiv', 1);
-        req.onerror = function() { alert('Chyba DB'); };
-        req.onsuccess = function() { ebookDB = req.result; resolve(); };
-        req.onupgradeneeded = function(e) {
-          var db = e.target.result;
-          if (!db.objectStoreNames.contains('knihy')) {
-            db.createObjectStore('knihy', { keyPath:'id', autoIncrement:true });
-          }
-        };
-      });
-    }
-    function getAllBooks() {
-      return new Promise(function(resolve) {
-        var tx = ebookDB.transaction(['knihy'], 'readonly');
-        var store = tx.objectStore('knihy');
-        var req = store.getAll();
-        req.onsuccess = function() { resolve(req.result); };
-      });
-    }
-    function deleteBook(id) {
-      if (confirm('Smazat tuto knihu?')) {
-        var tx = ebookDB.transaction(['knihy'], 'readwrite');
-        tx.objectStore('knihy').delete(id);
-        refreshList();
-      }
-    }
-    function refreshList() {
-      getAllBooks().then(function(books) {
-        var list = document.getElementById('book-list');
-        list.innerHTML = '';
-        if (books.length === 0) {
-          list.innerHTML = '<div class="empty">Zatím žádné knihy</div>';
-          return;
-        }
-        books.forEach(function(book) {
-          var item = document.createElement('div');
-          item.className = 'book-item';
-          item.innerHTML = '<div class="book-info"><div class="book-name">📖 ' + (book.nazev || 'Bez názvu') + '</div><div class="book-date">' + (book.ulozeno || '?') + '</div></div>' +
-                           '<div class="book-actions"><button class="btn-small" onclick="alert(\\'Obsah: \\' + (book.obsah ? book.obsah.substring(0,100) + \\'...\\' : \\'Prázdné\\'))">👁️</button><button class="btn-small btn-del" onclick="deleteBook(' + book.id + ')">✕</button></div>';
-          list.appendChild(item);
-        });
-      });
-    }
-    function exportBooks() {
-      getAllBooks().then(function(books) {
-        var json = JSON.stringify(books, null, 2);
-        var blob = new Blob([json], { type:'application/json' });
-        var url = URL.createObjectURL(blob);
-        var link = document.createElement('a');
-        link.href = url;
-        link.download = 'ebook-archiv-' + new Date().toISOString().split('T')[0] + '.json';
-        link.click();
-        showMsg('✓ Export');
-      });
-    }
-    function importBooks(file) {
-      if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          var books = JSON.parse(e.target.result);
-          if (!Array.isArray(books)) throw new Error('Neplatný formát');
-          var tx = ebookDB.transaction(['knihy'], 'readwrite');
-          var store = tx.objectStore('knihy');
-          var cnt = 0;
-          books.forEach(function(book) {
-            delete book.id;
-            var req = store.add(book);
-            req.onsuccess = function() {
-              cnt++;
-              if (cnt === books.length) {
-                showMsg('✓ Importováno ' + books.length + ' knih');
-                refreshList();
-              }
-            };
-          });
-        } catch(err) {
-          showMsg('✗ Chyba');
-        }
-      };
-      reader.readAsText(file);
-    }
-    function showMsg(msg) {
-      var div = document.createElement('div');
-      div.className = 'notification';
-      div.textContent = msg;
-      document.body.appendChild(div);
-      setTimeout(function() { div.remove(); }, 2500);
-    }
-    document.getElementById('import-file').addEventListener('change', function(e) {
-      importBooks(e.target.files[0]);
-      e.target.value = '';
-    });
-    initDB().then(function() { refreshList(); });
-  </script>
-</body>
-</html>
 `;
 
 function openApp(id) {
