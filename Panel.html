@@ -10248,9 +10248,9 @@ zone.addEventListener('drop',function(e){e.preventDefault();zone.classList.remov
 function loadFile(file){var ext=file.name.split('.').pop().toLowerCase();if(ext==='epub')loadEpub(file);else if(ext==='pdf')loadPdf(file);else toast('Nepodporovaný formát: .'+ext);}
 function showReader(title,fileObj){document.getElementById('upload-screen').classList.add('hidden');document.getElementById('reader-screen').classList.add('active');document.getElementById('book-title').textContent=title||'—';if(fileObj)currentFile=fileObj;}
 function closeBook(){if(epubBook){epubBook.destroy();epubBook=null;epubRendition=null;}pdfDoc=null;pdfPage=1;pdfTotal=0;document.getElementById('epub-viewer').innerHTML='';document.getElementById('pdf-viewer').innerHTML='';document.getElementById('pdf-viewer').style.display='none';document.getElementById('epub-viewer').style.display='block';document.getElementById('reader-screen').classList.remove('active');document.getElementById('upload-screen').classList.remove('hidden');document.getElementById('file-input').value='';bookType=null;}
-function loadEpub(file,buf){bookType='epub';function _open(b){try{if(epubBook)epubBook.destroy();epubBook=ePub(b);epubBook.ready.then(function(){return epubBook.locations.generate(1200);});epubBook.loaded.metadata.then(function(meta){var t=meta.title||file.name;showReader(t,{name:file.name,data:b,type:'epub'});dbSaveBook(file.name,t,'epub',b);});var viewer=document.getElementById('epub-viewer');viewer.style.display='block';document.getElementById('pdf-viewer').style.display='none';epubRendition=epubBook.renderTo('epub-viewer',{manager:'continuous',flow:'scrolled',width:'100%',height:'100%',spread:'none'});applyEpubTheme();epubRendition.display();epubRendition.on('relocated',function(loc){updateProgress(loc.start.percentage||0);var ci=loc.start.displayed;if(ci)setPageInfo(ci.page,ci.total);});epubBook.loaded.navigation.then(function(nav){buildToc(nav.toc);});addSwipe(viewer);}catch(err){toast('Chyba EPUB: '+err.message);}}if(buf){_open(buf);}else{var r=new FileReader();r.onload=function(e){_open(e.target.result);};r.readAsArrayBuffer(file);}}
+function loadEpub(file,buf){bookType='epub';function _open(b){try{if(epubBook)epubBook.destroy();epubBook=ePub(b);epubBook.ready.then(function(){return epubBook.locations.generate(1200);});epubBook.loaded.metadata.then(function(meta){var t=meta.title||file.name;showReader(t,{name:file.name,data:b,type:'epub'});dbSaveBook(file.name,t,'epub',b,function(){toast('✅ Kniha uložena do archivu');},function(e){toast('⚠ Nelze uložit: '+e);});});var viewer=document.getElementById('epub-viewer');viewer.style.display='block';document.getElementById('pdf-viewer').style.display='none';epubRendition=epubBook.renderTo('epub-viewer',{manager:'continuous',flow:'scrolled',width:'100%',height:'100%',spread:'none'});applyEpubTheme();epubRendition.display();epubRendition.on('relocated',function(loc){updateProgress(loc.start.percentage||0);var ci=loc.start.displayed;if(ci)setPageInfo(ci.page,ci.total);});epubBook.loaded.navigation.then(function(nav){buildToc(nav.toc);});addSwipe(viewer);}catch(err){toast('Chyba EPUB: '+err.message);}}if(buf){_open(buf);}else{var r=new FileReader();r.onload=function(e){_open(e.target.result);};r.readAsArrayBuffer(file);}}
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-function loadPdf(file,buf){bookType='pdf';function _open(b){var loading=document.getElementById('pdf-loading');loading.classList.add('show');var typedArray=new Uint8Array(b);pdfjsLib.getDocument({data:typedArray}).promise.then(function(pdf){pdfDoc=pdf;pdfTotal=pdf.numPages;pdfPage=1;var t=file.name.replace(/\.pdf$/i,'');showReader(t,{name:file.name,data:b,type:'pdf'});dbSaveBook(file.name,t,'pdf',b);document.getElementById('epub-viewer').style.display='none';var pv=document.getElementById('pdf-viewer');pv.style.display='flex';loading.classList.remove('show');renderPdfPage(pdfPage);buildPdfToc();addSwipe(pv);}).catch(function(err){loading.classList.remove('show');toast('Chyba PDF: '+err.message);});}if(buf){_open(buf);}else{var r=new FileReader();r.onload=function(e){_open(e.target.result);};r.readAsArrayBuffer(file);}}
+function loadPdf(file,buf){bookType='pdf';function _open(b){var loading=document.getElementById('pdf-loading');loading.classList.add('show');var typedArray=new Uint8Array(b);pdfjsLib.getDocument({data:typedArray}).promise.then(function(pdf){pdfDoc=pdf;pdfTotal=pdf.numPages;pdfPage=1;var t=file.name.replace(/\.pdf$/i,'');showReader(t,{name:file.name,data:b,type:'pdf'});dbSaveBook(file.name,t,'pdf',b,function(){toast('✅ Kniha uložena do archivu');},function(e){toast('⚠ Nelze uložit: '+e);});document.getElementById('epub-viewer').style.display='none';var pv=document.getElementById('pdf-viewer');pv.style.display='flex';loading.classList.remove('show');renderPdfPage(pdfPage);buildPdfToc();addSwipe(pv);}).catch(function(err){loading.classList.remove('show');toast('Chyba PDF: '+err.message);});}if(buf){_open(buf);}else{var r=new FileReader();r.onload=function(e){_open(e.target.result);};r.readAsArrayBuffer(file);}}
 function renderPdfPage(num){if(!pdfDoc||pdfRendering)return;pdfRendering=true;var pv=document.getElementById('pdf-viewer');pv.innerHTML='';pdfDoc.getPage(num).then(function(page){var vw=Math.min(window.innerWidth-32,800);var viewport=page.getViewport({scale:1});var scale2=vw/viewport.width;var scaledVP=page.getViewport({scale:scale2});var canvas=document.createElement('canvas');canvas.width=scaledVP.width;canvas.height=scaledVP.height;canvas.style.width='100%';pv.appendChild(canvas);page.render({canvasContext:canvas.getContext('2d'),viewport:scaledVP}).promise.then(function(){pdfRendering=false;pdfPage=num;setPageInfo(num,pdfTotal);updateProgress(num/pdfTotal);pv.scrollTop=0;});});}
 function buildPdfToc(){if(!pdfDoc)return;pdfDoc.getOutline().then(function(outline){if(!outline||!outline.length){buildPdfPageList();return;}var list=document.getElementById('toc-list');list.innerHTML='';function addItems(items,depth){items.forEach(function(item){var el=document.createElement('div');el.className='toc-item';el.style.paddingLeft=(14+depth*16)+'px';el.textContent=(depth?'└ ':'')+item.title;el.onclick=function(){if(item.dest){pdfDoc.getDestination(item.dest).then(function(dest){pdfDoc.getPageIndex(dest[0]).then(function(idx){renderPdfPage(idx+1);closeToc();});});}};list.appendChild(el);if(item.items&&item.items.length)addItems(item.items,depth+1);});}addItems(outline,0);}).catch(function(){buildPdfPageList();});}
 function buildPdfPageList(){var list=document.getElementById('toc-list');list.innerHTML='';for(var i=1;i<=Math.min(pdfTotal,200);i++){(function(n){var el=document.createElement('div');el.className='toc-item';el.textContent='Stránka '+n;el.onclick=function(){renderPdfPage(n);closeToc();};list.appendChild(el);})(i);}}
@@ -10375,30 +10375,63 @@ function goToBookmark(bm){
 }
 function saveCurrentFile(){
   if(!currentFile){toast('⛔ Žádná kniha není otevřena');return;}
+  if(!currentFile.data){toast('⛔ Data knihy nejsou dostupná — načti ji znovu');return;}
   var btn=document.getElementById('save-file-btn');
-  btn.classList.add('saving');
+  btn.disabled=true;
+  btn.style.background='rgba(0,255,136,.15)';
+  btn.style.borderColor='rgba(0,255,136,.4)';
+  btn.style.color='#00ff88';
   btn.textContent='💾 UKLÁDÁM...';
-  setTimeout(function(){
-    dbSaveBook(currentFile.name,currentFile.name,bookType,currentFile.data);
-    btn.classList.remove('saving');
-    btn.classList.add('saved');
-    btn.textContent='✓ ULOŽENO';
-    setTimeout(function(){
-      btn.classList.remove('saved');
-      btn.textContent='💾 ULOŽIT SOUBOR';
-    },2500);
-  },600);
+  dbSaveBook(
+    currentFile.name,
+    currentFile.name,
+    bookType,
+    currentFile.data,
+    function(){
+      // onSuccess — červené "ULOŽENO"
+      btn.style.background='rgba(255,60,90,.2)';
+      btn.style.borderColor='rgba(255,60,90,.5)';
+      btn.style.color='#ff3c5a';
+      btn.textContent='✓ ULOŽENO';
+      setTimeout(function(){
+        btn.disabled=false;
+        btn.style.background='rgba(0,255,136,.15)';
+        btn.style.borderColor='rgba(0,255,136,.4)';
+        btn.style.color='#00ff88';
+        btn.textContent='💾 ULOŽIT SOUBOR';
+      },2500);
+    },
+    function(errMsg){
+      // onError
+      btn.disabled=false;
+      btn.style.background='rgba(255,60,90,.2)';
+      btn.style.borderColor='rgba(255,60,90,.5)';
+      btn.style.color='#ff3c5a';
+      btn.textContent='⛔ CHYBA UKLÁDÁNÍ';
+      toast('⛔ Nelze uložit: ' + (errMsg||'neznámá chyba'));
+      setTimeout(function(){
+        btn.style.background='rgba(0,255,136,.15)';
+        btn.style.borderColor='rgba(0,255,136,.4)';
+        btn.style.color='#00ff88';
+        btn.textContent='💾 ULOŽIT SOUBOR';
+      },3000);
+    }
+  );
 }
 function exportCurrentFile(){
   if(!currentFile||!currentFile.data){toast('⛔ Žádná kniha není otevřena');return;}
+  var ext = bookType === 'epub' ? '.epub' : '.pdf';
+  var fname = currentFile.name || ('kniha' + ext);
   var blob=new Blob([currentFile.data],{type:'application/octet-stream'});
   var url=URL.createObjectURL(blob);
   var link=document.createElement('a');
   link.href=url;
-  link.download=currentFile.name;
+  link.download=fname;
+  document.body.appendChild(link);
   link.click();
-  URL.revokeObjectURL(url);
-  toast('✅ Export: '+currentFile.name);
+  document.body.removeChild(link);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  toast('📥 Stahování: ' + fname + ' → složka Stažené soubory');
 }
 function updateFontSize(v){document.getElementById('fs-val').textContent=v+'px';document.documentElement.style.setProperty('--fs',v+'px');applyEpubTheme();}
 function updateLineHeight(v){var lh=(v/100).toFixed(2);document.getElementById('lh-val').textContent=lh;document.documentElement.style.setProperty('--lh',lh);applyEpubTheme();}
@@ -10433,27 +10466,41 @@ function initArchiveDB(){
 var _archiveDB = null;
 initArchiveDB().then(function(db){ _archiveDB = db; });
 
-function dbSaveBook(filename, title, type, buf){
+function dbSaveBook(filename, title, type, buf, onSuccess, onError){
   if(!_archiveDB){
-    toast('⛔ Archiv se nedá inicializovat');
+    if(onError) onError('DB není dostupná');
+    else toast('⛔ Archiv se nedá inicializovat');
     return;
   }
+  // Ensure we store a proper ArrayBuffer copy
+  var storeBuf;
+  try {
+    if(buf instanceof ArrayBuffer){
+      storeBuf = buf.slice(0);
+    } else if(buf && buf.buffer instanceof ArrayBuffer){
+      storeBuf = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+    } else {
+      storeBuf = buf;
+    }
+  } catch(e){ storeBuf = buf; }
+
   var tx = _archiveDB.transaction([ARC_STORE_NAME], 'readwrite');
   var store = tx.objectStore(ARC_STORE_NAME);
   var book = {
     filename: filename,
     title: title,
     type: type,
-    data: buf,
-    size: buf.byteLength,
+    data: storeBuf,
+    size: storeBuf ? (storeBuf.byteLength || 0) : 0,
     date: new Date().toLocaleString('cs-CZ')
   };
   var req = store.put(book);
   req.onsuccess = function(){
-    toast('✅ Uloženo do archivu');
+    if(onSuccess) onSuccess();
   };
   req.onerror = function(){
-    toast('⛔ Chyba při ukládání');
+    if(onError) onError('Chyba IndexedDB: ' + (req.error ? req.error.message : ''));
+    else toast('⛔ Chyba při ukládání do archivu');
   };
 }
 function dbGetAll(cb){
@@ -10507,9 +10554,21 @@ function renderArchive(){
 }
 function openFromArchive(bk){
   closeArchive();
+  if(!bk.data){toast('⚠ Data nejsou v paměti — nahraj soubor znovu');return;}
+  // Ensure data is ArrayBuffer
+  var buf;
+  try {
+    if(bk.data instanceof ArrayBuffer){
+      buf = bk.data;
+    } else if(bk.data && bk.data.buffer instanceof ArrayBuffer){
+      buf = bk.data.buffer.slice(bk.data.byteOffset, bk.data.byteOffset + bk.data.byteLength);
+    } else {
+      buf = bk.data;
+    }
+  } catch(e){ buf = bk.data; }
   var fakeFile={name:bk.filename};
-  if(bk.type==='epub')loadEpub(fakeFile,bk.data);
-  else loadPdf(fakeFile,bk.data);
+  if(bk.type==='epub') loadEpub(fakeFile, buf);
+  else loadPdf(fakeFile, buf);
 }
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 // ──────────────────────────────────────────────────────────────
