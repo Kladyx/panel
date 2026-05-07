@@ -10378,37 +10378,43 @@ function addSwipe(el){var sx=0,sy=0;el.addEventListener('touchstart',function(e)
 var toastTimer;function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove('show');},3200);}
 document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowDown')nextPage();if(e.key==='ArrowLeft'||e.key==='ArrowUp')prevPage();if(e.key==='Escape')closeAllPanels();});
 window.addEventListener('resize',function(){if(bookType==='pdf'&&!pdfRendering)renderPdfPage(pdfPage);});
-// ── IndexedDB archiv knih ──────────────────────────────────────
-var _idb=null;
-function dbOpen(cb){
-  if(_idb){cb(_idb);return;}
-  var req=indexedDB.open('kladyx_books',1);
-  req.onupgradeneeded=function(e){var db=e.target.result;if(!db.objectStoreNames.contains('books'))db.createObjectStore('books',{keyPath:'id'});};
-  req.onsuccess=function(e){_idb=e.target.result;cb(_idb);};
-  req.onerror=function(){toast('Chyba databáze');};
+// ── Archiv knih — in-memory + localStorage metadata ───────────
+var _arcBooks = {}; // in-memory: filename → {meta + data}
+var ARC_META_KEY = 'kladyx_arc_meta';
+
+function arcGetMeta(){
+  try{ return JSON.parse(localStorage.getItem(ARC_META_KEY)||'{}'); }catch(e){ return {}; }
+}
+function arcSetMeta(meta){
+  try{ localStorage.setItem(ARC_META_KEY, JSON.stringify(meta)); }catch(e){}
 }
 function dbSaveBook(filename,title,type,buf){
-  dbOpen(function(db){
-    var tx=db.transaction('books','readwrite');
-    var st=tx.objectStore('books');
-    st.put({id:filename,title:title,filename:filename,type:type,data:buf,date:new Date().toLocaleString('cs-CZ'),size:buf.byteLength});
-    toast('📚 Uloženo do archivu');
-  });
+  // uložit data do paměti
+  _arcBooks[filename]={filename:filename,title:title,type:type,data:buf,size:buf.byteLength,date:new Date().toLocaleString('cs-CZ')};
+  // uložit metadata do localStorage (bez dat — ta zůstanou v paměti)
+  var meta=arcGetMeta();
+  meta[filename]={filename:filename,title:title,type:type,size:buf.byteLength,date:new Date().toLocaleString('cs-CZ')};
+  arcSetMeta(meta);
+  toast('📚 Přidáno do archivu');
 }
 function dbGetAll(cb){
-  dbOpen(function(db){
-    var tx=db.transaction('books','readonly');
-    var req=tx.objectStore('books').getAll();
-    req.onsuccess=function(e){cb(e.target.result||[]);};
-    req.onerror=function(){cb([]);};
+  var meta=arcGetMeta();
+  var list=[];
+  Object.keys(meta).forEach(function(k){
+    var m=meta[k];
+    // přidat data z paměti pokud jsou dostupná
+    var entry=Object.assign({},m);
+    if(_arcBooks[k]) entry.data=_arcBooks[k].data;
+    list.push(entry);
   });
+  cb(list);
 }
 function dbDelete(id,cb){
-  dbOpen(function(db){
-    var tx=db.transaction('books','readwrite');
-    tx.objectStore('books').delete(id);
-    tx.oncomplete=function(){if(cb)cb();};
-  });
+  delete _arcBooks[id];
+  var meta=arcGetMeta();
+  delete meta[id];
+  arcSetMeta(meta);
+  if(cb)cb();
 }
 function openArchive(){
   renderArchive();
@@ -10419,18 +10425,21 @@ function closeArchive(){
 }
 function renderArchive(){
   var list=document.getElementById('arc-list');
-  list.innerHTML='<div class="arc-empty">Načítám...</div>';
   dbGetAll(function(books){
-    if(!books.length){list.innerHTML='<div class="arc-empty">Archiv je prázdný<br><br>Nahraj knihu — automaticky se uloží</div>';return;}
+    if(!books.length){list.innerHTML='<div class="arc-empty">Archiv je prázdný<br><br>Nahraj knihu — automaticky se přidá</div>';return;}
     list.innerHTML='';
     books.sort(function(a,b){return (b.date||'').localeCompare(a.date||'');});
     books.forEach(function(bk){
       var item=document.createElement('div');item.className='arc-item';
       var icon=bk.type==='epub'?'📖':'📄';
       var sizeMB=(bk.size/1048576).toFixed(1);
-      item.innerHTML='<div class="arc-icon">'+icon+'</div><div class="arc-info"><div class="arc-name">'+escHtml(bk.title)+'</div><div class="arc-meta">'+escHtml(bk.filename)+' · '+sizeMB+' MB · '+escHtml(bk.date)+'</div></div><button class="arc-del" title="Smazat z archivu">🗑</button>';
-      item.querySelector('.arc-del').onclick=function(e){e.stopPropagation();if(confirm('Smazat „'+bk.title+'" z archivu?')){dbDelete(bk.id,function(){renderArchive();toast('🗑 Smazáno z archivu');});}};
-      item.onclick=function(){openFromArchive(bk);};
+      var hasData=!!bk.data;
+      item.innerHTML='<div class="arc-icon">'+icon+'</div><div class="arc-info"><div class="arc-name">'+escHtml(bk.title)+'</div><div class="arc-meta">'+escHtml(bk.filename)+' · '+sizeMB+' MB · '+escHtml(bk.date)+(hasData?'':' · ⚠ znovu nahraj')+'</div></div><button class="arc-del" title="Smazat z archivu">🗑</button>';
+      item.querySelector('.arc-del').onclick=function(e){e.stopPropagation();dbDelete(bk.filename,function(){renderArchive();toast('🗑 Smazáno z archivu');});};
+      item.onclick=function(){
+        if(!bk.data){toast('⚠ Nahraj soubor znovu — data nejsou v paměti');return;}
+        openFromArchive(bk);
+      };
       list.appendChild(item);
     });
   });
