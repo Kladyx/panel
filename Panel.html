@@ -1083,6 +1083,13 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     <span class="app-brand-bar-sep"></span>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 38" width="120" height="38"><defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dddddd"/></linearGradient></defs><ellipse cx="14" cy="19" rx="10" ry="13" fill="url(#fg1)" opacity="0.9"/><ellipse cx="14" cy="19" rx="6" ry="9" fill="#1a1a2e"/><ellipse cx="14" cy="19" rx="2.5" ry="2.5" fill="url(#fg1)"/><line x1="14" y1="6" x2="14" y2="32" stroke="#ffffff44" stroke-width="0.7"/><text x="30" y="17" font-family="Georgia,serif" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" font-style="italic">FENDER</text><text x="30" y="29" font-family="Arial,sans-serif" font-size="6" fill="#ffffff88" letter-spacing="3">GUITARS &amp; BASSES</text></svg>
   </div>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body>
 </html>
 `;
@@ -2459,6 +2466,13 @@ APP_HTML["cd"] = `<!DOCTYPE html>
     <span class="app-brand-bar-sep"></span>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 38" width="120" height="38"><defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dddddd"/></linearGradient></defs><ellipse cx="14" cy="19" rx="10" ry="13" fill="url(#fg1)" opacity="0.9"/><ellipse cx="14" cy="19" rx="6" ry="9" fill="#1a1a2e"/><ellipse cx="14" cy="19" rx="2.5" ry="2.5" fill="url(#fg1)"/><line x1="14" y1="6" x2="14" y2="32" stroke="#ffffff44" stroke-width="0.7"/><text x="30" y="17" font-family="Georgia,serif" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" font-style="italic">FENDER</text><text x="30" y="29" font-family="Arial,sans-serif" font-size="6" fill="#ffffff88" letter-spacing="3">GUITARS &amp; BASSES</text></svg>
   </div>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body>
 </html>
 `;
@@ -3670,6 +3684,13 @@ APP_HTML["hardware"] = `<!DOCTYPE html>
     <span class="app-brand-bar-sep"></span>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 38" width="120" height="38"><defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dddddd"/></linearGradient></defs><ellipse cx="14" cy="19" rx="10" ry="13" fill="url(#fg1)" opacity="0.9"/><ellipse cx="14" cy="19" rx="6" ry="9" fill="#1a1a2e"/><ellipse cx="14" cy="19" rx="2.5" ry="2.5" fill="url(#fg1)"/><line x1="14" y1="6" x2="14" y2="32" stroke="#ffffff44" stroke-width="0.7"/><text x="30" y="17" font-family="Georgia,serif" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" font-style="italic">FENDER</text><text x="30" y="29" font-family="Arial,sans-serif" font-size="6" fill="#ffffff88" letter-spacing="3">GUITARS &amp; BASSES</text></svg>
   </div>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body>
 </html>
 `;
@@ -4069,6 +4090,13 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
     <span class="app-brand-bar-sep"></span>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 38" width="120" height="38"><defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dddddd"/></linearGradient></defs><ellipse cx="14" cy="19" rx="10" ry="13" fill="url(#fg1)" opacity="0.9"/><ellipse cx="14" cy="19" rx="6" ry="9" fill="#1a1a2e"/><ellipse cx="14" cy="19" rx="2.5" ry="2.5" fill="url(#fg1)"/><line x1="14" y1="6" x2="14" y2="32" stroke="#ffffff44" stroke-width="0.7"/><text x="30" y="17" font-family="Georgia,serif" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" font-style="italic">FENDER</text><text x="30" y="29" font-family="Arial,sans-serif" font-size="6" fill="#ffffff88" letter-spacing="3">GUITARS &amp; BASSES</text></svg>
   </div>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body>
 </html>
 `;
@@ -5431,6 +5459,13 @@ APP_HTML["lp"] = `<!DOCTYPE html>
     <span class="app-brand-bar-sep"></span>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 38" width="120" height="38"><defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dddddd"/></linearGradient></defs><ellipse cx="14" cy="19" rx="10" ry="13" fill="url(#fg1)" opacity="0.9"/><ellipse cx="14" cy="19" rx="6" ry="9" fill="#1a1a2e"/><ellipse cx="14" cy="19" rx="2.5" ry="2.5" fill="url(#fg1)"/><line x1="14" y1="6" x2="14" y2="32" stroke="#ffffff44" stroke-width="0.7"/><text x="30" y="17" font-family="Georgia,serif" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" font-style="italic">FENDER</text><text x="30" y="29" font-family="Arial,sans-serif" font-size="6" fill="#ffffff88" letter-spacing="3">GUITARS &amp; BASSES</text></svg>
   </div>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body>
 </html>
 `;
@@ -6173,6 +6208,13 @@ APP_HTML["mixcloud"] = `<!DOCTYPE html>
     <span class="app-brand-bar-sep"></span>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 38" width="120" height="38"><defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dddddd"/></linearGradient></defs><ellipse cx="14" cy="19" rx="10" ry="13" fill="url(#fg1)" opacity="0.9"/><ellipse cx="14" cy="19" rx="6" ry="9" fill="#1a1a2e"/><ellipse cx="14" cy="19" rx="2.5" ry="2.5" fill="url(#fg1)"/><line x1="14" y1="6" x2="14" y2="32" stroke="#ffffff44" stroke-width="0.7"/><text x="30" y="17" font-family="Georgia,serif" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" font-style="italic">FENDER</text><text x="30" y="29" font-family="Arial,sans-serif" font-size="6" fill="#ffffff88" letter-spacing="3">GUITARS &amp; BASSES</text></svg>
   </div>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body>
 </html>
 `;
@@ -7069,6 +7111,13 @@ refresh();
     <span class="app-brand-bar-sep"></span>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 38" width="120" height="38"><defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dddddd"/></linearGradient></defs><ellipse cx="14" cy="19" rx="10" ry="13" fill="url(#fg1)" opacity="0.9"/><ellipse cx="14" cy="19" rx="6" ry="9" fill="#1a1a2e"/><ellipse cx="14" cy="19" rx="2.5" ry="2.5" fill="url(#fg1)"/><line x1="14" y1="6" x2="14" y2="32" stroke="#ffffff44" stroke-width="0.7"/><text x="30" y="17" font-family="Georgia,serif" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" font-style="italic">FENDER</text><text x="30" y="29" font-family="Arial,sans-serif" font-size="6" fill="#ffffff88" letter-spacing="3">GUITARS &amp; BASSES</text></svg>
   </div>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body>
 </html>
 `;
@@ -7584,6 +7633,13 @@ initVer();fillMonthSelects();
     <span class="app-brand-bar-sep"></span>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 38" width="120" height="38"><defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dddddd"/></linearGradient></defs><ellipse cx="14" cy="19" rx="10" ry="13" fill="url(#fg1)" opacity="0.9"/><ellipse cx="14" cy="19" rx="6" ry="9" fill="#1a1a2e"/><ellipse cx="14" cy="19" rx="2.5" ry="2.5" fill="url(#fg1)"/><line x1="14" y1="6" x2="14" y2="32" stroke="#ffffff44" stroke-width="0.7"/><text x="30" y="17" font-family="Georgia,serif" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" font-style="italic">FENDER</text><text x="30" y="29" font-family="Arial,sans-serif" font-size="6" fill="#ffffff88" letter-spacing="3">GUITARS &amp; BASSES</text></svg>
   </div>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body>
 </html>
 `;
@@ -7864,6 +7920,13 @@ document.head.appendChild(s1);
     <span class="app-brand-bar-sep"></span>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 38" width="120" height="38"><defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dddddd"/></linearGradient></defs><ellipse cx="14" cy="19" rx="10" ry="13" fill="url(#fg1)" opacity="0.9"/><ellipse cx="14" cy="19" rx="6" ry="9" fill="#1a1a2e"/><ellipse cx="14" cy="19" rx="2.5" ry="2.5" fill="url(#fg1)"/><line x1="14" y1="6" x2="14" y2="32" stroke="#ffffff44" stroke-width="0.7"/><text x="30" y="17" font-family="Georgia,serif" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" font-style="italic">FENDER</text><text x="30" y="29" font-family="Arial,sans-serif" font-size="6" fill="#ffffff88" letter-spacing="3">GUITARS &amp; BASSES</text></svg>
   </div>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body>
 </html>`;
 
@@ -8479,6 +8542,13 @@ document.head.appendChild(s1);
     <span class="app-brand-bar-sep"></span>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 38" width="120" height="38"><defs><linearGradient id="fg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#dddddd"/></linearGradient></defs><ellipse cx="14" cy="19" rx="10" ry="13" fill="url(#fg1)" opacity="0.9"/><ellipse cx="14" cy="19" rx="6" ry="9" fill="#1a1a2e"/><ellipse cx="14" cy="19" rx="2.5" ry="2.5" fill="url(#fg1)"/><line x1="14" y1="6" x2="14" y2="32" stroke="#ffffff44" stroke-width="0.7"/><text x="30" y="17" font-family="Georgia,serif" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="2" font-style="italic">FENDER</text><text x="30" y="29" font-family="Arial,sans-serif" font-size="6" fill="#ffffff88" letter-spacing="3">GUITARS &amp; BASSES</text></svg>
   </div>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body>
 </html>`;
 
@@ -8595,6 +8665,13 @@ APP_HTML["obs"] = `<!DOCTYPE html>
     }).catch(err => { meta.textContent = '❌ Zápis selhal: ' + err.message; });
   }
 <\/script>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body>
 </html>
 `
@@ -8770,6 +8847,13 @@ function loadFc() {
 load();
 setInterval(load,600000);
 <\/script>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body>
 </html>
 `
@@ -8914,6 +8998,13 @@ s1.onload=function(){var s2=document.createElement('script');s2.src='https://www
 s1.onerror=function(){SS('💾 Lokálně','#f39c12');};
 document.head.appendChild(s1);
 <\/script>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body></html>
 `;
 
@@ -9498,6 +9589,13 @@ setTimeout(_kalCheckNotif, 3000);
 render();
 startFirebase();
 <\/script>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body></html>
 `;
 
@@ -9802,6 +9900,13 @@ function clearImg() {
 }
 _loadFb();
 <\/script>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body>
 </html>
 `;
@@ -9889,6 +9994,13 @@ function online(){
 }
 f();
 <\/script>
+<style>
+@keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+.star-container{position:fixed;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;z-index:1;}
+.star-container.big{width:8px;height:8px;}
+#app-stars{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+</style>
+<script>(function(){if(document.getElementById('app-stars'))return;var c=document.createElement('div');c.id='app-stars';document.body.appendChild(c);for(var i=0;i<40;i++){var s=document.createElement('div');s.className='star-container'+(Math.random()>.7?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(1.5+Math.random()*2)+'s';c.appendChild(s);}})();<\/script>
 </body></html>
 `;
 
