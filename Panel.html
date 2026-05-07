@@ -10412,43 +10412,70 @@ function addSwipe(el){var sx=0,sy=0;el.addEventListener('touchstart',function(e)
 var toastTimer;function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove('show');},3200);}
 document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowDown')nextPage();if(e.key==='ArrowLeft'||e.key==='ArrowUp')prevPage();if(e.key==='Escape')closeAllPanels();});
 window.addEventListener('resize',function(){if(bookType==='pdf'&&!pdfRendering)renderPdfPage(pdfPage);});
-// ── Archiv knih — in-memory + localStorage metadata ───────────
-var _arcBooks = {}; // in-memory: filename → {meta + data}
-var ARC_META_KEY = 'kladyx_arc_meta';
+// ── Archiv knih — IndexedDB (trvalé uložení) ───────────
+var ARC_DB_NAME = 'kladyx_reader_archive';
+var ARC_STORE_NAME = 'books';
 
-function arcGetMeta(){
-  try{ return JSON.parse(localStorage.getItem(ARC_META_KEY)||'{}'); }catch(e){ return {}; }
+function initArchiveDB(){
+  return new Promise(function(resolve){
+    var req = indexedDB.open(ARC_DB_NAME, 1);
+    req.onerror = function(){ resolve(null); };
+    req.onsuccess = function(){ resolve(req.result); };
+    req.onupgradeneeded = function(e){
+      var db = e.target.result;
+      if(!db.objectStoreNames.contains(ARC_STORE_NAME)){
+        db.createObjectStore(ARC_STORE_NAME, {keyPath: 'filename'});
+      }
+    };
+  });
 }
-function arcSetMeta(meta){
-  try{ localStorage.setItem(ARC_META_KEY, JSON.stringify(meta)); }catch(e){}
-}
-function dbSaveBook(filename,title,type,buf){
-  // uložit data do paměti
-  _arcBooks[filename]={filename:filename,title:title,type:type,data:buf,size:buf.byteLength,date:new Date().toLocaleString('cs-CZ')};
-  // uložit metadata do localStorage (bez dat — ta zůstanou v paměti)
-  var meta=arcGetMeta();
-  meta[filename]={filename:filename,title:title,type:type,size:buf.byteLength,date:new Date().toLocaleString('cs-CZ')};
-  arcSetMeta(meta);
-  toast('📚 Přidáno do archivu');
+
+var _archiveDB = null;
+initArchiveDB().then(function(db){ _archiveDB = db; });
+
+function dbSaveBook(filename, title, type, buf){
+  if(!_archiveDB){
+    toast('⛔ Archiv se nedá inicializovat');
+    return;
+  }
+  var tx = _archiveDB.transaction([ARC_STORE_NAME], 'readwrite');
+  var store = tx.objectStore(ARC_STORE_NAME);
+  var book = {
+    filename: filename,
+    title: title,
+    type: type,
+    data: buf,
+    size: buf.byteLength,
+    date: new Date().toLocaleString('cs-CZ')
+  };
+  var req = store.put(book);
+  req.onsuccess = function(){
+    toast('✅ Uloženo do archivu');
+  };
+  req.onerror = function(){
+    toast('⛔ Chyba při ukládání');
+  };
 }
 function dbGetAll(cb){
-  var meta=arcGetMeta();
-  var list=[];
-  Object.keys(meta).forEach(function(k){
-    var m=meta[k];
-    // přidat data z paměti pokud jsou dostupná
-    var entry=Object.assign({},m);
-    if(_arcBooks[k]) entry.data=_arcBooks[k].data;
-    list.push(entry);
-  });
-  cb(list);
+  if(!_archiveDB){ cb([]); return; }
+  var tx = _archiveDB.transaction([ARC_STORE_NAME], 'readonly');
+  var store = tx.objectStore(ARC_STORE_NAME);
+  var req = store.getAll();
+  req.onsuccess = function(){
+    cb(req.result || []);
+  };
+  req.onerror = function(){
+    cb([]);
+  };
 }
 function dbDelete(id,cb){
-  delete _arcBooks[id];
-  var meta=arcGetMeta();
-  delete meta[id];
-  arcSetMeta(meta);
-  if(cb)cb();
+  if(!_archiveDB){ if(cb)cb(); return; }
+  var tx = _archiveDB.transaction([ARC_STORE_NAME], 'readwrite');
+  var store = tx.objectStore(ARC_STORE_NAME);
+  var req = store.delete(id);
+  req.onsuccess = function(){
+    if(cb)cb();
+  };
 }
 function openArchive(){
   renderArchive();
