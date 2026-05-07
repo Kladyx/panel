@@ -25,6 +25,8 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     :root { --bg:#050810; --sidebar:#080d1c; --cyan:#00d4ff; --muted:#5a6488; --light:#dde4ff; --card:#0d1428; }
     html,body { width:100%; height:100%; background:var(--bg); font-family:"Courier New",monospace; color:var(--light); overflow:hidden; }
+    #stars-canvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+    body > *:not(#stars-canvas) { position:relative; z-index:1; }
     body::before {
       content:'';
       position:fixed;
@@ -36,7 +38,8 @@
       pointer-events:none;
       z-index:0;
     }
-    .layout { display:flex; flex-direction:column; height:100vh; height:100dvh; }
+    .layout { display:flex; flex-direction:column; height:100vh; height:100dvh; position:relative; }
+    .layout::before { content:''; position:absolute; inset:0; background:var(--bg); z-index:-1; }
     .topbar { display:flex; align-items:center; gap:8px; padding:8px 12px; background:var(--sidebar); border-bottom:1px solid rgba(0,212,255,0.2); flex-shrink:0; z-index:10; overflow-x:scroll; -webkit-overflow-scrolling:touch; scrollbar-width:none; touch-action:pan-x; }
     .topbar::-webkit-scrollbar { display:none; }
     .tlogo { font-size:0.7rem; font-weight:bold; letter-spacing:3px; color:var(--cyan); text-shadow:0 0 10px var(--cyan); white-space:nowrap; flex-shrink:0; }
@@ -50,7 +53,7 @@
     .app-btn.active .bl { color:var(--ac); }
     .bd { position:absolute; top:4px; right:5px; width:4px; height:4px; border-radius:50%; background:#00ff88; box-shadow:0 0 5px #00ff88; opacity:0; transition:opacity 0.3s; }
     .app-btn.active .bd { opacity:1; }
-    .iframe-wrap { flex:1; position:relative; overflow:hidden; background:var(--bg); }
+    .iframe-wrap { flex:1; position:relative; overflow:hidden; background:transparent; }
     .app-frame { position:absolute; inset:0; width:100%; height:100%; border:none; opacity:0; pointer-events:none; transition:opacity 0.25s; }
     .app-frame.visible { opacity:1; pointer-events:all; touch-action:auto; }
     .welcome { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:14px; padding:20px; padding-top:max(20px,8vh); text-align:center; overflow-y:auto; -webkit-overflow-scrolling:touch; transition:opacity 0.3s; }
@@ -155,8 +158,11 @@
 </style>
 </head>
 <body>
+<canvas id="stars-canvas"></canvas>
 
 <div id="panel-gate">
+  <canvas id="gate-stars-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:28px;">
   <div class="gate-logo">KLADYX</div>
   <div class="gate-sub">Control Panel · Private Access</div>
   <button class="gate-btn" onclick="googleSignIn()">
@@ -164,6 +170,7 @@
     PŘIHLÁSIT SE PŘES GOOGLE
   </button>
   <div class="gate-status" id="gate-status"></div>
+  </div>
 </div>
 <div class="layout">
   <div class="topbar">
@@ -9511,6 +9518,8 @@ body{display:flex;flex-direction:column;overflow:hidden;}
 .entry-actions button{background:none;border:1px solid #003300;color:#004400;font-family:monospace;font-size:9px;padding:3px 8px;cursor:pointer;}
 .entry-actions button:hover{border-color:#ff3c5a;color:#ff3c5a;}
 .empty{text-align:center;color:#003300;font-size:12px;letter-spacing:3px;padding:40px 20px;}
+.entry-img{max-width:100%;max-height:280px;border:1px solid #003300;border-radius:3px;margin:6px 0;display:block;}
+.img-preview{max-width:100%;max-height:200px;border:1px solid #003300;border-radius:3px;margin-top:6px;display:block;}
 </style>
 </head>
 <body>
@@ -9527,6 +9536,7 @@ body{display:flex;flex-direction:column;overflow:hidden;}
 <div class="main" id="main"><div class="empty">[ NAČÍTÁM... ]</div></div>
 <script>
 var _db, _zxRef, ALL_ENTRIES = {}, CURRENT_TAB = \'list\', EDIT_ID = null, _zxSav = false;
+var FORM_IMG = null, FORM_IMG_CLEARED = false;
 
 function setSyncDot(msg, state) {
   var d = document.getElementById(\'sync-dot\');
@@ -9618,6 +9628,7 @@ function entryHTML(e) {
     \'<div class="entry-header"><span class="entry-cat cat-\'+e.cat+\'">\'+catLabel(e.cat)+\'</span><span class="entry-date">\'+date+\'</span></div>\'+
     \'<div class="entry-title">\'+escHtml(e.title)+\'</div>\'+
     \'<div class="entry-body">\'+escHtml(e.body)+\'</div>\'+
+    (e.img?\'<div><img class="entry-img" src="\'+(e.img)+\'"/></div>\':\'\')+
     (e.url?\'<div class="entry-url" onclick="window.open(\\\'\'+escHtml(e.url)+\'\\\',\\\'_blank\\\')">🔗 \'+escHtml(e.url)+\'</div>\':\'\')+
     \'<div class="entry-actions"><button onclick="editEntry(\\\'\'+e._id+\'\\\')">✏️ UPRAVIT</button><button onclick="deleteEntry(\\\'\'+e._id+\'\\\')">🗑 SMAZAT</button></div>\'+
   \'</div>\';
@@ -9629,6 +9640,8 @@ function renderList() {
 }
 
 function renderForm(entry) {
+  FORM_IMG = (entry && entry.img) ? entry.img : null;
+  FORM_IMG_CLEARED = false;
   var isEdit = !!entry;
   document.getElementById(\'main\').innerHTML =
     \'<div class="form-section">\'+
@@ -9645,10 +9658,17 @@ function renderForm(entry) {
         \'<textarea class="form-textarea" id="f-body" placeholder="Vlož text, článek, kód...">\'+((entry&&entry.body)?escHtml(entry.body):\'\')+\'</textarea></div>\'+
       \'<div class="form-row"><span class="form-label">URL</span>\'+
         \'<input class="form-input" id="f-url" type="text" placeholder="https://..." value="\'+(entry&&entry.url?escHtml(entry.url):\'\')+\'"/></div>\'+
+      \'<div class="form-row" style="align-items:flex-start;"><span class="form-label" style="padding-top:6px;">OBRÁZEK</span><div style="flex:1"><input type="file" id="f-img-file" accept="image/*" style="display:none" onchange="previewImg(this)"/><button type="button" class="btn cyan" onclick="triggerImgUpload()" style="font-size:9px;letter-spacing:1px;">📷 FOTO</button> <button type="button" class="btn red" id="f-img-clear" onclick="clearImg()" style="font-size:9px;letter-spacing:1px;display:none">✕ ODEBRAT</button><br/><img id="f-img-preview" class="img-preview" style="display:none"/></div></div>\'+
       \'<div class="btn-row">\'+
         \'<button class="btn cyan" onclick="saveEntry()">\'+(isEdit?\'💾 ULOŽIT\':\'✚ PŘIDAT\')+\'</button>\'+
         (isEdit?\'<button class="btn red" onclick="cancelEdit()">✕ ZRUŠIT</button>\':\'\')+
       \'</div></div>\';
+  if (FORM_IMG) {
+    var _p = document.getElementById(\'f-img-preview\');
+    if (_p) { _p.src = FORM_IMG; _p.style.display = \'block\'; }
+    var _c = document.getElementById(\'f-img-clear\');
+    if (_c) _c.style.display = \'inline-block\';
+  }
 }
 
 function renderSearch() {
@@ -9676,6 +9696,7 @@ function saveEntry() {
   var id = EDIT_ID || genId();
   var orig = EDIT_ID ? (ALL_ENTRIES[EDIT_ID]||{}) : {};
   var entry = { title:title, body:body, url:url, cat:cat, ts: orig.ts||Date.now(), updated:Date.now() };
+  if (FORM_IMG) { entry.img = FORM_IMG; } else if (EDIT_ID && orig.img && !FORM_IMG_CLEARED) { entry.img = orig.img; }
   EDIT_ID = null;
   ALL_ENTRIES[id] = entry;
   _saveLocal();
@@ -9708,6 +9729,43 @@ function editEntry(id) {
 
 function cancelEdit() { EDIT_ID=null; showTab(\'new\'); renderForm(null); }
 
+function triggerImgUpload() {
+  var el = document.getElementById(\'f-img-file\');
+  if (el) el.click();
+}
+function previewImg(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement(\'canvas\');
+      var maxW = 900, maxH = 900, w = img.width, h = img.height;
+      if (w > maxW) { h = Math.round(h*maxW/w); w = maxW; }
+      if (h > maxH) { w = Math.round(w*maxH/h); h = maxH; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext(\'2d\').drawImage(img, 0, 0, w, h);
+      FORM_IMG = canvas.toDataURL(\'image/jpeg\', 0.75);
+      var prev = document.getElementById(\'f-img-preview\');
+      if (prev) { prev.src = FORM_IMG; prev.style.display = \'block\'; }
+      var clr = document.getElementById(\'f-img-clear\');
+      if (clr) clr.style.display = \'inline-block\';
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function clearImg() {
+  FORM_IMG = null;
+  FORM_IMG_CLEARED = true;
+  var prev = document.getElementById(\'f-img-preview\');
+  if (prev) { prev.src = \'\'; prev.style.display = \'none\'; }
+  var clr = document.getElementById(\'f-img-clear\');
+  if (clr) clr.style.display = \'none\';
+  var fi = document.getElementById(\'f-img-file\');
+  if (fi) fi.value = \'\';
+}
 _loadFb();
 <\/script>
 </body>
@@ -10006,6 +10064,38 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
   var s1=document.createElement('script'); s1.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
   s1.onload=function(){var s1b=document.createElement('script');s1b.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js';s1b.onload=function(){var s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js';s2.onload=gateInit;document.head.appendChild(s2);};document.head.appendChild(s1b);};
   document.head.appendChild(s1);
+})();
+// ── HVĚZDIČKY PŘIHLAŠOVACÍ OBRAZOVKA ──────────────────────────
+(function(){
+  var canvas=document.getElementById('gate-stars-canvas');
+  var ctx=canvas.getContext('2d');
+  var COLORS=['#00e5ff','#29b6f6','#4fc3f7','#00bcd4','#0288d1'];
+  var stars=[];
+  function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+  function rnd(a,b){return a+Math.random()*(b-a);}
+  function mkStar(){return{x:rnd(0,canvas.width),y:rnd(0,canvas.height),size:rnd(2,10),color:COLORS[Math.floor(Math.random()*COLORS.length)],alpha:rnd(0.3,1),speed:rnd(0.002,0.008),phase:rnd(0,Math.PI*2),dx:rnd(-0.05,0.05),dy:rnd(-0.02,0.02)};}
+  function init(){stars=[];for(var i=0;i<60;i++)stars.push(mkStar());}
+  function drawStar(x,y,sz,col,al){ctx.save();ctx.globalAlpha=al;ctx.fillStyle=col;ctx.shadowColor=col;ctx.shadowBlur=sz*2;ctx.beginPath();for(var i=0;i<5;i++){var oa=(i*4*Math.PI)/5-Math.PI/2,ia=oa+(2*Math.PI)/10;ctx.lineTo(x+Math.cos(oa)*sz,y+Math.sin(oa)*sz);ctx.lineTo(x+Math.cos(ia)*(sz*0.4),y+Math.sin(ia)*(sz*0.4));}ctx.closePath();ctx.fill();ctx.restore();}
+  var t=0;
+  function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);t+=0.016;stars.forEach(function(s){var p=0.4+0.6*(0.5+0.5*Math.sin(t*s.speed*60+s.phase));s.x+=s.dx;s.y+=s.dy;if(s.x<-20)s.x=canvas.width+20;if(s.x>canvas.width+20)s.x=-20;if(s.y<-20)s.y=canvas.height+20;if(s.y>canvas.height+20)s.y=-20;drawStar(s.x,s.y,s.size,s.color,s.alpha*p);});requestAnimationFrame(animate);}
+  resize();init();animate();
+  window.addEventListener('resize',function(){resize();init();});
+})();
+// ── HVĚZDIČKY PANEL ───────────────────────────────────────────
+(function(){
+  var canvas=document.getElementById('stars-canvas');
+  var ctx=canvas.getContext('2d');
+  var COLORS=['#00e5ff','#29b6f6','#4fc3f7','#00bcd4','#0288d1'];
+  var stars=[];
+  function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+  function rnd(a,b){return a+Math.random()*(b-a);}
+  function mkStar(){return{x:rnd(0,canvas.width),y:rnd(0,canvas.height),size:rnd(2,10),color:COLORS[Math.floor(Math.random()*COLORS.length)],alpha:rnd(0.3,1),speed:rnd(0.002,0.008),phase:rnd(0,Math.PI*2),dx:rnd(-0.05,0.05),dy:rnd(-0.02,0.02)};}
+  function init(){stars=[];for(var i=0;i<60;i++)stars.push(mkStar());}
+  function drawStar(x,y,sz,col,al){ctx.save();ctx.globalAlpha=al;ctx.fillStyle=col;ctx.shadowColor=col;ctx.shadowBlur=sz*2;ctx.beginPath();for(var i=0;i<5;i++){var oa=(i*4*Math.PI)/5-Math.PI/2,ia=oa+(2*Math.PI)/10;ctx.lineTo(x+Math.cos(oa)*sz,y+Math.sin(oa)*sz);ctx.lineTo(x+Math.cos(ia)*(sz*0.4),y+Math.sin(ia)*(sz*0.4));}ctx.closePath();ctx.fill();ctx.restore();}
+  var t=0;
+  function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);t+=0.016;stars.forEach(function(s){var p=0.4+0.6*(0.5+0.5*Math.sin(t*s.speed*60+s.phase));s.x+=s.dx;s.y+=s.dy;if(s.x<-20)s.x=canvas.width+20;if(s.x>canvas.width+20)s.x=-20;if(s.y<-20)s.y=canvas.height+20;if(s.y>canvas.height+20)s.y=-20;drawStar(s.x,s.y,s.size,s.color,s.alpha*p);});requestAnimationFrame(animate);}
+  resize();init();animate();
+  window.addEventListener('resize',function(){resize();init();});
 })();
 // ──────────────────────────────────────────────────────────────
 
