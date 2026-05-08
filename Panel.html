@@ -278,7 +278,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo">KLADYX</div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v6.8</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v6.9</span> · VYBERTE APLIKACI</div>
       <div class="eq-wrap">
         <div class="dancer dancer-g">
           <svg viewBox="0 0 32 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -641,11 +641,13 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v1.0.En</div>
+  <div class="version">v1.1.En</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
     <button class="station-tab" onclick="switchStation('blanik', this)">Rádio Blaník</button>
+    <button class="station-tab" onclick="switchStation('impuls', this)">Rádio Impuls</button>
+    <button class="station-tab" onclick="switchStation('dance', this)">Dance Radio</button>
   </div>
 
   <div class="live-badge">
@@ -682,13 +684,17 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     var STATION_META = {
       housetime: { label: 'HOUSETIME.FM',   color: 'var(--neon-purple)' },
       blanik:    { label: 'RÁDIO BLANÍK',   color: '#00ff88' },
-      orion:     { label: 'HITRÁDIO ORION', color: '#00d4ff' }
+      orion:     { label: 'HITRÁDIO ORION', color: '#00d4ff' },
+      impuls:    { label: 'RÁDIO IMPULS',   color: '#ff8800' },
+      dance:     { label: 'DANCE RADIO',    color: '#ff44aa' }
     };
 
     // Icecast status endpointy pro non-HouseTime stanice
     var ICECAST_STATIONS = {
       blanik: { label: 'Rádio Blaník',   apiUrl: 'https://radia.cz/api/stations/218/now-playing' },
-      orion:  { label: 'Hitrádio Orion', apiUrl: null }
+      orion:  { label: 'Hitrádio Orion', apiUrl: null },
+      impuls: { label: 'Rádio Impuls',   apiUrl: null },
+      dance:  { label: 'Dance Radio',    apiUrl: null }
     };
 
     function fetchIcecastStation(stationId) {
@@ -722,7 +728,9 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     function fetchIcecastFallback(stationId) {
       var mounts = {
         blanik: { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'blanikmorava128' },
-        orion:  { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'orion128' }
+        orion:  { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'orion128' },
+        impuls: { url: 'http://icecast5.play.cz/status-json.xsl', mount: 'impuls128' },
+        dance:  { url: 'http://icecast2.play.cz:8000/status-json.xsl', mount: 'dance-radio128' }
       };
       var m = mounts[stationId];
       var ts = Date.now();
