@@ -273,12 +273,15 @@
     <button class="app-btn" id="btn-reader" style="--ac:#a78bfa;--ac-rgb:167,139,250" onclick="openApp('reader')">
       <div class="bd"></div><div class="bi">📚</div><div class="bl">Čtečka</div>
     </button>
+    <button class="app-btn" id="btn-wordmaster" style="--ac:#34d399;--ac-rgb:52,211,153" onclick="openApp('wordmaster')">
+      <div class="bd"></div><div class="bi">🇬🇧</div><div class="bl">WordMaster</div>
+    </button>
 
   </div>
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo">KLADYX</div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v6.10</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v6.9</span> · VYBERTE APLIKACI</div>
       <div class="eq-wrap">
         <div class="dancer dancer-g">
           <svg viewBox="0 0 32 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -333,6 +336,7 @@
         <div class="wcard" onclick="openApp('manualy')" onmouseover="this.style.borderColor='#f97316';this.style.boxShadow='0 0 14px rgba(249,115,22,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">📖</div><div class="wn">Manuály</div><div class="wd">Manual Vault</div></div>
         <div class="wcard" onclick="openApp('zxnext')" onmouseover="this.style.borderColor='#00ff88';this.style.boxShadow='0 0 14px rgba(0,255,136,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🖥️</div><div class="wn">ZX Next</div><div class="wd">Diář & Novinky</div></div>
         <div class="wcard" onclick="openApp('reader')" onmouseover="this.style.borderColor='#a78bfa';this.style.boxShadow='0 0 14px rgba(167,139,250,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">📚</div><div class="wn">Čtečka</div><div class="wd">E-Book Reader</div></div>
+        <div class="wcard" onclick="openApp('wordmaster')" onmouseover="this.style.borderColor='#34d399';this.style.boxShadow='0 0 14px rgba(52,211,153,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🇬🇧</div><div class="wn">WordMaster</div><div class="wd">Slovíčka EN/CZ</div></div>
 
       </div>
       <div style="margin-top:22px;display:flex;align-items:center;justify-content:center;gap:24px;padding:12px 20px;border:1px solid rgba(0,212,255,0.1);border-radius:8px;background:rgba(255,255,255,0.025);">
@@ -363,6 +367,7 @@
     <iframe id="frame-manualy" class="app-frame" title="manualy" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
     <iframe id="frame-zxnext" class="app-frame" title="zxnext" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
     <iframe id="frame-reader" class="app-frame" title="reader" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
+    <iframe id="frame-wordmaster" class="app-frame" title="wordmaster" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
 
   </div>
 </div>
@@ -641,7 +646,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v1.3.En</div>
+  <div class="version">v1.1.En</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -721,114 +726,8 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
         return;
       }
 
-      // Impuls a Dance Radio — radio.menu HTML scraping (play.cz nemá now-playing data)
-      if (stationId === 'impuls' || stationId === 'dance') {
-        fetchRadioMenuFallback(stationId,
-          function(artist, song) {
-            showResult(artist, song);
-            addHistory(artist, song);
-            if (btn) btn.disabled = false;
-            resetCountdown();
-          },
-          function() {
-            // radio.menu nedoručil → zkus ještě Icecast jako poslední pokus
-            fetchIcecastFallback(stationId);
-          }
-        );
-        return;
-      }
-
-      // Impuls a Dance Radio — HTML scraping (play.cz Icecast nemá veřejné metadata)
-      if (stationId === 'impuls' || stationId === 'dance') {
-        fetchHtmlScrape(stationId);
-        return;
-      }
-
       // Ostatní stanice — Icecast status JSON přes proxy
       fetchIcecastFallback(stationId);
-    }
-
-    // HTML scraping pro stanice bez veřejného JSON API
-    function fetchHtmlScrape(stationId) {
-      var cfg;
-      if (stationId === 'dance') {
-        cfg = {
-          url: 'https://radio.menu/stations/danceradio-cz-dance-radio/',
-          parse: function(html) {
-            // Sekce "What playing now on Dance Radio?" -> první řádek "HH:MM ARTIST - TITLE"
-            var idx = html.indexOf('What playing now on Dance Radio');
-            if (idx === -1) return null;
-            var snippet = html.substring(idx, idx + 3000);
-            var m = snippet.match(/(\d{1,2}:\d{2})\s+([^<\n\r]+?)\s+-\s+([^<\n\r]+?)\s*<\/a>/);
-            if (!m) m = snippet.match(/(\d{1,2}:\d{2})\s+([^<\n\r]+?)\s+-\s+([^<\n\r]{1,120}?)(?:<|\n|\r)/);
-            if (m) return {
-              artist: m[2].replace(/&amp;/g,'&').replace(/&#039;/g,"'").trim(),
-              title:  m[3].replace(/&amp;/g,'&').replace(/&#039;/g,"'").trim()
-            };
-            return null;
-          }
-        };
-      } else if (stationId === 'impuls') {
-        cfg = {
-          url: 'https://www.impuls.cz/',
-          parse: function(html) {
-            // Pokus 1: pattern "<...>Právě hraje<...>ARTIST - TITLE</...>"
-            var i = html.search(/[Pp]rávě\s+hraje/);
-            if (i !== -1) {
-              var s = html.substring(i, i + 600);
-              var m = s.match(/>\s*([^<>\n]{2,80}?)\s+-\s+([^<>\n]{2,120}?)\s*</);
-              if (m) return {
-                artist: m[1].replace(/&amp;/g,'&').trim(),
-                title:  m[2].replace(/&amp;/g,'&').trim()
-              };
-            }
-            // Pokus 2: og:description meta tag (často obsahuje aktuální skladbu)
-            var og = html.match(/property=["']og:description["'][^>]*content=["']([^"']+)["']/i);
-            if (og && og[1].indexOf(' - ') !== -1) {
-              var dash = og[1].indexOf(' - ');
-              return {
-                artist: og[1].substring(0, dash).trim(),
-                title:  og[1].substring(dash + 3).trim()
-              };
-            }
-            return null;
-          }
-        };
-      } else {
-        return;
-      }
-      var btn = document.getElementById('refreshBtn');
-      var ts = Date.now();
-      var u = cfg.url + (cfg.url.indexOf('?') === -1 ? '?' : '&') + '_t=' + ts;
-      var proxies = [
-        'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u),
-        'https://api.allorigins.win/get?url=' + encodeURIComponent(u),
-        'https://corsproxy.io/?' + encodeURIComponent(u),
-        'https://thingproxy.freeboard.io/fetch/' + u
-      ];
-      function tryProxy(i) {
-        if (i >= proxies.length) {
-          document.getElementById('nowCard').innerHTML = '<div class="now-loading">ℹ️ Metadata pro tuto stanici nejsou dostupná</div>';
-          if (btn) btn.disabled = false;
-          resetCountdown();
-          return;
-        }
-        fetch(proxies[i], {cache:'no-store'})
-          .then(function(r){ return r.text(); })
-          .then(function(raw){
-            var html = raw;
-            try { var p = JSON.parse(raw); if (p && p.contents) html = p.contents; } catch(e){}
-            if (!html || html.length < 200) { tryProxy(i+1); return; }
-            var result = cfg.parse(html);
-            if (!result || !result.title) { tryProxy(i+1); return; }
-            showResult(result.artist, result.title);
-            addHistory(result.artist, result.title);
-            if (btn) btn.disabled = false;
-            resetCountdown();
-          })
-          .catch(function(){ tryProxy(i+1); });
-      }
-      tryProxy(0);
     }
 
     function fetchIcecastFallback(stationId) {
@@ -877,51 +776,6 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
             addHistory(artist, song);
             if (btn) btn.disabled = false;
             resetCountdown();
-          })
-          .catch(function(){ tryUrl(i+1); });
-      }
-      tryUrl(0);
-    }
-
-    // ── radio.menu HTML scraping fallback (pro stanice bez veřejného JSON API) ──
-    var RADIOMENU_URLS = {
-      impuls: 'https://radio.menu/stations/impuls-cz-impuls-raaaadio/',
-      dance:  'https://radio.menu/stations/danceradio-cz-dance-radio/'
-    };
-
-    function fetchRadioMenuFallback(stationId, onSuccess, onFail) {
-      var url = RADIOMENU_URLS[stationId];
-      if (!url) { onFail(); return; }
-      var ts = Date.now();
-      var proxies = [
-        'https://api.allorigins.win/raw?url=' + encodeURIComponent(url + '?_t=' + ts),
-        'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url + '?_t=' + ts),
-        'https://corsproxy.io/?' + encodeURIComponent(url + '?_t=' + ts)
-      ];
-      function tryUrl(i) {
-        if (i >= proxies.length) { onFail(); return; }
-        fetch(proxies[i], {cache:'no-store'})
-          .then(function(r){ return r.text(); })
-          .then(function(html) {
-            // Najdi sekci "What playing now on ..." - jen ta obsahuje aktuální stanici
-            var idx = html.search(/What\s+playing\s+now\s+on/i);
-            if (idx < 0) { tryUrl(i+1); return; }
-            var section = html.substring(idx, idx + 4000);
-            // Format: "HH:MM ARTIST - TITLE" (může být v <li>, <a>, nebo plain textu)
-            var rx = /(\d{1,2}:\d{2})\s+([^\n<>]{3,200}?)\s*(?:<|\n|$)/g;
-            var match;
-            while ((match = rx.exec(section)) !== null) {
-              var trackText = match[2].replace(/&amp;/g,'&').replace(/&[a-z]+;/g,'').trim();
-              if (trackText.length < 5) continue;
-              var dash = trackText.indexOf(' - ');
-              var artist = dash !== -1 ? trackText.substring(0, dash).trim() : '';
-              var song   = dash !== -1 ? trackText.substring(dash+3).trim() : trackText;
-              if (song && song.length > 1) {
-                onSuccess(artist, song);
-                return;
-              }
-            }
-            tryUrl(i+1);
           })
           .catch(function(){ tryUrl(i+1); });
       }
@@ -10674,6 +10528,271 @@ function openFromArchive(bk){
 }
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 // ──────────────────────────────────────────────────────────────
+<\/script>
+</body></html>
+`;
+
+APP_HTML["wordmaster"] = `<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WordMaster</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#0d0d1f;--card:#15152a;--border:#222240;--cyan:#34d399;--purple:#a78bfa;--orange:#fb923c;--yellow:#facc15;--pink:#f472b6;--blue:#60a5fa;}
+html,body{width:100%;height:100%;background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:#f0f0f8;overflow-x:hidden;}
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#080d1c;border-bottom:1px solid rgba(52,211,153,0.2);gap:8px;}
+.logo{font-size:0.9rem;font-weight:800;background:linear-gradient(135deg,#34d399,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;}
+.prog-wrap{flex:1;max-width:180px;}
+.prog-meta{display:flex;justify-content:space-between;font-size:0.6rem;color:#555577;margin-bottom:3px;}
+.prog-track{height:4px;background:#1e1e38;border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#34d399,#60a5fa);transition:width 0.5s;}
+.tab-group{display:flex;gap:3px;background:#1a1a2e;border-radius:10px;padding:3px;}
+.tab-btn{padding:5px 11px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:0.7rem;font-weight:700;transition:all 0.2s;background:transparent;color:#555577;}
+.tab-btn.active{background:#252548;color:#e0e0f5;}
+/* CAT FILTER */
+.cat-row{display:flex;gap:6px;padding:10px 14px;overflow-x:auto;scrollbar-width:none;background:#080d1c;border-bottom:1px solid #111128;}
+.cat-row::-webkit-scrollbar{display:none;}
+.chip{white-space:nowrap;padding:4px 12px;border-radius:99px;border:1.5px solid #252548;background:transparent;color:#666688;font-family:inherit;font-size:0.7rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.chip.active{border-color:transparent;color:#0d0d1f;}
+/* CARDS VIEW */
+.cards-wrap{padding:16px 14px 0;}
+.card-outer{transition:opacity 0.18s,transform 0.18s;}
+.card-outer.hide{opacity:0;transform:translateX(-24px);}
+.card-outer.hide-r{opacity:0;transform:translateX(24px);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px 22px 18px;position:relative;overflow:hidden;min-height:190px;display:flex;flex-direction:column;gap:12px;}
+.card-top-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:20px 20px 0 0;}
+.card-glow{position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;opacity:0.07;filter:blur(35px);pointer-events:none;}
+.cat-badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:0.62rem;font-weight:700;width:fit-content;}
+.en-word{font-size:1.75rem;font-weight:800;letter-spacing:-0.6px;color:#f0f0fa;line-height:1.15;}
+.cs-word{font-size:0.98rem;font-weight:500;color:#8888aa;}
+.card-actions{display:flex;align-items:center;justify-content:space-between;margin-top:4px;}
+.speak-btn{width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all 0.2s;}
+.speak-btn.pulse{animation:pulseBtn 0.5s ease infinite;}
+@keyframes pulseBtn{0%{box-shadow:0 0 0 0 rgba(52,211,153,0.5);}100%{box-shadow:0 0 0 10px transparent;}}
+.learned-btn{padding:8px 15px;border-radius:10px;border:1.5px solid;font-family:inherit;font-size:0.73rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.2s;}
+.learned-btn.no{border-color:#252548;background:transparent;color:#555577;}
+.learned-btn.yes{border-color:#34d399;background:rgba(52,211,153,0.12);color:#34d399;}
+/* NAV */
+.nav-row{display:flex;align-items:center;justify-content:space-between;padding:14px 14px;}
+.nav-btn{width:46px;height:46px;border-radius:50%;border:1.5px solid #222240;background:#15152a;color:#888;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.2s;}
+.nav-btn:hover{border-color:#34d399;color:#34d399;}
+.counter{font-size:0.78rem;color:#444466;font-weight:700;}
+/* EBOOK VIEW */
+.ebook-wrap{padding:14px;}
+.ebook-head{margin-bottom:14px;}
+.ebook-title{font-size:1rem;font-weight:800;color:#e0e0f5;}
+.ebook-sub{font-size:0.7rem;color:#555577;margin-top:2px;}
+.sec-header{display:flex;align-items:center;gap:7px;font-size:0.78rem;font-weight:800;margin:16px 0 8px;}
+.sec-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sec-count{color:#333355;font-weight:400;}
+.eb-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;border:1px solid #222240;background:#15152a;margin-bottom:5px;transition:all 0.2s;}
+.eb-row.learned{border-color:rgba(52,211,153,0.25);background:rgba(52,211,153,0.05);}
+.eb-speak{width:32px;height:32px;border-radius:50%;border:none;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+.eb-en{font-size:0.88rem;font-weight:700;color:#e0e0f5;}
+.eb-cs{font-size:0.78rem;color:#666688;}
+.eb-check{font-size:0.7rem;font-weight:700;color:#34d399;margin-left:auto;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">🇬🇧 WordMaster</div>
+  <div class="prog-wrap">
+    <div class="prog-meta"><span id="prog-text">0 / 60</span><span id="prog-pct">0%</span></div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div class="tab-group">
+    <button class="tab-btn active" id="tbtn-cards" onclick="setView('cards')">🃏 Kartičky</button>
+    <button class="tab-btn" id="tbtn-ebook" onclick="setView('ebook')">📚 Seznam</button>
+  </div>
+</div>
+<div id="view-cards">
+  <div class="cat-row" id="cat-row"></div>
+  <div class="cards-wrap"><div class="card-outer" id="card-outer"><div class="card" id="the-card"></div></div></div>
+  <div class="nav-row">
+    <button class="nav-btn" onclick="go(-1)">◀</button>
+    <span class="counter" id="nav-counter">1 / 1</span>
+    <button class="nav-btn" onclick="go(1)">▶</button>
+  </div>
+</div>
+<div id="view-ebook" style="display:none;overflow-y:auto;height:calc(100vh - 57px);"><div class="ebook-wrap" id="ebook-inner"></div></div>
+
+<script>
+var VOCAB=[
+  {en:"Hello",cs:"Ahoj",cat:"Základní"},
+  {en:"Goodbye",cs:"Sbohem / Nashledanou",cat:"Základní"},
+  {en:"Please",cs:"Prosím",cat:"Základní"},
+  {en:"Thank you",cs:"Děkuji",cat:"Základní"},
+  {en:"You're welcome",cs:"Není zač",cat:"Základní"},
+  {en:"Sorry",cs:"Omlouvám se",cat:"Základní"},
+  {en:"Excuse me",cs:"Promiňte",cat:"Základní"},
+  {en:"Yes",cs:"Ano",cat:"Základní"},
+  {en:"No",cs:"Ne",cat:"Základní"},
+  {en:"Good morning",cs:"Dobré ráno",cat:"Základní"},
+  {en:"Good night",cs:"Dobrou noc",cat:"Základní"},
+  {en:"How are you?",cs:"Jak se máš?",cat:"Základní"},
+  {en:"I'm fine",cs:"Mám se dobře",cat:"Základní"},
+  {en:"What is your name?",cs:"Jak se jmenuješ?",cat:"Základní"},
+  {en:"My name is...",cs:"Jmenuji se...",cat:"Základní"},
+  {en:"Today",cs:"Dnes",cat:"Čas"},
+  {en:"Tomorrow",cs:"Zítra",cat:"Čas"},
+  {en:"Yesterday",cs:"Včera",cat:"Čas"},
+  {en:"Now",cs:"Teď / Nyní",cat:"Čas"},
+  {en:"Always",cs:"Vždy",cat:"Čas"},
+  {en:"Never",cs:"Nikdy",cat:"Čas"},
+  {en:"Sometimes",cs:"Někdy",cat:"Čas"},
+  {en:"I don't understand",cs:"Nerozumím",cat:"Fráze"},
+  {en:"Can you repeat that?",cs:"Můžete to zopakovat?",cat:"Fráze"},
+  {en:"I need help",cs:"Potřebuji pomoc",cat:"Fráze"},
+  {en:"Where is the bathroom?",cs:"Kde je koupelna?",cat:"Fráze"},
+  {en:"How much does it cost?",cs:"Kolik to stojí?",cat:"Fráze"},
+  {en:"I'm hungry",cs:"Mám hlad",cat:"Fráze"},
+  {en:"I'm tired",cs:"Jsem unavený/á",cat:"Fráze"},
+  {en:"Let's go!",cs:"Pojďme!",cat:"Fráze"},
+  {en:"I love you",cs:"Miluji tě",cat:"Fráze"},
+  {en:"Good luck!",cs:"Hodně štěstí!",cat:"Fráze"},
+  {en:"No problem",cs:"Žádný problém",cat:"Fráze"},
+  {en:"Of course",cs:"Samozřejmě",cat:"Fráze"},
+  {en:"I think so",cs:"Myslím, že ano",cat:"Fráze"},
+  {en:"What time is it?",cs:"Kolik je hodin?",cat:"Fráze"},
+  {en:"I don't know",cs:"Nevím",cat:"Fráze"},
+  {en:"Water",cs:"Voda",cat:"Každodenní"},
+  {en:"Food",cs:"Jídlo",cat:"Každodenní"},
+  {en:"House",cs:"Dům",cat:"Každodenní"},
+  {en:"Car",cs:"Auto",cat:"Každodenní"},
+  {en:"Money",cs:"Peníze",cat:"Každodenní"},
+  {en:"Work",cs:"Práce",cat:"Každodenní"},
+  {en:"School",cs:"Škola",cat:"Každodenní"},
+  {en:"Family",cs:"Rodina",cat:"Každodenní"},
+  {en:"Friend",cs:"Přítel / Kamarád",cat:"Každodenní"},
+  {en:"Book",cs:"Kniha",cat:"Každodenní"},
+  {en:"Phone",cs:"Telefon",cat:"Každodenní"},
+  {en:"Time",cs:"Čas",cat:"Každodenní"},
+  {en:"City",cs:"Město",cat:"Každodenní"},
+  {en:"Health",cs:"Zdraví",cat:"Každodenní"},
+  {en:"Music",cs:"Hudba",cat:"Každodenní"},
+  {en:"Weather",cs:"Počasí",cat:"Každodenní"},
+  {en:"Happy",cs:"Šťastný/á",cat:"Přídavná jména"},
+  {en:"Sad",cs:"Smutný/á",cat:"Přídavná jména"},
+  {en:"Big",cs:"Velký/á",cat:"Přídavná jména"},
+  {en:"Small",cs:"Malý/á",cat:"Přídavná jména"},
+  {en:"Fast",cs:"Rychlý/á",cat:"Přídavná jména"},
+  {en:"Slow",cs:"Pomalý/á",cat:"Přídavná jména"},
+  {en:"Beautiful",cs:"Krásný/á",cat:"Přídavná jména"},
+  {en:"Important",cs:"Důležitý/á",cat:"Přídavná jména"},
+  {en:"Easy",cs:"Snadný/á",cat:"Přídavná jména"},
+  {en:"Difficult",cs:"Těžký/á / Obtížný",cat:"Přídavná jména"}
+];
+var CATS={
+  "Základní":"#4ade80",
+  "Čas":"#a78bfa",
+  "Fráze":"#fb923c",
+  "Každodenní":"#facc15",
+  "Přídavná jména":"#f472b6"
+};
+var learned=[];
+try{var s=localStorage.getItem('wm_learned');if(s)learned=JSON.parse(s);}catch(e){}
+var filterCat='Vše';
+var idx=0;
+var speaking=false;
+var view='cards';
+function save(){try{localStorage.setItem('wm_learned',JSON.stringify(learned));}catch(e){}}
+function filtered(){return filterCat==='Vše'?VOCAB:VOCAB.filter(function(w){return w.cat===filterCat;});}
+function card(){var f=filtered();return f[Math.min(idx,f.length-1)]||f[0];}
+function setView(v){
+  view=v;
+  document.getElementById('view-cards').style.display=v==='cards'?'block':'none';
+  document.getElementById('view-ebook').style.display=v==='ebook'?'block':'none';
+  document.getElementById('tbtn-cards').className='tab-btn'+(v==='cards'?' active':'');
+  document.getElementById('tbtn-ebook').className='tab-btn'+(v==='ebook'?' active':'');
+  if(v==='ebook')renderEbook();
+}
+function speak(txt){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(txt);
+  u.lang='en-US';u.rate=0.88;
+  u.onstart=function(){speaking=true;renderCard();};
+  u.onend=u.onerror=function(){speaking=false;renderCard();};
+  window.speechSynthesis.speak(u);
+}
+function toggleLearned(){
+  var k=card().en;
+  if(learned.indexOf(k)>=0){learned=learned.filter(function(x){return x!==k;});}
+  else{learned.push(k);}
+  save();renderCard();updateProg();
+}
+function go(dir){
+  var f=filtered();
+  var outer=document.getElementById('card-outer');
+  outer.className='card-outer '+(dir>0?'hide':'hide-r');
+  setTimeout(function(){
+    idx=(idx+dir+f.length)%f.length;
+    renderCard();
+    outer.className='card-outer';
+  },180);
+}
+function buildCats(){
+  var row=document.getElementById('cat-row');
+  row.innerHTML='';
+  var cats=['Vše'].concat(Object.keys(CATS));
+  cats.forEach(function(c){
+    var b=document.createElement('button');
+    b.className='chip'+(c===filterCat?' active':'');
+    b.textContent=c;
+    if(c!=='Vše'&&CATS[c]){b.style.background=c===filterCat?CATS[c]:'transparent';}
+    else if(c==='Vše'&&filterCat==='Vše'){b.style.background='#34d399';b.style.color='#0d0d1f';}
+    b.onclick=function(){filterCat=c;idx=0;buildCats();renderCard();};
+    row.appendChild(b);
+  });
+}
+function renderCard(){
+  var w=card();if(!w)return;
+  var color=CATS[w.cat]||'#34d399';
+  var isL=learned.indexOf(w.en)>=0;
+  var f=filtered();
+  document.getElementById('nav-counter').textContent=(Math.min(idx,f.length-1)+1)+' / '+f.length;
+  var c=document.getElementById('the-card');
+  c.innerHTML='<div class="card-top-bar" style="background:'+color+'"></div>'+
+    '<div class="card-glow" style="background:'+color+'"></div>'+
+    '<div class="cat-badge" style="background:'+color+'22;color:'+color+'">'+w.cat+'</div>'+
+    '<div class="en-word">'+w.en+'</div>'+
+    '<div class="cs-word">'+w.cs+'</div>'+
+    '<div class="card-actions">'+
+    '<button class="speak-btn'+(speaking?' pulse':'')+'" style="background:'+color+'22;color:'+color+'" onclick="speak(\''+w.en.replace(/'/g,"\\'")+'\')" title="Přehrát">🔊</button>'+
+    '<button class="learned-btn '+(isL?'yes':'no')+'" onclick="toggleLearned()">'+(isL?'✓ Naučeno':'+ Označit naučené')+'</button>'+
+    '</div>';
+  updateProg();
+}
+function updateProg(){
+  var pct=Math.round(learned.length/VOCAB.length*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-text').textContent=learned.length+' / '+VOCAB.length;
+  document.getElementById('prog-pct').textContent=pct+'%';
+}
+function renderEbook(){
+  var inner=document.getElementById('ebook-inner');
+  inner.innerHTML='<div class="ebook-head"><div class="ebook-title">📚 Všechna slovíčka & fráze</div><div class="ebook-sub">'+VOCAB.length+' výrazů · naučeno '+learned.length+'</div></div>';
+  Object.keys(CATS).forEach(function(cat){
+    var words=VOCAB.filter(function(w){return w.cat===cat;});
+    var color=CATS[cat];
+    var sec=document.createElement('div');
+    sec.innerHTML='<div class="sec-header" style="color:'+color+'"><div class="sec-dot" style="background:'+color+'"></div>'+cat+' <span class="sec-count">('+words.length+')</span></div>';
+    words.forEach(function(w){
+      var isL=learned.indexOf(w.en)>=0;
+      var row=document.createElement('div');
+      row.className='eb-row'+(isL?' learned':'');
+      row.innerHTML='<button class="eb-speak" style="background:'+color+'20;color:'+color+'" onclick="speak(\''+w.en.replace(/'/g,"\\'")+'\')">🔊</button>'+
+        '<div style="flex:1"><div class="eb-en">'+w.en+'</div><div class="eb-cs">'+w.cs+'</div></div>'+
+        (isL?'<span class="eb-check">✓</span>':'');
+      sec.appendChild(row);
+    });
+    inner.appendChild(sec);
+  });
+}
+buildCats();renderCard();
 <\/script>
 </body></html>
 `;
