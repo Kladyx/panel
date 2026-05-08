@@ -10014,14 +10014,6 @@ APP_HTML["reader"] = `<!DOCTYPE html>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"><\/script>
   <script src="https://cdn.jsdelivr.net/npm/epubjs@0.3.93/dist/epub.min.js"><\/script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"><\/script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"><\/script>
   <style>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
     :root{--bg:#050810;--surface:#080d1c;--surface2:#0d1428;--cyan:#00d4ff;--muted:#5a6488;--light:#dde4ff;--border:rgba(0,212,255,0.18);--font:"Courier New",monospace;--fs:17px;--lh:1.75;--mx:20px;}
@@ -10162,7 +10154,7 @@ APP_HTML["reader"] = `<!DOCTYPE html>
     <button class="arc-close" onclick="closeArchive()">✕</button>
   </div>
   <div class="arc-list" id="arc-list"></div>
-  <div class="arc-size-warn">☁️ Knihy uloženy v cloudu (Firebase) · dostupné vždy</div>
+  <div class="arc-size-warn">📱 Knihy zůstávají trvale v paměti telefonu (IndexedDB)</div>
 </div>
 <div id="reader-screen">
   <div id="topbar">
@@ -10253,7 +10245,7 @@ var zone=document.getElementById('upload-zone');
 zone.addEventListener('dragover',function(e){e.preventDefault();zone.classList.add('drag');});
 zone.addEventListener('dragleave',function(){zone.classList.remove('drag');});
 zone.addEventListener('drop',function(e){e.preventDefault();zone.classList.remove('drag');var f=e.dataTransfer.files[0];if(f)loadFile(f);});
-function loadFile(file){var sizeMB=(file.size/1048576).toFixed(2);var ext=file.name.split('.').pop().toLowerCase();if(ext!=='epub'&&ext!=='pdf'){toast('Nepodporovaný formát: .'+ext);return;}if(ext==='epub')loadEpub(file);else loadPdf(file);}
+function loadFile(file){var sizeMB=(file.size/1048576).toFixed(2);var ext=file.name.split('.').pop().toLowerCase();if(ext!=='epub'&&ext!=='pdf'){toast('Nepodporovaný formát: .'+ext);return;}if(!confirm('\u2b06 IMPORT KNIHY\\n\\nN\u00e1zev souboru:\\n   '+file.name+'\\n\\nForm\u00e1t: '+ext.toUpperCase()+'\\nVelikost: '+sizeMB+' MB\\n\\nOtev\u0159\u00edt knihu?')){document.getElementById('file-input').value='';return;}if(ext==='epub')loadEpub(file);else loadPdf(file);}
 function showReader(title,fileObj){document.getElementById('upload-screen').classList.add('hidden');document.getElementById('reader-screen').classList.add('active');document.getElementById('book-title').textContent=title||'—';if(fileObj)currentFile=fileObj;}
 function closeBook(){if(epubBook){epubBook.destroy();epubBook=null;epubRendition=null;}pdfDoc=null;pdfPage=1;pdfTotal=0;document.getElementById('epub-viewer').innerHTML='';document.getElementById('pdf-viewer').innerHTML='';document.getElementById('pdf-viewer').style.display='none';document.getElementById('epub-viewer').style.display='block';document.getElementById('reader-screen').classList.remove('active');document.getElementById('upload-screen').classList.remove('hidden');document.getElementById('file-input').value='';bookType=null;}
 function loadEpub(file,buf){bookType='epub';function _open(b){try{if(epubBook)epubBook.destroy();epubBook=ePub(b);epubBook.ready.then(function(){return epubBook.locations.generate(1200);});epubBook.loaded.metadata.then(function(meta){var t=meta.title||file.name;showReader(t,{name:file.name,data:b,type:'epub'});});var viewer=document.getElementById('epub-viewer');viewer.style.display='block';document.getElementById('pdf-viewer').style.display='none';epubRendition=epubBook.renderTo('epub-viewer',{manager:'continuous',flow:'scrolled',width:'100%',height:'100%',spread:'none'});applyEpubTheme();epubRendition.display();epubRendition.on('relocated',function(loc){updateProgress(loc.start.percentage||0);var ci=loc.start.displayed;if(ci)setPageInfo(ci.page,ci.total);});epubBook.loaded.navigation.then(function(nav){buildToc(nav.toc);});addSwipe(viewer);}catch(err){toast('Chyba EPUB: '+err.message);}}if(buf){_open(buf);}else{var r=new FileReader();r.onload=function(e){_open(e.target.result);};r.readAsArrayBuffer(file);}}
@@ -10401,64 +10393,52 @@ function addSwipe(el){var sx=0,sy=0;el.addEventListener('touchstart',function(e)
 var toastTimer;function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove('show');},3200);}
 document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowDown')nextPage();if(e.key==='ArrowLeft'||e.key==='ArrowUp')prevPage();if(e.key==='Escape')closeAllPanels();});
 window.addEventListener('resize',function(){if(bookType==='pdf'&&!pdfRendering)renderPdfPage(pdfPage);});
-// ── Archiv knih — Firebase Storage + RTDB ───
-var _fbDB2=null,_fbSt2=null,_fbUser2=null,_fbReady=false,_fbCbs=[];
-var _FB2={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
-(function(){
-  try{
-    var app;try{app=firebase.app('kreader');}catch(e){app=firebase.initializeApp(_FB2,'kreader');}
-    _fbDB2=app.database();_fbSt2=app.storage();
-    app.auth().onAuthStateChanged(function(u){
-      _fbUser2=u;
-      if(!_fbReady){_fbReady=true;_fbCbs.forEach(function(f){f();});_fbCbs=[];}
-    });
-  }catch(e){console.error('FB init:',e);_fbReady=true;}
-})();
-function _fbWait(fn){if(_fbReady)fn();else _fbCbs.push(fn);}
-function _fbKey(fn){return fn.replace(/[.#$\[\]\/\s]/g,'_').substring(0,80);}
+// ── Archiv knih — IndexedDB (TRVALÉ úložiště v paměti telefonu) ───
+var IDB_NAME='kladyx-reader-db', IDB_STORE='books', IDB_VERSION=1;
+var _idbInst=null;
+function _idbOpen(){
+  return new Promise(function(resolve,reject){
+    if(_idbInst){resolve(_idbInst);return;}
+    var req=indexedDB.open(IDB_NAME,IDB_VERSION);
+    req.onupgradeneeded=function(){
+      var db=req.result;
+      if(!db.objectStoreNames.contains(IDB_STORE)){
+        db.createObjectStore(IDB_STORE,{keyPath:'filename'});
+      }
+    };
+    req.onsuccess=function(){_idbInst=req.result;resolve(_idbInst);};
+    req.onerror=function(){reject(req.error);};
+  });
+}
+function _idbReq(req){return new Promise(function(resolve,reject){req.onsuccess=function(){resolve(req.result);};req.onerror=function(){reject(req.error);};});}
+
 function dbSaveBook(filename,title,type,buf){
-  return new Promise(function(res,rej){
-    _fbWait(function(){
-      if(!_fbUser2){rej(new Error('Nejste p\u0159ihl\u00e1\u0161eni'));return;}
-      if(!_fbSt2||!_fbDB2){rej(new Error('Firebase nen\u00ed k dispozici'));return;}
-      var path='books/'+Date.now()+'_'+filename.replace(/[^a-zA-Z0-9._-]/g,'_');
-      var blob=new Blob([buf],{type:type==='pdf'?'application/pdf':'application/epub+zip'});
-      _fbSt2.ref(path).put(blob).then(function(snap){return snap.ref.getDownloadURL();})
-      .then(function(url){
-        return _fbDB2.ref('reader_books/'+_fbKey(filename)).set({
-          filename:filename,title:title||filename,type:type,
-          size:buf.byteLength,url:url,storagePath:path,
-          date:new Date().toLocaleString('cs-CZ'),ts:Date.now()
-        });
-      }).then(res).catch(rej);
-    });
+  return _idbOpen().then(function(db){
+    var tx=db.transaction(IDB_STORE,'readwrite');
+    return _idbReq(tx.objectStore(IDB_STORE).put({
+      filename:filename,
+      title:title||filename,
+      type:type,
+      buffer:buf,
+      size:buf.byteLength,
+      date:new Date().toLocaleString('cs-CZ'),
+      ts:Date.now()
+    }));
   });
 }
 function dbGetAll(cb){
-  _fbWait(function(){
-    if(!_fbDB2||!_fbUser2){cb([]);return;}
-    _fbDB2.ref('reader_books').once('value').then(function(snap){
-      var val=snap.val()||{};
-      var books=Object.values(val).filter(function(b){return b&&b.filename;});
-      books.sort(function(a,b){return (b.ts||0)-(a.ts||0);});
-      cb(books);
-    }).catch(function(){cb([]);});
-  });
+  _idbOpen().then(function(db){
+    return _idbReq(db.transaction(IDB_STORE,'readonly').objectStore(IDB_STORE).getAll());
+  }).then(function(books){
+    books.sort(function(a,b){return (b.ts||0)-(a.ts||0);});
+    cb(books);
+  }).catch(function(){cb([]);});
 }
 function dbDelete(filename,cb){
-  _fbWait(function(){
-    if(!_fbDB2||!_fbUser2){if(cb)cb();return;}
-    var key=_fbKey(filename);
-    _fbDB2.ref('reader_books/'+key).once('value').then(function(snap){
-      var bk=snap.val();
-      var p1=_fbDB2.ref('reader_books/'+key).remove();
-      var p2=(bk&&bk.storagePath&&_fbSt2)?_fbSt2.ref(bk.storagePath).delete().catch(function(){}):Promise.resolve();
-      return Promise.all([p1,p2]);
-    }).then(function(){if(cb)cb();}).catch(function(e){toast('\u26a0 '+e.message);});
-  });
+  _idbOpen().then(function(db){
+    return _idbReq(db.transaction(IDB_STORE,'readwrite').objectStore(IDB_STORE).delete(filename));
+  }).then(function(){if(cb)cb();}).catch(function(e){toast('\u26a0 '+e.message);});
 }
-
-
 
 // ── ULOŽIT do paměti telefonu (zelená → žlutá UKLÁDÁM → červená ULOŽENO → zelená) ──
 function saveCurrentFile(){
@@ -10475,7 +10455,7 @@ function saveCurrentFile(){
     btn.style.borderColor='rgba(255,60,90,.55)';
     btn.style.color='#ff3c5a';
     btn.textContent='\u2713 ULO\u017dENO';
-    toast('\u2713 Kniha ulo\u017eena do cloudu');
+    toast('\u2713 Kniha trvale ulo\u017eena do pam\u011bti telefonu');
     setTimeout(function(){
       btn.disabled=false;
       btn.style.background='rgba(0,255,136,.15)';
@@ -10527,17 +10507,11 @@ function renderArchive(){
   });
 }
 function openFromArchive(bk){
-  if(!bk.url){toast('\u26a0 URL nen\u00ed dostupn\u00e1');return;}
+  if(!bk.buffer){toast('\u26a0 Data nejsou v pam\u011bti');return;}
   closeArchive();
-  toast('\u23f3 Stahuj\u00ed kni\u017eu...');
-  fetch(bk.url).then(function(r){
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    return r.arrayBuffer();
-  }).then(function(buf){
-    var fakeFile={name:bk.filename};
-    if(bk.type==='epub')loadEpub(fakeFile,buf);
-    else loadPdf(fakeFile,buf);
-  }).catch(function(e){toast('\u26a0 Chyba stahov\u00e1n\u00ed: '+e.message);});
+  var fakeFile={name:bk.filename};
+  if(bk.type==='epub')loadEpub(fakeFile,bk.buffer);
+  else loadPdf(fakeFile,bk.buffer);
 }
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 // ──────────────────────────────────────────────────────────────
