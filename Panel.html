@@ -363,43 +363,45 @@
     <iframe id="frame-manualy" class="app-frame" title="manualy" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
     <iframe id="frame-zxnext" class="app-frame" title="zxnext" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
     <iframe id="frame-reader" class="app-frame" title="reader" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
-    <!-- File picker pro čtečku (mimo iframe - spolehlivé na mobilu) -->
-    <input type="file" id="reader-file-input" accept=".epub,.pdf" style="position:fixed;left:-9999px;opacity:0;pointer-events:none;">
-    <script>
-    (function(){
-      var rfi = document.getElementById('reader-file-input');
-      window.addEventListener('message', function(e) {
-        if (!e.data) return;
-        if (e.data.type === 'reader-open-picker') {
-          rfi.value = '';
-          rfi.click();
-        }
-      });
-      rfi.addEventListener('change', function() {
-        var f = rfi.files[0];
-        if (!f) return;
-        var reader = new FileReader();
-        reader.onload = function(ev) {
-          var frame = document.getElementById('frame-reader');
-          if (frame && frame.contentWindow) {
-            frame.contentWindow.postMessage({
-              type: 'reader-file',
-              name: f.name,
-              size: f.size,
-              buffer: ev.target.result
-            }, '*');
-          }
-        };
-        reader.readAsArrayBuffer(f);
-      });
-    })();
-    </script>
+
 
   </div>
 </div>
 
 <script>
 var loaded = {};
+<!-- ═══ ČTEČKA: file input v hlavní stránce (přímý user gesture) ═══ -->
+<div id="reader-load-overlay" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:500;pointer-events:all;">
+  <label for="reader-fi" style="display:flex;align-items:center;gap:10px;padding:14px 28px;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.5);border-radius:8px;color:#a78bfa;font-family:'Courier New',monospace;font-size:0.75rem;letter-spacing:2px;cursor:pointer;white-space:nowrap;">
+    📂 NAČÍST KNIHU (EPUB / PDF)
+  </label>
+  <input type="file" id="reader-fi" accept=".epub,.pdf" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;">
+</div>
+<script>
+(function(){
+  var fi = document.getElementById('reader-fi');
+  fi.addEventListener('change', function() {
+    var f = fi.files[0];
+    if (!f) return;
+    fi.value = '';
+    var r = new FileReader();
+    r.onload = function(ev) {
+      var frame = document.getElementById('frame-reader');
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({
+          type: 'reader-file',
+          name: f.name,
+          size: f.size,
+          buffer: ev.target.result
+        }, '*');
+      }
+    };
+    r.readAsArrayBuffer(f);
+  });
+})();
+</script>
+
+
 var APP_HTML = {};
 APP_HTML["housetime"] = `<!DOCTYPE html>
 <html lang="cs">
@@ -10178,10 +10180,10 @@ APP_HTML["reader"] = `<!DOCTYPE html>
 <div id="upload-screen">
   <div class="logo">KLADYX</div>
   <div class="logo-sub">READER v1.1 · EPUB · PDF</div>
-  <div class="upload-zone" id="upload-zone" onclick="requestFilePicker()">
-    <input type="file" id="file-input" accept=".epub,.pdf" style="display:none">
+  <div class="upload-zone" id="upload-zone">
+
     <div class="upload-icon">📚</div>
-    <div class="upload-label">Nahrát e-knihu<br>Klepněte pro výběr souboru</div>
+    <div class="upload-label">Nahrát e-knihu<br>Použijte tlačítko ↓ níže</div>
     <div class="upload-types">Podporované formáty: EPUB · PDF</div>
   </div>
   <div class="recent-label">— KLADYX READER —</div>
@@ -10285,14 +10287,8 @@ window.addEventListener('message', function(e) {
   var fakeFile = {name: e.data.name, size: e.data.size};
   loadFileBuffer(fakeFile, e.data.buffer);
 });
-// Fallback: přímý file input (desktop)
-document.getElementById('file-input').addEventListener('change',function(e){var f=e.target.files[0];if(f){var r=new FileReader();r.onload=function(ev){loadFileBuffer({name:f.name,size:f.size},ev.target.result);};r.readAsArrayBuffer(f);}});
-function requestFilePicker(){
-  // Zkus postMessage k rodiči (iframe)
-  try { window.parent.postMessage({type:'reader-open-picker'},'*'); } catch(e) {}
-  // Fallback: přímý click na file input
-  setTimeout(function(){ document.getElementById('file-input').click(); }, 100);
-}
+
+
 function loadFileBuffer(fakeFile, buf) {
   var ext = fakeFile.name.split('.').pop().toLowerCase();
   if(ext !== 'epub' && ext !== 'pdf') { toast('Nepodporovaný formát: .' + ext); return; }
@@ -10639,6 +10635,9 @@ function openApp(id) {
     try { localStorage.setItem("kladyx-panel-last", id); } catch(e) {
       console.warn('localStorage nedostupný:', e);
     }
+    // Zobraz/skryj tlačítko načtení knihy
+    var rlo = document.getElementById('reader-load-overlay');
+    if (rlo) rlo.style.display = (id === 'reader') ? 'block' : 'none';
   } catch(err) {
     console.error("Kritická chyba:", err);
     alert("Chyba: " + (err.message || err));
@@ -10646,6 +10645,7 @@ function openApp(id) {
 }
 function goHome() {
   try {
+    var rlo=document.getElementById('reader-load-overlay');if(rlo)rlo.style.display='none';
     document.getElementById("welcome").classList.remove("hidden");
     document.querySelectorAll(".app-frame").forEach(function(f){ f.classList.remove("visible"); });
     document.querySelectorAll(".app-btn").forEach(function(b){ b.classList.remove("active"); });
