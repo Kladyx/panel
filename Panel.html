@@ -10253,7 +10253,7 @@ var zone=document.getElementById('upload-zone');
 zone.addEventListener('dragover',function(e){e.preventDefault();zone.classList.add('drag');});
 zone.addEventListener('dragleave',function(){zone.classList.remove('drag');});
 zone.addEventListener('drop',function(e){e.preventDefault();zone.classList.remove('drag');var f=e.dataTransfer.files[0];if(f)loadFile(f);});
-function loadFile(file){var sizeMB=(file.size/1048576).toFixed(2);var ext=file.name.split('.').pop().toLowerCase();if(ext!=='epub'&&ext!=='pdf'){toast('Nepodporovaný formát: .'+ext);return;}if(!confirm('\u2b06 IMPORT KNIHY\\n\\nN\u00e1zev souboru:\\n   '+file.name+'\\n\\nForm\u00e1t: '+ext.toUpperCase()+'\\nVelikost: '+sizeMB+' MB\\n\\nOtev\u0159\u00edt knihu?')){document.getElementById('file-input').value='';return;}if(ext==='epub')loadEpub(file);else loadPdf(file);}
+function loadFile(file){var sizeMB=(file.size/1048576).toFixed(2);var ext=file.name.split('.').pop().toLowerCase();if(ext!=='epub'&&ext!=='pdf'){toast('Nepodporovaný formát: .'+ext);return;}toast('⏳ Načítám: '+file.name+' ('+sizeMB+' MB)');if(ext==='epub')loadEpub(file);else loadPdf(file);}
 function showReader(title,fileObj){document.getElementById('upload-screen').classList.add('hidden');document.getElementById('reader-screen').classList.add('active');document.getElementById('book-title').textContent=title||'—';if(fileObj)currentFile=fileObj;}
 function closeBook(){if(epubBook){epubBook.destroy();epubBook=null;epubRendition=null;}pdfDoc=null;pdfPage=1;pdfTotal=0;document.getElementById('epub-viewer').innerHTML='';document.getElementById('pdf-viewer').innerHTML='';document.getElementById('pdf-viewer').style.display='none';document.getElementById('epub-viewer').style.display='block';document.getElementById('reader-screen').classList.remove('active');document.getElementById('upload-screen').classList.remove('hidden');document.getElementById('file-input').value='';bookType=null;}
 function loadEpub(file,buf){bookType='epub';function _open(b){try{if(epubBook)epubBook.destroy();epubBook=ePub(b);epubBook.ready.then(function(){return epubBook.locations.generate(1200);});epubBook.loaded.metadata.then(function(meta){var t=meta.title||file.name;showReader(t,{name:file.name,data:b,type:'epub'});});var viewer=document.getElementById('epub-viewer');viewer.style.display='block';document.getElementById('pdf-viewer').style.display='none';epubRendition=epubBook.renderTo('epub-viewer',{manager:'continuous',flow:'scrolled',width:'100%',height:'100%',spread:'none'});applyEpubTheme();epubRendition.display();epubRendition.on('relocated',function(loc){updateProgress(loc.start.percentage||0);var ci=loc.start.displayed;if(ci)setPageInfo(ci.page,ci.total);});epubBook.loaded.navigation.then(function(nav){buildToc(nav.toc);});addSwipe(viewer);}catch(err){toast('Chyba EPUB: '+err.message);}}if(buf){_open(buf);}else{var r=new FileReader();r.onload=function(e){_open(e.target.result);};r.readAsArrayBuffer(file);}}
@@ -10338,7 +10338,6 @@ function exportBookmarks(){
   var fname='kladyx-zalozky-'+new Date().toISOString().slice(0,10)+'.json';
   var sizeKB=(json.length/1024).toFixed(1);
   var msg='\u2b07 EXPORT ZÁLOŽEK (JSON)\\n\\nN\u00e1zev souboru:\\n   '+fname+'\\n\\nPo\u010det z\u00e1lo\u017eek: '+bms.length+'\\nVelikost: '+sizeKB+' KB\\n\\nUm\u00edst\u011bn\u00ed po sta\u017een\u00ed:\\n   \ud83d\udcc1 Sta\u017een\u00e9 soubory (Downloads)\\n\\nPokra\u010dovat?';
-  if(!confirm(msg))return;
   var blob=new Blob([json],{type:'application/json'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');
@@ -10352,7 +10351,7 @@ function importBookmarks(input){
   var file=input.files[0];
   if(!file)return;
   var sizeKB=(file.size/1024).toFixed(1);
-  if(!confirm('\u2b06 IMPORT ZÁLOŽEK (JSON)\\n\\nN\u00e1zev souboru:\\n   '+file.name+'\\n\\nVelikost: '+sizeKB+' KB\\n\\nNa\u010d\u00edst tento soubor?')){input.value='';return;}
+  toast('⏳ Importuji záložky: '+file.name);
   var r=new FileReader();
   r.onload=function(e){
     try{
@@ -10499,7 +10498,6 @@ function exportCurrentFile(){
   var fname=currentFile.name;
   var sizeMB=(currentFile.data.byteLength/1048576).toFixed(2);
   var msg='\ud83d\udce4 EXPORT KNIHY\\n\\nN\u00e1zev souboru:\\n   '+fname+'\\n\\nVelikost: '+sizeMB+' MB\\n\\nUm\u00edst\u011bn\u00ed po sta\u017een\u00ed:\\n   \ud83d\udcc1 Sta\u017een\u00e9 soubory (Downloads)\\n\\nPokra\u010dovat?';
-  if(!confirm(msg))return;
   var blob=new Blob([currentFile.data],{type:bookType==='pdf'?'application/pdf':'application/epub+zip'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');a.href=url;a.download=fname;
@@ -10520,7 +10518,7 @@ function renderArchive(){
       var icon=bk.type==='epub'?'\ud83d\udcd6':'\ud83d\udcc4';
       var sizeMB=((bk.size||0)/1048576).toFixed(1);
       item.innerHTML='<div class="arc-icon">'+icon+'</div><div class="arc-info"><div class="arc-name">'+escHtml(bk.title)+'</div><div class="arc-meta">'+escHtml(bk.filename)+' \u00b7 '+sizeMB+' MB \u00b7 '+escHtml(bk.date)+'</div></div><button class="arc-del" title="Smazat z archivu">\ud83d\uddd1</button>';
-      item.querySelector('.arc-del').onclick=function(e){e.stopPropagation();if(!confirm('Smazat z pam\u011bti telefonu?\\n\\n'+bk.title))return;dbDelete(bk.filename,function(){renderArchive();toast('\ud83d\uddd1 Smaz\u00e1no z archivu');});};
+      item.querySelector('.arc-del').onclick=function(e){e.stopPropagation();dbDelete(bk.filename,function(){renderArchive();toast('\ud83d\uddd1 Smazáno z archivu');});};
       item.onclick=function(){openFromArchive(bk);};
       list.appendChild(item);
     });
