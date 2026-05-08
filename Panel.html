@@ -10458,33 +10458,7 @@ function dbDelete(filename,cb){
   });
 }
 
-function dbSaveBook(filename,title,type,buf){
-  return _idbOpen().then(function(db){
-    var tx=db.transaction(IDB_STORE,'readwrite');
-    return _idbReq(tx.objectStore(IDB_STORE).put({
-      filename:filename,
-      title:title||filename,
-      type:type,
-      buffer:buf,
-      size:buf.byteLength,
-      date:new Date().toLocaleString('cs-CZ'),
-      ts:Date.now()
-    }));
-  });
-}
-function dbGetAll(cb){
-  _idbOpen().then(function(db){
-    return _idbReq(db.transaction(IDB_STORE,'readonly').objectStore(IDB_STORE).getAll());
-  }).then(function(books){
-    books.sort(function(a,b){return (b.ts||0)-(a.ts||0);});
-    cb(books);
-  }).catch(function(){cb([]);});
-}
-function dbDelete(filename,cb){
-  _idbOpen().then(function(db){
-    return _idbReq(db.transaction(IDB_STORE,'readwrite').objectStore(IDB_STORE).delete(filename));
-  }).then(function(){if(cb)cb();}).catch(function(e){toast('\u26a0 '+e.message);});
-}
+// dbSaveBook / dbGetAll / dbDelete jsou definovány výše (Firebase verze) — duplikát odstraněn
 
 // ── ULOŽIT do paměti telefonu (zelená → žlutá UKLÁDÁM → červená ULOŽENO → zelená) ──
 function saveCurrentFile(){
