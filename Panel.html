@@ -10154,7 +10154,7 @@ APP_HTML["reader"] = `<!DOCTYPE html>
     <button class="arc-close" onclick="closeArchive()">✕</button>
   </div>
   <div class="arc-list" id="arc-list"></div>
-  <div class="arc-size-warn">📱 Knihy zůstávají trvale v paměti telefonu (IndexedDB)</div>
+  <div class="arc-size-warn">☁️ Knihy uloženy v cloudu (Firebase) · dostupné vždy</div>
 </div>
 <div id="reader-screen">
   <div id="topbar">
@@ -10393,50 +10393,83 @@ function addSwipe(el){var sx=0,sy=0;el.addEventListener('touchstart',function(e)
 var toastTimer;function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove('show');},3200);}
 document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowDown')nextPage();if(e.key==='ArrowLeft'||e.key==='ArrowUp')prevPage();if(e.key==='Escape')closeAllPanels();});
 window.addEventListener('resize',function(){if(bookType==='pdf'&&!pdfRendering)renderPdfPage(pdfPage);});
-// ── Archiv knih — IndexedDB (TRVALÉ úložiště v paměti telefonu) ───
-var IDB_NAME='kladyx-reader-db', IDB_STORE='books', IDB_VERSION=1;
-var _idbInst=null;
-function _idbOpen(){
-  return new Promise(function(resolve,reject){
-    if(_idbInst){resolve(_idbInst);return;}
-    var req=indexedDB.open(IDB_NAME,IDB_VERSION);
-    req.onupgradeneeded=function(){
-      var db=req.result;
-      if(!db.objectStoreNames.contains(IDB_STORE)){
-        db.createObjectStore(IDB_STORE,{keyPath:'filename'});
-      }
+// ── Archiv knih — Firebase Storage + RTDB (TRVALÉ úložiště v cloudu) ───
+var _fbApp2=null,_fbDB2=null,_fbSt2=null;
+var _FB2_CFG={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
+function _initFB2(){
+  return new Promise(function(res,rej){
+    if(_fbDB2&&_fbSt2){res();return;}
+    function _setup(){
+      try{
+        var existing=null;
+        try{existing=firebase.app('kladyx-reader');}catch(e){}
+        _fbApp2=existing||firebase.initializeApp(_FB2_CFG,'kladyx-reader');
+        _fbDB2=_fbApp2.database();
+        _fbSt2=_fbApp2.storage();
+        res();
+      }catch(e){rej(e);}
+    }
+    if(typeof firebase!=='undefined'&&firebase.database){_setup();return;}
+    var s=document.createElement('script');
+    s.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
+    s.onload=function(){
+      var s2=document.createElement('script');
+      s2.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js';
+      s2.onload=function(){
+        var s3=document.createElement('script');
+        s3.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js';
+        s3.onload=_setup;s3.onerror=function(){rej(new Error('FB Storage load failed'));};
+        document.head.appendChild(s3);
+      };
+      s2.onerror=function(){rej(new Error('FB DB load failed'));};
+      document.head.appendChild(s2);
     };
-    req.onsuccess=function(){_idbInst=req.result;resolve(_idbInst);};
-    req.onerror=function(){reject(req.error);};
+    s.onerror=function(){rej(new Error('FB App load failed'));};
+    document.head.appendChild(s);
   });
 }
-function _idbReq(req){return new Promise(function(resolve,reject){req.onsuccess=function(){resolve(req.result);};req.onerror=function(){reject(req.error);};});}
-
+function _fbKey(fn){return fn.replace(/[.#$\[\]/\s]/g,'_').substring(0,80);}
 function dbSaveBook(filename,title,type,buf){
-  return _idbOpen().then(function(db){
-    var tx=db.transaction(IDB_STORE,'readwrite');
-    return _idbReq(tx.objectStore(IDB_STORE).put({
-      filename:filename,
-      title:title||filename,
-      type:type,
-      buffer:buf,
-      size:buf.byteLength,
-      date:new Date().toLocaleString('cs-CZ'),
-      ts:Date.now()
-    }));
+  return _initFB2().then(function(){
+    var path='books/'+Date.now()+'_'+filename.replace(/[^a-zA-Z0-9._-]/g,'_');
+    var ref=_fbSt2.ref(path);
+    var blob=new Blob([buf],{type:type==='pdf'?'application/pdf':'application/epub+zip'});
+    return ref.put(blob).then(function(snap){
+      return snap.ref.getDownloadURL();
+    }).then(function(url){
+      var key=_fbKey(filename);
+      return _fbDB2.ref('reader_books/'+key).set({
+        filename:filename,
+        title:title||filename,
+        type:type,
+        size:buf.byteLength,
+        url:url,
+        storagePath:path,
+        date:new Date().toLocaleString('cs-CZ'),
+        ts:Date.now()
+      });
+    });
   });
 }
 function dbGetAll(cb){
-  _idbOpen().then(function(db){
-    return _idbReq(db.transaction(IDB_STORE,'readonly').objectStore(IDB_STORE).getAll());
-  }).then(function(books){
+  _initFB2().then(function(){
+    return _fbDB2.ref('reader_books').once('value');
+  }).then(function(snap){
+    var val=snap.val()||{};
+    var books=Object.values(val).filter(function(b){return b&&b.filename;});
     books.sort(function(a,b){return (b.ts||0)-(a.ts||0);});
     cb(books);
-  }).catch(function(){cb([]);});
+  }).catch(function(e){console.error('dbGetAll chyba:',e);cb([]);});
 }
 function dbDelete(filename,cb){
-  _idbOpen().then(function(db){
-    return _idbReq(db.transaction(IDB_STORE,'readwrite').objectStore(IDB_STORE).delete(filename));
+  _initFB2().then(function(){
+    var key=_fbKey(filename);
+    return _fbDB2.ref('reader_books/'+key).once('value').then(function(snap){
+      var bk=snap.val();
+      var p1=_fbDB2.ref('reader_books/'+key).remove();
+      var p2=(bk&&bk.storagePath)?_fbSt2.ref(bk.storagePath).delete().catch(function(){}):Promise.resolve();
+      return Promise.all([p1,p2]);
+    });
   }).then(function(){if(cb)cb();}).catch(function(e){toast('\u26a0 '+e.message);});
 }
 
@@ -10455,7 +10488,7 @@ function saveCurrentFile(){
     btn.style.borderColor='rgba(255,60,90,.55)';
     btn.style.color='#ff3c5a';
     btn.textContent='\u2713 ULO\u017dENO';
-    toast('\u2713 Kniha trvale ulo\u017eena do pam\u011bti telefonu');
+    toast('\u2713 Kniha trvale ulo\u017eena do cloudu (Firebase)');
     setTimeout(function(){
       btn.disabled=false;
       btn.style.background='rgba(0,255,136,.15)';
@@ -10507,11 +10540,17 @@ function renderArchive(){
   });
 }
 function openFromArchive(bk){
-  if(!bk.buffer){toast('\u26a0 Data nejsou v pam\u011bti');return;}
+  if(!bk.url){toast('\u26a0 URL nen\u00ed dostupn\u00e1');return;}
   closeArchive();
-  var fakeFile={name:bk.filename};
-  if(bk.type==='epub')loadEpub(fakeFile,bk.buffer);
-  else loadPdf(fakeFile,bk.buffer);
+  toast('\u23f3 Stahuj\u00ed kni\u017eu...');
+  fetch(bk.url).then(function(r){
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    return r.arrayBuffer();
+  }).then(function(buf){
+    var fakeFile={name:bk.filename};
+    if(bk.type==='epub')loadEpub(fakeFile,buf);
+    else loadPdf(fakeFile,buf);
+  }).catch(function(e){toast('\u26a0 Chyba stahov\u00e1n\u00ed: '+e.message);});
 }
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 // ──────────────────────────────────────────────────────────────
