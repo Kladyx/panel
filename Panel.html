@@ -281,7 +281,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo">KLADYX</div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v7.1</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v7.3</span> · VYBERTE APLIKACI</div>
       <div class="eq-wrap">
         <div class="dancer dancer-g">
           <svg viewBox="0 0 32 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -10648,40 +10648,20 @@ body{background:radial-gradient(circle at 20% 0%,rgba(52,211,153,0.08),transpare
 .empty-state .ic{font-size:3rem;margin-bottom:10px;}
 .empty-state .ti{font-size:1rem;font-weight:700;color:#aaa;margin-bottom:6px;}
 .empty-state .ds{font-size:0.82rem;}
-/* ── SPEAKING MODE ── */
-.speak-wrap{padding:14px;}
-.speak-card{background:linear-gradient(145deg,#15152a,#1a1a32);border:1px solid #252548;border-radius:22px;padding:24px 20px;text-align:center;}
-.speak-mode-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px;}
-.smode-btn{padding:7px 16px;border-radius:99px;border:1.5px solid #252548;background:transparent;color:#888;font-family:inherit;font-size:0.72rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
-.smode-btn.active{border-color:#a78bfa;color:#a78bfa;background:rgba(167,139,250,0.12);}
-.smode-btn:active{transform:scale(0.94);}
-.speak-instruction{font-size:0.7rem;color:#555577;letter-spacing:0.5px;margin-bottom:14px;font-weight:600;text-transform:uppercase;}
-.speak-cat-badge{display:inline-flex;align-items:center;padding:3px 11px;border-radius:99px;font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;}
-.speak-main-word{font-size:2rem;font-weight:800;color:#f0f0fa;line-height:1.2;margin-bottom:8px;}
-.speak-hint-cs{font-size:0.95rem;color:#9999bb;margin-bottom:12px;}
-.speak-progress{font-size:0.7rem;color:#444466;font-weight:700;margin-bottom:18px;}
-.mic-btn-big{width:82px;height:82px;border-radius:50%;border:3px solid rgba(52,211,153,0.4);background:rgba(52,211,153,0.1);font-size:2.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;transition:all 0.2s;}
-.mic-btn-big:active{transform:scale(0.92);}
-.mic-btn-big.listening{border-color:#f87171;background:rgba(248,113,113,0.15);animation:micPulse 1s ease infinite;}
-@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,0.5);}50%{box-shadow:0 0 0 18px rgba(248,113,113,0);}}
-.mic-label{font-size:0.72rem;color:#888;font-weight:700;min-height:20px;margin-bottom:14px;}
-.speak-status{padding:12px 16px;border-radius:12px;margin:14px 0 6px;font-size:0.88rem;font-weight:700;line-height:1.6;}
-.speak-status.ok{background:rgba(52,211,153,0.12);border:1.5px solid rgba(52,211,153,0.3);color:#34d399;}
-.speak-status.fail{background:rgba(248,113,113,0.1);border:1.5px solid rgba(248,113,113,0.3);color:#f87171;}
-.speak-correct-word{font-size:1.05rem;font-weight:800;display:block;margin-top:4px;}
-.speak-heard-text{font-size:0.78rem;opacity:0.75;font-style:italic;display:block;margin-top:2px;}
-.speak-nav-row{display:flex;gap:8px;justify-content:center;margin-top:12px;}
-.speak-next-btn{padding:12px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,#34d399,#60a5fa);color:#0d0d1f;font-family:inherit;font-size:0.88rem;font-weight:800;cursor:pointer;transition:all 0.2s;}
-.speak-next-btn:active{transform:scale(0.97);}
-.speak-no-support{text-align:center;padding:30px 20px;}
-.speak-no-support .ic{font-size:3rem;margin-bottom:12px;}
-.speak-no-support .ti{font-size:1rem;font-weight:700;color:#f87171;margin-bottom:8px;}
-.speak-no-support .ds{font-size:0.82rem;color:#888;line-height:1.6;}
-.speak-stats-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px;}
-.speak-stat{background:#1e1e38;border-radius:10px;padding:8px 14px;text-align:center;}
-.speak-stat-num{font-size:1.2rem;font-weight:800;color:#34d399;}
-.speak-stat-num.wrong{color:#f87171;}
-.speak-stat-lbl{font-size:0.6rem;color:#555577;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+/* MIC */
+.mic-btn{width:46px;height:46px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.25rem;transition:all 0.2s;flex-shrink:0;}
+.mic-btn:active{transform:scale(0.9);}
+.mic-btn.listening{animation:micPulse 1s ease infinite;background:rgba(239,68,68,0.25)!important;color:#ef4444!important;box-shadow:0 0 18px rgba(239,68,68,0.55);}
+@keyframes micPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+.speech-feedback{margin-top:10px;padding:10px 14px;border-radius:12px;font-size:0.85rem;font-weight:600;text-align:center;animation:fbIn 0.3s ease;display:none;}
+@keyframes fbIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.speech-feedback.ok{background:rgba(52,211,153,0.18);color:#34d399;border:1.5px solid rgba(52,211,153,0.35);animation:fbIn 0.3s ease, correctPulse 0.6s ease;}
+.speech-feedback.bad{background:rgba(239,68,68,0.15);color:#f87171;border:1.5px solid rgba(239,68,68,0.35);animation:fbIn 0.3s ease, wrongShake 0.4s ease;}
+.speech-feedback.listening{background:rgba(239,68,68,0.12);color:#fca5a5;border:1.5px solid rgba(239,68,68,0.25);}
+.speech-stats{display:flex;justify-content:center;gap:14px;margin-top:6px;font-size:0.72rem;color:#888;font-weight:600;}
+.speech-stats .ok{color:#34d399;}
+.speech-stats .bad{color:#f87171;}
+.speech-feedback .heard{display:block;font-size:0.72rem;font-weight:500;color:#aaa;margin-top:4px;font-style:italic;}
 </style>
 </head>
 <body>
@@ -10695,7 +10675,6 @@ body{background:radial-gradient(circle at 20% 0%,rgba(52,211,153,0.08),transpare
     <button class="tab-btn active" id="tbtn-cards" onclick="setView('cards')">🃏 Karty</button>
     <button class="tab-btn" id="tbtn-ebook" onclick="setView('ebook')">📚 Seznam</button>
     <button class="tab-btn" id="tbtn-test" onclick="setView('test')">🎯 Test</button>
-    <button class="tab-btn" id="tbtn-speak" onclick="setView('speak')">🎤 Mluvení</button>
   </div>
 </div>
 <div id="view-cards">
@@ -10712,7 +10691,6 @@ body{background:radial-gradient(circle at 20% 0%,rgba(52,211,153,0.08),transpare
 </div>
 <div id="view-ebook" style="display:none;overflow-y:auto;height:calc(100vh - 60px);"><div class="ebook-wrap" id="ebook-inner"></div></div>
 <div id="view-test" style="display:none;overflow-y:auto;height:calc(100vh - 60px);"><div class="test-wrap" id="test-inner"></div></div>
-<div id="view-speak" style="display:none;overflow-y:auto;height:calc(100vh - 60px);"><div class="speak-wrap" id="speak-inner"></div></div>
 
 <script>
 var VOCAB=[
@@ -11895,7 +11873,1411 @@ var VOCAB=[
 {en:"Filter",cs:"Filtr",cat:"Hudba & DJ"},
 {en:"Live show",cs:"Živé vystoupení",cat:"Hudba & DJ"},
 {en:"Club",cs:"Klub",cat:"Hudba & DJ"},
-{en:"Dance floor",cs:"Taneční parket",cat:"Hudba & DJ"}
+{en:"Dance floor",cs:"Taneční parket",cat:"Hudba & DJ"},
+// ── Základní +50 ──
+{en:"Welcome",cs:"Vítej / Vítejte",cat:"Základní"},
+{en:"Excuse me",cs:"Promiňte (oslovení)",cat:"Základní"},
+{en:"Pardon",cs:"Promiňte (omluva)",cat:"Základní"},
+{en:"Sir",cs:"Pane",cat:"Základní"},
+{en:"Madam",cs:"Paní",cat:"Základní"},
+{en:"Mister",cs:"Pan",cat:"Základní"},
+{en:"Miss",cs:"Slečna",cat:"Základní"},
+{en:"Friend",cs:"Přítel / Kamarád",cat:"Základní"},
+{en:"Stranger",cs:"Cizinec",cat:"Základní"},
+{en:"Everyone",cs:"Každý / Všichni",cat:"Základní"},
+{en:"Someone",cs:"Někdo",cat:"Základní"},
+{en:"Anyone",cs:"Kdokoliv",cat:"Základní"},
+{en:"Nobody",cs:"Nikdo",cat:"Základní"},
+{en:"Everything",cs:"Vše",cat:"Základní"},
+{en:"Anything",cs:"Cokoliv",cat:"Základní"},
+{en:"Nothing",cs:"Nic",cat:"Základní"},
+{en:"Always",cs:"Vždy",cat:"Základní"},
+{en:"Never",cs:"Nikdy",cat:"Základní"},
+{en:"Sometimes",cs:"Někdy",cat:"Základní"},
+{en:"Often",cs:"Často",cat:"Základní"},
+{en:"Rarely",cs:"Zřídka",cat:"Základní"},
+{en:"Usually",cs:"Obvykle",cat:"Základní"},
+{en:"Probably",cs:"Pravděpodobně",cat:"Základní"},
+{en:"Certainly",cs:"Určitě",cat:"Základní"},
+{en:"Maybe",cs:"Možná",cat:"Základní"},
+{en:"Perhaps",cs:"Snad",cat:"Základní"},
+{en:"Yes please",cs:"Ano, prosím",cat:"Základní"},
+{en:"No thanks",cs:"Ne, díky",cat:"Základní"},
+{en:"You are welcome",cs:"Není zač",cat:"Základní"},
+{en:"My pleasure",cs:"Bylo mi potěšením",cat:"Základní"},
+{en:"Cheers",cs:"Na zdraví / Měj se",cat:"Základní"},
+{en:"Take care",cs:"Opatruj se",cat:"Základní"},
+{en:"See you later",cs:"Uvidíme se později",cat:"Základní"},
+{en:"See you soon",cs:"Brzy na viděnou",cat:"Základní"},
+{en:"See you tomorrow",cs:"Zítra na viděnou",cat:"Základní"},
+{en:"Have a nice day",cs:"Hezký den",cat:"Základní"},
+{en:"Have a good night",cs:"Dobrou noc",cat:"Základní"},
+{en:"Sleep well",cs:"Dobře spi",cat:"Základní"},
+{en:"Bless you",cs:"Na zdraví (kýchnutí)",cat:"Základní"},
+{en:"Congratulations",cs:"Gratuluji",cat:"Základní"},
+{en:"Happy birthday",cs:"Vše nejlepší k narozeninám",cat:"Základní"},
+{en:"Merry Christmas",cs:"Veselé Vánoce",cat:"Základní"},
+{en:"Happy New Year",cs:"Šťastný Nový rok",cat:"Základní"},
+{en:"Welcome back",cs:"Vítej zpět",cat:"Základní"},
+{en:"Long time no see",cs:"Dlouho jsme se neviděli",cat:"Základní"},
+{en:"Nice to meet you",cs:"Těší mě",cat:"Základní"},
+{en:"Pleased to meet you",cs:"Rád tě poznávám",cat:"Základní"},
+{en:"How do you do?",cs:"Těší mě (formálně)",cat:"Základní"},
+{en:"What is your name?",cs:"Jak se jmenuješ?",cat:"Základní"},
+{en:"My name is...",cs:"Jmenuji se...",cat:"Základní"},
+// ── Čas +50 ──
+{en:"Second",cs:"Sekunda",cat:"Čas"},
+{en:"Quarter past",cs:"Čtvrt po",cat:"Čas"},
+{en:"Half past",cs:"Půl po",cat:"Čas"},
+{en:"Quarter to",cs:"Třičtvrtě na",cat:"Čas"},
+{en:"O'clock",cs:"Hodin (přesně)",cat:"Čas"},
+{en:"Noon",cs:"Poledne",cat:"Čas"},
+{en:"Midnight",cs:"Půlnoc",cat:"Čas"},
+{en:"Dawn",cs:"Úsvit",cat:"Čas"},
+{en:"Dusk",cs:"Soumrak",cat:"Čas"},
+{en:"Sunrise",cs:"Východ slunce",cat:"Čas"},
+{en:"Sunset",cs:"Západ slunce",cat:"Čas"},
+{en:"Daylight",cs:"Denní světlo",cat:"Čas"},
+{en:"Twilight",cs:"Šero",cat:"Čas"},
+{en:"Day before yesterday",cs:"Předevčírem",cat:"Čas"},
+{en:"Day after tomorrow",cs:"Pozítří",cat:"Čas"},
+{en:"This morning",cs:"Dnes ráno",cat:"Čas"},
+{en:"This afternoon",cs:"Dnes odpoledne",cat:"Čas"},
+{en:"This evening",cs:"Dnes večer",cat:"Čas"},
+{en:"Last night",cs:"Včera v noci",cat:"Čas"},
+{en:"Last week",cs:"Minulý týden",cat:"Čas"},
+{en:"Last month",cs:"Minulý měsíc",cat:"Čas"},
+{en:"Last year",cs:"Minulý rok",cat:"Čas"},
+{en:"Next week",cs:"Příští týden",cat:"Čas"},
+{en:"Next month",cs:"Příští měsíc",cat:"Čas"},
+{en:"Next year",cs:"Příští rok",cat:"Čas"},
+{en:"In a moment",cs:"Za chvilku",cat:"Čas"},
+{en:"In an hour",cs:"Za hodinu",cat:"Čas"},
+{en:"In a week",cs:"Za týden",cat:"Čas"},
+{en:"In a year",cs:"Za rok",cat:"Čas"},
+{en:"A long time ago",cs:"Dávno",cat:"Čas"},
+{en:"Recently",cs:"Nedávno",cat:"Čas"},
+{en:"Lately",cs:"V poslední době",cat:"Čas"},
+{en:"Right now",cs:"Právě teď",cat:"Čas"},
+{en:"At the moment",cs:"V tuto chvíli",cat:"Čas"},
+{en:"For now",cs:"Prozatím",cat:"Čas"},
+{en:"From now on",cs:"Od této chvíle",cat:"Čas"},
+{en:"Until now",cs:"Až dosud",cat:"Čas"},
+{en:"By the end of",cs:"Do konce",cat:"Čas"},
+{en:"All day",cs:"Celý den",cat:"Čas"},
+{en:"All night",cs:"Celou noc",cat:"Čas"},
+{en:"All week",cs:"Celý týden",cat:"Čas"},
+{en:"Whole year",cs:"Celý rok",cat:"Čas"},
+{en:"Decade",cs:"Desetiletí",cat:"Čas"},
+{en:"Century",cs:"Století",cat:"Čas"},
+{en:"Millennium",cs:"Tisíciletí",cat:"Čas"},
+{en:"Era",cs:"Éra",cat:"Čas"},
+{en:"Period",cs:"Období",cat:"Čas"},
+{en:"Schedule",cs:"Rozvrh / Plán",cat:"Čas"},
+{en:"Deadline",cs:"Termín",cat:"Čas"},
+{en:"On time",cs:"Včas",cat:"Čas"},
+// ── Fráze +120 ──
+{en:"Long time no see!",cs:"Dlouho jsme se neviděli!",cat:"Fráze"},
+{en:"How have you been?",cs:"Jak se ti dařilo?",cat:"Fráze"},
+{en:"What's up?",cs:"Co je nového?",cat:"Fráze"},
+{en:"What's going on?",cs:"Co se děje?",cat:"Fráze"},
+{en:"What's the matter?",cs:"O co jde?",cat:"Fráze"},
+{en:"What happened?",cs:"Co se stalo?",cat:"Fráze"},
+{en:"How was your day?",cs:"Jaký jsi měl den?",cat:"Fráze"},
+{en:"How was your weekend?",cs:"Jaký jsi měl víkend?",cat:"Fráze"},
+{en:"How was your trip?",cs:"Jaký jsi měl výlet?",cat:"Fráze"},
+{en:"Did you sleep well?",cs:"Vyspal ses dobře?",cat:"Fráze"},
+{en:"How is your family?",cs:"Jak se má rodina?",cat:"Fráze"},
+{en:"What do you do?",cs:"Čím se živíš?",cat:"Fráze"},
+{en:"Where are you from?",cs:"Odkud jsi?",cat:"Fráze"},
+{en:"Where do you live?",cs:"Kde bydlíš?",cat:"Fráze"},
+{en:"How old are you?",cs:"Kolik ti je?",cat:"Fráze"},
+{en:"What's your phone number?",cs:"Jaké máš telefonní číslo?",cat:"Fráze"},
+{en:"What's your email?",cs:"Jaký máš e-mail?",cat:"Fráze"},
+{en:"Can I have your number?",cs:"Můžu mít tvé číslo?",cat:"Fráze"},
+{en:"Speak of the devil",cs:"My o vlku, vlk za dveřmi",cat:"Fráze"},
+{en:"Take it easy",cs:"Uklidni se / V pohodě",cat:"Fráze"},
+{en:"Lighten up",cs:"Trochu se uvolni",cat:"Fráze"},
+{en:"Cheer up",cs:"Hlavu vzhůru",cat:"Fráze"},
+{en:"Hang in there",cs:"Vydrž to",cat:"Fráze"},
+{en:"Hold on",cs:"Vydrž / Počkej",cat:"Fráze"},
+{en:"Bear with me",cs:"Měj se mnou trpělivost",cat:"Fráze"},
+{en:"Take your time",cs:"Nespěchej",cat:"Fráze"},
+{en:"After you",cs:"Až po tobě",cat:"Fráze"},
+{en:"Be my guest",cs:"Klidně si posluž",cat:"Fráze"},
+{en:"Help yourself",cs:"Posluž si",cat:"Fráze"},
+{en:"Suit yourself",cs:"Jak chceš",cat:"Fráze"},
+{en:"It's up to you",cs:"Je to na tobě",cat:"Fráze"},
+{en:"Whatever you want",cs:"Cokoliv chceš",cat:"Fráze"},
+{en:"That's a pity",cs:"To je škoda",cat:"Fráze"},
+{en:"That's too bad",cs:"To je smůla",cat:"Fráze"},
+{en:"What a shame",cs:"Jaká škoda",cat:"Fráze"},
+{en:"That's awful",cs:"To je hrozné",cat:"Fráze"},
+{en:"That's amazing",cs:"To je úžasné",cat:"Fráze"},
+{en:"That's incredible",cs:"To je neuvěřitelné",cat:"Fráze"},
+{en:"That's fantastic",cs:"To je fantastické",cat:"Fráze"},
+{en:"That's terrible",cs:"To je strašné",cat:"Fráze"},
+{en:"I see",cs:"Aha / Chápu",cat:"Fráze"},
+{en:"I understand",cs:"Rozumím",cat:"Fráze"},
+{en:"I get it",cs:"Chápu to",cat:"Fráze"},
+{en:"Got it",cs:"Pochopil jsem",cat:"Fráze"},
+{en:"Sounds good",cs:"To zní dobře",cat:"Fráze"},
+{en:"Sounds great",cs:"Skvěle",cat:"Fráze"},
+{en:"Sounds like a plan",cs:"To zní jako plán",cat:"Fráze"},
+{en:"Why not",cs:"Proč ne",cat:"Fráze"},
+{en:"Sure thing",cs:"Jasně",cat:"Fráze"},
+{en:"You bet",cs:"Bezpochyby",cat:"Fráze"},
+{en:"Absolutely",cs:"Naprosto",cat:"Fráze"},
+{en:"Definitely",cs:"Rozhodně",cat:"Fráze"},
+{en:"Exactly",cs:"Přesně",cat:"Fráze"},
+{en:"Precisely",cs:"Přesně tak",cat:"Fráze"},
+{en:"Indeed",cs:"Vskutku",cat:"Fráze"},
+{en:"Really?",cs:"Opravdu?",cat:"Fráze"},
+{en:"Are you serious?",cs:"Myslíš to vážně?",cat:"Fráze"},
+{en:"You must be joking",cs:"Musíš si dělat srandu",cat:"Fráze"},
+{en:"I can't believe it",cs:"Nemůžu tomu uvěřit",cat:"Fráze"},
+{en:"Unbelievable",cs:"Neuvěřitelné",cat:"Fráze"},
+{en:"Tell me about it",cs:"Mně to povídej",cat:"Fráze"},
+{en:"Same here",cs:"To samé",cat:"Fráze"},
+{en:"Me too",cs:"Já taky",cat:"Fráze"},
+{en:"Me neither",cs:"Já taky ne",cat:"Fráze"},
+{en:"Same to you",cs:"Tobě taky",cat:"Fráze"},
+{en:"Likewise",cs:"Nápodobně",cat:"Fráze"},
+{en:"Cheers!",cs:"Na zdraví!",cat:"Fráze"},
+{en:"Bottoms up",cs:"Do dna",cat:"Fráze"},
+{en:"Knock on wood",cs:"Zaklepej to",cat:"Fráze"},
+{en:"Fingers crossed",cs:"Drž palce",cat:"Fráze"},
+{en:"Break a leg",cs:"Zlom vaz",cat:"Fráze"},
+{en:"Better safe than sorry",cs:"Raději opatrný než pak litovat",cat:"Fráze"},
+{en:"Easier said than done",cs:"Snadno se to řekne",cat:"Fráze"},
+{en:"Time will tell",cs:"Čas ukáže",cat:"Fráze"},
+{en:"We'll see",cs:"Uvidíme",cat:"Fráze"},
+{en:"It depends on you",cs:"Záleží na tobě",cat:"Fráze"},
+{en:"It's a long story",cs:"Je to na dlouho",cat:"Fráze"},
+{en:"To make a long story short",cs:"Krátce řečeno",cat:"Fráze"},
+{en:"To be honest",cs:"Upřímně řečeno",cat:"Fráze"},
+{en:"Honestly",cs:"Upřímně",cat:"Fráze"},
+{en:"Frankly",cs:"Otevřeně",cat:"Fráze"},
+{en:"Between you and me",cs:"Mezi námi",cat:"Fráze"},
+{en:"Just between us",cs:"Jen mezi námi",cat:"Fráze"},
+{en:"Don't tell anyone",cs:"Nikomu to neříkej",cat:"Fráze"},
+{en:"Keep it secret",cs:"Drž to v tajnosti",cat:"Fráze"},
+{en:"My lips are sealed",cs:"Budu mlčet",cat:"Fráze"},
+{en:"You can count on me",cs:"Můžeš se na mě spolehnout",cat:"Fráze"},
+{en:"I owe you one",cs:"Dlužím ti to",cat:"Fráze"},
+{en:"It's on me",cs:"Já platím",cat:"Fráze"},
+{en:"My treat",cs:"Já zvu",cat:"Fráze"},
+{en:"Let's split the bill",cs:"Rozdělíme účet",cat:"Fráze"},
+{en:"Keep the change",cs:"Drobné si nechte",cat:"Fráze"},
+{en:"Are you kidding me?",cs:"Děláš si ze mě srandu?",cat:"Fráze"},
+{en:"Stop kidding",cs:"Přestaň si dělat srandu",cat:"Fráze"},
+{en:"Be quiet",cs:"Buď zticha",cat:"Fráze"},
+{en:"Keep quiet",cs:"Mlč",cat:"Fráze"},
+{en:"Shut up",cs:"Zavři klapačku",cat:"Fráze"},
+{en:"Watch your language",cs:"Hlídej si pusu",cat:"Fráze"},
+{en:"Mind your own business",cs:"Starej se o sebe",cat:"Fráze"},
+{en:"None of your business",cs:"Není to tvoje věc",cat:"Fráze"},
+{en:"Drop it",cs:"Nech to být",cat:"Fráze"},
+{en:"Let it go",cs:"Pusť to z hlavy",cat:"Fráze"},
+{en:"Move on",cs:"Jdi dál",cat:"Fráze"},
+{en:"Get over it",cs:"Přenes se přes to",cat:"Fráze"},
+{en:"Get a life",cs:"Pořiď si život",cat:"Fráze"},
+{en:"Wake up",cs:"Probuď se",cat:"Fráze"},
+{en:"Get real",cs:"Buď realista",cat:"Fráze"},
+{en:"Use your head",cs:"Použij hlavu",cat:"Fráze"},
+{en:"Make up your mind",cs:"Rozhodni se",cat:"Fráze"},
+{en:"Make sense",cs:"Dávat smysl",cat:"Fráze"},
+{en:"What for?",cs:"Na co?",cat:"Fráze"},
+{en:"What if?",cs:"Co kdyby?",cat:"Fráze"},
+{en:"So what?",cs:"No a co?",cat:"Fráze"},
+{en:"How come?",cs:"Jak to?",cat:"Fráze"},
+{en:"Says who?",cs:"Kdo to říká?",cat:"Fráze"},
+{en:"Who cares?",cs:"Koho to zajímá?",cat:"Fráze"},
+{en:"Who knows?",cs:"Kdo ví?",cat:"Fráze"},
+{en:"What's the point?",cs:"Jaký to má smysl?",cat:"Fráze"},
+{en:"What's the catch?",cs:"V čem je háček?",cat:"Fráze"},
+{en:"Big deal",cs:"Velká věc",cat:"Fráze"},
+{en:"No big deal",cs:"Žádná hrůza",cat:"Fráze"},
+{en:"Piece of cake",cs:"Hračka",cat:"Fráze"},
+{en:"No sweat",cs:"Bez problémů",cat:"Fráze"},
+{en:"Done deal",cs:"Domluveno",cat:"Fráze"},
+{en:"You got it",cs:"Hotovo / Jasně",cat:"Fráze"},
+{en:"Way to go",cs:"To je ono",cat:"Fráze"},
+{en:"Good for you",cs:"Dobře pro tebe",cat:"Fráze"},
+{en:"Lucky you",cs:"Máš štěstí",cat:"Fráze"},
+{en:"Poor you",cs:"Chudáček",cat:"Fráze"},
+// ── Každodenní +60 ──
+{en:"Wake up early",cs:"Vstávat brzy",cat:"Každodenní"},
+{en:"Brush teeth",cs:"Čistit si zuby",cat:"Každodenní"},
+{en:"Comb hair",cs:"Česat se",cat:"Každodenní"},
+{en:"Get dressed",cs:"Obléknout se",cat:"Každodenní"},
+{en:"Make coffee",cs:"Uvařit kávu",cat:"Každodenní"},
+{en:"Have breakfast",cs:"Snídat",cat:"Každodenní"},
+{en:"Pack lunch",cs:"Připravit oběd",cat:"Každodenní"},
+{en:"Leave home",cs:"Odejít z domova",cat:"Každodenní"},
+{en:"Catch the bus",cs:"Stihnout autobus",cat:"Každodenní"},
+{en:"Drive to work",cs:"Jet do práce",cat:"Každodenní"},
+{en:"Park the car",cs:"Zaparkovat auto",cat:"Každodenní"},
+{en:"Start work",cs:"Začít pracovat",cat:"Každodenní"},
+{en:"Take a break",cs:"Dát si pauzu",cat:"Každodenní"},
+{en:"Have lunch",cs:"Obědvat",cat:"Každodenní"},
+{en:"Finish work",cs:"Skončit práci",cat:"Každodenní"},
+{en:"Go shopping",cs:"Jít nakupovat",cat:"Každodenní"},
+{en:"Buy groceries",cs:"Nakoupit potraviny",cat:"Každodenní"},
+{en:"Cook dinner",cs:"Vařit večeři",cat:"Každodenní"},
+{en:"Set the table",cs:"Prostřít stůl",cat:"Každodenní"},
+{en:"Wash dishes",cs:"Mýt nádobí",cat:"Každodenní"},
+{en:"Take out the trash",cs:"Vynést odpadky",cat:"Každodenní"},
+{en:"Clean the house",cs:"Uklidit dům",cat:"Každodenní"},
+{en:"Vacuum",cs:"Vysávat",cat:"Každodenní"},
+{en:"Mop the floor",cs:"Vytřít podlahu",cat:"Každodenní"},
+{en:"Do laundry",cs:"Prát prádlo",cat:"Každodenní"},
+{en:"Iron clothes",cs:"Žehlit oblečení",cat:"Každodenní"},
+{en:"Hang clothes",cs:"Pověsit oblečení",cat:"Každodenní"},
+{en:"Make the bed",cs:"Ustlat postel",cat:"Každodenní"},
+{en:"Tidy up",cs:"Uklidit",cat:"Každodenní"},
+{en:"Take a shower",cs:"Dát si sprchu",cat:"Každodenní"},
+{en:"Take a bath",cs:"Vykoupat se",cat:"Každodenní"},
+{en:"Wash hands",cs:"Umýt si ruce",cat:"Každodenní"},
+{en:"Wash face",cs:"Umýt si obličej",cat:"Každodenní"},
+{en:"Shave",cs:"Holit se",cat:"Každodenní"},
+{en:"Put on makeup",cs:"Nalíčit se",cat:"Každodenní"},
+{en:"Get ready",cs:"Připravit se",cat:"Každodenní"},
+{en:"Walk the dog",cs:"Vyvenčit psa",cat:"Každodenní"},
+{en:"Feed the pet",cs:"Nakrmit mazlíčka",cat:"Každodenní"},
+{en:"Water plants",cs:"Zalévat květiny",cat:"Každodenní"},
+{en:"Check email",cs:"Zkontrolovat e-mail",cat:"Každodenní"},
+{en:"Send a message",cs:"Poslat zprávu",cat:"Každodenní"},
+{en:"Make a phone call",cs:"Zavolat",cat:"Každodenní"},
+{en:"Watch the news",cs:"Sledovat zprávy",cat:"Každodenní"},
+{en:"Read a book",cs:"Číst knihu",cat:"Každodenní"},
+{en:"Listen to music",cs:"Poslouchat hudbu",cat:"Každodenní"},
+{en:"Watch a movie",cs:"Dívat se na film",cat:"Každodenní"},
+{en:"Play a game",cs:"Hrát hru",cat:"Každodenní"},
+{en:"Go for a walk",cs:"Jít na procházku",cat:"Každodenní"},
+{en:"Exercise",cs:"Cvičit",cat:"Každodenní"},
+{en:"Meditate",cs:"Meditovat",cat:"Každodenní"},
+{en:"Stretch",cs:"Protahovat se",cat:"Každodenní"},
+{en:"Take a nap",cs:"Šlofík",cat:"Každodenní"},
+{en:"Have dinner",cs:"Večeřet",cat:"Každodenní"},
+{en:"Brush before bed",cs:"Čistit zuby před spaním",cat:"Každodenní"},
+{en:"Set alarm",cs:"Nastavit budík",cat:"Každodenní"},
+{en:"Go to bed",cs:"Jít spát",cat:"Každodenní"},
+{en:"Fall asleep",cs:"Usnout",cat:"Každodenní"},
+{en:"Hit snooze",cs:"Odložit budík",cat:"Každodenní"},
+{en:"Pay bills",cs:"Platit účty",cat:"Každodenní"},
+{en:"Check the mail",cs:"Vybrat poštu",cat:"Každodenní"},
+{en:"Run errands",cs:"Vyřídit pochůzky",cat:"Každodenní"},
+// ── Přídavná jména +50 ──
+{en:"Tiny",cs:"Drobný",cat:"Přídavná jména"},
+{en:"Huge",cs:"Obrovský",cat:"Přídavná jména"},
+{en:"Massive",cs:"Masivní",cat:"Přídavná jména"},
+{en:"Enormous",cs:"Ohromný",cat:"Přídavná jména"},
+{en:"Gigantic",cs:"Gigantický",cat:"Přídavná jména"},
+{en:"Microscopic",cs:"Mikroskopický",cat:"Přídavná jména"},
+{en:"Lengthy",cs:"Zdlouhavý",cat:"Přídavná jména"},
+{en:"Brief",cs:"Krátký / Stručný",cat:"Přídavná jména"},
+{en:"Endless",cs:"Nekonečný",cat:"Přídavná jména"},
+{en:"Temporary",cs:"Dočasný",cat:"Přídavná jména"},
+{en:"Permanent",cs:"Trvalý",cat:"Přídavná jména"},
+{en:"Constant",cs:"Stálý",cat:"Přídavná jména"},
+{en:"Variable",cs:"Proměnlivý",cat:"Přídavná jména"},
+{en:"Stable",cs:"Stabilní",cat:"Přídavná jména"},
+{en:"Unstable",cs:"Nestabilní",cat:"Přídavná jména"},
+{en:"Reliable",cs:"Spolehlivý",cat:"Přídavná jména"},
+{en:"Unreliable",cs:"Nespolehlivý",cat:"Přídavná jména"},
+{en:"Trustworthy",cs:"Důvěryhodný",cat:"Přídavná jména"},
+{en:"Suspicious",cs:"Podezřelý",cat:"Přídavná jména"},
+{en:"Mysterious",cs:"Tajemný",cat:"Přídavná jména"},
+{en:"Obvious",cs:"Zjevný",cat:"Přídavná jména"},
+{en:"Unclear",cs:"Nejasný",cat:"Přídavná jména"},
+{en:"Vague",cs:"Mlhavý",cat:"Přídavná jména"},
+{en:"Specific",cs:"Konkrétní",cat:"Přídavná jména"},
+{en:"General",cs:"Obecný",cat:"Přídavná jména"},
+{en:"Detailed",cs:"Podrobný",cat:"Přídavná jména"},
+{en:"Simple",cs:"Jednoduchý",cat:"Přídavná jména"},
+{en:"Complex",cs:"Složitý",cat:"Přídavná jména"},
+{en:"Complicated",cs:"Komplikovaný",cat:"Přídavná jména"},
+{en:"Tricky",cs:"Záludný",cat:"Přídavná jména"},
+{en:"Sharp",cs:"Ostrý",cat:"Přídavná jména"},
+{en:"Dull",cs:"Tupý / Nudný",cat:"Přídavná jména"},
+{en:"Smooth",cs:"Hladký",cat:"Přídavná jména"},
+{en:"Rough",cs:"Drsný",cat:"Přídavná jména"},
+{en:"Slippery",cs:"Kluzký",cat:"Přídavná jména"},
+{en:"Sticky",cs:"Lepkavý",cat:"Přídavná jména"},
+{en:"Wet",cs:"Mokrý",cat:"Přídavná jména"},
+{en:"Damp",cs:"Vlhký",cat:"Přídavná jména"},
+{en:"Dry",cs:"Suchý",cat:"Přídavná jména"},
+{en:"Humid",cs:"Vlhký (vzduch)",cat:"Přídavná jména"},
+{en:"Bright",cs:"Jasný",cat:"Přídavná jména"},
+{en:"Dim",cs:"Tlumený",cat:"Přídavná jména"},
+{en:"Dark",cs:"Tmavý",cat:"Přídavná jména"},
+{en:"Shiny",cs:"Lesklý",cat:"Přídavná jména"},
+{en:"Matte",cs:"Matný",cat:"Přídavná jména"},
+{en:"Transparent",cs:"Průhledný",cat:"Přídavná jména"},
+{en:"Opaque",cs:"Neprůhledný",cat:"Přídavná jména"},
+{en:"Solid",cs:"Pevný",cat:"Přídavná jména"},
+{en:"Hollow",cs:"Dutý",cat:"Přídavná jména"},
+{en:"Flat",cs:"Plochý",cat:"Přídavná jména"},
+// ── Slovesa +100 ──
+{en:"Achieve",cs:"Dosáhnout",cat:"Slovesa"},
+{en:"Acquire",cs:"Získat",cat:"Slovesa"},
+{en:"Adapt",cs:"Přizpůsobit se",cat:"Slovesa"},
+{en:"Admire",cs:"Obdivovat",cat:"Slovesa"},
+{en:"Admit",cs:"Přiznat",cat:"Slovesa"},
+{en:"Announce",cs:"Oznámit",cat:"Slovesa"},
+{en:"Apologize",cs:"Omluvit se",cat:"Slovesa"},
+{en:"Approach",cs:"Přiblížit se",cat:"Slovesa"},
+{en:"Arrange",cs:"Uspořádat",cat:"Slovesa"},
+{en:"Assist",cs:"Pomoci",cat:"Slovesa"},
+{en:"Assume",cs:"Předpokládat",cat:"Slovesa"},
+{en:"Attempt",cs:"Pokusit se",cat:"Slovesa"},
+{en:"Avoid",cs:"Vyhnout se",cat:"Slovesa"},
+{en:"Behave",cs:"Chovat se",cat:"Slovesa"},
+{en:"Belong",cs:"Patřit",cat:"Slovesa"},
+{en:"Borrow",cs:"Půjčit si",cat:"Slovesa"},
+{en:"Calculate",cs:"Vypočítat",cat:"Slovesa"},
+{en:"Cancel",cs:"Zrušit",cat:"Slovesa"},
+{en:"Capture",cs:"Zachytit",cat:"Slovesa"},
+{en:"Celebrate",cs:"Slavit",cat:"Slovesa"},
+{en:"Challenge",cs:"Vyzvat",cat:"Slovesa"},
+{en:"Charge",cs:"Nabít / Účtovat",cat:"Slovesa"},
+{en:"Chase",cs:"Pronásledovat",cat:"Slovesa"},
+{en:"Claim",cs:"Tvrdit / Nárokovat",cat:"Slovesa"},
+{en:"Clarify",cs:"Objasnit",cat:"Slovesa"},
+{en:"Climb",cs:"Šplhat",cat:"Slovesa"},
+{en:"Combine",cs:"Kombinovat",cat:"Slovesa"},
+{en:"Communicate",cs:"Komunikovat",cat:"Slovesa"},
+{en:"Compare",cs:"Porovnat",cat:"Slovesa"},
+{en:"Complain",cs:"Stěžovat si",cat:"Slovesa"},
+{en:"Complete",cs:"Dokončit",cat:"Slovesa"},
+{en:"Concentrate",cs:"Soustředit se",cat:"Slovesa"},
+{en:"Confirm",cs:"Potvrdit",cat:"Slovesa"},
+{en:"Connect",cs:"Připojit / Spojit",cat:"Slovesa"},
+{en:"Consider",cs:"Zvážit",cat:"Slovesa"},
+{en:"Contain",cs:"Obsahovat",cat:"Slovesa"},
+{en:"Continue",cs:"Pokračovat",cat:"Slovesa"},
+{en:"Contribute",cs:"Přispět",cat:"Slovesa"},
+{en:"Convince",cs:"Přesvědčit",cat:"Slovesa"},
+{en:"Cooperate",cs:"Spolupracovat",cat:"Slovesa"},
+{en:"Copy",cs:"Kopírovat",cat:"Slovesa"},
+{en:"Correct",cs:"Opravit",cat:"Slovesa"},
+{en:"Crash",cs:"Havarovat",cat:"Slovesa"},
+{en:"Create",cs:"Vytvořit",cat:"Slovesa"},
+{en:"Damage",cs:"Poškodit",cat:"Slovesa"},
+{en:"Deal",cs:"Jednat / Zabývat se",cat:"Slovesa"},
+{en:"Decrease",cs:"Snížit",cat:"Slovesa"},
+{en:"Delete",cs:"Smazat",cat:"Slovesa"},
+{en:"Deliver",cs:"Doručit",cat:"Slovesa"},
+{en:"Demand",cs:"Požadovat",cat:"Slovesa"},
+{en:"Deny",cs:"Popřít",cat:"Slovesa"},
+{en:"Depend",cs:"Záviset",cat:"Slovesa"},
+{en:"Describe",cs:"Popsat",cat:"Slovesa"},
+{en:"Design",cs:"Navrhnout",cat:"Slovesa"},
+{en:"Destroy",cs:"Zničit",cat:"Slovesa"},
+{en:"Develop",cs:"Vyvinout",cat:"Slovesa"},
+{en:"Discuss",cs:"Diskutovat",cat:"Slovesa"},
+{en:"Divide",cs:"Rozdělit",cat:"Slovesa"},
+{en:"Earn",cs:"Vydělat",cat:"Slovesa"},
+{en:"Encourage",cs:"Povzbudit",cat:"Slovesa"},
+{en:"Enjoy",cs:"Užívat si",cat:"Slovesa"},
+{en:"Estimate",cs:"Odhadnout",cat:"Slovesa"},
+{en:"Exchange",cs:"Vyměnit",cat:"Slovesa"},
+{en:"Explore",cs:"Prozkoumat",cat:"Slovesa"},
+{en:"Express",cs:"Vyjádřit",cat:"Slovesa"},
+{en:"Fix",cs:"Opravit",cat:"Slovesa"},
+{en:"Focus",cs:"Soustředit se",cat:"Slovesa"},
+{en:"Forgive",cs:"Odpustit",cat:"Slovesa"},
+{en:"Gather",cs:"Shromáždit",cat:"Slovesa"},
+{en:"Generate",cs:"Generovat",cat:"Slovesa"},
+{en:"Greet",cs:"Pozdravit",cat:"Slovesa"},
+{en:"Guess",cs:"Hádat",cat:"Slovesa"},
+{en:"Hide",cs:"Skrýt",cat:"Slovesa"},
+{en:"Hire",cs:"Najmout",cat:"Slovesa"},
+{en:"Hurt",cs:"Bolet / Zranit",cat:"Slovesa"},
+{en:"Imagine",cs:"Představit si",cat:"Slovesa"},
+{en:"Improve",cs:"Zlepšit",cat:"Slovesa"},
+{en:"Increase",cs:"Zvýšit",cat:"Slovesa"},
+{en:"Influence",cs:"Ovlivnit",cat:"Slovesa"},
+{en:"Insist",cs:"Trvat na",cat:"Slovesa"},
+{en:"Inspire",cs:"Inspirovat",cat:"Slovesa"},
+{en:"Install",cs:"Nainstalovat",cat:"Slovesa"},
+{en:"Introduce",cs:"Představit",cat:"Slovesa"},
+{en:"Invent",cs:"Vynalézt",cat:"Slovesa"},
+{en:"Invest",cs:"Investovat",cat:"Slovesa"},
+{en:"Invite",cs:"Pozvat",cat:"Slovesa"},
+{en:"Involve",cs:"Zapojit",cat:"Slovesa"},
+{en:"Judge",cs:"Soudit",cat:"Slovesa"},
+{en:"Jump",cs:"Skočit",cat:"Slovesa"},
+{en:"Lead",cs:"Vést",cat:"Slovesa"},
+{en:"Lend",cs:"Půjčit",cat:"Slovesa"},
+{en:"Lock",cs:"Zamknout",cat:"Slovesa"},
+{en:"Manage",cs:"Zvládnout / Řídit",cat:"Slovesa"},
+{en:"Mention",cs:"Zmínit",cat:"Slovesa"},
+{en:"Notice",cs:"Všimnout si",cat:"Slovesa"},
+{en:"Offer",cs:"Nabídnout",cat:"Slovesa"},
+{en:"Operate",cs:"Operovat",cat:"Slovesa"},
+{en:"Order",cs:"Objednat",cat:"Slovesa"},
+{en:"Organize",cs:"Organizovat",cat:"Slovesa"},
+{en:"Owe",cs:"Dlužit",cat:"Slovesa"},
+{en:"Own",cs:"Vlastnit",cat:"Slovesa"},
+{en:"Pack",cs:"Balit",cat:"Slovesa"},
+// ── Jídlo & Pití +50 ──
+{en:"Pasta",cs:"Těstoviny",cat:"Jídlo & Pití"},
+{en:"Spaghetti",cs:"Špagety",cat:"Jídlo & Pití"},
+{en:"Pizza",cs:"Pizza",cat:"Jídlo & Pití"},
+{en:"Sandwich",cs:"Sendvič",cat:"Jídlo & Pití"},
+{en:"Burger",cs:"Burger",cat:"Jídlo & Pití"},
+{en:"Steak",cs:"Steak",cat:"Jídlo & Pití"},
+{en:"Salmon",cs:"Losos",cat:"Jídlo & Pití"},
+{en:"Tuna",cs:"Tuňák",cat:"Jídlo & Pití"},
+{en:"Shrimp",cs:"Krevety",cat:"Jídlo & Pití"},
+{en:"Bacon",cs:"Slanina",cat:"Jídlo & Pití"},
+{en:"Ham",cs:"Šunka",cat:"Jídlo & Pití"},
+{en:"Sausage",cs:"Klobása",cat:"Jídlo & Pití"},
+{en:"Yogurt",cs:"Jogurt",cat:"Jídlo & Pití"},
+{en:"Honey",cs:"Med",cat:"Jídlo & Pití"},
+{en:"Jam",cs:"Džem",cat:"Jídlo & Pití"},
+{en:"Peanut butter",cs:"Arašídové máslo",cat:"Jídlo & Pití"},
+{en:"Cereal",cs:"Cereálie",cat:"Jídlo & Pití"},
+{en:"Oatmeal",cs:"Ovesná kaše",cat:"Jídlo & Pití"},
+{en:"Pancake",cs:"Lívanec",cat:"Jídlo & Pití"},
+{en:"Waffle",cs:"Vafle",cat:"Jídlo & Pití"},
+{en:"Donut",cs:"Donut / Kobliha",cat:"Jídlo & Pití"},
+{en:"Cookie",cs:"Sušenka",cat:"Jídlo & Pití"},
+{en:"Cake",cs:"Dort",cat:"Jídlo & Pití"},
+{en:"Ice cream",cs:"Zmrzlina",cat:"Jídlo & Pití"},
+{en:"Chocolate",cs:"Čokoláda",cat:"Jídlo & Pití"},
+{en:"Candy",cs:"Bonbón",cat:"Jídlo & Pití"},
+{en:"Fries",cs:"Hranolky",cat:"Jídlo & Pití"},
+{en:"Chips",cs:"Brambůrky",cat:"Jídlo & Pití"},
+{en:"Soup",cs:"Polévka",cat:"Jídlo & Pití"},
+{en:"Salad",cs:"Salát",cat:"Jídlo & Pití"},
+{en:"Sauce",cs:"Omáčka",cat:"Jídlo & Pití"},
+{en:"Ketchup",cs:"Kečup",cat:"Jídlo & Pití"},
+{en:"Mustard",cs:"Hořčice",cat:"Jídlo & Pití"},
+{en:"Mayonnaise",cs:"Majonéza",cat:"Jídlo & Pití"},
+{en:"Vinegar",cs:"Ocet",cat:"Jídlo & Pití"},
+{en:"Olive oil",cs:"Olivový olej",cat:"Jídlo & Pití"},
+{en:"Beer",cs:"Pivo",cat:"Jídlo & Pití"},
+{en:"Wine",cs:"Víno",cat:"Jídlo & Pití"},
+{en:"Whiskey",cs:"Whiskey",cat:"Jídlo & Pití"},
+{en:"Vodka",cs:"Vodka",cat:"Jídlo & Pití"},
+{en:"Cocktail",cs:"Koktejl",cat:"Jídlo & Pití"},
+{en:"Lemonade",cs:"Limonáda",cat:"Jídlo & Pití"},
+{en:"Smoothie",cs:"Smoothie",cat:"Jídlo & Pití"},
+{en:"Espresso",cs:"Espresso",cat:"Jídlo & Pití"},
+{en:"Cappuccino",cs:"Cappuccino",cat:"Jídlo & Pití"},
+{en:"Latte",cs:"Latte",cat:"Jídlo & Pití"},
+{en:"Sparkling water",cs:"Perlivá voda",cat:"Jídlo & Pití"},
+{en:"Still water",cs:"Neperlivá voda",cat:"Jídlo & Pití"},
+{en:"Tap water",cs:"Voda z kohoutku",cat:"Jídlo & Pití"},
+{en:"Hot chocolate",cs:"Horká čokoláda",cat:"Jídlo & Pití"},
+// ── Doprava +30 ──
+{en:"Highway",cs:"Dálnice",cat:"Doprava"},
+{en:"Motorway",cs:"Dálnice (BrE)",cat:"Doprava"},
+{en:"Roundabout",cs:"Kruhový objezd",cat:"Doprava"},
+{en:"Crosswalk",cs:"Přechod pro chodce",cat:"Doprava"},
+{en:"Sidewalk",cs:"Chodník",cat:"Doprava"},
+{en:"Lane",cs:"Pruh / Pruhová cesta",cat:"Doprava"},
+{en:"Speed limit",cs:"Rychlostní limit",cat:"Doprava"},
+{en:"Speeding",cs:"Překročení rychlosti",cat:"Doprava"},
+{en:"Fine",cs:"Pokuta",cat:"Doprava"},
+{en:"Driver's license",cs:"Řidičský průkaz",cat:"Doprava"},
+{en:"Passport",cs:"Pas",cat:"Doprava"},
+{en:"Boarding pass",cs:"Palubní lístek",cat:"Doprava"},
+{en:"Seat belt",cs:"Bezpečnostní pás",cat:"Doprava"},
+{en:"Helmet",cs:"Helma",cat:"Doprava"},
+{en:"Steering wheel",cs:"Volant",cat:"Doprava"},
+{en:"Brake",cs:"Brzda",cat:"Doprava"},
+{en:"Engine",cs:"Motor",cat:"Doprava"},
+{en:"Tire",cs:"Pneumatika",cat:"Doprava"},
+{en:"Trunk",cs:"Kufr (auta)",cat:"Doprava"},
+{en:"Fuel",cs:"Palivo",cat:"Doprava"},
+{en:"Gasoline",cs:"Benzín",cat:"Doprava"},
+{en:"Diesel",cs:"Nafta",cat:"Doprava"},
+{en:"Gas station",cs:"Čerpací stanice",cat:"Doprava"},
+{en:"Toll",cs:"Mýtné",cat:"Doprava"},
+{en:"Traffic jam",cs:"Dopravní zácpa",cat:"Doprava"},
+{en:"Detour",cs:"Objížďka",cat:"Doprava"},
+{en:"Departure",cs:"Odjezd / Odlet",cat:"Doprava"},
+{en:"Arrival",cs:"Příjezd / Přílet",cat:"Doprava"},
+{en:"Delay",cs:"Zpoždění",cat:"Doprava"},
+{en:"Layover",cs:"Mezipřistání",cat:"Doprava"},
+// ── Práce +60 ──
+{en:"Career",cs:"Kariéra",cat:"Práce"},
+{en:"Profession",cs:"Profese",cat:"Práce"},
+{en:"Position",cs:"Pozice",cat:"Práce"},
+{en:"Promotion",cs:"Povýšení",cat:"Práce"},
+{en:"Resume",cs:"Životopis",cat:"Práce"},
+{en:"CV",cs:"CV",cat:"Práce"},
+{en:"Cover letter",cs:"Motivační dopis",cat:"Práce"},
+{en:"Interview",cs:"Pohovor",cat:"Práce"},
+{en:"Hiring",cs:"Nábor",cat:"Práce"},
+{en:"Firing",cs:"Propouštění",cat:"Práce"},
+{en:"Salary",cs:"Plat",cat:"Práce"},
+{en:"Wage",cs:"Mzda",cat:"Práce"},
+{en:"Bonus",cs:"Prémie",cat:"Práce"},
+{en:"Overtime",cs:"Přesčasy",cat:"Práce"},
+{en:"Benefits",cs:"Benefity",cat:"Práce"},
+{en:"Insurance",cs:"Pojištění",cat:"Práce"},
+{en:"Pension",cs:"Důchod",cat:"Práce"},
+{en:"Retirement",cs:"Odchod do důchodu",cat:"Práce"},
+{en:"Boss",cs:"Šéf",cat:"Práce"},
+{en:"Manager",cs:"Manažer",cat:"Práce"},
+{en:"Supervisor",cs:"Vedoucí",cat:"Práce"},
+{en:"Director",cs:"Ředitel",cat:"Práce"},
+{en:"CEO",cs:"Generální ředitel",cat:"Práce"},
+{en:"Employee",cs:"Zaměstnanec",cat:"Práce"},
+{en:"Employer",cs:"Zaměstnavatel",cat:"Práce"},
+{en:"Colleague",cs:"Kolega",cat:"Práce"},
+{en:"Coworker",cs:"Spolupracovník",cat:"Práce"},
+{en:"Team",cs:"Tým",cat:"Práce"},
+{en:"Department",cs:"Oddělení",cat:"Práce"},
+{en:"Office",cs:"Kancelář",cat:"Práce"},
+{en:"Cubicle",cs:"Kancelářský box",cat:"Práce"},
+{en:"Desk",cs:"Pracovní stůl",cat:"Práce"},
+{en:"Conference room",cs:"Zasedací místnost",cat:"Práce"},
+{en:"Whiteboard",cs:"Bílá tabule",cat:"Práce"},
+{en:"Printer",cs:"Tiskárna",cat:"Práce"},
+{en:"Photocopier",cs:"Kopírka",cat:"Práce"},
+{en:"Stapler",cs:"Sešívačka",cat:"Práce"},
+{en:"Folder",cs:"Složka",cat:"Práce"},
+{en:"Document",cs:"Dokument",cat:"Práce"},
+{en:"Report",cs:"Zpráva / Report",cat:"Práce"},
+{en:"Presentation",cs:"Prezentace",cat:"Práce"},
+{en:"Spreadsheet",cs:"Tabulka",cat:"Práce"},
+{en:"Email",cs:"E-mail",cat:"Práce"},
+{en:"Memo",cs:"Memo",cat:"Práce"},
+{en:"Agenda",cs:"Agenda",cat:"Práce"},
+{en:"Minutes",cs:"Zápis z porady",cat:"Práce"},
+{en:"Project",cs:"Projekt",cat:"Práce"},
+{en:"Task",cs:"Úkol",cat:"Práce"},
+{en:"Assignment",cs:"Zadání",cat:"Práce"},
+{en:"Workload",cs:"Pracovní zátěž",cat:"Práce"},
+{en:"Deadline",cs:"Termín",cat:"Práce"},
+{en:"Burnout",cs:"Vyhoření",cat:"Práce"},
+{en:"Stress",cs:"Stres",cat:"Práce"},
+{en:"Vacation",cs:"Dovolená",cat:"Práce"},
+{en:"Sick leave",cs:"Nemocenská",cat:"Práce"},
+{en:"Maternity leave",cs:"Mateřská dovolená",cat:"Práce"},
+{en:"Holiday",cs:"Svátek / Volno",cat:"Práce"},
+{en:"Working from home",cs:"Práce z domova",cat:"Práce"},
+{en:"Remote work",cs:"Práce na dálku",cat:"Práce"},
+{en:"Freelancer",cs:"Na volné noze",cat:"Práce"},
+{en:"Self-employed",cs:"OSVČ",cat:"Práce"},
+// ── Rodina +50 ──
+{en:"Husband",cs:"Manžel",cat:"Rodina"},
+{en:"Wife",cs:"Manželka",cat:"Rodina"},
+{en:"Boyfriend",cs:"Přítel",cat:"Rodina"},
+{en:"Girlfriend",cs:"Přítelkyně",cat:"Rodina"},
+{en:"Fiancé",cs:"Snoubenec",cat:"Rodina"},
+{en:"Fiancée",cs:"Snoubenka",cat:"Rodina"},
+{en:"Spouse",cs:"Manžel/ka",cat:"Rodina"},
+{en:"Partner",cs:"Partner",cat:"Rodina"},
+{en:"Ex-husband",cs:"Bývalý manžel",cat:"Rodina"},
+{en:"Ex-wife",cs:"Bývalá manželka",cat:"Rodina"},
+{en:"Stepmother",cs:"Macecha",cat:"Rodina"},
+{en:"Stepfather",cs:"Otčím",cat:"Rodina"},
+{en:"Stepson",cs:"Nevlastní syn",cat:"Rodina"},
+{en:"Stepdaughter",cs:"Nevlastní dcera",cat:"Rodina"},
+{en:"Half-brother",cs:"Nevlastní bratr",cat:"Rodina"},
+{en:"Half-sister",cs:"Nevlastní sestra",cat:"Rodina"},
+{en:"Twin",cs:"Dvojče",cat:"Rodina"},
+{en:"Triplet",cs:"Trojče",cat:"Rodina"},
+{en:"Adopted",cs:"Adoptovaný",cat:"Rodina"},
+{en:"Orphan",cs:"Sirotek",cat:"Rodina"},
+{en:"Widow",cs:"Vdova",cat:"Rodina"},
+{en:"Widower",cs:"Vdovec",cat:"Rodina"},
+{en:"Single",cs:"Svobodný",cat:"Rodina"},
+{en:"Married",cs:"Ženatý / Vdaná",cat:"Rodina"},
+{en:"Divorced",cs:"Rozvedený",cat:"Rodina"},
+{en:"Engaged",cs:"Zasnoubený",cat:"Rodina"},
+{en:"Wedding",cs:"Svatba",cat:"Rodina"},
+{en:"Marriage",cs:"Manželství",cat:"Rodina"},
+{en:"Divorce",cs:"Rozvod",cat:"Rodina"},
+{en:"Couple",cs:"Pár",cat:"Rodina"},
+{en:"Generation",cs:"Generace",cat:"Rodina"},
+{en:"Ancestor",cs:"Předek",cat:"Rodina"},
+{en:"Descendant",cs:"Potomek",cat:"Rodina"},
+{en:"Heritage",cs:"Dědictví",cat:"Rodina"},
+{en:"Family tree",cs:"Rodokmen",cat:"Rodina"},
+{en:"Toddler",cs:"Batole",cat:"Rodina"},
+{en:"Infant",cs:"Kojenec",cat:"Rodina"},
+{en:"Teenager",cs:"Teenager",cat:"Rodina"},
+{en:"Adult",cs:"Dospělý",cat:"Rodina"},
+{en:"Elderly",cs:"Starší",cat:"Rodina"},
+{en:"Senior",cs:"Senior",cat:"Rodina"},
+{en:"Godfather",cs:"Kmotr",cat:"Rodina"},
+{en:"Godmother",cs:"Kmotra",cat:"Rodina"},
+{en:"Godchild",cs:"Kmotřenec",cat:"Rodina"},
+{en:"Best friend",cs:"Nejlepší kamarád",cat:"Rodina"},
+{en:"Acquaintance",cs:"Známý",cat:"Rodina"},
+{en:"Roommate",cs:"Spolubydlící",cat:"Rodina"},
+{en:"Classmate",cs:"Spolužák",cat:"Rodina"},
+{en:"Neighbor",cs:"Soused",cat:"Rodina"},
+{en:"Pet",cs:"Domácí mazlíček",cat:"Rodina"},
+// ── Tělo & Zdraví +60 ──
+{en:"Forehead",cs:"Čelo",cat:"Tělo & Zdraví"},
+{en:"Eyebrow",cs:"Obočí",cat:"Tělo & Zdraví"},
+{en:"Eyelash",cs:"Řasy",cat:"Tělo & Zdraví"},
+{en:"Eyelid",cs:"Víčko",cat:"Tělo & Zdraví"},
+{en:"Cheek",cs:"Tvář",cat:"Tělo & Zdraví"},
+{en:"Chin",cs:"Brada",cat:"Tělo & Zdraví"},
+{en:"Jaw",cs:"Čelist",cat:"Tělo & Zdraví"},
+{en:"Tongue",cs:"Jazyk",cat:"Tělo & Zdraví"},
+{en:"Lip",cs:"Ret",cat:"Tělo & Zdraví"},
+{en:"Throat",cs:"Hrdlo / Krk",cat:"Tělo & Zdraví"},
+{en:"Neck",cs:"Krk",cat:"Tělo & Zdraví"},
+{en:"Shoulder",cs:"Rameno",cat:"Tělo & Zdraví"},
+{en:"Elbow",cs:"Loket",cat:"Tělo & Zdraví"},
+{en:"Wrist",cs:"Zápěstí",cat:"Tělo & Zdraví"},
+{en:"Palm",cs:"Dlaň",cat:"Tělo & Zdraví"},
+{en:"Fingernail",cs:"Nehet",cat:"Tělo & Zdraví"},
+{en:"Thumb",cs:"Palec",cat:"Tělo & Zdraví"},
+{en:"Index finger",cs:"Ukazovák",cat:"Tělo & Zdraví"},
+{en:"Hip",cs:"Bok",cat:"Tělo & Zdraví"},
+{en:"Thigh",cs:"Stehno",cat:"Tělo & Zdraví"},
+{en:"Knee",cs:"Koleno",cat:"Tělo & Zdraví"},
+{en:"Ankle",cs:"Kotník",cat:"Tělo & Zdraví"},
+{en:"Toe",cs:"Prst u nohy",cat:"Tělo & Zdraví"},
+{en:"Heel",cs:"Pata",cat:"Tělo & Zdraví"},
+{en:"Spine",cs:"Páteř",cat:"Tělo & Zdraví"},
+{en:"Lung",cs:"Plíce",cat:"Tělo & Zdraví"},
+{en:"Liver",cs:"Játra",cat:"Tělo & Zdraví"},
+{en:"Kidney",cs:"Ledvina",cat:"Tělo & Zdraví"},
+{en:"Stomach",cs:"Žaludek",cat:"Tělo & Zdraví"},
+{en:"Brain",cs:"Mozek",cat:"Tělo & Zdraví"},
+{en:"Skin",cs:"Kůže",cat:"Tělo & Zdraví"},
+{en:"Bone",cs:"Kost",cat:"Tělo & Zdraví"},
+{en:"Muscle",cs:"Sval",cat:"Tělo & Zdraví"},
+{en:"Blood",cs:"Krev",cat:"Tělo & Zdraví"},
+{en:"Vein",cs:"Žíla",cat:"Tělo & Zdraví"},
+{en:"Headache",cs:"Bolest hlavy",cat:"Tělo & Zdraví"},
+{en:"Stomachache",cs:"Bolení břicha",cat:"Tělo & Zdraví"},
+{en:"Sore throat",cs:"Bolavý krk",cat:"Tělo & Zdraví"},
+{en:"Cough",cs:"Kašel",cat:"Tělo & Zdraví"},
+{en:"Sneeze",cs:"Kýchnutí",cat:"Tělo & Zdraví"},
+{en:"Fever",cs:"Horečka",cat:"Tělo & Zdraví"},
+{en:"Flu",cs:"Chřipka",cat:"Tělo & Zdraví"},
+{en:"Cold",cs:"Nachlazení",cat:"Tělo & Zdraví"},
+{en:"Allergy",cs:"Alergie",cat:"Tělo & Zdraví"},
+{en:"Injury",cs:"Zranění",cat:"Tělo & Zdraví"},
+{en:"Wound",cs:"Rána",cat:"Tělo & Zdraví"},
+{en:"Bruise",cs:"Modřina",cat:"Tělo & Zdraví"},
+{en:"Bandage",cs:"Obvaz",cat:"Tělo & Zdraví"},
+{en:"Pill",cs:"Pilulka",cat:"Tělo & Zdraví"},
+{en:"Medicine",cs:"Lék",cat:"Tělo & Zdraví"},
+{en:"Prescription",cs:"Recept (lékařský)",cat:"Tělo & Zdraví"},
+{en:"Pharmacy",cs:"Lékárna",cat:"Tělo & Zdraví"},
+{en:"Hospital",cs:"Nemocnice",cat:"Tělo & Zdraví"},
+{en:"Doctor",cs:"Doktor",cat:"Tělo & Zdraví"},
+{en:"Nurse",cs:"Sestřička",cat:"Tělo & Zdraví"},
+{en:"Dentist",cs:"Zubař",cat:"Tělo & Zdraví"},
+{en:"Surgery",cs:"Operace",cat:"Tělo & Zdraví"},
+{en:"Vaccination",cs:"Očkování",cat:"Tělo & Zdraví"},
+{en:"Diet",cs:"Dieta",cat:"Tělo & Zdraví"},
+{en:"Workout",cs:"Trénink",cat:"Tělo & Zdraví"},
+// ── Oblečení +30 ──
+{en:"Underwear",cs:"Spodní prádlo",cat:"Oblečení"},
+{en:"Bra",cs:"Podprsenka",cat:"Oblečení"},
+{en:"Pajamas",cs:"Pyžamo",cat:"Oblečení"},
+{en:"Robe",cs:"Župan",cat:"Oblečení"},
+{en:"Hoodie",cs:"Mikina s kapucí",cat:"Oblečení"},
+{en:"Sweater",cs:"Svetr",cat:"Oblečení"},
+{en:"Cardigan",cs:"Kardigan",cat:"Oblečení"},
+{en:"Vest",cs:"Vesta",cat:"Oblečení"},
+{en:"Blazer",cs:"Sako",cat:"Oblečení"},
+{en:"Suit",cs:"Oblek",cat:"Oblečení"},
+{en:"Tie",cs:"Kravata",cat:"Oblečení"},
+{en:"Bow tie",cs:"Motýlek",cat:"Oblečení"},
+{en:"Belt",cs:"Pásek",cat:"Oblečení"},
+{en:"Scarf",cs:"Šála",cat:"Oblečení"},
+{en:"Mittens",cs:"Palčáky",cat:"Oblečení"},
+{en:"Boots",cs:"Boty (vyšší)",cat:"Oblečení"},
+{en:"Sandals",cs:"Sandály",cat:"Oblečení"},
+{en:"Slippers",cs:"Pantofle",cat:"Oblečení"},
+{en:"Sneakers",cs:"Tenisky",cat:"Oblečení"},
+{en:"Heels",cs:"Lodičky",cat:"Oblečení"},
+{en:"Shorts",cs:"Šortky",cat:"Oblečení"},
+{en:"Swimsuit",cs:"Plavky",cat:"Oblečení"},
+{en:"Bikini",cs:"Bikiny",cat:"Oblečení"},
+{en:"Raincoat",cs:"Pláštěnka",cat:"Oblečení"},
+{en:"Umbrella",cs:"Deštník",cat:"Oblečení"},
+{en:"Backpack",cs:"Batoh",cat:"Oblečení"},
+{en:"Wallet",cs:"Peněženka",cat:"Oblečení"},
+{en:"Sunglasses",cs:"Sluneční brýle",cat:"Oblečení"},
+{en:"Watch",cs:"Hodinky",cat:"Oblečení"},
+{en:"Necklace",cs:"Náhrdelník",cat:"Oblečení"},
+// ── Příroda & Počasí +50 ──
+{en:"Forest",cs:"Les",cat:"Příroda & Počasí"},
+{en:"Jungle",cs:"Džungle",cat:"Příroda & Počasí"},
+{en:"Desert",cs:"Poušť",cat:"Příroda & Počasí"},
+{en:"Beach",cs:"Pláž",cat:"Příroda & Počasí"},
+{en:"Coast",cs:"Pobřeží",cat:"Příroda & Počasí"},
+{en:"Cliff",cs:"Útes",cat:"Příroda & Počasí"},
+{en:"Cave",cs:"Jeskyně",cat:"Příroda & Počasí"},
+{en:"Valley",cs:"Údolí",cat:"Příroda & Počasí"},
+{en:"Hill",cs:"Kopec",cat:"Příroda & Počasí"},
+{en:"Mountain",cs:"Hora",cat:"Příroda & Počasí"},
+{en:"Volcano",cs:"Sopka",cat:"Příroda & Počasí"},
+{en:"Earthquake",cs:"Zemětřesení",cat:"Příroda & Počasí"},
+{en:"Hurricane",cs:"Hurikán",cat:"Příroda & Počasí"},
+{en:"Tornado",cs:"Tornádo",cat:"Příroda & Počasí"},
+{en:"Flood",cs:"Povodeň",cat:"Příroda & Počasí"},
+{en:"Drought",cs:"Sucho",cat:"Příroda & Počasí"},
+{en:"Sandstorm",cs:"Písečná bouře",cat:"Příroda & Počasí"},
+{en:"Snowstorm",cs:"Sněhová bouře",cat:"Příroda & Počasí"},
+{en:"Blizzard",cs:"Blizzard",cat:"Příroda & Počasí"},
+{en:"Hail",cs:"Krupobití",cat:"Příroda & Počasí"},
+{en:"Frost",cs:"Mráz",cat:"Příroda & Počasí"},
+{en:"Ice",cs:"Led",cat:"Příroda & Počasí"},
+{en:"Snowflake",cs:"Sněhová vločka",cat:"Příroda & Počasí"},
+{en:"Rainbow",cs:"Duha",cat:"Příroda & Počasí"},
+{en:"Mist",cs:"Mlha (lehká)",cat:"Příroda & Počasí"},
+{en:"Breeze",cs:"Vánek",cat:"Příroda & Počasí"},
+{en:"Gust",cs:"Poryv větru",cat:"Příroda & Počasí"},
+{en:"Sky",cs:"Obloha",cat:"Příroda & Počasí"},
+{en:"Star",cs:"Hvězda",cat:"Příroda & Počasí"},
+{en:"Moon",cs:"Měsíc",cat:"Příroda & Počasí"},
+{en:"Sun",cs:"Slunce",cat:"Příroda & Počasí"},
+{en:"Planet",cs:"Planeta",cat:"Příroda & Počasí"},
+{en:"Galaxy",cs:"Galaxie",cat:"Příroda & Počasí"},
+{en:"Universe",cs:"Vesmír",cat:"Příroda & Počasí"},
+{en:"Earth",cs:"Země (planeta)",cat:"Příroda & Počasí"},
+{en:"Soil",cs:"Půda",cat:"Příroda & Počasí"},
+{en:"Sand",cs:"Písek",cat:"Příroda & Počasí"},
+{en:"Rock",cs:"Kámen / Skála",cat:"Příroda & Počasí"},
+{en:"Pebble",cs:"Oblázek",cat:"Příroda & Počasí"},
+{en:"Mud",cs:"Bláto",cat:"Příroda & Počasí"},
+{en:"Lake",cs:"Jezero",cat:"Příroda & Počasí"},
+{en:"Pond",cs:"Rybník",cat:"Příroda & Počasí"},
+{en:"Stream",cs:"Potok",cat:"Příroda & Počasí"},
+{en:"Waterfall",cs:"Vodopád",cat:"Příroda & Počasí"},
+{en:"Wave",cs:"Vlna",cat:"Příroda & Počasí"},
+{en:"Tide",cs:"Příliv / Odliv",cat:"Příroda & Počasí"},
+{en:"Glacier",cs:"Ledovec",cat:"Příroda & Počasí"},
+{en:"Iceberg",cs:"Ledová kra",cat:"Příroda & Počasí"},
+{en:"Climate",cs:"Klima",cat:"Příroda & Počasí"},
+{en:"Pollution",cs:"Znečištění",cat:"Příroda & Počasí"},
+// ── Zvířata +60 ──
+{en:"Lion",cs:"Lev",cat:"Zvířata"},
+{en:"Tiger",cs:"Tygr",cat:"Zvířata"},
+{en:"Leopard",cs:"Leopard",cat:"Zvířata"},
+{en:"Cheetah",cs:"Gepard",cat:"Zvířata"},
+{en:"Jaguar",cs:"Jaguár",cat:"Zvířata"},
+{en:"Panther",cs:"Panter",cat:"Zvířata"},
+{en:"Wolf",cs:"Vlk",cat:"Zvířata"},
+{en:"Fox",cs:"Liška",cat:"Zvířata"},
+{en:"Bear",cs:"Medvěd",cat:"Zvířata"},
+{en:"Polar bear",cs:"Lední medvěd",cat:"Zvířata"},
+{en:"Panda",cs:"Panda",cat:"Zvířata"},
+{en:"Koala",cs:"Koala",cat:"Zvířata"},
+{en:"Kangaroo",cs:"Klokan",cat:"Zvířata"},
+{en:"Elephant",cs:"Slon",cat:"Zvířata"},
+{en:"Hippo",cs:"Hroch",cat:"Zvířata"},
+{en:"Rhino",cs:"Nosorožec",cat:"Zvířata"},
+{en:"Giraffe",cs:"Žirafa",cat:"Zvířata"},
+{en:"Zebra",cs:"Zebra",cat:"Zvířata"},
+{en:"Camel",cs:"Velbloud",cat:"Zvířata"},
+{en:"Llama",cs:"Lama",cat:"Zvířata"},
+{en:"Donkey",cs:"Osel",cat:"Zvířata"},
+{en:"Goat",cs:"Koza",cat:"Zvířata"},
+{en:"Sheep",cs:"Ovce",cat:"Zvířata"},
+{en:"Lamb",cs:"Jehně",cat:"Zvířata"},
+{en:"Pig",cs:"Prase",cat:"Zvířata"},
+{en:"Cow",cs:"Kráva",cat:"Zvířata"},
+{en:"Bull",cs:"Býk",cat:"Zvířata"},
+{en:"Horse",cs:"Kůň",cat:"Zvířata"},
+{en:"Pony",cs:"Poník",cat:"Zvířata"},
+{en:"Chicken",cs:"Slepice",cat:"Zvířata"},
+{en:"Rooster",cs:"Kohout",cat:"Zvířata"},
+{en:"Duck",cs:"Kachna",cat:"Zvířata"},
+{en:"Goose",cs:"Husa",cat:"Zvířata"},
+{en:"Turkey",cs:"Krocan",cat:"Zvířata"},
+{en:"Eagle",cs:"Orel",cat:"Zvířata"},
+{en:"Hawk",cs:"Jestřáb",cat:"Zvířata"},
+{en:"Owl",cs:"Sova",cat:"Zvířata"},
+{en:"Parrot",cs:"Papoušek",cat:"Zvířata"},
+{en:"Penguin",cs:"Tučňák",cat:"Zvířata"},
+{en:"Pigeon",cs:"Holub",cat:"Zvířata"},
+{en:"Sparrow",cs:"Vrabec",cat:"Zvířata"},
+{en:"Dolphin",cs:"Delfín",cat:"Zvířata"},
+{en:"Whale",cs:"Velryba",cat:"Zvířata"},
+{en:"Shark",cs:"Žralok",cat:"Zvířata"},
+{en:"Octopus",cs:"Chobotnice",cat:"Zvířata"},
+{en:"Crab",cs:"Krab",cat:"Zvířata"},
+{en:"Lobster",cs:"Humr",cat:"Zvířata"},
+{en:"Jellyfish",cs:"Medúza",cat:"Zvířata"},
+{en:"Turtle",cs:"Želva",cat:"Zvířata"},
+{en:"Crocodile",cs:"Krokodýl",cat:"Zvířata"},
+{en:"Snake",cs:"Had",cat:"Zvířata"},
+{en:"Lizard",cs:"Ještěr",cat:"Zvířata"},
+{en:"Frog",cs:"Žába",cat:"Zvířata"},
+{en:"Spider",cs:"Pavouk",cat:"Zvířata"},
+{en:"Bee",cs:"Včela",cat:"Zvířata"},
+{en:"Wasp",cs:"Vosa",cat:"Zvířata"},
+{en:"Ant",cs:"Mravenec",cat:"Zvířata"},
+{en:"Mosquito",cs:"Komár",cat:"Zvířata"},
+{en:"Fly",cs:"Moucha",cat:"Zvířata"},
+{en:"Butterfly",cs:"Motýl",cat:"Zvířata"},
+// ── Domov +50 ──
+{en:"Apartment",cs:"Byt",cat:"Domov"},
+{en:"Studio",cs:"Garsonka",cat:"Domov"},
+{en:"Mansion",cs:"Sídlo",cat:"Domov"},
+{en:"Cottage",cs:"Chalupa",cat:"Domov"},
+{en:"Cabin",cs:"Chata",cat:"Domov"},
+{en:"Living room",cs:"Obývák",cat:"Domov"},
+{en:"Dining room",cs:"Jídelna",cat:"Domov"},
+{en:"Master bedroom",cs:"Hlavní ložnice",cat:"Domov"},
+{en:"Guest room",cs:"Pokoj pro hosty",cat:"Domov"},
+{en:"Nursery",cs:"Dětský pokoj",cat:"Domov"},
+{en:"Playroom",cs:"Herna",cat:"Domov"},
+{en:"Hallway",cs:"Chodba",cat:"Domov"},
+{en:"Staircase",cs:"Schodiště",cat:"Domov"},
+{en:"Elevator",cs:"Výtah",cat:"Domov"},
+{en:"Balcony",cs:"Balkón",cat:"Domov"},
+{en:"Terrace",cs:"Terasa",cat:"Domov"},
+{en:"Patio",cs:"Patio",cat:"Domov"},
+{en:"Garage",cs:"Garáž",cat:"Domov"},
+{en:"Driveway",cs:"Příjezdová cesta",cat:"Domov"},
+{en:"Yard",cs:"Dvůr",cat:"Domov"},
+{en:"Backyard",cs:"Zadní zahrada",cat:"Domov"},
+{en:"Fence",cs:"Plot",cat:"Domov"},
+{en:"Gate",cs:"Brána",cat:"Domov"},
+{en:"Mailbox",cs:"Schránka",cat:"Domov"},
+{en:"Doorbell",cs:"Zvonek",cat:"Domov"},
+{en:"Lock",cs:"Zámek",cat:"Domov"},
+{en:"Key",cs:"Klíč",cat:"Domov"},
+{en:"Drawer",cs:"Zásuvka (skříně)",cat:"Domov"},
+{en:"Shelf",cs:"Police",cat:"Domov"},
+{en:"Closet",cs:"Šatník",cat:"Domov"},
+{en:"Wardrobe",cs:"Skříň",cat:"Domov"},
+{en:"Mattress",cs:"Matrace",cat:"Domov"},
+{en:"Pillow",cs:"Polštář",cat:"Domov"},
+{en:"Blanket",cs:"Deka",cat:"Domov"},
+{en:"Bedsheet",cs:"Prostěradlo",cat:"Domov"},
+{en:"Curtains",cs:"Závěsy",cat:"Domov"},
+{en:"Carpet",cs:"Koberec",cat:"Domov"},
+{en:"Rug",cs:"Předložka",cat:"Domov"},
+{en:"Vase",cs:"Váza",cat:"Domov"},
+{en:"Painting",cs:"Obraz",cat:"Domov"},
+{en:"Mirror",cs:"Zrcadlo",cat:"Domov"},
+{en:"Clock",cs:"Hodiny",cat:"Domov"},
+{en:"Dishwasher",cs:"Myčka",cat:"Domov"},
+{en:"Microwave",cs:"Mikrovlnka",cat:"Domov"},
+{en:"Toaster",cs:"Toustovač",cat:"Domov"},
+{en:"Kettle",cs:"Konvice",cat:"Domov"},
+{en:"Blender",cs:"Mixér",cat:"Domov"},
+{en:"Vacuum cleaner",cs:"Vysavač",cat:"Domov"},
+{en:"Heating",cs:"Topení",cat:"Domov"},
+{en:"Air conditioning",cs:"Klimatizace",cat:"Domov"},
+// ── Nakupování +50 ──
+{en:"Mall",cs:"Obchodní centrum",cat:"Nakupování"},
+{en:"Supermarket",cs:"Supermarket",cat:"Nakupování"},
+{en:"Boutique",cs:"Butik",cat:"Nakupování"},
+{en:"Bakery",cs:"Pekárna",cat:"Nakupování"},
+{en:"Butcher",cs:"Řeznictví",cat:"Nakupování"},
+{en:"Florist",cs:"Květinářství",cat:"Nakupování"},
+{en:"Bookstore",cs:"Knihkupectví",cat:"Nakupování"},
+{en:"Toy store",cs:"Hračkářství",cat:"Nakupování"},
+{en:"Electronics store",cs:"Prodejna elektroniky",cat:"Nakupování"},
+{en:"Hardware store",cs:"Železářství",cat:"Nakupování"},
+{en:"Cart",cs:"Vozík",cat:"Nakupování"},
+{en:"Basket",cs:"Košík",cat:"Nakupování"},
+{en:"Aisle",cs:"Ulička (v obchodě)",cat:"Nakupování"},
+{en:"Shelf",cs:"Regál",cat:"Nakupování"},
+{en:"Cashier",cs:"Pokladní",cat:"Nakupování"},
+{en:"Checkout",cs:"Pokladna",cat:"Nakupování"},
+{en:"Receipt",cs:"Účtenka",cat:"Nakupování"},
+{en:"Refund",cs:"Vrácení peněz",cat:"Nakupování"},
+{en:"Exchange",cs:"Výměna",cat:"Nakupování"},
+{en:"Sale",cs:"Výprodej",cat:"Nakupování"},
+{en:"Discount",cs:"Sleva",cat:"Nakupování"},
+{en:"Coupon",cs:"Slevový kupón",cat:"Nakupování"},
+{en:"Voucher",cs:"Poukaz",cat:"Nakupování"},
+{en:"Gift card",cs:"Dárková karta",cat:"Nakupování"},
+{en:"Loyalty card",cs:"Věrnostní karta",cat:"Nakupování"},
+{en:"Brand",cs:"Značka",cat:"Nakupování"},
+{en:"Quality",cs:"Kvalita",cat:"Nakupování"},
+{en:"Cheap",cs:"Levné",cat:"Nakupování"},
+{en:"Expensive",cs:"Drahé",cat:"Nakupování"},
+{en:"Affordable",cs:"Dostupné",cat:"Nakupování"},
+{en:"Bargain",cs:"Výhodný nákup",cat:"Nakupování"},
+{en:"Online shopping",cs:"Online nakupování",cat:"Nakupování"},
+{en:"Delivery",cs:"Doručení",cat:"Nakupování"},
+{en:"Free shipping",cs:"Doprava zdarma",cat:"Nakupování"},
+{en:"Out of stock",cs:"Vyprodáno",cat:"Nakupování"},
+{en:"In stock",cs:"Skladem",cat:"Nakupování"},
+{en:"Pre-order",cs:"Předobjednávka",cat:"Nakupování"},
+{en:"Customer",cs:"Zákazník",cat:"Nakupování"},
+{en:"Customer service",cs:"Zákaznický servis",cat:"Nakupování"},
+{en:"Complaint",cs:"Stížnost",cat:"Nakupování"},
+{en:"Warranty",cs:"Záruka",cat:"Nakupování"},
+{en:"Guarantee",cs:"Garance",cat:"Nakupování"},
+{en:"Cash",cs:"Hotovost",cat:"Nakupování"},
+{en:"Credit card",cs:"Kreditní karta",cat:"Nakupování"},
+{en:"Debit card",cs:"Debetní karta",cat:"Nakupování"},
+{en:"Bank transfer",cs:"Bankovní převod",cat:"Nakupování"},
+{en:"Tax",cs:"Daň",cat:"Nakupování"},
+{en:"Tip",cs:"Spropitné",cat:"Nakupování"},
+{en:"Window shopping",cs:"Procházet výlohy",cat:"Nakupování"},
+{en:"Bag",cs:"Taška",cat:"Nakupování"},
+// ── Cestování +50 ──
+{en:"Trip",cs:"Výlet",cat:"Cestování"},
+{en:"Journey",cs:"Cesta",cat:"Cestování"},
+{en:"Tour",cs:"Prohlídka",cat:"Cestování"},
+{en:"Adventure",cs:"Dobrodružství",cat:"Cestování"},
+{en:"Backpacking",cs:"Cestování s batohem",cat:"Cestování"},
+{en:"Camping",cs:"Kempování",cat:"Cestování"},
+{en:"Hiking",cs:"Turistika",cat:"Cestování"},
+{en:"Sightseeing",cs:"Prohlídka památek",cat:"Cestování"},
+{en:"Tourist",cs:"Turista",cat:"Cestování"},
+{en:"Tour guide",cs:"Průvodce",cat:"Cestování"},
+{en:"Travel agency",cs:"Cestovní kancelář",cat:"Cestování"},
+{en:"Booking",cs:"Rezervace",cat:"Cestování"},
+{en:"Reservation",cs:"Rezervace",cat:"Cestování"},
+{en:"Itinerary",cs:"Plán cesty",cat:"Cestování"},
+{en:"Destination",cs:"Cíl cesty",cat:"Cestování"},
+{en:"Visa",cs:"Vízum",cat:"Cestování"},
+{en:"Customs",cs:"Celnice",cat:"Cestování"},
+{en:"Border",cs:"Hranice",cat:"Cestování"},
+{en:"Foreign country",cs:"Cizí země",cat:"Cestování"},
+{en:"Currency",cs:"Měna",cat:"Cestování"},
+{en:"Exchange rate",cs:"Směnný kurz",cat:"Cestování"},
+{en:"Hostel",cs:"Hostel",cat:"Cestování"},
+{en:"Resort",cs:"Resort",cat:"Cestování"},
+{en:"Bed and breakfast",cs:"Penzion",cat:"Cestování"},
+{en:"Reception",cs:"Recepce",cat:"Cestování"},
+{en:"Check-in",cs:"Přihlášení",cat:"Cestování"},
+{en:"Check-out",cs:"Odhlášení",cat:"Cestování"},
+{en:"Room service",cs:"Pokojová služba",cat:"Cestování"},
+{en:"Pool",cs:"Bazén",cat:"Cestování"},
+{en:"Spa",cs:"Lázně",cat:"Cestování"},
+{en:"Sauna",cs:"Sauna",cat:"Cestování"},
+{en:"Beach resort",cs:"Plážový resort",cat:"Cestování"},
+{en:"Cruise",cs:"Plavba",cat:"Cestování"},
+{en:"Souvenir",cs:"Suvenýr",cat:"Cestování"},
+{en:"Postcard",cs:"Pohlednice",cat:"Cestování"},
+{en:"Map",cs:"Mapa",cat:"Cestování"},
+{en:"Compass",cs:"Kompas",cat:"Cestování"},
+{en:"GPS",cs:"GPS",cat:"Cestování"},
+{en:"Suitcase",cs:"Kufr",cat:"Cestování"},
+{en:"Luggage",cs:"Zavazadlo",cat:"Cestování"},
+{en:"Carry-on",cs:"Příruční zavazadlo",cat:"Cestování"},
+{en:"Tag",cs:"Visačka",cat:"Cestování"},
+{en:"Lost luggage",cs:"Ztracené zavazadlo",cat:"Cestování"},
+{en:"Jet lag",cs:"Jet lag",cat:"Cestování"},
+{en:"Round trip",cs:"Zpáteční cesta",cat:"Cestování"},
+{en:"One way",cs:"Jednosměrný",cat:"Cestování"},
+{en:"Direct flight",cs:"Přímý let",cat:"Cestování"},
+{en:"Connection",cs:"Přestup",cat:"Cestování"},
+{en:"Travel insurance",cs:"Cestovní pojištění",cat:"Cestování"},
+{en:"Photography",cs:"Fotografování",cat:"Cestování"},
+// ── Pocity +50 ──
+{en:"Joy",cs:"Radost",cat:"Pocity"},
+{en:"Bliss",cs:"Blaženost",cat:"Pocity"},
+{en:"Delight",cs:"Potěšení",cat:"Pocity"},
+{en:"Pleasure",cs:"Potěšení",cat:"Pocity"},
+{en:"Satisfaction",cs:"Spokojenost",cat:"Pocity"},
+{en:"Pride",cs:"Pýcha",cat:"Pocity"},
+{en:"Confidence",cs:"Sebevědomí",cat:"Pocity"},
+{en:"Hope",cs:"Naděje",cat:"Pocity"},
+{en:"Faith",cs:"Víra",cat:"Pocity"},
+{en:"Trust",cs:"Důvěra",cat:"Pocity"},
+{en:"Gratitude",cs:"Vděčnost",cat:"Pocity"},
+{en:"Appreciation",cs:"Uznání",cat:"Pocity"},
+{en:"Compassion",cs:"Soucit",cat:"Pocity"},
+{en:"Empathy",cs:"Empatie",cat:"Pocity"},
+{en:"Sympathy",cs:"Sympatie",cat:"Pocity"},
+{en:"Pity",cs:"Lítost",cat:"Pocity"},
+{en:"Grief",cs:"Zármutek",cat:"Pocity"},
+{en:"Sorrow",cs:"Smutek",cat:"Pocity"},
+{en:"Despair",cs:"Zoufalství",cat:"Pocity"},
+{en:"Disappointment",cs:"Zklamání",cat:"Pocity"},
+{en:"Regret",cs:"Lítost",cat:"Pocity"},
+{en:"Guilt",cs:"Vina",cat:"Pocity"},
+{en:"Shame",cs:"Stud",cat:"Pocity"},
+{en:"Embarrassment",cs:"Trapnost",cat:"Pocity"},
+{en:"Anxiety",cs:"Úzkost",cat:"Pocity"},
+{en:"Worry",cs:"Starost",cat:"Pocity"},
+{en:"Panic",cs:"Panika",cat:"Pocity"},
+{en:"Terror",cs:"Hrůza",cat:"Pocity"},
+{en:"Rage",cs:"Vztek",cat:"Pocity"},
+{en:"Fury",cs:"Zuřivost",cat:"Pocity"},
+{en:"Frustration",cs:"Frustrace",cat:"Pocity"},
+{en:"Annoyance",cs:"Otrávenost",cat:"Pocity"},
+{en:"Irritation",cs:"Podráždění",cat:"Pocity"},
+{en:"Hatred",cs:"Nenávist",cat:"Pocity"},
+{en:"Jealousy",cs:"Žárlivost",cat:"Pocity"},
+{en:"Envy",cs:"Závist",cat:"Pocity"},
+{en:"Boredom",cs:"Nuda",cat:"Pocity"},
+{en:"Loneliness",cs:"Osamělost",cat:"Pocity"},
+{en:"Homesickness",cs:"Stesk po domově",cat:"Pocity"},
+{en:"Nostalgia",cs:"Nostalgie",cat:"Pocity"},
+{en:"Curiosity",cs:"Zvědavost",cat:"Pocity"},
+{en:"Excitement",cs:"Vzrušení",cat:"Pocity"},
+{en:"Enthusiasm",cs:"Nadšení",cat:"Pocity"},
+{en:"Passion",cs:"Vášeň",cat:"Pocity"},
+{en:"Desire",cs:"Touha",cat:"Pocity"},
+{en:"Lust",cs:"Žádostivost",cat:"Pocity"},
+{en:"Affection",cs:"Náklonnost",cat:"Pocity"},
+{en:"Tenderness",cs:"Něha",cat:"Pocity"},
+{en:"Calm",cs:"Klid",cat:"Pocity"},
+{en:"Peace",cs:"Mír / Klid",cat:"Pocity"},
+// ── Technologie +60 ──
+{en:"Smartphone",cs:"Chytrý telefon",cat:"Technologie"},
+{en:"Tablet",cs:"Tablet",cat:"Technologie"},
+{en:"Laptop",cs:"Notebook",cat:"Technologie"},
+{en:"Desktop",cs:"Stolní počítač",cat:"Technologie"},
+{en:"Monitor",cs:"Monitor",cat:"Technologie"},
+{en:"Keyboard",cs:"Klávesnice",cat:"Technologie"},
+{en:"Mouse",cs:"Myš",cat:"Technologie"},
+{en:"Webcam",cs:"Webkamera",cat:"Technologie"},
+{en:"Microphone",cs:"Mikrofon",cat:"Technologie"},
+{en:"Speakers",cs:"Reproduktory",cat:"Technologie"},
+{en:"Hard drive",cs:"Pevný disk",cat:"Technologie"},
+{en:"SSD",cs:"SSD disk",cat:"Technologie"},
+{en:"USB drive",cs:"USB disk",cat:"Technologie"},
+{en:"Memory",cs:"Paměť",cat:"Technologie"},
+{en:"RAM",cs:"RAM",cat:"Technologie"},
+{en:"CPU",cs:"Procesor",cat:"Technologie"},
+{en:"GPU",cs:"Grafická karta",cat:"Technologie"},
+{en:"Battery",cs:"Baterie",cat:"Technologie"},
+{en:"Charger",cs:"Nabíječka",cat:"Technologie"},
+{en:"Plug",cs:"Zástrčka",cat:"Technologie"},
+{en:"Socket",cs:"Zásuvka",cat:"Technologie"},
+{en:"Wi-Fi",cs:"Wi-Fi",cat:"Technologie"},
+{en:"Bluetooth",cs:"Bluetooth",cat:"Technologie"},
+{en:"Router",cs:"Router",cat:"Technologie"},
+{en:"Modem",cs:"Modem",cat:"Technologie"},
+{en:"Server",cs:"Server",cat:"Technologie"},
+{en:"Cloud",cs:"Cloud",cat:"Technologie"},
+{en:"Backup",cs:"Záloha",cat:"Technologie"},
+{en:"Update",cs:"Aktualizace",cat:"Technologie"},
+{en:"Upgrade",cs:"Vylepšení",cat:"Technologie"},
+{en:"Download",cs:"Stáhnout",cat:"Technologie"},
+{en:"Upload",cs:"Nahrát",cat:"Technologie"},
+{en:"Stream",cs:"Streamovat",cat:"Technologie"},
+{en:"Browser",cs:"Prohlížeč",cat:"Technologie"},
+{en:"Search engine",cs:"Vyhledávač",cat:"Technologie"},
+{en:"Website",cs:"Webová stránka",cat:"Technologie"},
+{en:"App",cs:"Aplikace",cat:"Technologie"},
+{en:"Software",cs:"Software",cat:"Technologie"},
+{en:"Hardware",cs:"Hardware",cat:"Technologie"},
+{en:"Operating system",cs:"Operační systém",cat:"Technologie"},
+{en:"File",cs:"Soubor",cat:"Technologie"},
+{en:"Folder",cs:"Složka",cat:"Technologie"},
+{en:"Password",cs:"Heslo",cat:"Technologie"},
+{en:"Username",cs:"Uživatelské jméno",cat:"Technologie"},
+{en:"Account",cs:"Účet",cat:"Technologie"},
+{en:"Login",cs:"Přihlášení",cat:"Technologie"},
+{en:"Logout",cs:"Odhlášení",cat:"Technologie"},
+{en:"Notification",cs:"Oznámení",cat:"Technologie"},
+{en:"Message",cs:"Zpráva",cat:"Technologie"},
+{en:"Chat",cs:"Chat",cat:"Technologie"},
+{en:"Video call",cs:"Videohovor",cat:"Technologie"},
+{en:"Social media",cs:"Sociální sítě",cat:"Technologie"},
+{en:"Post",cs:"Příspěvek",cat:"Technologie"},
+{en:"Comment",cs:"Komentář",cat:"Technologie"},
+{en:"Like",cs:"To se mi líbí",cat:"Technologie"},
+{en:"Share",cs:"Sdílet",cat:"Technologie"},
+{en:"Hashtag",cs:"Hashtag",cat:"Technologie"},
+{en:"AI",cs:"Umělá inteligence",cat:"Technologie"},
+{en:"Algorithm",cs:"Algoritmus",cat:"Technologie"},
+{en:"Code",cs:"Kód",cat:"Technologie"},
+// ── Hudba & DJ +80 ──
+{en:"Cue",cs:"Cue / Náslech",cat:"Hudba & DJ"},
+{en:"Hot cue",cs:"Hot cue",cat:"Hudba & DJ"},
+{en:"Sync",cs:"Synchronizace",cat:"Hudba & DJ"},
+{en:"Beat match",cs:"Beat matching",cat:"Hudba & DJ"},
+{en:"Beat grid",cs:"Beat grid",cat:"Hudba & DJ"},
+{en:"Tempo",cs:"Tempo",cat:"Hudba & DJ"},
+{en:"Pitch",cs:"Výška tónu",cat:"Hudba & DJ"},
+{en:"Key",cs:"Tónina",cat:"Hudba & DJ"},
+{en:"Harmonic mixing",cs:"Harmonické míchání",cat:"Hudba & DJ"},
+{en:"Drop",cs:"Drop",cat:"Hudba & DJ"},
+{en:"Build-up",cs:"Stoupání",cat:"Hudba & DJ"},
+{en:"Breakdown",cs:"Zklidnění",cat:"Hudba & DJ"},
+{en:"Intro",cs:"Intro",cat:"Hudba & DJ"},
+{en:"Outro",cs:"Outro",cat:"Hudba & DJ"},
+{en:"Verse",cs:"Sloka",cat:"Hudba & DJ"},
+{en:"Chorus",cs:"Refrén",cat:"Hudba & DJ"},
+{en:"Bridge",cs:"Bridge",cat:"Hudba & DJ"},
+{en:"Hook",cs:"Hook / Chytlavá melodie",cat:"Hudba & DJ"},
+{en:"Riff",cs:"Riff",cat:"Hudba & DJ"},
+{en:"Solo",cs:"Sólo",cat:"Hudba & DJ"},
+{en:"Vocal",cs:"Vokál",cat:"Hudba & DJ"},
+{en:"Instrumental",cs:"Instrumentální",cat:"Hudba & DJ"},
+{en:"Acapella",cs:"Acapella",cat:"Hudba & DJ"},
+{en:"Mashup",cs:"Mashup",cat:"Hudba & DJ"},
+{en:"Bootleg",cs:"Bootleg",cat:"Hudba & DJ"},
+{en:"Edit",cs:"Edit",cat:"Hudba & DJ"},
+{en:"Extended mix",cs:"Prodloužený mix",cat:"Hudba & DJ"},
+{en:"Radio edit",cs:"Rádiová verze",cat:"Hudba & DJ"},
+{en:"Master",cs:"Master",cat:"Hudba & DJ"},
+{en:"Mastering",cs:"Mastering",cat:"Hudba & DJ"},
+{en:"Recording",cs:"Nahrávání",cat:"Hudba & DJ"},
+{en:"Studio",cs:"Studio",cat:"Hudba & DJ"},
+{en:"Producer",cs:"Producent",cat:"Hudba & DJ"},
+{en:"Engineer",cs:"Zvukař",cat:"Hudba & DJ"},
+{en:"Channel",cs:"Kanál",cat:"Hudba & DJ"},
+{en:"Fader",cs:"Fader",cat:"Hudba & DJ"},
+{en:"Gain",cs:"Gain / Zesílení",cat:"Hudba & DJ"},
+{en:"High",cs:"Výšky",cat:"Hudba & DJ"},
+{en:"Mid",cs:"Středy",cat:"Hudba & DJ"},
+{en:"Low",cs:"Basy",cat:"Hudba & DJ"},
+{en:"Frequency",cs:"Frekvence",cat:"Hudba & DJ"},
+{en:"Decibel",cs:"Decibel",cat:"Hudba & DJ"},
+{en:"Hertz",cs:"Hertz",cat:"Hudba & DJ"},
+{en:"Compressor",cs:"Kompresor",cat:"Hudba & DJ"},
+{en:"Limiter",cs:"Limiter",cat:"Hudba & DJ"},
+{en:"Delay",cs:"Delay",cat:"Hudba & DJ"},
+{en:"Phaser",cs:"Phaser",cat:"Hudba & DJ"},
+{en:"Flanger",cs:"Flanger",cat:"Hudba & DJ"},
+{en:"Chorus effect",cs:"Chorus efekt",cat:"Hudba & DJ"},
+{en:"Distortion",cs:"Distortion",cat:"Hudba & DJ"},
+{en:"Overdrive",cs:"Overdrive",cat:"Hudba & DJ"},
+{en:"Wah-wah",cs:"Wah-wah",cat:"Hudba & DJ"},
+{en:"Auto-tune",cs:"Auto-tune",cat:"Hudba & DJ"},
+{en:"MIDI",cs:"MIDI",cat:"Hudba & DJ"},
+{en:"DAW",cs:"DAW (Digital Audio Workstation)",cat:"Hudba & DJ"},
+{en:"VST",cs:"VST plugin",cat:"Hudba & DJ"},
+{en:"Plugin",cs:"Plugin",cat:"Hudba & DJ"},
+{en:"Track layering",cs:"Vrstvení stop",cat:"Hudba & DJ"},
+{en:"Drum machine",cs:"Bicí automat",cat:"Hudba & DJ"},
+{en:"Sequencer",cs:"Sequencer",cat:"Hudba & DJ"},
+{en:"Synth pad",cs:"Synth pad",cat:"Hudba & DJ"},
+{en:"Arpeggiator",cs:"Arpeggiator",cat:"Hudba & DJ"},
+{en:"LFO",cs:"LFO",cat:"Hudba & DJ"},
+{en:"Envelope",cs:"Obálka",cat:"Hudba & DJ"},
+{en:"Oscillator",cs:"Oscilátor",cat:"Hudba & DJ"},
+{en:"Patch",cs:"Patch",cat:"Hudba & DJ"},
+{en:"Preset",cs:"Preset",cat:"Hudba & DJ"},
+{en:"Crate",cs:"Crate / Bedna desek",cat:"Hudba & DJ"},
+{en:"Playlist",cs:"Playlist",cat:"Hudba & DJ"},
+{en:"Setlist",cs:"Setlist",cat:"Hudba & DJ"},
+{en:"Festival",cs:"Festival",cat:"Hudba & DJ"},
+{en:"Concert",cs:"Koncert",cat:"Hudba & DJ"},
+{en:"Gig",cs:"Vystoupení",cat:"Hudba & DJ"},
+{en:"Booking",cs:"Booking / Rezervace",cat:"Hudba & DJ"},
+{en:"Rider",cs:"Rider",cat:"Hudba & DJ"},
+{en:"Sound check",cs:"Zvuková zkouška",cat:"Hudba & DJ"},
+{en:"Encore",cs:"Přídavek",cat:"Hudba & DJ"},
+{en:"Backstage",cs:"Backstage / Zákulisí",cat:"Hudba & DJ"},
+{en:"Stage",cs:"Pódium",cat:"Hudba & DJ"},
+{en:"Lighting",cs:"Osvětlení",cat:"Hudba & DJ"},
+{en:"Strobe",cs:"Stroboskop",cat:"Hudba & DJ"},
+{en:"Smoke machine",cs:"Mlhostroj",cat:"Hudba & DJ"},
+// ── Idiomy 100 (NEW) ──
+{en:"It's raining cats and dogs",cs:"Lije jako z konve",cat:"Idiomy"},
+{en:"A piece of cake",cs:"Hračka / Brnkačka",cat:"Idiomy"},
+{en:"Break a leg",cs:"Hodně štěstí (umělec)",cat:"Idiomy"},
+{en:"Hit the nail on the head",cs:"Trefit hřebíček na hlavičku",cat:"Idiomy"},
+{en:"Spill the beans",cs:"Prozradit tajemství",cat:"Idiomy"},
+{en:"Let the cat out of the bag",cs:"Pustit kočku z pytle",cat:"Idiomy"},
+{en:"Once in a blue moon",cs:"Jednou za uherský rok",cat:"Idiomy"},
+{en:"Bite the bullet",cs:"Skousnout to",cat:"Idiomy"},
+{en:"Cost an arm and a leg",cs:"Stát majlant",cat:"Idiomy"},
+{en:"Cut to the chase",cs:"Jít rovnou k věci",cat:"Idiomy"},
+{en:"The ball is in your court",cs:"Míček je na tvé straně",cat:"Idiomy"},
+{en:"Burn the midnight oil",cs:"Pracovat dlouho do noci",cat:"Idiomy"},
+{en:"Call it a day",cs:"Skončit pro dnešek",cat:"Idiomy"},
+{en:"Get out of hand",cs:"Vymknout se kontrole",cat:"Idiomy"},
+{en:"Hit the books",cs:"Pustit se do studia",cat:"Idiomy"},
+{en:"Hit the sack",cs:"Jít na kutě",cat:"Idiomy"},
+{en:"Pull someone's leg",cs:"Tahat někoho za nos",cat:"Idiomy"},
+{en:"Twist someone's arm",cs:"Přemluvit někoho",cat:"Idiomy"},
+{en:"Under the weather",cs:"Pod psa (cítit se špatně)",cat:"Idiomy"},
+{en:"On thin ice",cs:"Na tenkém ledě",cat:"Idiomy"},
+{en:"Speak of the devil",cs:"My o vlku, vlk za dveřmi",cat:"Idiomy"},
+{en:"The best of both worlds",cs:"To nejlepší z obou světů",cat:"Idiomy"},
+{en:"Time flies",cs:"Čas letí",cat:"Idiomy"},
+{en:"Wrap your head around it",cs:"Pochopit to",cat:"Idiomy"},
+{en:"You can say that again",cs:"To máš pravdu",cat:"Idiomy"},
+{en:"Your guess is as good as mine",cs:"Tvůj odhad je stejně dobrý jako můj",cat:"Idiomy"},
+{en:"A blessing in disguise",cs:"Štěstí v neštěstí",cat:"Idiomy"},
+{en:"A dime a dozen",cs:"Jako máku",cat:"Idiomy"},
+{en:"Beat around the bush",cs:"Chodit kolem horké kaše",cat:"Idiomy"},
+{en:"Better late than never",cs:"Lepší pozdě než nikdy",cat:"Idiomy"},
+{en:"By the skin of your teeth",cs:"O fous",cat:"Idiomy"},
+{en:"Easy does it",cs:"Pomalu / Opatrně",cat:"Idiomy"},
+{en:"Get your act together",cs:"Dej se dohromady",cat:"Idiomy"},
+{en:"Give it a shot",cs:"Zkus to",cat:"Idiomy"},
+{en:"Give someone the cold shoulder",cs:"Ignorovat někoho",cat:"Idiomy"},
+{en:"Go back to the drawing board",cs:"Začít od začátku",cat:"Idiomy"},
+{en:"Hang in there",cs:"Vydrž",cat:"Idiomy"},
+{en:"Have second thoughts",cs:"Mít pochybnosti",cat:"Idiomy"},
+{en:"In the heat of the moment",cs:"V emocích",cat:"Idiomy"},
+{en:"It takes two to tango",cs:"Na to jsou potřeba dva",cat:"Idiomy"},
+{en:"Jump on the bandwagon",cs:"Přidat se k davu",cat:"Idiomy"},
+{en:"Keep your chin up",cs:"Hlavu vzhůru",cat:"Idiomy"},
+{en:"Kill two birds with one stone",cs:"Zabít dvě mouchy jednou ranou",cat:"Idiomy"},
+{en:"Last but not least",cs:"V neposlední řadě",cat:"Idiomy"},
+{en:"Miss the boat",cs:"Zmeškat příležitost",cat:"Idiomy"},
+{en:"Off the hook",cs:"Z bryndy venku",cat:"Idiomy"},
+{en:"On the ball",cs:"Být ve střehu",cat:"Idiomy"},
+{en:"On cloud nine",cs:"V sedmém nebi",cat:"Idiomy"},
+{en:"Out of the blue",cs:"Z čista jasna",cat:"Idiomy"},
+{en:"Pulling someone's leg",cs:"Dělat si srandu",cat:"Idiomy"},
+{en:"See eye to eye",cs:"Mít stejný názor",cat:"Idiomy"},
+{en:"Sit on the fence",cs:"Být nerozhodnutý",cat:"Idiomy"},
+{en:"Sleep on it",cs:"Vyspat se na to",cat:"Idiomy"},
+{en:"Take it with a grain of salt",cs:"Brát s rezervou",cat:"Idiomy"},
+{en:"The last straw",cs:"Poslední kapka",cat:"Idiomy"},
+{en:"Throw in the towel",cs:"Hodit ručník do ringu",cat:"Idiomy"},
+{en:"To be on the same page",cs:"Být na stejné vlně",cat:"Idiomy"},
+{en:"Walk on eggshells",cs:"Našlapovat opatrně",cat:"Idiomy"},
+{en:"When pigs fly",cs:"Až naprší a uschne",cat:"Idiomy"},
+{en:"You can't judge a book by its cover",cs:"Nesuď knihu podle obalu",cat:"Idiomy"},
+{en:"A penny for your thoughts",cs:"Co máš za lubem?",cat:"Idiomy"},
+{en:"Actions speak louder than words",cs:"Skutky mluví víc než slova",cat:"Idiomy"},
+{en:"Add insult to injury",cs:"Přilévat olej do ohně",cat:"Idiomy"},
+{en:"At the drop of a hat",cs:"Bez váhání",cat:"Idiomy"},
+{en:"Back to square one",cs:"Zpátky na začátek",cat:"Idiomy"},
+{en:"Barking up the wrong tree",cs:"Být na špatné stopě",cat:"Idiomy"},
+{en:"Bend over backwards",cs:"Být ochoten udělat cokoliv",cat:"Idiomy"},
+{en:"Birds of a feather flock together",cs:"Vrána k vráně sedá",cat:"Idiomy"},
+{en:"Blessing in disguise",cs:"Skryté požehnání",cat:"Idiomy"},
+{en:"Burning bridges",cs:"Pálit za sebou mosty",cat:"Idiomy"},
+{en:"Caught red-handed",cs:"Chycen při činu",cat:"Idiomy"},
+{en:"Crack the whip",cs:"Přitvrdit",cat:"Idiomy"},
+{en:"Cry over spilled milk",cs:"Naříkat nad ztrátou",cat:"Idiomy"},
+{en:"Don't count your chickens",cs:"Nechval dne před večerem",cat:"Idiomy"},
+{en:"Down to earth",cs:"Praktický / Nohama na zemi",cat:"Idiomy"},
+{en:"Draw the line",cs:"Stanovit hranici",cat:"Idiomy"},
+{en:"Every cloud has a silver lining",cs:"Všechno zlé je k něčemu dobré",cat:"Idiomy"},
+{en:"Face the music",cs:"Postavit se realitě",cat:"Idiomy"},
+{en:"Fish out of water",cs:"Jako ryba na suchu",cat:"Idiomy"},
+{en:"Get cold feet",cs:"Dostat strach",cat:"Idiomy"},
+{en:"Go down in flames",cs:"Skončit fiaskem",cat:"Idiomy"},
+{en:"Hit rock bottom",cs:"Klesnout na dno",cat:"Idiomy"},
+{en:"In the same boat",cs:"Být ve stejné situaci",cat:"Idiomy"},
+{en:"It's not rocket science",cs:"Není to věda",cat:"Idiomy"},
+{en:"Jump the gun",cs:"Předbíhat události",cat:"Idiomy"},
+{en:"Keep your fingers crossed",cs:"Drž palce",cat:"Idiomy"},
+{en:"Kick the bucket",cs:"Natáhnout brka",cat:"Idiomy"},
+{en:"Look on the bright side",cs:"Hledat pozitiva",cat:"Idiomy"},
+{en:"Lose your touch",cs:"Ztratit cit",cat:"Idiomy"},
+{en:"Make a mountain out of a molehill",cs:"Dělat z komára velblouda",cat:"Idiomy"},
+{en:"Mind over matter",cs:"Vůle nad hmotou",cat:"Idiomy"},
+{en:"Nip it in the bud",cs:"Zarazit v zárodku",cat:"Idiomy"},
+{en:"Off the top of my head",cs:"Z hlavy",cat:"Idiomy"},
+{en:"On the same wavelength",cs:"Na stejné vlnové délce",cat:"Idiomy"},
+{en:"Out of the woods",cs:"Z nejhoršího venku",cat:"Idiomy"},
+{en:"Penny pincher",cs:"Skrblík",cat:"Idiomy"},
+{en:"Play it by ear",cs:"Improvizovat",cat:"Idiomy"},
+{en:"Pull yourself together",cs:"Dej se dohromady",cat:"Idiomy"},
+{en:"Read between the lines",cs:"Číst mezi řádky",cat:"Idiomy"},
+{en:"Rule of thumb",cs:"Praktické pravidlo",cat:"Idiomy"},
+{en:"Saved by the bell",cs:"Zachráněn na poslední chvíli",cat:"Idiomy"},
+{en:"Tip of the iceberg",cs:"Špička ledovce",cat:"Idiomy"},
+{en:"Two peas in a pod",cs:"Jako vejce vejci",cat:"Idiomy"},
+// ── Phrasal verbs 100 (NEW) ──
+{en:"Get up",cs:"Vstát",cat:"Phrasal verbs"},
+{en:"Get along",cs:"Vycházet (s někým)",cat:"Phrasal verbs"},
+{en:"Get over",cs:"Překonat",cat:"Phrasal verbs"},
+{en:"Get back",cs:"Vrátit se",cat:"Phrasal verbs"},
+{en:"Get away",cs:"Utéct / Uniknout",cat:"Phrasal verbs"},
+{en:"Get on",cs:"Nastoupit (do)",cat:"Phrasal verbs"},
+{en:"Get off",cs:"Vystoupit",cat:"Phrasal verbs"},
+{en:"Get in",cs:"Dostat se dovnitř",cat:"Phrasal verbs"},
+{en:"Get out",cs:"Dostat se ven",cat:"Phrasal verbs"},
+{en:"Get through",cs:"Projít / Dovolat se",cat:"Phrasal verbs"},
+{en:"Get rid of",cs:"Zbavit se",cat:"Phrasal verbs"},
+{en:"Get used to",cs:"Zvyknout si",cat:"Phrasal verbs"},
+{en:"Look up",cs:"Vyhledat",cat:"Phrasal verbs"},
+{en:"Look for",cs:"Hledat",cat:"Phrasal verbs"},
+{en:"Look after",cs:"Starat se o",cat:"Phrasal verbs"},
+{en:"Look forward to",cs:"Těšit se na",cat:"Phrasal verbs"},
+{en:"Look out",cs:"Dávat pozor",cat:"Phrasal verbs"},
+{en:"Look into",cs:"Prozkoumat",cat:"Phrasal verbs"},
+{en:"Look down on",cs:"Pohrdat",cat:"Phrasal verbs"},
+{en:"Look up to",cs:"Vážit si",cat:"Phrasal verbs"},
+{en:"Take off",cs:"Vzlétnout / Sundat",cat:"Phrasal verbs"},
+{en:"Take on",cs:"Převzít",cat:"Phrasal verbs"},
+{en:"Take out",cs:"Vyndat / Pozvat ven",cat:"Phrasal verbs"},
+{en:"Take over",cs:"Převzít vedení",cat:"Phrasal verbs"},
+{en:"Take up",cs:"Začít (koníček)",cat:"Phrasal verbs"},
+{en:"Take after",cs:"Být po (rodiči)",cat:"Phrasal verbs"},
+{en:"Take back",cs:"Vzít zpět",cat:"Phrasal verbs"},
+{en:"Take down",cs:"Sundat / Zapsat",cat:"Phrasal verbs"},
+{en:"Take in",cs:"Přijmout / Pochopit",cat:"Phrasal verbs"},
+{en:"Take apart",cs:"Rozebrat",cat:"Phrasal verbs"},
+{en:"Put on",cs:"Obléknout / Pustit (hudbu)",cat:"Phrasal verbs"},
+{en:"Put off",cs:"Odložit",cat:"Phrasal verbs"},
+{en:"Put up",cs:"Postavit / Vyvěsit",cat:"Phrasal verbs"},
+{en:"Put down",cs:"Položit",cat:"Phrasal verbs"},
+{en:"Put away",cs:"Uklidit",cat:"Phrasal verbs"},
+{en:"Put out",cs:"Uhasit",cat:"Phrasal verbs"},
+{en:"Put up with",cs:"Snášet",cat:"Phrasal verbs"},
+{en:"Put together",cs:"Sestavit",cat:"Phrasal verbs"},
+{en:"Give up",cs:"Vzdát se",cat:"Phrasal verbs"},
+{en:"Give in",cs:"Ustoupit",cat:"Phrasal verbs"},
+{en:"Give back",cs:"Vrátit",cat:"Phrasal verbs"},
+{en:"Give away",cs:"Rozdat / Prozradit",cat:"Phrasal verbs"},
+{en:"Give out",cs:"Rozdat / Selhat",cat:"Phrasal verbs"},
+{en:"Come up",cs:"Vzniknout / Objevit se",cat:"Phrasal verbs"},
+{en:"Come up with",cs:"Vymyslet",cat:"Phrasal verbs"},
+{en:"Come across",cs:"Narazit na",cat:"Phrasal verbs"},
+{en:"Come back",cs:"Vrátit se",cat:"Phrasal verbs"},
+{en:"Come in",cs:"Vejít",cat:"Phrasal verbs"},
+{en:"Come out",cs:"Vyjít / Stát se zjevným",cat:"Phrasal verbs"},
+{en:"Come over",cs:"Přijít na návštěvu",cat:"Phrasal verbs"},
+{en:"Come down with",cs:"Onemocnět",cat:"Phrasal verbs"},
+{en:"Go on",cs:"Pokračovat",cat:"Phrasal verbs"},
+{en:"Go off",cs:"Spustit (alarm) / Zkazit se",cat:"Phrasal verbs"},
+{en:"Go out",cs:"Jít ven",cat:"Phrasal verbs"},
+{en:"Go through",cs:"Projít čím",cat:"Phrasal verbs"},
+{en:"Go over",cs:"Projít / Zopakovat",cat:"Phrasal verbs"},
+{en:"Go ahead",cs:"Pokračujte",cat:"Phrasal verbs"},
+{en:"Go after",cs:"Pronásledovat",cat:"Phrasal verbs"},
+{en:"Run out",cs:"Dojít (zásoba)",cat:"Phrasal verbs"},
+{en:"Run into",cs:"Narazit na",cat:"Phrasal verbs"},
+{en:"Run away",cs:"Utéct",cat:"Phrasal verbs"},
+{en:"Run over",cs:"Přejet",cat:"Phrasal verbs"},
+{en:"Turn on",cs:"Zapnout",cat:"Phrasal verbs"},
+{en:"Turn off",cs:"Vypnout",cat:"Phrasal verbs"},
+{en:"Turn up",cs:"Zvýšit / Objevit se",cat:"Phrasal verbs"},
+{en:"Turn down",cs:"Ztlumit / Odmítnout",cat:"Phrasal verbs"},
+{en:"Turn out",cs:"Ukázat se",cat:"Phrasal verbs"},
+{en:"Turn into",cs:"Proměnit se",cat:"Phrasal verbs"},
+{en:"Turn around",cs:"Otočit se",cat:"Phrasal verbs"},
+{en:"Bring up",cs:"Zmínit / Vychovat",cat:"Phrasal verbs"},
+{en:"Bring back",cs:"Přinést zpět",cat:"Phrasal verbs"},
+{en:"Bring out",cs:"Uvést na trh",cat:"Phrasal verbs"},
+{en:"Break down",cs:"Pokazit se / Zhroutit se",cat:"Phrasal verbs"},
+{en:"Break up",cs:"Rozejít se",cat:"Phrasal verbs"},
+{en:"Break in",cs:"Vloupat se",cat:"Phrasal verbs"},
+{en:"Break out",cs:"Propuknout / Utéct",cat:"Phrasal verbs"},
+{en:"Call off",cs:"Zrušit",cat:"Phrasal verbs"},
+{en:"Call back",cs:"Zavolat zpět",cat:"Phrasal verbs"},
+{en:"Call up",cs:"Zavolat",cat:"Phrasal verbs"},
+{en:"Check in",cs:"Přihlásit se",cat:"Phrasal verbs"},
+{en:"Check out",cs:"Odhlásit se / Prohlédnout",cat:"Phrasal verbs"},
+{en:"Cheer up",cs:"Rozveselit",cat:"Phrasal verbs"},
+{en:"Clean up",cs:"Uklidit",cat:"Phrasal verbs"},
+{en:"Cut off",cs:"Odříznout / Přerušit",cat:"Phrasal verbs"},
+{en:"Cut down",cs:"Snížit / Pokácet",cat:"Phrasal verbs"},
+{en:"Drop off",cs:"Vysadit",cat:"Phrasal verbs"},
+{en:"Drop out",cs:"Odejít / Skončit",cat:"Phrasal verbs"},
+{en:"Fill in",cs:"Vyplnit",cat:"Phrasal verbs"},
+{en:"Fill out",cs:"Vyplnit (formulář)",cat:"Phrasal verbs"},
+{en:"Find out",cs:"Zjistit",cat:"Phrasal verbs"},
+{en:"Hand in",cs:"Odevzdat",cat:"Phrasal verbs"},
+{en:"Hand out",cs:"Rozdat",cat:"Phrasal verbs"},
+{en:"Hang out",cs:"Trávit čas (s kým)",cat:"Phrasal verbs"},
+{en:"Hang up",cs:"Zavěsit",cat:"Phrasal verbs"},
+{en:"Hold on",cs:"Vydržet / Počkat",cat:"Phrasal verbs"},
+{en:"Hold up",cs:"Zdržet",cat:"Phrasal verbs"},
+{en:"Keep on",cs:"Pokračovat",cat:"Phrasal verbs"},
+{en:"Keep up",cs:"Udržet tempo",cat:"Phrasal verbs"},
+{en:"Make up",cs:"Vymyslet / Smířit se",cat:"Phrasal verbs"},
+{en:"Make out",cs:"Rozeznat / Líbat se",cat:"Phrasal verbs"},
+{en:"Pass out",cs:"Omdlít",cat:"Phrasal verbs"},
+{en:"Pick up",cs:"Vyzvednout / Zvednout",cat:"Phrasal verbs"},
+{en:"Show up",cs:"Objevit se",cat:"Phrasal verbs"},
+{en:"Sign up",cs:"Přihlásit se",cat:"Phrasal verbs"}
 ];
 var CATS={
   "Základní":"#4ade80",
@@ -11917,7 +13299,9 @@ var CATS={
   "Cestování":"#34d399",
   "Pocity":"#f9a8d4",
   "Technologie":"#818cf8",
-  "Hudba & DJ":"#fb923c"
+  "Hudba & DJ":"#fb923c",
+  "Idiomy":"#fcd34d",
+  "Phrasal verbs":"#67e8f9"
 };
 
 var learned=[];
@@ -11928,11 +13312,110 @@ var speaking=false;
 var view='cards';
 var shuffleMode=false;
 var shuffleOrder=null;
+// SPEECH RECOGNITION STATE
+var listening=false;
+var recognition=null;
+var speechStats={};
+try{var ss=localStorage.getItem('wm_speech_stats');if(ss)speechStats=JSON.parse(ss);}catch(e){}
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+var micSupported=!!SR;
 
 // TEST STATE
 var testState={running:false,questions:[],current:0,score:0,wrong:0,answered:false,scope:'all',count:10};
 
 function save(){try{localStorage.setItem('wm_learned',JSON.stringify(learned));}catch(e){}}
+function saveSpeechStats(){try{localStorage.setItem('wm_speech_stats',JSON.stringify(speechStats));}catch(e){}}
+
+function normalizeText(s){
+  if(!s)return '';
+  s=s.toLowerCase();
+  // Build char sets via fromCharCode to avoid template literal escape issues
+  var smartSingle=String.fromCharCode(0x2018,0x2019,0x201A,0x201B,0x2032,0x2035,0x0060,0x00B4);
+  for(var i=0;i<smartSingle.length;i++){s=s.split(smartSingle[i]).join(String.fromCharCode(39));}
+  var smartDouble=String.fromCharCode(0x201C,0x201D,0x201E,0x201F,0x2033,0x2036);
+  for(var j=0;j<smartDouble.length;j++){s=s.split(smartDouble[j]).join(String.fromCharCode(34));}
+  // Punctuation: . , ! ? ; : ' " ( ) - _ / \\
+  var punctCodes=[46,44,33,63,59,58,39,34,40,41,45,95,47,92];
+  for(var k=0;k<punctCodes.length;k++){s=s.split(String.fromCharCode(punctCodes[k])).join(' ');}
+  return s.replace(/\s+/g,' ').trim();
+}
+
+function listen(en){
+  if(!micSupported){
+    showFb('bad','🚫 Mikrofon není podporován v tomto prohlížeči','');
+    return;
+  }
+  if(listening){
+    try{recognition&&recognition.stop();}catch(e){}
+    return;
+  }
+  try{
+    recognition=new SR();
+    recognition.lang='en-US';
+    recognition.interimResults=false;
+    recognition.maxAlternatives=5;
+    recognition.continuous=false;
+    listening=true;
+    renderCard();
+    showFb('listening','🎤 Poslouchám... řekni: '+en,'');
+    recognition.onresult=function(ev){
+      var alts=[];
+      try{
+        for(var i=0;i<ev.results[0].length;i++){alts.push(ev.results[0][i].transcript);}
+      }catch(e){}
+      var heard=alts[0]||'';
+      var target=normalizeText(en);
+      var ok=false;
+      for(var i=0;i<alts.length;i++){
+        if(normalizeText(alts[i])===target){ok=true;break;}
+      }
+      if(!ok){
+        // partial match: target words contained in heard
+        var hn=normalizeText(heard);
+        if(hn===target||(target.length>3&&hn.indexOf(target)>=0)){ok=true;}
+      }
+      speechStats[en]=speechStats[en]||{ok:0,fail:0};
+      if(ok){
+        speechStats[en].ok++;
+        saveSpeechStats();
+        showFb('ok','✅ Správně!','Slyšel jsem: "'+heard+'"');
+        spawnConfetti();
+      }else{
+        speechStats[en].fail++;
+        saveSpeechStats();
+        showFb('bad','❌ Skoro... zkus znovu','Slyšel jsem: "'+heard+'"');
+      }
+    };
+    recognition.onerror=function(ev){
+      listening=false;renderCard();
+      var msg='❌ Chyba mikrofonu';
+      if(ev.error==='not-allowed')msg='🚫 Přístup k mikrofonu zamítnut';
+      else if(ev.error==='no-speech')msg='🔇 Nic jsem neslyšel';
+      else if(ev.error==='audio-capture')msg='🎤 Mikrofon nedostupný';
+      else if(ev.error==='network')msg='📡 Chyba sítě';
+      showFb('bad',msg,'');
+    };
+    recognition.onend=function(){listening=false;renderCard();};
+    recognition.start();
+  }catch(e){
+    listening=false;renderCard();
+    showFb('bad','❌ '+(e.message||'Chyba'),'');
+  }
+}
+
+function showFb(type,msg,heard){
+  var fb=document.getElementById('speech-feedback');
+  if(!fb)return;
+  fb.className='speech-feedback '+type;
+  fb.innerHTML=msg+(heard?'<span class="heard">'+heard.replace(/</g,'&lt;')+'</span>':'');
+  fb.style.display='block';
+  if(type==='ok'||type==='bad'){
+    setTimeout(function(){
+      var f=document.getElementById('speech-feedback');
+      if(f&&f.className.indexOf('listening')<0)f.style.display='none';
+    },4000);
+  }
+}
 
 function filtered(){
   var base=filterCat==='Vše'?VOCAB:VOCAB.filter(function(w){return w.cat===filterCat;});
@@ -11968,14 +13451,11 @@ function setView(v){
   document.getElementById('view-cards').style.display=v==='cards'?'block':'none';
   document.getElementById('view-ebook').style.display=v==='ebook'?'block':'none';
   document.getElementById('view-test').style.display=v==='test'?'block':'none';
-  document.getElementById('view-speak').style.display=v==='speak'?'block':'none';
   document.getElementById('tbtn-cards').className='tab-btn'+(v==='cards'?' active':'');
   document.getElementById('tbtn-ebook').className='tab-btn'+(v==='ebook'?' active':'');
   document.getElementById('tbtn-test').className='tab-btn'+(v==='test'?' active':'');
-  document.getElementById('tbtn-speak').className='tab-btn'+(v==='speak'?' active':'');
   if(v==='ebook')renderEbook();
   if(v==='test')renderTest();
-  if(v==='speak')renderSpeak();
 }
 
 function speak(txt){
@@ -12017,6 +13497,7 @@ function spawnConfetti(){
 function go(dir){
   var f=filtered();
   if(!f.length)return;
+  if(listening){try{recognition&&recognition.stop();}catch(e){}listening=false;}
   var outer=document.getElementById('card-outer');
   outer.className='card-outer '+(dir>0?'hide':'hide-r');
   setTimeout(function(){
@@ -12057,6 +13538,9 @@ function renderCard(){
   document.getElementById('nav-counter').textContent=(Math.min(idx,f.length-1)+1)+' / '+f.length;
   var enEsc=w.en.replace(/'/g,"\\'").replace(/"/g,'&quot;');
   var c=document.getElementById('the-card');
+  var st=speechStats[w.en]||{ok:0,fail:0};
+  var statsHtml=micSupported?'<div class="speech-stats"><span class="ok">🎤✓ '+st.ok+'</span><span class="bad">🎤✗ '+st.fail+'</span></div>':'';
+  var micBtn=micSupported?'<button class="mic-btn'+(listening?' listening':'')+'" style="background:'+color+'22;color:'+color+'" onclick="listen(\\''+enEsc+'\\')" title="Vyslovit a vyhodnotit">🎤</button>':'';
   c.innerHTML='<div class="card-top-bar" style="background:'+color+'"></div>'+
     '<div class="card-glow" style="background:'+color+'"></div>'+
     '<div class="cat-badge" style="background:'+color+'22;color:'+color+'">'+w.cat+'</div>'+
@@ -12064,8 +13548,11 @@ function renderCard(){
     '<div class="cs-word">'+w.cs+'</div>'+
     '<div class="card-actions">'+
     '<button class="speak-btn'+(speaking?' pulse':'')+'" style="background:'+color+'22;color:'+color+'" onclick="speak(\\''+enEsc+'\\')" title="Přehrát">🔊</button>'+
+    micBtn+
     '<button class="learned-btn '+(isL?'yes':'no')+'" onclick="toggleLearned()">'+(isL?'✓ Naučeno':'+ Označit naučené')+'</button>'+
-    '</div>';
+    '</div>'+
+    statsHtml+
+    '<div class="speech-feedback" id="speech-feedback"></div>';
   updateProg();
 }
 
@@ -12256,143 +13743,6 @@ function renderTestResult(){
 function resetTest(){
   testState={running:false,questions:[],current:0,score:0,wrong:0,answered:false,scope:'all',count:10};
   renderTest();
-}
-
-// ── SPEAKING MODE ──
-var speakRecog=null;
-var speakListening=false;
-var speakWordIdx=0;
-var speakResult=null;
-var speakMode='translate';
-var speakOrder=[];
-var speakScore={ok:0,fail:0};
-
-function speakBuildOrder(){
-  var f=filtered();
-  var arr=[];for(var i=0;i<f.length;i++)arr.push(i);
-  for(var j=arr.length-1;j>0;j--){var rk=Math.floor(Math.random()*(j+1));var rt=arr[j];arr[j]=arr[rk];arr[rk]=rt;}
-  speakOrder=arr;
-  speakWordIdx=0;
-}
-
-function setSpeakMode(mode){
-  speakMode=mode;
-  speakResult=null;
-  renderSpeak();
-}
-
-function speakNext(){
-  speakWordIdx=(speakWordIdx+1);
-  if(speakWordIdx>=speakOrder.length){speakBuildOrder();}
-  speakResult=null;
-  renderSpeak();
-}
-
-function normalizeSpeak(s){
-  return s.toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
-}
-
-function renderSpeak(){
-  var inner=document.getElementById('speak-inner');
-  if(!inner)return;
-  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){
-    inner.innerHTML='<div class="speak-no-support"><div class="ic">🎤</div><div class="ti">Rozpoznávání řeči není dostupné</div><div class="ds">Tato funkce vyžaduje Chrome nebo Edge na Androidu.<br><br>Na iOS Safari bohužel nefunguje.<br><br>Zkus otevřít tuto stránku v Chrome.</div></div>';
-    return;
-  }
-  if(!speakOrder.length)speakBuildOrder();
-  var f=filtered();
-  if(!f.length){
-    inner.innerHTML='<div class="empty-state"><div class="ic">🔍</div><div class="ti">Žádná slovíčka</div><div class="ds">V této kategorii nic není</div></div>';
-    return;
-  }
-  var safeIdx=speakWordIdx%speakOrder.length;
-  var w=f[speakOrder[safeIdx]];
-  var color=CATS[w.cat]||'#34d399';
-  var isTranslate=speakMode==='translate';
-  var mainWord=isTranslate?w.cs:w.en;
-  var hintHtml=isTranslate?'':'<div class="speak-hint-cs">'+w.cs+'</div>';
-  var instruction=isTranslate?'VIDÍŠ ČESKY → ŘEKNI ANGLICKY':'VIDÍŠ ANGLICKY → PŘEČTI NAHLAS';
-  var statusHtml='';
-  if(speakResult!==null){
-    if(speakResult.ok){
-      statusHtml='<div class="speak-status ok">✅ Správně!<span class="speak-heard-text">Řekl jsi: "'+speakResult.heard+'"</span></div>';
-    } else {
-      statusHtml='<div class="speak-status fail">❌ Špatně<span class="speak-correct-word">Správně: '+speakResult.expected+'</span>'+(speakResult.heard?'<span class="speak-heard-text">Řekl jsi: "'+speakResult.heard+'"</span>':'<span class="speak-heard-text">Nic jsem neslyšel — zkus znovu</span>')+'</div>';
-    }
-  }
-  var total=speakScore.ok+speakScore.fail;
-  var statsHtml='';
-  if(total>0){
-    statsHtml='<div class="speak-stats-row">'+
-      '<div class="speak-stat"><div class="speak-stat-num">'+speakScore.ok+'</div><div class="speak-stat-lbl">Správně</div></div>'+
-      '<div class="speak-stat"><div class="speak-stat-num wrong">'+speakScore.fail+'</div><div class="speak-stat-lbl">Chyby</div></div>'+
-      '<div class="speak-stat"><div class="speak-stat-num" style="color:#a78bfa">'+Math.round(speakScore.ok/total*100)+'%</div><div class="speak-stat-lbl">Úspěšnost</div></div>'+
-    '</div>';
-  }
-  var micIcon=speakListening?'⏹':'🎤';
-  var micClass='mic-btn-big'+(speakListening?' listening':'');
-  var micLabel=speakListening?'Poslouchám... (klepni pro zastavení)':(speakResult!==null?'':'Klepni na mikrofon a mluv');
-  var nextBtnHtml=speakResult!==null?'<div class="speak-nav-row"><button class="speak-next-btn" onclick="speakNext()">Další slovo ▶</button></div>':'';
-  inner.innerHTML='<div class="speak-card">'+
-    '<div class="speak-mode-row">'+
-    '<button class="smode-btn'+(isTranslate?' active':'')+'" onclick="setSpeakMode(\'translate\')">🔤 Překlad</button>'+
-    '<button class="smode-btn'+(!isTranslate?' active':'')+'" onclick="setSpeakMode(\'pronounce\')">🗣️ Výslovnost</button>'+
-    '</div>'+
-    statsHtml+
-    '<div class="speak-instruction">'+instruction+'</div>'+
-    '<div class="speak-cat-badge" style="background:'+color+'22;color:'+color+'">'+w.cat+'</div>'+
-    '<div class="speak-main-word">'+mainWord+'</div>'+
-    hintHtml+
-    '<div class="speak-progress">'+(safeIdx+1)+' / '+f.length+'</div>'+
-    statusHtml+
-    '<button class="'+micClass+'" onclick="startSpeakListen()">'+micIcon+'</button>'+
-    '<div class="mic-label">'+micLabel+'</div>'+
-    nextBtnHtml+
-  '</div>';
-}
-
-function startSpeakListen(){
-  if(speakListening){if(speakRecog)speakRecog.stop();return;}
-  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR)return;
-  var f=filtered();
-  if(!f.length)return;
-  var w=f[speakOrder[speakWordIdx%speakOrder.length]];
-  speakRecog=new SR();
-  speakRecog.lang='en-US';
-  speakRecog.interimResults=false;
-  speakRecog.maxAlternatives=6;
-  speakListening=true;
-  renderSpeak();
-  speakRecog.onresult=function(e){
-    speakListening=false;
-    var expected=normalizeSpeak(w.en);
-    var heard='';
-    var ok=false;
-    for(var i=0;i<e.results[0].length;i++){
-      var alt=normalizeSpeak(e.results[0][i].transcript);
-      if(!heard)heard=e.results[0][i].transcript.trim();
-      if(alt===expected){ok=true;heard=e.results[0][i].transcript.trim();break;}
-    }
-    if(ok){speakScore.ok++;spawnConfetti();}else{speakScore.fail++;}
-    speakResult={ok:ok,heard:heard,expected:w.en};
-    renderSpeak();
-    try{var u=new SpeechSynthesisUtterance(w.en);u.lang='en-US';u.rate=0.85;window.speechSynthesis.speak(u);}catch(ex){}
-  };
-  speakRecog.onerror=function(ev){
-    speakListening=false;
-    if(ev.error==='no-speech'){
-      speakScore.fail++;
-      speakResult={ok:false,heard:'',expected:w.en};
-    }
-    renderSpeak();
-  };
-  speakRecog.onend=function(){
-    speakListening=false;
-    if(!speakResult)renderSpeak();
-  };
-  try{speakRecog.start();}catch(ex){speakListening=false;renderSpeak();}
 }
 
 // ── KEYBOARD & SWIPE ──
