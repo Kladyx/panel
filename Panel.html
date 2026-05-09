@@ -281,7 +281,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo">KLADYX</div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v7.0</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v7.1</span> · VYBERTE APLIKACI</div>
       <div class="eq-wrap">
         <div class="dancer dancer-g">
           <svg viewBox="0 0 32 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -12024,7 +12024,7 @@ function renderCard(){
     '<div class="en-word">'+w.en+'</div>'+
     '<div class="cs-word">'+w.cs+'</div>'+
     '<div class="card-actions">'+
-    '<button class="speak-btn'+(speaking?' pulse':'')+'" style="background:'+color+'22;color:'+color+'" onclick="speak(\''+enEsc+'\')" title="Přehrát">🔊</button>'+
+    '<button class="speak-btn'+(speaking?' pulse':'')+'" style="background:'+color+'22;color:'+color+'" onclick="speak(\\''+enEsc+'\\')" title="Přehrát">🔊</button>'+
     '<button class="learned-btn '+(isL?'yes':'no')+'" onclick="toggleLearned()">'+(isL?'✓ Naučeno':'+ Označit naučené')+'</button>'+
     '</div>';
   updateProg();
@@ -12056,7 +12056,7 @@ function renderEbook(){
       var enEsc=w.en.replace(/'/g,"\\'");
       var row=document.createElement('div');
       row.className='eb-row'+(isL?' learned':'');
-      row.innerHTML='<button class="eb-speak" style="background:'+color+'20;color:'+color+'" onclick="speak(\''+enEsc+'\')">🔊</button>'+
+      row.innerHTML='<button class="eb-speak" style="background:'+color+'20;color:'+color+'" onclick="speak(\\''+enEsc+'\\')">🔊</button>'+
         '<div style="flex:1;min-width:0"><div class="eb-en">'+w.en+'</div><div class="eb-cs">'+w.cs+'</div></div>'+
         (isL?'<span class="eb-check">✓</span>':'');
       sec.appendChild(row);
