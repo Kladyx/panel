@@ -10648,40 +10648,6 @@ body{background:radial-gradient(circle at 20% 0%,rgba(52,211,153,0.08),transpare
 .empty-state .ic{font-size:3rem;margin-bottom:10px;}
 .empty-state .ti{font-size:1rem;font-weight:700;color:#aaa;margin-bottom:6px;}
 .empty-state .ds{font-size:0.82rem;}
-/* ── SPEAKING MODE ── */
-.speak-wrap{padding:14px;}
-.speak-card{background:linear-gradient(145deg,#15152a,#1a1a32);border:1px solid #252548;border-radius:22px;padding:24px 20px;text-align:center;}
-.speak-mode-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px;}
-.smode-btn{padding:7px 16px;border-radius:99px;border:1.5px solid #252548;background:transparent;color:#888;font-family:inherit;font-size:0.72rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
-.smode-btn.active{border-color:#a78bfa;color:#a78bfa;background:rgba(167,139,250,0.12);}
-.smode-btn:active{transform:scale(0.94);}
-.speak-instruction{font-size:0.7rem;color:#555577;letter-spacing:0.5px;margin-bottom:14px;font-weight:600;text-transform:uppercase;}
-.speak-cat-badge{display:inline-flex;align-items:center;padding:3px 11px;border-radius:99px;font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;}
-.speak-main-word{font-size:2rem;font-weight:800;color:#f0f0fa;line-height:1.2;margin-bottom:8px;}
-.speak-hint-cs{font-size:0.95rem;color:#9999bb;margin-bottom:12px;}
-.speak-progress{font-size:0.7rem;color:#444466;font-weight:700;margin-bottom:18px;}
-.mic-btn-big{width:82px;height:82px;border-radius:50%;border:3px solid rgba(52,211,153,0.4);background:rgba(52,211,153,0.1);font-size:2.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;transition:all 0.2s;}
-.mic-btn-big:active{transform:scale(0.92);}
-.mic-btn-big.listening{border-color:#f87171;background:rgba(248,113,113,0.15);animation:micPulse 1s ease infinite;}
-@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,0.5);}50%{box-shadow:0 0 0 18px rgba(248,113,113,0);}}
-.mic-label{font-size:0.72rem;color:#888;font-weight:700;min-height:20px;margin-bottom:14px;}
-.speak-status{padding:12px 16px;border-radius:12px;margin:14px 0 6px;font-size:0.88rem;font-weight:700;line-height:1.6;}
-.speak-status.ok{background:rgba(52,211,153,0.12);border:1.5px solid rgba(52,211,153,0.3);color:#34d399;}
-.speak-status.fail{background:rgba(248,113,113,0.1);border:1.5px solid rgba(248,113,113,0.3);color:#f87171;}
-.speak-correct-word{font-size:1.05rem;font-weight:800;display:block;margin-top:4px;}
-.speak-heard-text{font-size:0.78rem;opacity:0.75;font-style:italic;display:block;margin-top:2px;}
-.speak-nav-row{display:flex;gap:8px;justify-content:center;margin-top:12px;}
-.speak-next-btn{padding:12px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,#34d399,#60a5fa);color:#0d0d1f;font-family:inherit;font-size:0.88rem;font-weight:800;cursor:pointer;transition:all 0.2s;}
-.speak-next-btn:active{transform:scale(0.97);}
-.speak-no-support{text-align:center;padding:30px 20px;}
-.speak-no-support .ic{font-size:3rem;margin-bottom:12px;}
-.speak-no-support .ti{font-size:1rem;font-weight:700;color:#f87171;margin-bottom:8px;}
-.speak-no-support .ds{font-size:0.82rem;color:#888;line-height:1.6;}
-.speak-stats-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px;}
-.speak-stat{background:#1e1e38;border-radius:10px;padding:8px 14px;text-align:center;}
-.speak-stat-num{font-size:1.2rem;font-weight:800;color:#34d399;}
-.speak-stat-num.wrong{color:#f87171;}
-.speak-stat-lbl{font-size:0.6rem;color:#555577;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -10695,7 +10661,6 @@ body{background:radial-gradient(circle at 20% 0%,rgba(52,211,153,0.08),transpare
     <button class="tab-btn active" id="tbtn-cards" onclick="setView('cards')">🃏 Karty</button>
     <button class="tab-btn" id="tbtn-ebook" onclick="setView('ebook')">📚 Seznam</button>
     <button class="tab-btn" id="tbtn-test" onclick="setView('test')">🎯 Test</button>
-    <button class="tab-btn" id="tbtn-speak" onclick="setView('speak')">🎤 Mluvení</button>
   </div>
 </div>
 <div id="view-cards">
@@ -10712,7 +10677,6 @@ body{background:radial-gradient(circle at 20% 0%,rgba(52,211,153,0.08),transpare
 </div>
 <div id="view-ebook" style="display:none;overflow-y:auto;height:calc(100vh - 60px);"><div class="ebook-wrap" id="ebook-inner"></div></div>
 <div id="view-test" style="display:none;overflow-y:auto;height:calc(100vh - 60px);"><div class="test-wrap" id="test-inner"></div></div>
-<div id="view-speak" style="display:none;overflow-y:auto;height:calc(100vh - 60px);"><div class="speak-wrap" id="speak-inner"></div></div>
 
 <script>
 var VOCAB=[
@@ -11968,14 +11932,11 @@ function setView(v){
   document.getElementById('view-cards').style.display=v==='cards'?'block':'none';
   document.getElementById('view-ebook').style.display=v==='ebook'?'block':'none';
   document.getElementById('view-test').style.display=v==='test'?'block':'none';
-  document.getElementById('view-speak').style.display=v==='speak'?'block':'none';
   document.getElementById('tbtn-cards').className='tab-btn'+(v==='cards'?' active':'');
   document.getElementById('tbtn-ebook').className='tab-btn'+(v==='ebook'?' active':'');
   document.getElementById('tbtn-test').className='tab-btn'+(v==='test'?' active':'');
-  document.getElementById('tbtn-speak').className='tab-btn'+(v==='speak'?' active':'');
   if(v==='ebook')renderEbook();
   if(v==='test')renderTest();
-  if(v==='speak')renderSpeak();
 }
 
 function speak(txt){
@@ -12256,143 +12217,6 @@ function renderTestResult(){
 function resetTest(){
   testState={running:false,questions:[],current:0,score:0,wrong:0,answered:false,scope:'all',count:10};
   renderTest();
-}
-
-// ── SPEAKING MODE ──
-var speakRecog=null;
-var speakListening=false;
-var speakWordIdx=0;
-var speakResult=null;
-var speakMode='translate';
-var speakOrder=[];
-var speakScore={ok:0,fail:0};
-
-function speakBuildOrder(){
-  var f=filtered();
-  var arr=[];for(var i=0;i<f.length;i++)arr.push(i);
-  for(var j=arr.length-1;j>0;j--){var rk=Math.floor(Math.random()*(j+1));var rt=arr[j];arr[j]=arr[rk];arr[rk]=rt;}
-  speakOrder=arr;
-  speakWordIdx=0;
-}
-
-function setSpeakMode(mode){
-  speakMode=mode;
-  speakResult=null;
-  renderSpeak();
-}
-
-function speakNext(){
-  speakWordIdx=(speakWordIdx+1);
-  if(speakWordIdx>=speakOrder.length){speakBuildOrder();}
-  speakResult=null;
-  renderSpeak();
-}
-
-function normalizeSpeak(s){
-  return s.toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
-}
-
-function renderSpeak(){
-  var inner=document.getElementById('speak-inner');
-  if(!inner)return;
-  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){
-    inner.innerHTML='<div class="speak-no-support"><div class="ic">🎤</div><div class="ti">Rozpoznávání řeči není dostupné</div><div class="ds">Tato funkce vyžaduje Chrome nebo Edge na Androidu.<br><br>Na iOS Safari bohužel nefunguje.<br><br>Zkus otevřít tuto stránku v Chrome.</div></div>';
-    return;
-  }
-  if(!speakOrder.length)speakBuildOrder();
-  var f=filtered();
-  if(!f.length){
-    inner.innerHTML='<div class="empty-state"><div class="ic">🔍</div><div class="ti">Žádná slovíčka</div><div class="ds">V této kategorii nic není</div></div>';
-    return;
-  }
-  var safeIdx=speakWordIdx%speakOrder.length;
-  var w=f[speakOrder[safeIdx]];
-  var color=CATS[w.cat]||'#34d399';
-  var isTranslate=speakMode==='translate';
-  var mainWord=isTranslate?w.cs:w.en;
-  var hintHtml=isTranslate?'':'<div class="speak-hint-cs">'+w.cs+'</div>';
-  var instruction=isTranslate?'VIDÍŠ ČESKY → ŘEKNI ANGLICKY':'VIDÍŠ ANGLICKY → PŘEČTI NAHLAS';
-  var statusHtml='';
-  if(speakResult!==null){
-    if(speakResult.ok){
-      statusHtml='<div class="speak-status ok">✅ Správně!<span class="speak-heard-text">Řekl jsi: "'+speakResult.heard+'"</span></div>';
-    } else {
-      statusHtml='<div class="speak-status fail">❌ Špatně<span class="speak-correct-word">Správně: '+speakResult.expected+'</span>'+(speakResult.heard?'<span class="speak-heard-text">Řekl jsi: "'+speakResult.heard+'"</span>':'<span class="speak-heard-text">Nic jsem neslyšel — zkus znovu</span>')+'</div>';
-    }
-  }
-  var total=speakScore.ok+speakScore.fail;
-  var statsHtml='';
-  if(total>0){
-    statsHtml='<div class="speak-stats-row">'+
-      '<div class="speak-stat"><div class="speak-stat-num">'+speakScore.ok+'</div><div class="speak-stat-lbl">Správně</div></div>'+
-      '<div class="speak-stat"><div class="speak-stat-num wrong">'+speakScore.fail+'</div><div class="speak-stat-lbl">Chyby</div></div>'+
-      '<div class="speak-stat"><div class="speak-stat-num" style="color:#a78bfa">'+Math.round(speakScore.ok/total*100)+'%</div><div class="speak-stat-lbl">Úspěšnost</div></div>'+
-    '</div>';
-  }
-  var micIcon=speakListening?'⏹':'🎤';
-  var micClass='mic-btn-big'+(speakListening?' listening':'');
-  var micLabel=speakListening?'Poslouchám... (klepni pro zastavení)':(speakResult!==null?'':'Klepni na mikrofon a mluv');
-  var nextBtnHtml=speakResult!==null?'<div class="speak-nav-row"><button class="speak-next-btn" onclick="speakNext()">Další slovo ▶</button></div>':'';
-  inner.innerHTML='<div class="speak-card">'+
-    '<div class="speak-mode-row">'+
-    '<button class="smode-btn'+(isTranslate?' active':'')+'" onclick="setSpeakMode(\'translate\')">🔤 Překlad</button>'+
-    '<button class="smode-btn'+(!isTranslate?' active':'')+'" onclick="setSpeakMode(\'pronounce\')">🗣️ Výslovnost</button>'+
-    '</div>'+
-    statsHtml+
-    '<div class="speak-instruction">'+instruction+'</div>'+
-    '<div class="speak-cat-badge" style="background:'+color+'22;color:'+color+'">'+w.cat+'</div>'+
-    '<div class="speak-main-word">'+mainWord+'</div>'+
-    hintHtml+
-    '<div class="speak-progress">'+(safeIdx+1)+' / '+f.length+'</div>'+
-    statusHtml+
-    '<button class="'+micClass+'" onclick="startSpeakListen()">'+micIcon+'</button>'+
-    '<div class="mic-label">'+micLabel+'</div>'+
-    nextBtnHtml+
-  '</div>';
-}
-
-function startSpeakListen(){
-  if(speakListening){if(speakRecog)speakRecog.stop();return;}
-  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR)return;
-  var f=filtered();
-  if(!f.length)return;
-  var w=f[speakOrder[speakWordIdx%speakOrder.length]];
-  speakRecog=new SR();
-  speakRecog.lang='en-US';
-  speakRecog.interimResults=false;
-  speakRecog.maxAlternatives=6;
-  speakListening=true;
-  renderSpeak();
-  speakRecog.onresult=function(e){
-    speakListening=false;
-    var expected=normalizeSpeak(w.en);
-    var heard='';
-    var ok=false;
-    for(var i=0;i<e.results[0].length;i++){
-      var alt=normalizeSpeak(e.results[0][i].transcript);
-      if(!heard)heard=e.results[0][i].transcript.trim();
-      if(alt===expected){ok=true;heard=e.results[0][i].transcript.trim();break;}
-    }
-    if(ok){speakScore.ok++;spawnConfetti();}else{speakScore.fail++;}
-    speakResult={ok:ok,heard:heard,expected:w.en};
-    renderSpeak();
-    try{var u=new SpeechSynthesisUtterance(w.en);u.lang='en-US';u.rate=0.85;window.speechSynthesis.speak(u);}catch(ex){}
-  };
-  speakRecog.onerror=function(ev){
-    speakListening=false;
-    if(ev.error==='no-speech'){
-      speakScore.fail++;
-      speakResult={ok:false,heard:'',expected:w.en};
-    }
-    renderSpeak();
-  };
-  speakRecog.onend=function(){
-    speakListening=false;
-    if(!speakResult)renderSpeak();
-  };
-  try{speakRecog.start();}catch(ex){speakListening=false;renderSpeak();}
 }
 
 // ── KEYBOARD & SWIPE ──
