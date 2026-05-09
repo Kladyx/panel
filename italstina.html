@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d0d1f">
+<title>🇮🇹 ItalMaster — Naučte se italsky</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0d0d1f;--card:#15152a;--border:#222240;
+  --green:#2ecc71;--red:#e74c3c;--white:#f5f5f5;
+  --gold:#f0c040;--purple:#a78bfa;--blue:#60a5fa;
+  --muted:#9999bb;
+}
+html,body{width:100%;height:100%;background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:#f0f0f8;overflow-x:hidden;}
+body{background:radial-gradient(circle at 15% 0%,rgba(46,204,113,0.09),transparent 40%),radial-gradient(circle at 85% 100%,rgba(231,76,60,0.07),transparent 40%),var(--bg);}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#080d1c;border-bottom:2px solid rgba(46,204,113,0.25);gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:10;}
+.logo{font-size:1rem;font-weight:800;display:flex;align-items:center;gap:7px;white-space:nowrap;}
+.logo-flag{font-size:1.35rem;}
+.logo-text{background:linear-gradient(135deg,#2ecc71,#f0c040,#e74c3c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.prog-wrap{flex:1;min-width:110px;max-width:190px;}
+.prog-meta{display:flex;justify-content:space-between;font-size:0.61rem;color:#888;margin-bottom:3px;font-weight:700;}
+.prog-track{height:5px;background:#1e1e38;border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#2ecc71,#f0c040,#e74c3c);transition:width 0.6s;box-shadow:0 0 10px rgba(46,204,113,0.4);}
+.tab-group{display:flex;gap:3px;background:#1a1a2e;border-radius:10px;padding:3px;flex-wrap:wrap;}
+.tab-btn{padding:6px 10px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:0.7rem;font-weight:700;transition:all 0.2s;background:transparent;color:#888;}
+.tab-btn.active{background:linear-gradient(135deg,#2ecc71,#f0c040);color:#0d0d1f;}
+.tab-btn:active{transform:scale(0.94);}
+
+/* ── CATEGORY CHIPS ── */
+.cat-row{display:flex;gap:6px;padding:10px 14px;overflow-x:auto;scrollbar-width:none;background:#080d1c;border-bottom:1px solid #111128;}
+.cat-row::-webkit-scrollbar{display:none;}
+.chip{white-space:nowrap;padding:5px 13px;border-radius:99px;border:1.5px solid #252548;background:transparent;color:#888;font-family:inherit;font-size:0.72rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.chip:active{transform:scale(0.92);}
+.chip.active{border-color:transparent;color:#0d0d1f;font-weight:800;}
+
+/* ── CARDS ── */
+.cards-wrap{padding:16px 14px 0;}
+.card-outer{transition:opacity 0.2s,transform 0.2s;}
+.card-outer.hide{opacity:0;transform:translateX(-30px);}
+.card-outer.hide-r{opacity:0;transform:translateX(30px);}
+.card{background:linear-gradient(145deg,#15152a,#1c1c33);border:1px solid var(--border);border-radius:22px;padding:26px 22px 20px;position:relative;overflow:hidden;min-height:210px;display:flex;flex-direction:column;gap:10px;box-shadow:0 8px 30px rgba(0,0,0,0.35);}
+.card-top-bar{position:absolute;top:0;left:0;right:0;height:4px;border-radius:22px 22px 0 0;}
+.card-glow{position:absolute;top:-50px;right:-50px;width:160px;height:160px;border-radius:50%;opacity:0.09;filter:blur(40px);pointer-events:none;}
+.cat-badge{display:inline-flex;align-items:center;padding:3px 11px;border-radius:99px;font-size:0.65rem;font-weight:800;width:fit-content;text-transform:uppercase;letter-spacing:0.5px;}
+.it-word{font-size:1.9rem;font-weight:800;letter-spacing:-0.5px;color:#f0f0fa;line-height:1.2;}
+.cs-word{font-size:1rem;font-weight:500;color:var(--muted);}
+.phonetic{font-size:0.78rem;color:#555577;font-style:italic;margin-top:-4px;}
+.card-actions{display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:10px;}
+.speak-btn{width:46px;height:46px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.25rem;transition:all 0.2s;flex-shrink:0;}
+.speak-btn:active{transform:scale(0.9);}
+.speak-btn.pulse{animation:pulseBtn 0.8s ease infinite;}
+@keyframes pulseBtn{0%{box-shadow:0 0 0 0 rgba(46,204,113,0.6);}100%{box-shadow:0 0 0 14px transparent;}}
+.learned-btn{padding:9px 16px;border-radius:11px;border:1.5px solid;font-family:inherit;font-size:0.75rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.2s;}
+.learned-btn:active{transform:scale(0.94);}
+.learned-btn.no{border-color:#252548;background:transparent;color:#666688;}
+.learned-btn.yes{border-color:#2ecc71;background:rgba(46,204,113,0.14);color:#2ecc71;box-shadow:0 0 12px rgba(46,204,113,0.2);}
+.nav-row{display:flex;align-items:center;justify-content:space-between;padding:14px;}
+.nav-btn{width:48px;height:48px;border-radius:50%;border:1.5px solid #252548;background:#15152a;color:#888;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.05rem;transition:all 0.2s;}
+.nav-btn:hover{border-color:#2ecc71;color:#2ecc71;}
+.nav-btn:active{transform:scale(0.92);}
+.counter{font-size:0.82rem;color:#666688;font-weight:800;letter-spacing:0.5px;}
+.shuffle-btn{padding:6px 12px;border-radius:99px;border:1.5px solid #252548;background:transparent;color:#888;font-family:inherit;font-size:0.7rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.shuffle-btn:active{transform:scale(0.94);}
+.shuffle-btn.on{border-color:#a78bfa;color:#a78bfa;background:rgba(167,139,250,0.1);}
+
+/* ── EBOOK ── */
+.ebook-wrap{padding:14px;}
+.ebook-head{margin-bottom:14px;}
+.ebook-title{font-size:1.05rem;font-weight:800;color:#e0e0f5;}
+.ebook-sub{font-size:0.72rem;color:#666688;margin-top:3px;}
+.search-box{width:100%;padding:10px 14px;border-radius:12px;border:1.5px solid #252548;background:#15152a;color:#e0e0f5;font-family:inherit;font-size:0.85rem;margin-top:10px;outline:none;transition:all 0.2s;}
+.search-box:focus{border-color:#2ecc71;}
+.sec-header{display:flex;align-items:center;gap:8px;font-size:0.82rem;font-weight:800;margin:18px 0 8px;}
+.sec-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sec-count{color:#444466;font-weight:500;}
+.eb-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;border:1px solid #222240;background:#15152a;margin-bottom:5px;transition:all 0.2s;}
+.eb-row.learned{border-color:rgba(46,204,113,0.3);background:rgba(46,204,113,0.06);}
+.eb-speak{width:34px;height:34px;border-radius:50%;border:none;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+.eb-speak:active{transform:scale(0.9);}
+.eb-it{font-size:0.9rem;font-weight:700;color:#e0e0f5;}
+.eb-cs{font-size:0.78rem;color:#777799;margin-top:1px;}
+.eb-check{font-size:0.9rem;font-weight:700;color:#2ecc71;margin-left:auto;flex-shrink:0;}
+
+/* ── TEST ── */
+.test-wrap{padding:14px;}
+.test-intro{background:linear-gradient(145deg,#15152a,#1a1a32);border:1px solid #252548;border-radius:18px;padding:22px 18px;text-align:center;}
+.test-icon{font-size:3rem;margin-bottom:8px;}
+.test-title{font-size:1.2rem;font-weight:800;color:#f0f0fa;margin-bottom:6px;}
+.test-desc{font-size:0.82rem;color:#888;margin-bottom:18px;line-height:1.5;}
+.test-options{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+.test-opt-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:11px;border:1.5px solid #252548;background:#0d0d1f;}
+.test-opt-row label{color:#aaa;font-size:0.78rem;font-weight:600;}
+.test-opt-row select{background:#1a1a2e;color:#e0e0f5;border:1px solid #252548;border-radius:7px;padding:5px 10px;font-family:inherit;font-size:0.8rem;font-weight:700;outline:none;cursor:pointer;}
+.start-btn{padding:13px 28px;border-radius:14px;border:none;font-family:inherit;font-size:0.95rem;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#2ecc71,#f0c040);color:#0d0d1f;transition:all 0.2s;width:100%;box-shadow:0 6px 20px rgba(46,204,113,0.3);}
+.start-btn:active{transform:scale(0.97);}
+.q-card{background:linear-gradient(145deg,#15152a,#1a1a32);border:1px solid #252548;border-radius:18px;padding:20px 18px;margin-bottom:14px;}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.q-num{font-size:0.72rem;font-weight:800;color:#666688;letter-spacing:1px;}
+.q-score{font-size:0.78rem;font-weight:800;color:#2ecc71;}
+.q-prog{height:4px;background:#1e1e38;border-radius:99px;overflow:hidden;margin-bottom:16px;}
+.q-prog-fill{height:100%;background:linear-gradient(90deg,#2ecc71,#f0c040);transition:width 0.4s;}
+.q-prompt{font-size:0.78rem;color:#888;margin-bottom:6px;font-weight:700;}
+.q-word{font-size:1.7rem;font-weight:800;color:#f0f0fa;margin-bottom:18px;line-height:1.25;}
+.q-answers{display:flex;flex-direction:column;gap:8px;}
+.q-ans{padding:13px 16px;border-radius:12px;border:1.5px solid #252548;background:#0d0d1f;color:#e0e0f5;font-family:inherit;font-size:0.92rem;font-weight:600;cursor:pointer;text-align:left;transition:all 0.2s;}
+.q-ans:active{transform:scale(0.98);}
+.q-ans:hover{border-color:#2ecc71;}
+.q-ans.correct{border-color:#2ecc71;background:rgba(46,204,113,0.12);color:#2ecc71;font-weight:800;animation:correctPulse 0.5s;}
+.q-ans.wrong{border-color:#f87171;background:rgba(248,113,113,0.12);color:#f87171;font-weight:800;animation:wrongShake 0.4s;}
+.q-ans.disabled{pointer-events:none;}
+@keyframes correctPulse{0%{transform:scale(1);}50%{transform:scale(1.03);}100%{transform:scale(1);}}
+@keyframes wrongShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.next-btn{margin-top:14px;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,#2ecc71,#f0c040);color:#0d0d1f;font-family:inherit;font-size:0.88rem;font-weight:800;cursor:pointer;width:100%;transition:all 0.2s;}
+.next-btn:active{transform:scale(0.97);}
+.result-card{text-align:center;padding:30px 20px;}
+.result-emoji{font-size:4rem;margin-bottom:10px;animation:bounce 0.6s ease;}
+@keyframes bounce{0%{transform:scale(0);}60%{transform:scale(1.2);}100%{transform:scale(1);}}
+.result-score{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,#2ecc71,#f0c040,#e74c3c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
+.result-pct{font-size:1.1rem;color:#888;font-weight:700;margin-bottom:6px;}
+.result-msg{font-size:0.9rem;color:#aaa;margin-bottom:20px;font-weight:600;}
+.confetti{position:fixed;width:8px;height:8px;pointer-events:none;animation:confettiFall 2.5s linear forwards;}
+@keyframes confettiFall{0%{transform:translateY(-20vh) rotate(0);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
+.empty-state{text-align:center;padding:30px 20px;color:#666;}
+.empty-state .ic{font-size:3rem;margin-bottom:10px;}
+.empty-state .ti{font-size:1rem;font-weight:700;color:#aaa;margin-bottom:6px;}
+.empty-state .ds{font-size:0.82rem;}
+
+/* ── SPEAKING MODE ── */
+.speak-wrap{padding:14px;}
+.speak-card{background:linear-gradient(145deg,#15152a,#1a1a32);border:1px solid #252548;border-radius:22px;padding:24px 20px;text-align:center;}
+.speak-mode-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px;}
+.smode-btn{padding:7px 16px;border-radius:99px;border:1.5px solid #252548;background:transparent;color:#888;font-family:inherit;font-size:0.72rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.smode-btn.active{border-color:#a78bfa;color:#a78bfa;background:rgba(167,139,250,0.12);}
+.smode-btn:active{transform:scale(0.94);}
+.speak-instruction{font-size:0.68rem;color:#555577;letter-spacing:0.5px;margin-bottom:14px;font-weight:700;text-transform:uppercase;}
+.speak-cat-badge{display:inline-flex;align-items:center;padding:3px 11px;border-radius:99px;font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;}
+.speak-main-word{font-size:2.1rem;font-weight:800;color:#f0f0fa;line-height:1.2;margin-bottom:8px;}
+.speak-hint-sub{font-size:0.95rem;color:var(--muted);margin-bottom:12px;}
+.speak-progress{font-size:0.7rem;color:#444466;font-weight:700;margin-bottom:18px;}
+.mic-btn-big{width:84px;height:84px;border-radius:50%;border:3px solid rgba(46,204,113,0.4);background:rgba(46,204,113,0.1);font-size:2.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;transition:all 0.2s;}
+.mic-btn-big:active{transform:scale(0.92);}
+.mic-btn-big.listening{border-color:#e74c3c;background:rgba(231,76,60,0.15);animation:micPulse 1s ease infinite;}
+@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,0.5);}50%{box-shadow:0 0 0 20px rgba(231,76,60,0);}}
+.mic-label{font-size:0.72rem;color:#888;font-weight:700;min-height:20px;margin-bottom:14px;}
+.speak-status{padding:12px 16px;border-radius:12px;margin:14px 0 6px;font-size:0.88rem;font-weight:700;line-height:1.6;text-align:left;}
+.speak-status.ok{background:rgba(46,204,113,0.12);border:1.5px solid rgba(46,204,113,0.3);color:#2ecc71;}
+.speak-status.fail{background:rgba(248,113,113,0.1);border:1.5px solid rgba(248,113,113,0.3);color:#f87171;}
+.speak-correct-word{font-size:1.05rem;font-weight:800;display:block;margin-top:4px;}
+.speak-heard-text{font-size:0.78rem;opacity:0.75;font-style:italic;display:block;margin-top:2px;}
+.speak-nav-row{display:flex;gap:8px;justify-content:center;margin-top:14px;}
+.speak-next-btn{padding:12px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,#2ecc71,#f0c040);color:#0d0d1f;font-family:inherit;font-size:0.88rem;font-weight:800;cursor:pointer;transition:all 0.2s;}
+.speak-next-btn:active{transform:scale(0.97);}
+.speak-no-support{text-align:center;padding:30px 20px;}
+.speak-no-support .ic{font-size:3rem;margin-bottom:12px;}
+.speak-no-support .ti{font-size:1rem;font-weight:700;color:#f87171;margin-bottom:8px;}
+.speak-no-support .ds{font-size:0.82rem;color:#888;line-height:1.6;}
+.speak-stats-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px;}
+.speak-stat{background:#1e1e38;border-radius:10px;padding:8px 14px;text-align:center;}
+.speak-stat-num{font-size:1.2rem;font-weight:800;color:#2ecc71;}
+.speak-stat-num.wrong{color:#f87171;}
+.speak-stat-num.pct{color:#a78bfa;}
+.speak-stat-lbl{font-size:0.59rem;color:#555577;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+
+/* ── WELCOME SCREEN ── */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;padding:30px 24px;text-align:center;gap:16px;}
+.welcome-flag{font-size:5rem;animation:flagWave 2s ease infinite;}
+@keyframes flagWave{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg);}}
+.welcome-title{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#2ecc71,#f0c040,#e74c3c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;}
+.welcome-sub{font-size:0.85rem;color:var(--muted);line-height:1.6;max-width:320px;}
+.welcome-stats{display:flex;gap:12px;margin-top:8px;}
+.wstat{background:#15152a;border:1px solid #252548;border-radius:12px;padding:12px 18px;text-align:center;}
+.wstat-num{font-size:1.4rem;font-weight:800;color:#2ecc71;}
+.wstat-lbl{font-size:0.62rem;color:#666688;text-transform:uppercase;letter-spacing:1px;}
+.welcome-btn{padding:14px 32px;border-radius:14px;border:none;background:linear-gradient(135deg,#2ecc71,#f0c040);color:#0d0d1f;font-family:inherit;font-size:1rem;font-weight:800;cursor:pointer;transition:all 0.2s;box-shadow:0 6px 24px rgba(46,204,113,0.35);}
+.welcome-btn:active{transform:scale(0.97);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><span class="logo-flag">🇮🇹</span><span class="logo-text">ItalMaster</span></div>
+  <div class="prog-wrap">
+    <div class="prog-meta"><span id="prog-text">0 / 0</span><span id="prog-pct">0%</span></div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div class="tab-group">
+    <button class="tab-btn active" id="tbtn-cards" onclick="setView('cards')">🃏 Karty</button>
+    <button class="tab-btn" id="tbtn-ebook" onclick="setView('ebook')">📚 Seznam</button>
+    <button class="tab-btn" id="tbtn-test" onclick="setView('test')">🎯 Test</button>
+    <button class="tab-btn" id="tbtn-speak" onclick="setView('speak')">🎤 Mluvení</button>
+  </div>
+</div>
+
+<div id="view-cards">
+  <div class="cat-row" id="cat-row"></div>
+  <div class="cards-wrap"><div class="card-outer" id="card-outer"><div class="card" id="the-card"></div></div></div>
+  <div class="nav-row">
+    <button class="nav-btn" onclick="go(-1)">◀</button>
+    <span class="counter" id="nav-counter">1 / 1</span>
+    <button class="nav-btn" onclick="go(1)">▶</button>
+  </div>
+  <div style="display:flex;justify-content:center;padding:0 14px 18px;">
+    <button class="shuffle-btn" id="shuffle-btn" onclick="toggleShuffle()">🔀 Náhodně</button>
+  </div>
+</div>
+
+<div id="view-ebook" style="display:none;overflow-y:auto;height:calc(100vh - 60px);"><div class="ebook-wrap" id="ebook-inner"></div></div>
+<div id="view-test" style="display:none;overflow-y:auto;height:calc(100vh - 60px);"><div class="test-wrap" id="test-inner"></div></div>
+<div id="view-speak" style="display:none;overflow-y:auto;height:calc(100vh - 60px);"><div class="speak-wrap" id="speak-inner"></div></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  SLOVNÍ ZÁSOBA — Italština → Čeština
+// ══════════════════════════════════════════════════════
+var VOCAB = [
+// ── Základní (50) ──
+{it:"Ciao",cs:"Ahoj / Čau",cat:"Základní"},
+{it:"Buongiorno",cs:"Dobré ráno / Dobrý den",cat:"Základní"},
+{it:"Buonasera",cs:"Dobrý večer",cat:"Základní"},
+{it:"Buonanotte",cs:"Dobrou noc",cat:"Základní"},
+{it:"Arrivederci",cs:"Na shledanou",cat:"Základní"},
+{it:"Grazie",cs:"Děkuji",cat:"Základní"},
+{it:"Prego",cs:"Prosím / Není zač",cat:"Základní"},
+{it:"Scusa",cs:"Promiň (neformální)",cat:"Základní"},
+{it:"Mi scusi",cs:"Promiňte (formální)",cat:"Základní"},
+{it:"Sì",cs:"Ano",cat:"Základní"},
+{it:"No",cs:"Ne",cat:"Základní"},
+{it:"Forse",cs:"Možná",cat:"Základní"},
+{it:"Come stai?",cs:"Jak se máš?",cat:"Základní"},
+{it:"Sto bene",cs:"Jsem v pořádku / Daří se mi dobře",cat:"Základní"},
+{it:"Come ti chiami?",cs:"Jak se jmenuješ?",cat:"Základní"},
+{it:"Mi chiamo...",cs:"Jmenuji se...",cat:"Základní"},
+{it:"Piacere",cs:"Těší mě",cat:"Základní"},
+{it:"Parla italiano?",cs:"Mluvíte italsky?",cat:"Základní"},
+{it:"Non capisco",cs:"Nerozumím",cat:"Základní"},
+{it:"Può ripetere?",cs:"Můžete zopakovat?",cat:"Základní"},
+{it:"Sì, capisco",cs:"Ano, rozumím",cat:"Základní"},
+{it:"Aiuto!",cs:"Pomoc!",cat:"Základní"},
+{it:"Dov'è il bagno?",cs:"Kde je záchod?",cat:"Základní"},
+{it:"Quanto costa?",cs:"Kolik to stojí?",cat:"Základní"},
+{it:"L'acqua",cs:"Voda",cat:"Základní"},
+{it:"Il pane",cs:"Chléb",cat:"Základní"},
+{it:"La casa",cs:"Dům",cat:"Základní"},
+{it:"La scuola",cs:"Škola",cat:"Základní"},
+{it:"Il lavoro",cs:"Práce",cat:"Základní"},
+{it:"L'amico",cs:"Přítel (muž)",cat:"Základní"},
+{it:"L'amica",cs:"Přítelkyně",cat:"Základní"},
+{it:"La famiglia",cs:"Rodina",cat:"Základní"},
+{it:"Bello",cs:"Krásný / Hezký",cat:"Základní"},
+{it:"Grande",cs:"Velký",cat:"Základní"},
+{it:"Piccolo",cs:"Malý",cat:"Základní"},
+{it:"Buono",cs:"Dobrý",cat:"Základní"},
+{it:"Cattivo",cs:"Špatný / Zlý",cat:"Základní"},
+{it:"Nuovo",cs:"Nový",cat:"Základní"},
+{it:"Vecchio",cs:"Starý",cat:"Základní"},
+{it:"Aperto",cs:"Otevřený",cat:"Základní"},
+{it:"Chiuso",cs:"Zavřený",cat:"Základní"},
+{it:"Libero",cs:"Volný / Svobodný",cat:"Základní"},
+{it:"Occupato",cs:"Obsazený / Zaneprázdněný",cat:"Základní"},
+{it:"Caldo",cs:"Teplý / Horký",cat:"Základní"},
+{it:"Freddo",cs:"Studený / Zima",cat:"Základní"},
+{it:"Pronto",cs:"Připravený / Hotovo",cat:"Základní"},
+{it:"Subito",cs:"Hned / Ihned",cat:"Základní"},
+{it:"Ancora",cs:"Ještě / Znovu",cat:"Základní"},
+{it:"Sempre",cs:"Vždy",cat:"Základní"},
+{it:"Mai",cs:"Nikdy",cat:"Základní"},
+// ── Čísla (20) ──
+{it:"Uno",cs:"Jedna (1)",cat:"Čísla"},
+{it:"Due",cs:"Dvě (2)",cat:"Čísla"},
+{it:"Tre",cs:"Tři (3)",cat:"Čísla"},
+{it:"Quattro",cs:"Čtyři (4)",cat:"Čísla"},
+{it:"Cinque",cs:"Pět (5)",cat:"Čísla"},
+{it:"Sei",cs:"Šest (6)",cat:"Čísla"},
+{it:"Sette",cs:"Sedm (7)",cat:"Čísla"},
+{it:"Otto",cs:"Osm (8)",cat:"Čísla"},
+{it:"Nove",cs:"Devět (9)",cat:"Čísla"},
+{it:"Dieci",cs:"Deset (10)",cat:"Čísla"},
+{it:"Undici",cs:"Jedenáct (11)",cat:"Čísla"},
+{it:"Dodici",cs:"Dvanáct (12)",cat:"Čísla"},
+{it:"Venti",cs:"Dvacet (20)",cat:"Čísla"},
+{it:"Trenta",cs:"Třicet (30)",cat:"Čísla"},
+{it:"Quaranta",cs:"Čtyřicet (40)",cat:"Čísla"},
+{it:"Cinquanta",cs:"Padesát (50)",cat:"Čísla"},
+{it:"Cento",cs:"Sto (100)",cat:"Čísla"},
+{it:"Mille",cs:"Tisíc (1000)",cat:"Čísla"},
+{it:"Primo",cs:"První",cat:"Čísla"},
+{it:"Secondo",cs:"Druhý",cat:"Čísla"},
+// ── Čas (25) ──
+{it:"Oggi",cs:"Dnes",cat:"Čas"},
+{it:"Ieri",cs:"Včera",cat:"Čas"},
+{it:"Domani",cs:"Zítra",cat:"Čas"},
+{it:"Adesso",cs:"Teď / Nyní",cat:"Čas"},
+{it:"Presto",cs:"Brzy / Rychle",cat:"Čas"},
+{it:"Tardi",cs:"Pozdě",cat:"Čas"},
+{it:"La mattina",cs:"Ráno",cat:"Čas"},
+{it:"Il pomeriggio",cs:"Odpoledne",cat:"Čas"},
+{it:"La sera",cs:"Večer",cat:"Čas"},
+{it:"La notte",cs:"Noc",cat:"Čas"},
+{it:"La settimana",cs:"Týden",cat:"Čas"},
+{it:"Il mese",cs:"Měsíc",cat:"Čas"},
+{it:"L'anno",cs:"Rok",cat:"Čas"},
+{it:"Lunedì",cs:"Pondělí",cat:"Čas"},
+{it:"Martedì",cs:"Úterý",cat:"Čas"},
+{it:"Mercoledì",cs:"Středa",cat:"Čas"},
+{it:"Giovedì",cs:"Čtvrtek",cat:"Čas"},
+{it:"Venerdì",cs:"Pátek",cat:"Čas"},
+{it:"Sabato",cs:"Sobota",cat:"Čas"},
+{it:"Domenica",cs:"Neděle",cat:"Čas"},
+{it:"Che ora è?",cs:"Kolik je hodin?",cat:"Čas"},
+{it:"Sono le tre",cs:"Jsou tři hodiny",cat:"Čas"},
+{it:"Un'ora",cs:"Jedna hodina",cat:"Čas"},
+{it:"Un minuto",cs:"Jedna minuta",cat:"Čas"},
+{it:"La data",cs:"Datum",cat:"Čas"},
+// ── Fráze (30) ──
+{it:"Per favore",cs:"Prosím",cat:"Fráze"},
+{it:"Grazie mille",cs:"Mockrát děkuji",cat:"Fráze"},
+{it:"Di niente",cs:"Není zač / Nemáš zač",cat:"Fráze"},
+{it:"Non c'è problema",cs:"Žádný problém",cat:"Fráze"},
+{it:"Tutto bene?",cs:"Vše v pořádku?",cat:"Fráze"},
+{it:"Sì, tutto bene",cs:"Ano, vše v pořádku",cat:"Fráze"},
+{it:"Non lo so",cs:"Nevím",cat:"Fráze"},
+{it:"Non importa",cs:"Nevadí",cat:"Fráze"},
+{it:"Andiamo!",cs:"Pojďme!",cat:"Fráze"},
+{it:"Aspetta!",cs:"Počkej!",cat:"Fráze"},
+{it:"Vieni qui",cs:"Pojď sem",cat:"Fráze"},
+{it:"Quanto tempo!",cs:"To je dávno! / Jak je to dlouho!",cat:"Fráze"},
+{it:"Buona fortuna!",cs:"Hodně štěstí!",cat:"Fráze"},
+{it:"Auguri!",cs:"Blahopřeji! / Gratuluju!",cat:"Fráze"},
+{it:"Salute!",cs:"Na zdraví! (přípitek)",cat:"Fráze"},
+{it:"Buon appetito!",cs:"Dobrou chuť!",cat:"Fráze"},
+{it:"Come mai?",cs:"Jak to?",cat:"Fráze"},
+{it:"Che peccato!",cs:"To je škoda!",cat:"Fráze"},
+{it:"Che bello!",cs:"To je krásné!",cat:"Fráze"},
+{it:"Mamma mia!",cs:"Jé! / Panebože!",cat:"Fráze"},
+{it:"Davvero?",cs:"Opravdu? / Vážně?",cat:"Fráze"},
+{it:"Certamente",cs:"Určitě / Jistě",cat:"Fráze"},
+{it:"Naturalmente",cs:"Přirozeně / Samozřejmě",cat:"Fráze"},
+{it:"Forse sì",cs:"Možná ano",cat:"Fráze"},
+{it:"Non ancora",cs:"Ještě ne",cat:"Fráze"},
+{it:"Hai ragione",cs:"Máš pravdu",cat:"Fráze"},
+{it:"Mi dispiace",cs:"Je mi líto / Omlouvám se",cat:"Fráze"},
+{it:"Con piacere",cs:"S radostí / Rádo se stane",cat:"Fráze"},
+{it:"A presto",cs:"Brzy na shledanou",cat:"Fráze"},
+{it:"In bocca al lupo!",cs:"Hodně štěstí! (doslova: do vlčí tlamy)",cat:"Fráze"},
+// ── Jídlo & Pití (35) ──
+{it:"La pizza",cs:"Pizza",cat:"Jídlo & Pití"},
+{it:"La pasta",cs:"Těstoviny",cat:"Jídlo & Pití"},
+{it:"Il risotto",cs:"Rizoto",cat:"Jídlo & Pití"},
+{it:"La bistecca",cs:"Biftek / Steak",cat:"Jídlo & Pití"},
+{it:"Il pesce",cs:"Ryba",cat:"Jídlo & Pití"},
+{it:"Il pollo",cs:"Kuřecí maso / Kuře",cat:"Jídlo & Pití"},
+{it:"La verdura",cs:"Zelenina",cat:"Jídlo & Pití"},
+{it:"La frutta",cs:"Ovoce",cat:"Jídlo & Pití"},
+{it:"Il formaggio",cs:"Sýr",cat:"Jídlo & Pití"},
+{it:"Il prosciutto",cs:"Šunka / Prosciutto",cat:"Jídlo & Pití"},
+{it:"Le uova",cs:"Vejce",cat:"Jídlo & Pití"},
+{it:"Il burro",cs:"Máslo",cat:"Jídlo & Pití"},
+{it:"L'olio d'oliva",cs:"Olivový olej",cat:"Jídlo & Pití"},
+{it:"Il sale",cs:"Sůl",cat:"Jídlo & Pití"},
+{it:"Il pepe",cs:"Pepř",cat:"Jídlo & Pití"},
+{it:"Il gelato",cs:"Zmrzlina",cat:"Jídlo & Pití"},
+{it:"Il tiramisù",cs:"Tiramisu",cat:"Jídlo & Pití"},
+{it:"Il cornetto",cs:"Croissant / Rohlík",cat:"Jídlo & Pití"},
+{it:"Il caffè",cs:"Káva",cat:"Jídlo & Pití"},
+{it:"Il cappuccino",cs:"Cappuccino",cat:"Jídlo & Pití"},
+{it:"Il latte",cs:"Mléko",cat:"Jídlo & Pití"},
+{it:"Il tè",cs:"Čaj",cat:"Jídlo & Pití"},
+{it:"L'acqua minerale",cs:"Minerální voda",cat:"Jídlo & Pití"},
+{it:"Il vino",cs:"Víno",cat:"Jídlo & Pití"},
+{it:"La birra",cs:"Pivo",cat:"Jídlo & Pití"},
+{it:"Il succo",cs:"Džus / Šťáva",cat:"Jídlo & Pití"},
+{it:"Il dolce",cs:"Dezert / Sladký",cat:"Jídlo & Pití"},
+{it:"Il menu",cs:"Jídelní lístek",cat:"Jídlo & Pití"},
+{it:"Il conto",cs:"Účet",cat:"Jídlo & Pití"},
+{it:"Il ristorante",cs:"Restaurace",cat:"Jídlo & Pití"},
+{it:"La colazione",cs:"Snídaně",cat:"Jídlo & Pití"},
+{it:"Il pranzo",cs:"Oběd",cat:"Jídlo & Pití"},
+{it:"La cena",cs:"Večeře",cat:"Jídlo & Pití"},
+{it:"Una tavola per due",cs:"Stůl pro dva",cat:"Jídlo & Pití"},
+{it:"Sono vegetariano",cs:"Jsem vegetarián",cat:"Jídlo & Pití"},
+// ── Cestování (30) ──
+{it:"L'aeroporto",cs:"Letiště",cat:"Cestování"},
+{it:"La stazione",cs:"Nádraží",cat:"Cestování"},
+{it:"Il treno",cs:"Vlak",cat:"Cestování"},
+{it:"L'autobus",cs:"Autobus",cat:"Cestování"},
+{it:"Il taxi",cs:"Taxi",cat:"Cestování"},
+{it:"La metro",cs:"Metro",cat:"Cestování"},
+{it:"L'aereo",cs:"Letadlo",cat:"Cestování"},
+{it:"La nave",cs:"Loď",cat:"Cestování"},
+{it:"La macchina",cs:"Auto",cat:"Cestování"},
+{it:"La moto",cs:"Motorka",cat:"Cestování"},
+{it:"La bicicletta",cs:"Kolo / Bicykl",cat:"Cestování"},
+{it:"L'albergo",cs:"Hotel",cat:"Cestování"},
+{it:"L'ostello",cs:"Hostel",cat:"Cestování"},
+{it:"Una camera",cs:"Pokoj",cat:"Cestování"},
+{it:"Il biglietto",cs:"Jízdenka / Lístek",cat:"Cestování"},
+{it:"Il passaporto",cs:"Pas",cat:"Cestování"},
+{it:"La valigia",cs:"Kufr",cat:"Cestování"},
+{it:"Lo zaino",cs:"Batoh",cat:"Cestování"},
+{it:"Dov'è?",cs:"Kde je?",cat:"Cestování"},
+{it:"A sinistra",cs:"Doleva / Vlevo",cat:"Cestování"},
+{it:"A destra",cs:"Doprava / Vpravo",cat:"Cestování"},
+{it:"Dritto",cs:"Rovně",cat:"Cestování"},
+{it:"Lontano",cs:"Daleko",cat:"Cestování"},
+{it:"Vicino",cs:"Blízko",cat:"Cestování"},
+{it:"La mappa",cs:"Mapa",cat:"Cestování"},
+{it:"Il turista",cs:"Turista",cat:"Cestování"},
+{it:"La visita guidata",cs:"Prohlídka s průvodcem",cat:"Cestování"},
+{it:"Il museo",cs:"Muzeum",cat:"Cestování"},
+{it:"La spiaggia",cs:"Pláž",cat:"Cestování"},
+{it:"La montagna",cs:"Hora",cat:"Cestování"},
+// ── Slovesa (30) ──
+{it:"Parlare",cs:"Mluvit",cat:"Slovesa"},
+{it:"Capire",cs:"Rozumět / Pochopit",cat:"Slovesa"},
+{it:"Ascoltare",cs:"Poslouchat",cat:"Slovesa"},
+{it:"Leggere",cs:"Číst",cat:"Slovesa"},
+{it:"Scrivere",cs:"Psát",cat:"Slovesa"},
+{it:"Mangiare",cs:"Jíst",cat:"Slovesa"},
+{it:"Bere",cs:"Pít",cat:"Slovesa"},
+{it:"Dormire",cs:"Spát",cat:"Slovesa"},
+{it:"Andare",cs:"Jít / Jet",cat:"Slovesa"},
+{it:"Venire",cs:"Přijít / Přijet",cat:"Slovesa"},
+{it:"Tornare",cs:"Vrátit se",cat:"Slovesa"},
+{it:"Lavorare",cs:"Pracovat",cat:"Slovesa"},
+{it:"Studiare",cs:"Studovat / Učit se",cat:"Slovesa"},
+{it:"Comprare",cs:"Koupit",cat:"Slovesa"},
+{it:"Vendere",cs:"Prodávat",cat:"Slovesa"},
+{it:"Pagare",cs:"Platit",cat:"Slovesa"},
+{it:"Guardare",cs:"Dívat se / Koukat",cat:"Slovesa"},
+{it:"Sentire",cs:"Cítit / Slyšet",cat:"Slovesa"},
+{it:"Sapere",cs:"Vědět",cat:"Slovesa"},
+{it:"Potere",cs:"Moci / Smět",cat:"Slovesa"},
+{it:"Volere",cs:"Chtít",cat:"Slovesa"},
+{it:"Dovere",cs:"Muset",cat:"Slovesa"},
+{it:"Avere",cs:"Mít",cat:"Slovesa"},
+{it:"Essere",cs:"Být",cat:"Slovesa"},
+{it:"Fare",cs:"Dělat",cat:"Slovesa"},
+{it:"Dare",cs:"Dát",cat:"Slovesa"},
+{it:"Prendere",cs:"Vzít / Brát",cat:"Slovesa"},
+{it:"Mettere",cs:"Dát / Položit",cat:"Slovesa"},
+{it:"Aprire",cs:"Otevřít",cat:"Slovesa"},
+{it:"Chiudere",cs:"Zavřít",cat:"Slovesa"},
+// ── Rodina (20) ──
+{it:"La madre",cs:"Matka / Máma",cat:"Rodina"},
+{it:"Il padre",cs:"Otec / Táta",cat:"Rodina"},
+{it:"La sorella",cs:"Sestra",cat:"Rodina"},
+{it:"Il fratello",cs:"Bratr",cat:"Rodina"},
+{it:"La nonna",cs:"Babička",cat:"Rodina"},
+{it:"Il nonno",cs:"Dědeček",cat:"Rodina"},
+{it:"La zia",cs:"Teta",cat:"Rodina"},
+{it:"Lo zio",cs:"Strýc",cat:"Rodina"},
+{it:"Il figlio",cs:"Syn",cat:"Rodina"},
+{it:"La figlia",cs:"Dcera",cat:"Rodina"},
+{it:"Il marito",cs:"Manžel",cat:"Rodina"},
+{it:"La moglie",cs:"Manželka",cat:"Rodina"},
+{it:"Il fidanzato",cs:"Snoubenec / Přítel",cat:"Rodina"},
+{it:"La fidanzata",cs:"Snoubenka / Přítelkyně",cat:"Rodina"},
+{it:"I genitori",cs:"Rodiče",cat:"Rodina"},
+{it:"I figli",cs:"Děti",cat:"Rodina"},
+{it:"Il cugino",cs:"Bratranec",cat:"Rodina"},
+{it:"La cugina",cs:"Sestřenice",cat:"Rodina"},
+{it:"Il nipote",cs:"Vnuk / Synovec",cat:"Rodina"},
+{it:"La nipote",cs:"Vnučka / Neteř",cat:"Rodina"},
+// ── Tělo & Zdraví (25) ──
+{it:"La testa",cs:"Hlava",cat:"Tělo & Zdraví"},
+{it:"I capelli",cs:"Vlasy",cat:"Tělo & Zdraví"},
+{it:"Gli occhi",cs:"Oči",cat:"Tělo & Zdraví"},
+{it:"Il naso",cs:"Nos",cat:"Tělo & Zdraví"},
+{it:"La bocca",cs:"Ústa",cat:"Tělo & Zdraví"},
+{it:"Le orecchie",cs:"Uši",cat:"Tělo & Zdraví"},
+{it:"Il collo",cs:"Krk",cat:"Tělo & Zdraví"},
+{it:"La spalla",cs:"Rameno",cat:"Tělo & Zdraví"},
+{it:"Il braccio",cs:"Paže / Ruka (od ramene)",cat:"Tělo & Zdraví"},
+{it:"La mano",cs:"Ruka (dlaň)",cat:"Tělo & Zdraví"},
+{it:"Il dito",cs:"Prst",cat:"Tělo & Zdraví"},
+{it:"Il petto",cs:"Hruď",cat:"Tělo & Zdraví"},
+{it:"La pancia",cs:"Břicho",cat:"Tělo & Zdraví"},
+{it:"La schiena",cs:"Záda",cat:"Tělo & Zdraví"},
+{it:"La gamba",cs:"Noha (celá)",cat:"Tělo & Zdraví"},
+{it:"Il piede",cs:"Chodidlo",cat:"Tělo & Zdraví"},
+{it:"Il cuore",cs:"Srdce",cat:"Tělo & Zdraví"},
+{it:"Il medico",cs:"Lékař",cat:"Tělo & Zdraví"},
+{it:"L'ospedale",cs:"Nemocnice",cat:"Tělo & Zdraví"},
+{it:"La farmacia",cs:"Lékárna",cat:"Tělo & Zdraví"},
+{it:"Ho mal di testa",cs:"Bolí mě hlava",cat:"Tělo & Zdraví"},
+{it:"Sono malato",cs:"Jsem nemocný",cat:"Tělo & Zdraví"},
+{it:"Mi fa male",cs:"Bolí mě to",cat:"Tělo & Zdraví"},
+{it:"La medicina",cs:"Lék",cat:"Tělo & Zdraví"},
+{it:"L'allergia",cs:"Alergie",cat:"Tělo & Zdraví"},
+// ── Příroda & Počasí (20) ──
+{it:"Il sole",cs:"Slunce",cat:"Příroda & Počasí"},
+{it:"La luna",cs:"Měsíc (nebeské těleso)",cat:"Příroda & Počasí"},
+{it:"La stella",cs:"Hvězda",cat:"Příroda & Počasí"},
+{it:"Il cielo",cs:"Nebe",cat:"Příroda & Počasí"},
+{it:"Il mare",cs:"Moře",cat:"Příroda & Počasí"},
+{it:"Il lago",cs:"Jezero",cat:"Příroda & Počasí"},
+{it:"Il fiume",cs:"Řeka",cat:"Příroda & Počasí"},
+{it:"Il bosco",cs:"Les",cat:"Příroda & Počasí"},
+{it:"Il fiore",cs:"Květ / Kytka",cat:"Příroda & Počasí"},
+{it:"L'albero",cs:"Strom",cat:"Příroda & Počasí"},
+{it:"Fa caldo",cs:"Je horko",cat:"Příroda & Počasí"},
+{it:"Fa freddo",cs:"Je zima",cat:"Příroda & Počasí"},
+{it:"Piove",cs:"Prší",cat:"Příroda & Počasí"},
+{it:"Nevica",cs:"Sněží",cat:"Příroda & Počasí"},
+{it:"C'è il vento",cs:"Je vítr",cat:"Příroda & Počasí"},
+{it:"Nuvoloso",cs:"Zataženo / Oblačno",cat:"Příroda & Počasí"},
+{it:"Soleggiato",cs:"Slunečno",cat:"Příroda & Počasí"},
+{it:"Il temporale",cs:"Bouřka",cat:"Příroda & Počasí"},
+{it:"La nebbia",cs:"Mlha",cat:"Příroda & Počasí"},
+{it:"L'arcobaleno",cs:"Duha",cat:"Příroda & Počasí"},
+// ── Barvy (14) ──
+{it:"Rosso",cs:"Červený",cat:"Barvy"},
+{it:"Verde",cs:"Zelený",cat:"Barvy"},
+{it:"Bianco",cs:"Bílý",cat:"Barvy"},
+{it:"Nero",cs:"Černý",cat:"Barvy"},
+{it:"Blu",cs:"Modrý",cat:"Barvy"},
+{it:"Giallo",cs:"Žlutý",cat:"Barvy"},
+{it:"Arancione",cs:"Oranžový",cat:"Barvy"},
+{it:"Rosa",cs:"Růžový",cat:"Barvy"},
+{it:"Viola",cs:"Fialový",cat:"Barvy"},
+{it:"Marrone",cs:"Hnědý",cat:"Barvy"},
+{it:"Grigio",cs:"Šedý",cat:"Barvy"},
+{it:"Azzurro",cs:"Světle modrý (nebeský)",cat:"Barvy"},
+{it:"Oro",cs:"Zlatý",cat:"Barvy"},
+{it:"Argento",cs:"Stříbrný",cat:"Barvy"},
+// ── Oblečení (18) ──
+{it:"La camicia",cs:"Košile",cat:"Oblečení"},
+{it:"I pantaloni",cs:"Kalhoty",cat:"Oblečení"},
+{it:"La gonna",cs:"Sukně",cat:"Oblečení"},
+{it:"Il vestito",cs:"Šaty / Oblek",cat:"Oblečení"},
+{it:"La giacca",cs:"Sako / Bunda",cat:"Oblečení"},
+{it:"Il cappotto",cs:"Kabát",cat:"Oblečení"},
+{it:"Le scarpe",cs:"Boty",cat:"Oblečení"},
+{it:"I calzini",cs:"Ponožky",cat:"Oblečení"},
+{it:"La cravatta",cs:"Kravata",cat:"Oblečení"},
+{it:"Il cappello",cs:"Čepice / Klobouk",cat:"Oblečení"},
+{it:"La sciarpa",cs:"Šátek / Šála",cat:"Oblečení"},
+{it:"I guanti",cs:"Rukavice",cat:"Oblečení"},
+{it:"La borsa",cs:"Kabelka / Taška",cat:"Oblečení"},
+{it:"L'impermeabile",cs:"Pláštěnka",cat:"Oblečení"},
+{it:"Il pigiama",cs:"Pyžamo",cat:"Oblečení"},
+{it:"Il costume",cs:"Plavky",cat:"Oblečení"},
+{it:"Le mutande",cs:"Spodní prádlo",cat:"Oblečení"},
+{it:"Il reggiseno",cs:"Podprsenka",cat:"Oblečení"},
+// ── Pocity (18) ──
+{it:"Felice",cs:"Šťastný / Radostný",cat:"Pocity"},
+{it:"Triste",cs:"Smutný",cat:"Pocity"},
+{it:"Arrabbiato",cs:"Naštvaný / Rozzlobený",cat:"Pocity"},
+{it:"Stanco",cs:"Unavený",cat:"Pocity"},
+{it:"Contento",cs:"Spokojený",cat:"Pocity"},
+{it:"Spaventato",cs:"Vystrašený / Bojácný",cat:"Pocity"},
+{it:"Innamorato",cs:"Zamilovaný",cat:"Pocity"},
+{it:"Annoiato",cs:"Znuděný",cat:"Pocity"},
+{it:"Sorpreso",cs:"Překvapený",cat:"Pocity"},
+{it:"Nervoso",cs:"Nervózní",cat:"Pocity"},
+{it:"Curioso",cs:"Zvědavý",cat:"Pocity"},
+{it:"Geloso",cs:"Žárlivý",cat:"Pocity"},
+{it:"Ho fame",cs:"Mám hlad",cat:"Pocity"},
+{it:"Ho sete",cs:"Mám žízeň",cat:"Pocity"},
+{it:"Ho sonno",cs:"Jsem ospalý",cat:"Pocity"},
+{it:"Ho caldo",cs:"Je mi horko",cat:"Pocity"},
+{it:"Ho freddo",cs:"Je mi zima",cat:"Pocity"},
+{it:"Ho paura",cs:"Bojím se",cat:"Pocity"},
+// ── Domov (20) ──
+{it:"Il soggiorno",cs:"Obývací pokoj",cat:"Domov"},
+{it:"La camera da letto",cs:"Ložnice",cat:"Domov"},
+{it:"La cucina",cs:"Kuchyně",cat:"Domov"},
+{it:"Il bagno",cs:"Koupelna",cat:"Domov"},
+{it:"Il giardino",cs:"Zahrada",cat:"Domov"},
+{it:"Il balcone",cs:"Balkon",cat:"Domov"},
+{it:"Le scale",cs:"Schody",cat:"Domov"},
+{it:"Il letto",cs:"Postel",cat:"Domov"},
+{it:"Il divano",cs:"Pohovka",cat:"Domov"},
+{it:"Il tavolo",cs:"Stůl",cat:"Domov"},
+{it:"La sedia",cs:"Židle",cat:"Domov"},
+{it:"La finestra",cs:"Okno",cat:"Domov"},
+{it:"La porta",cs:"Dveře",cat:"Domov"},
+{it:"Il frigorifero",cs:"Lednička",cat:"Domov"},
+{it:"La lavatrice",cs:"Pračka",cat:"Domov"},
+{it:"Il forno",cs:"Trouba",cat:"Domov"},
+{it:"La lampada",cs:"Lampa",cat:"Domov"},
+{it:"Lo specchio",cs:"Zrcadlo",cat:"Domov"},
+{it:"Il tappeto",cs:"Koberec",cat:"Domov"},
+{it:"Il quadro",cs:"Obraz",cat:"Domov"},
+// ── Nakupování (15) ──
+{it:"Il negozio",cs:"Obchod",cat:"Nakupování"},
+{it:"Il supermercato",cs:"Supermarket",cat:"Nakupování"},
+{it:"Il mercato",cs:"Tržiště",cat:"Nakupování"},
+{it:"Il prezzo",cs:"Cena",cat:"Nakupování"},
+{it:"Lo sconto",cs:"Sleva",cat:"Nakupování"},
+{it:"La cassa",cs:"Pokladna",cat:"Nakupování"},
+{it:"Il commesso",cs:"Prodavač",cat:"Nakupování"},
+{it:"Cerco...",cs:"Hledám...",cat:"Nakupování"},
+{it:"Lo prendo",cs:"Vezmu si to",cat:"Nakupování"},
+{it:"Posso provarlo?",cs:"Mohu si to vyzkoušet?",cat:"Nakupování"},
+{it:"È troppo caro",cs:"To je příliš drahé",cat:"Nakupování"},
+{it:"Ha uno sconto?",cs:"Máte slevu?",cat:"Nakupování"},
+{it:"Pago in contanti",cs:"Platím hotově",cat:"Nakupování"},
+{it:"Pago con carta",cs:"Platím kartou",cat:"Nakupování"},
+{it:"Lo scontrino",cs:"Účtenka",cat:"Nakupování"},
+// ── Technologie (18) ──
+{it:"Il telefono",cs:"Telefon",cat:"Technologie"},
+{it:"Il cellulare",cs:"Mobilní telefon",cat:"Technologie"},
+{it:"Il computer",cs:"Počítač",cat:"Technologie"},
+{it:"Il tablet",cs:"Tablet",cat:"Technologie"},
+{it:"Internet",cs:"Internet",cat:"Technologie"},
+{it:"Il sito web",cs:"Webová stránka",cat:"Technologie"},
+{it:"L'app",cs:"Aplikace",cat:"Technologie"},
+{it:"Il messaggio",cs:"Zpráva",cat:"Technologie"},
+{it:"L'email",cs:"Email",cat:"Technologie"},
+{it:"La fotografia",cs:"Fotografie",cat:"Technologie"},
+{it:"Il video",cs:"Video",cat:"Technologie"},
+{it:"La batteria",cs:"Baterie",cat:"Technologie"},
+{it:"Il caricatore",cs:"Nabíječka",cat:"Technologie"},
+{it:"La password",cs:"Heslo",cat:"Technologie"},
+{it:"Il codice",cs:"Kód",cat:"Technologie"},
+{it:"Scaricare",cs:"Stáhnout",cat:"Technologie"},
+{it:"Caricare",cs:"Nahrát",cat:"Technologie"},
+{it:"Condividere",cs:"Sdílet",cat:"Technologie"},
+];
+
+// Barvy kategorií
+var CATS = {
+  "Základní":"#2ecc71",
+  "Čísla":"#f0c040",
+  "Čas":"#a78bfa",
+  "Fráze":"#fb923c",
+  "Jídlo & Pití":"#fb7185",
+  "Cestování":"#34d399",
+  "Slovesa":"#60a5fa",
+  "Rodina":"#fda4af",
+  "Tělo & Zdraví":"#f87171",
+  "Příroda & Počasí":"#22d3ee",
+  "Barvy":"#e879f9",
+  "Oblečení":"#c084fc",
+  "Pocity":"#f9a8d4",
+  "Domov":"#a3e635",
+  "Nakupování":"#38bdf8",
+  "Technologie":"#818cf8"
+};
+
+// ══ STAV ══
+var learned = [];
+try{var _s=localStorage.getItem('italmaster_learned');if(_s)learned=JSON.parse(_s);}catch(e){}
+var filterCat = 'Vše';
+var idx = 0;
+var speaking = false;
+var view = 'cards';
+var shuffleMode = false;
+var shuffleOrder = null;
+var testState = {running:false,questions:[],current:0,score:0,wrong:0,answered:false,scope:'all',count:10};
+var speakRecog = null;
+var speakListening = false;
+var speakWordIdx = 0;
+var speakResult = null;
+var speakMode = 'translate';
+var speakOrder = [];
+var speakScore = {ok:0,fail:0};
+
+function save(){try{localStorage.setItem('italmaster_learned',JSON.stringify(learned));}catch(e){}}
+
+function filtered(){
+  var base = filterCat==='Vše' ? VOCAB : VOCAB.filter(function(w){return w.cat===filterCat;});
+  if(shuffleMode && shuffleOrder){
+    var ordered=[];
+    for(var i=0;i<shuffleOrder.length;i++){if(shuffleOrder[i]<base.length)ordered.push(base[shuffleOrder[i]]);}
+    return ordered.length ? ordered : base;
+  }
+  return base;
+}
+
+function buildShuffleOrder(){
+  var len = (filterCat==='Vše'?VOCAB:VOCAB.filter(function(w){return w.cat===filterCat;})).length;
+  var arr=[];for(var i=0;i<len;i++)arr.push(i);
+  for(var j=arr.length-1;j>0;j--){var k=Math.floor(Math.random()*(j+1));var t=arr[j];arr[j]=arr[k];arr[k]=t;}
+  shuffleOrder=arr;
+}
+
+function toggleShuffle(){
+  shuffleMode=!shuffleMode;
+  if(shuffleMode)buildShuffleOrder(); else shuffleOrder=null;
+  idx=0;
+  var sb=document.getElementById('shuffle-btn');
+  sb.className='shuffle-btn'+(shuffleMode?' on':'');
+  sb.textContent=shuffleMode?'🔀 Náhodně ✓':'🔀 Náhodně';
+  renderCard();
+}
+
+function card(){var f=filtered();return f[Math.min(idx,f.length-1)]||f[0];}
+
+function setView(v){
+  view=v;
+  document.getElementById('view-cards').style.display=v==='cards'?'block':'none';
+  document.getElementById('view-ebook').style.display=v==='ebook'?'block':'none';
+  document.getElementById('view-test').style.display=v==='test'?'block':'none';
+  document.getElementById('view-speak').style.display=v==='speak'?'block':'none';
+  document.getElementById('tbtn-cards').className='tab-btn'+(v==='cards'?' active':'');
+  document.getElementById('tbtn-ebook').className='tab-btn'+(v==='ebook'?' active':'');
+  document.getElementById('tbtn-test').className='tab-btn'+(v==='test'?' active':'');
+  document.getElementById('tbtn-speak').className='tab-btn'+(v==='speak'?' active':'');
+  if(v==='ebook')renderEbook();
+  if(v==='test')renderTest();
+  if(v==='speak')renderSpeak();
+}
+
+function speak(txt){
+  if(!window.speechSynthesis)return;
+  try{
+    window.speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(txt);
+    u.lang='it-IT'; u.rate=0.85;
+    u.onstart=function(){speaking=true;renderCard();};
+    u.onend=u.onerror=function(){speaking=false;renderCard();};
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+function toggleLearned(){
+  var k=card().it;
+  var wasL=learned.indexOf(k)>=0;
+  if(wasL){learned=learned.filter(function(x){return x!==k;});}
+  else{learned.push(k);spawnConfetti();}
+  save();renderCard();updateProg();
+}
+
+function spawnConfetti(){
+  var colors=['#2ecc71','#f0c040','#e74c3c','#a78bfa','#60a5fa','#fb923c'];
+  for(var i=0;i<28;i++){
+    var c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=(Math.random()*100)+'%';
+    c.style.top='-2vh';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDelay=(Math.random()*0.3)+'s';
+    c.style.animationDuration=(2+Math.random()*1.2)+'s';
+    if(Math.random()>0.5)c.style.borderRadius='50%';
+    document.body.appendChild(c);
+    setTimeout((function(el){return function(){if(el.parentNode)el.parentNode.removeChild(el);};})(c),3500);
+  }
+}
+
+function go(dir){
+  var f=filtered();
+  if(!f.length)return;
+  var outer=document.getElementById('card-outer');
+  outer.className='card-outer '+(dir>0?'hide':'hide-r');
+  setTimeout(function(){
+    idx=(idx+dir+f.length)%f.length;
+    renderCard();
+    outer.className='card-outer';
+  },180);
+}
+
+function buildCats(){
+  var row=document.getElementById('cat-row');
+  row.innerHTML='';
+  var cats=['Vše'].concat(Object.keys(CATS));
+  cats.forEach(function(c){
+    var b=document.createElement('button');
+    b.className='chip'+(c===filterCat?' active':'');
+    b.textContent=c;
+    if(c!=='Vše'&&CATS[c]){b.style.background=c===filterCat?CATS[c]:'transparent';}
+    else if(c==='Vše'&&filterCat==='Vše'){b.style.background='#2ecc71';b.style.color='#0d0d1f';}
+    b.onclick=function(){
+      filterCat=c;idx=0;
+      if(shuffleMode)buildShuffleOrder();
+      buildCats();renderCard();
+    };
+    row.appendChild(b);
+  });
+}
+
+function renderCard(){
+  var w=card();if(!w){
+    document.getElementById('the-card').innerHTML='<div class="empty-state"><div class="ic">🔍</div><div class="ti">Žádná slovíčka</div><div class="ds">V této kategorii nic není</div></div>';
+    document.getElementById('nav-counter').textContent='0 / 0';
+    return;
+  }
+  var color=CATS[w.cat]||'#2ecc71';
+  var isL=learned.indexOf(w.it)>=0;
+  var f=filtered();
+  document.getElementById('nav-counter').textContent=(Math.min(idx,f.length-1)+1)+' / '+f.length;
+  var itEsc=w.it.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+  var c=document.getElementById('the-card');
+  c.innerHTML='<div class="card-top-bar" style="background:'+color+'"></div>'+
+    '<div class="card-glow" style="background:'+color+'"></div>'+
+    '<div class="cat-badge" style="background:'+color+'22;color:'+color+'">'+w.cat+'</div>'+
+    '<div class="it-word">'+w.it+'</div>'+
+    '<div class="cs-word">'+w.cs+'</div>'+
+    '<div class="card-actions">'+
+    '<button class="speak-btn'+(speaking?' pulse':'')+'" style="background:'+color+'22;color:'+color+'" onclick="speak(\''+itEsc+'\')" title="Přehrát italsky">🔊</button>'+
+    '<button class="learned-btn '+(isL?'yes':'no')+'" onclick="toggleLearned()">'+(isL?'✓ Naučeno':'+ Označit naučené')+'</button>'+
+    '</div>';
+  updateProg();
+}
+
+function updateProg(){
+  var pct=VOCAB.length?Math.round(learned.length/VOCAB.length*100):0;
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-text').textContent=learned.length+' / '+VOCAB.length;
+  document.getElementById('prog-pct').textContent=pct+'%';
+}
+
+// ── EBOOK ──
+function renderEbook(){
+  var inner=document.getElementById('ebook-inner');
+  var search=(document.getElementById('eb-search')?document.getElementById('eb-search').value.toLowerCase():'');
+  inner.innerHTML='<div class="ebook-head"><div class="ebook-title">📚 Všechna slovíčka & fráze</div><div class="ebook-sub">'+VOCAB.length+' výrazů · naučeno '+learned.length+'</div><input class="search-box" id="eb-search" placeholder="🔍 Hledat italsky nebo česky..." oninput="renderEbook()" value="'+search.replace(/"/g,'&quot;')+'" /></div>';
+  Object.keys(CATS).forEach(function(cat){
+    var words=VOCAB.filter(function(w){
+      if(w.cat!==cat)return false;
+      if(search&&w.it.toLowerCase().indexOf(search)<0&&w.cs.toLowerCase().indexOf(search)<0)return false;
+      return true;
+    });
+    if(!words.length)return;
+    var color=CATS[cat];
+    var sec=document.createElement('div');
+    sec.innerHTML='<div class="sec-header" style="color:'+color+'"><div class="sec-dot" style="background:'+color+'"></div>'+cat+' <span class="sec-count">('+words.length+')</span></div>';
+    words.forEach(function(w){
+      var isL=learned.indexOf(w.it)>=0;
+      var itEsc=w.it.replace(/'/g,"\\'");
+      var row=document.createElement('div');
+      row.className='eb-row'+(isL?' learned':'');
+      row.innerHTML='<button class="eb-speak" style="background:'+color+'20;color:'+color+'" onclick="speak(\''+itEsc+'\')">🔊</button>'+
+        '<div style="flex:1;min-width:0"><div class="eb-it">'+w.it+'</div><div class="eb-cs">'+w.cs+'</div></div>'+
+        (isL?'<span class="eb-check">✓</span>':'');
+      sec.appendChild(row);
+    });
+    inner.appendChild(sec);
+  });
+  var sb=document.getElementById('eb-search');
+  if(sb&&search){sb.focus();sb.setSelectionRange(search.length,search.length);}
+}
+
+// ── TEST ──
+function renderTest(){
+  var inner=document.getElementById('test-inner');
+  if(!testState.running){
+    var canTestLearned=learned.length>=4;
+    var allCount=VOCAB.length;
+    inner.innerHTML='<div class="test-intro">'+
+      '<div class="test-icon">🎯</div>'+
+      '<div class="test-title">Vyzkoušej se!</div>'+
+      '<div class="test-desc">Zobrazí se česky a vybíráš ze 4 italských možností.</div>'+
+      '<div class="test-options">'+
+        '<div class="test-opt-row"><label>Z čeho zkoušet?</label>'+
+          '<select id="test-scope">'+
+            '<option value="all">Všechna slovíčka ('+allCount+')</option>'+
+            '<option value="learned"'+(canTestLearned?'':' disabled')+'>Naučená ('+learned.length+')</option>'+
+            '<option value="notlearned">Nenaučená ('+(allCount-learned.length)+')</option>'+
+          '</select>'+
+        '</div>'+
+        '<div class="test-opt-row"><label>Kolik otázek?</label>'+
+          '<select id="test-count">'+
+            '<option value="10">10 otázek</option>'+
+            '<option value="20">20 otázek</option>'+
+            '<option value="50">50 otázek</option>'+
+          '</select>'+
+        '</div>'+
+        '<div class="test-opt-row"><label>Kategorie?</label>'+
+          '<select id="test-cat">'+
+            '<option value="Vše">Všechny kategorie</option>'+
+            Object.keys(CATS).map(function(c){return '<option value="'+c+'">'+c+'</option>';}).join('')+
+          '</select>'+
+        '</div>'+
+      '</div>'+
+      '<button class="start-btn" onclick="startTest()">▶ Spustit test</button>'+
+    '</div>';
+    return;
+  }
+  if(testState.current>=testState.questions.length){renderTestResult();return;}
+  var q=testState.questions[testState.current];
+  var pct=Math.round((testState.current/testState.questions.length)*100);
+  var html='<div class="q-card">'+
+    '<div class="q-meta"><span class="q-num">OTÁZKA '+(testState.current+1)+' / '+testState.questions.length+'</span>'+
+    '<span class="q-score">Skóre: '+testState.score+'</span></div>'+
+    '<div class="q-prog"><div class="q-prog-fill" style="width:'+pct+'%"></div></div>'+
+    '<div class="q-prompt">Jak se řekne italsky:</div>'+
+    '<div class="q-word">'+q.word.cs+'</div>'+
+    '<div class="q-answers">';
+  for(var i=0;i<q.options.length;i++){
+    html+='<button class="q-ans" id="qa-'+i+'" onclick="answerTest('+i+')">'+q.options[i]+'</button>';
+  }
+  html+='</div></div>';
+  if(testState.answered){
+    html+='<button class="next-btn" onclick="nextTest()">'+(testState.current+1>=testState.questions.length?'✓ Vyhodnotit':'Další otázka ▶')+'</button>';
+  }
+  inner.innerHTML=html;
+}
+
+function startTest(){
+  var scope=document.getElementById('test-scope').value;
+  var count=parseInt(document.getElementById('test-count').value)||10;
+  var cat=document.getElementById('test-cat').value;
+  var pool=VOCAB.slice();
+  if(cat!=='Vše')pool=pool.filter(function(w){return w.cat===cat;});
+  if(scope==='learned')pool=pool.filter(function(w){return learned.indexOf(w.it)>=0;});
+  else if(scope==='notlearned')pool=pool.filter(function(w){return learned.indexOf(w.it)<0;});
+  if(pool.length<4){alert('Pro test je potřeba alespoň 4 slovíčka v zvolené sadě.');return;}
+  count=Math.min(count,pool.length);
+  var qs=[];var used={};
+  while(qs.length<count){
+    var ri=Math.floor(Math.random()*pool.length);
+    if(used[ri])continue;
+    used[ri]=true;
+    var w=pool[ri];
+    var distractors=[];var dused={};dused[w.it]=true;
+    var allPool=VOCAB.slice();
+    while(distractors.length<3){
+      var di=Math.floor(Math.random()*allPool.length);
+      var dw=allPool[di];
+      if(dused[dw.it])continue;
+      dused[dw.it]=true;
+      distractors.push(dw.it);
+    }
+    var options=[w.it].concat(distractors);
+    for(var j=options.length-1;j>0;j--){var k=Math.floor(Math.random()*(j+1));var t=options[j];options[j]=options[k];options[k]=t;}
+    qs.push({word:w,options:options,correct:w.it});
+  }
+  testState={running:true,questions:qs,current:0,score:0,wrong:0,answered:false,scope:scope,count:count};
+  renderTest();
+}
+
+function answerTest(i){
+  if(testState.answered)return;
+  testState.answered=true;
+  var q=testState.questions[testState.current];
+  var sel=q.options[i];
+  var btns=document.querySelectorAll('.q-ans');
+  for(var b=0;b<btns.length;b++){btns[b].classList.add('disabled');}
+  if(sel===q.correct){
+    btns[i].classList.add('correct');
+    testState.score++;
+    try{var u=new SpeechSynthesisUtterance(q.correct);u.lang='it-IT';u.rate=0.88;window.speechSynthesis.speak(u);}catch(e){}
+  }else{
+    btns[i].classList.add('wrong');
+    testState.wrong++;
+    for(var cc=0;cc<q.options.length;cc++){
+      if(q.options[cc]===q.correct){btns[cc].classList.add('correct');break;}
+    }
+  }
+  renderTest();
+}
+
+function nextTest(){testState.current++;testState.answered=false;renderTest();}
+
+function renderTestResult(){
+  var total=testState.questions.length;
+  var sc=testState.score;
+  var pct=Math.round(sc/total*100);
+  var emoji='👍',msg='Bene! Dobrý výkon!';
+  if(pct===100){emoji='🏆';msg='Perfetto! Plný počet bodů!';spawnConfetti();spawnConfetti();}
+  else if(pct>=80){emoji='🎉';msg='Ottimo! Skoro všechno správně.';spawnConfetti();}
+  else if(pct>=60){emoji='💪';msg='Buono! Ale pořád je co zlepšovat.';}
+  else if(pct>=40){emoji='📚';msg='Studia ancora! Ještě je co procvičit.';}
+  else{emoji='🎯';msg='Non mollare! Nevzdávej to!';}
+  document.getElementById('test-inner').innerHTML='<div class="test-intro result-card">'+
+    '<div class="result-emoji">'+emoji+'</div>'+
+    '<div class="result-score">'+sc+' / '+total+'</div>'+
+    '<div class="result-pct">'+pct+'% správně</div>'+
+    '<div class="result-msg">'+msg+'</div>'+
+    '<button class="start-btn" onclick="resetTest()">🔁 Zkusit znovu</button>'+
+  '</div>';
+}
+
+function resetTest(){
+  testState={running:false,questions:[],current:0,score:0,wrong:0,answered:false,scope:'all',count:10};
+  renderTest();
+}
+
+// ── SPEAKING MODE ──
+function speakBuildOrder(){
+  var f=filtered();
+  var arr=[];for(var i=0;i<f.length;i++)arr.push(i);
+  for(var j=arr.length-1;j>0;j--){var rk=Math.floor(Math.random()*(j+1));var rt=arr[j];arr[j]=arr[rk];arr[rk]=rt;}
+  speakOrder=arr;
+  speakWordIdx=0;
+}
+
+function setSpeakMode(mode){
+  speakMode=mode;speakResult=null;renderSpeak();
+}
+
+function speakNext(){
+  speakWordIdx++;
+  if(speakWordIdx>=speakOrder.length)speakBuildOrder();
+  speakResult=null;renderSpeak();
+}
+
+function normalizeSpeak(s){
+  return s.toLowerCase().replace(/[àáâãäå]/g,'a').replace(/[èéêë]/g,'e').replace(/[ìíîï]/g,'i').replace(/[òóôõö]/g,'o').replace(/[ùúûü]/g,'u').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
+}
+
+function renderSpeak(){
+  var inner=document.getElementById('speak-inner');
+  if(!inner)return;
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    inner.innerHTML='<div class="speak-no-support"><div class="ic">🎤</div><div class="ti">Rozpoznávání řeči není dostupné</div><div class="ds">Tato funkce vyžaduje Chrome nebo Edge na Androidu.<br><br>Na iOS Safari bohužel nefunguje.<br><br>Zkus otevřít tuto stránku v Chrome.</div></div>';
+    return;
+  }
+  if(!speakOrder.length)speakBuildOrder();
+  var f=filtered();
+  if(!f.length){inner.innerHTML='<div class="empty-state"><div class="ic">🔍</div><div class="ti">Žádná slovíčka</div></div>';return;}
+  var safeIdx=speakWordIdx%speakOrder.length;
+  var w=f[speakOrder[safeIdx]];
+  var color=CATS[w.cat]||'#2ecc71';
+  var isTranslate=speakMode==='translate';
+  var mainWord=isTranslate?w.cs:w.it;
+  var hintHtml=isTranslate?'':'<div class="speak-hint-sub">'+w.cs+'</div>';
+  var instruction=isTranslate?'VIDÍŠ ČESKY → ŘEKNI ITALSKY':'VIDÍŠ ITALSKY → PŘEČTI NAHLAS';
+  var statusHtml='';
+  if(speakResult!==null){
+    if(speakResult.ok){
+      statusHtml='<div class="speak-status ok">✅ Správně! Bravo!<span class="speak-heard-text">Řekla jsi: "'+speakResult.heard+'"</span></div>';
+    } else {
+      statusHtml='<div class="speak-status fail">❌ Špatně<span class="speak-correct-word">Správně: '+speakResult.expected+'</span>'+(speakResult.heard?'<span class="speak-heard-text">Řekla jsi: "'+speakResult.heard+'"</span>':'<span class="speak-heard-text">Nic jsem neslyšel — zkus znovu</span>')+'</div>';
+    }
+  }
+  var total=speakScore.ok+speakScore.fail;
+  var statsHtml='';
+  if(total>0){
+    statsHtml='<div class="speak-stats-row">'+
+      '<div class="speak-stat"><div class="speak-stat-num">'+speakScore.ok+'</div><div class="speak-stat-lbl">✅ Správně</div></div>'+
+      '<div class="speak-stat"><div class="speak-stat-num wrong">'+speakScore.fail+'</div><div class="speak-stat-lbl">❌ Chyby</div></div>'+
+      '<div class="speak-stat"><div class="speak-stat-num pct">'+Math.round(speakScore.ok/total*100)+'%</div><div class="speak-stat-lbl">Úspěšnost</div></div>'+
+    '</div>';
+  }
+  var micIcon=speakListening?'⏹':'🎤';
+  var micClass='mic-btn-big'+(speakListening?' listening':'');
+  var micLabel=speakListening?'Poslouchám... klepni pro zastavení':(speakResult!==null?'':'Klepni a mluv italsky');
+  var nextBtn=speakResult!==null?'<div class="speak-nav-row"><button class="speak-next-btn" onclick="speakNext()">Další slovo ▶</button></div>':'';
+  inner.innerHTML='<div class="speak-card">'+
+    '<div class="speak-mode-row">'+
+    '<button class="smode-btn'+(isTranslate?' active':'')+'" onclick="setSpeakMode(\'translate\')">🔤 Překlad</button>'+
+    '<button class="smode-btn'+(!isTranslate?' active':'')+'" onclick="setSpeakMode(\'pronounce\')">🗣️ Výslovnost</button>'+
+    '</div>'+statsHtml+
+    '<div class="speak-instruction">'+instruction+'</div>'+
+    '<div class="speak-cat-badge" style="background:'+color+'22;color:'+color+'">'+w.cat+'</div>'+
+    '<div class="speak-main-word">'+mainWord+'</div>'+hintHtml+
+    '<div class="speak-progress">'+(safeIdx+1)+' / '+f.length+'</div>'+
+    statusHtml+
+    '<button class="'+micClass+'" onclick="startSpeakListen()">'+micIcon+'</button>'+
+    '<div class="mic-label">'+micLabel+'</div>'+nextBtn+
+  '</div>';
+}
+
+function startSpeakListen(){
+  if(speakListening){if(speakRecog)speakRecog.stop();return;}
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return;
+  var f=filtered();if(!f.length)return;
+  var w=f[speakOrder[speakWordIdx%speakOrder.length]];
+  speakRecog=new SR();
+  speakRecog.lang='it-IT';
+  speakRecog.interimResults=false;
+  speakRecog.maxAlternatives=6;
+  speakListening=true;
+  renderSpeak();
+  speakRecog.onresult=function(e){
+    speakListening=false;
+    var expected=normalizeSpeak(w.it);
+    var heard='';var ok=false;
+    for(var i=0;i<e.results[0].length;i++){
+      var alt=normalizeSpeak(e.results[0][i].transcript);
+      if(!heard)heard=e.results[0][i].transcript.trim();
+      if(alt===expected){ok=true;heard=e.results[0][i].transcript.trim();break;}
+    }
+    if(ok){speakScore.ok++;spawnConfetti();}else{speakScore.fail++;}
+    speakResult={ok:ok,heard:heard,expected:w.it};
+    renderSpeak();
+    try{var u=new SpeechSynthesisUtterance(w.it);u.lang='it-IT';u.rate=0.82;window.speechSynthesis.speak(u);}catch(ex){}
+  };
+  speakRecog.onerror=function(ev){
+    speakListening=false;
+    if(ev.error==='no-speech'){speakScore.fail++;speakResult={ok:false,heard:'',expected:w.it};}
+    renderSpeak();
+  };
+  speakRecog.onend=function(){speakListening=false;if(!speakResult)renderSpeak();};
+  try{speakRecog.start();}catch(ex){speakListening=false;renderSpeak();}
+}
+
+// ── SWIPE ──
+var touchX=0,touchY=0;
+document.addEventListener('touchstart',function(e){if(view!=='cards')return;touchX=e.touches[0].clientX;touchY=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',function(e){
+  if(view!=='cards')return;
+  var dx=e.changedTouches[0].clientX-touchX;
+  var dy=e.changedTouches[0].clientY-touchY;
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){if(dx<0)go(1);else go(-1);}
+},{passive:true});
+document.addEventListener('keydown',function(e){
+  if(view!=='cards')return;
+  if(e.key==='ArrowLeft')go(-1);
+  else if(e.key==='ArrowRight')go(1);
+  else if(e.key===' '){e.preventDefault();var w=card();if(w)speak(w.it);}
+  else if(e.key==='Enter')toggleLearned();
+});
+
+// ── INIT ──
+buildCats();
+renderCard();
+updateProg();
+</script>
+</body>
+</html>
