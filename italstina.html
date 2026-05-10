@@ -1421,7 +1421,6 @@ var CATS = {
 
 // ══ STAV ══
 var learned = [];
-try{var _s=localStorage.getItem('italmaster_learned');if(_s)learned=JSON.parse(_s);}catch(e){}
 var filterCat = 'Vše';
 var idx = 0;
 var speaking = false;
@@ -1440,17 +1439,35 @@ var speakScore = {ok:0,fail:0};
 var listening = false;
 var recognition = null;
 var speechStats = {};
-try{var _ss=localStorage.getItem('italmaster_speech_stats');if(_ss)speechStats=JSON.parse(_ss);}catch(e){}
 var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 var micSupported = !!SR;
 
-function save(){try{localStorage.setItem('italmaster_learned',JSON.stringify(learned));}catch(e){}}
+// ── Persistentní úložiště: window.storage (Claude.ai) → localStorage → paměť ──
+function _storeSave(key, val){
+  if(window.storage && typeof window.storage.set === 'function'){
+    try{ window.storage.set(key, val); }catch(e){}
+  }
+  try{ localStorage.setItem(key, val); }catch(e){}
+}
+function _storeLoad(key, cb){
+  if(window.storage && typeof window.storage.get === 'function'){
+    try{
+      window.storage.get(key).then(function(r){ cb(r ? r.value : null); }).catch(function(){
+        try{ cb(localStorage.getItem(key)); }catch(e){ cb(null); }
+      });
+      return;
+    }catch(e){}
+  }
+  try{ cb(localStorage.getItem(key)); }catch(e){ cb(null); }
+}
+
+function save(){ _storeSave('italmaster_learned', JSON.stringify(learned)); }
 function ebLearn(it){
   var i=learned.indexOf(it);
   if(i>=0){learned.splice(i,1);}else{learned.push(it);spawnConfetti();}
   save();updateProg();renderEbook();
 }
-function saveSpeechStats(){try{localStorage.setItem('italmaster_speech_stats',JSON.stringify(speechStats));}catch(e){}}
+function saveSpeechStats(){ _storeSave('italmaster_speech_stats', JSON.stringify(speechStats)); }
 
 function normalizeText(s){
   if(!s)return '';
@@ -2018,9 +2035,18 @@ document.addEventListener('keydown',function(e){
 });
 
 // ── INIT ──
-buildCats();
-renderCard();
-updateProg();
+function _startApp(){
+  buildCats();
+  renderCard();
+  updateProg();
+}
+_storeLoad('italmaster_learned', function(s){
+  if(s){ try{ learned = JSON.parse(s); }catch(e){} }
+  _storeLoad('italmaster_speech_stats', function(ss){
+    if(ss){ try{ speechStats = JSON.parse(ss); }catch(e){} }
+    _startApp();
+  });
+});
 </script>
 </body>
 </html>
