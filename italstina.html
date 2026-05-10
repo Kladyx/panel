@@ -1574,16 +1574,56 @@ function setView(v){
   if(v==='speak')renderSpeak();
 }
 
+// ── SPEAK — robustní verze (iOS fix + fallback hlas) ──
+var _voicesReady = false;
+var _voicesCache = [];
+function _loadVoices(){
+  var v = window.speechSynthesis.getVoices();
+  if(v && v.length){ _voicesCache = v; _voicesReady = true; }
+}
+if(window.speechSynthesis){
+  _loadVoices();
+  if(window.speechSynthesis.onvoiceschanged !== undefined){
+    window.speechSynthesis.onvoiceschanged = _loadVoices;
+  }
+}
+function _getBestVoice(){
+  _loadVoices();
+  var voices = _voicesCache;
+  // Priorita: přesná it-IT shoda → libovolný italský hlas → default
+  var best = null;
+  for(var i=0;i<voices.length;i++){
+    if(voices[i].lang === 'it-IT'){ best=voices[i]; break; }
+  }
+  if(!best){
+    for(var i=0;i<voices.length;i++){
+      if(voices[i].lang && voices[i].lang.toLowerCase().indexOf('it')===0){ best=voices[i]; break; }
+    }
+  }
+  return best; // null = použije se výchozí hlas prohlížeče
+}
 function speak(txt){
-  if(!window.speechSynthesis)return;
+  if(!window.speechSynthesis) return;
   try{
+    // iOS fix: synthezátor se zasekne ve stavu paused po uzamčení obrazovky
+    if(window.speechSynthesis.paused){ window.speechSynthesis.resume(); }
     window.speechSynthesis.cancel();
-    var u=new SpeechSynthesisUtterance(txt);
-    u.lang='it-IT'; u.rate=0.85;
-    u.onstart=function(){speaking=true;renderCard();};
-    u.onend=u.onerror=function(){speaking=false;renderCard();};
-    window.speechSynthesis.speak(u);
-  }catch(e){}
+    // Krátké zpoždění po cancel() — nutné pro Chrome na Androidu
+    setTimeout(function(){
+      try{
+        var u = new SpeechSynthesisUtterance(txt);
+        var v = _getBestVoice();
+        if(v){ u.voice = v; u.lang = v.lang; }
+        else { u.lang = 'it-IT'; }
+        u.rate = 0.85;
+        u.onstart = function(){ speaking=true; renderCard(); };
+        u.onend = u.onerror = function(){ speaking=false; renderCard(); };
+        window.speechSynthesis.speak(u);
+        // iOS workaround: bez resume() se někdy nespustí
+        if(window.speechSynthesis.paused){ window.speechSynthesis.resume(); }
+      }catch(e){ speaking=false; }
+    }, 50);
+  }catch(e){ speaking=false; }
 }
 
 function toggleLearned(){
@@ -1811,7 +1851,7 @@ function answerTest(i){
   if(sel===q.correct){
     btns[i].classList.add('correct');
     testState.score++;
-    try{var u=new SpeechSynthesisUtterance(q.correct);u.lang='it-IT';u.rate=0.88;window.speechSynthesis.speak(u);}catch(e){}
+    speak(q.correct);
   }else{
     btns[i].classList.add('wrong');
     testState.wrong++;
@@ -1949,7 +1989,7 @@ function startSpeakListen(){
     if(ok){speakScore.ok++;spawnConfetti();}else{speakScore.fail++;}
     speakResult={ok:ok,heard:heard,expected:w.it};
     renderSpeak();
-    try{var u=new SpeechSynthesisUtterance(w.it);u.lang='it-IT';u.rate=0.82;window.speechSynthesis.speak(u);}catch(ex){}
+    speak(w.it);
   };
   speakRecog.onerror=function(ev){
     speakListening=false;
