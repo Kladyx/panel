@@ -281,7 +281,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo">KLADYX</div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v7.10</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v7.3</span> · VYBERTE APLIKACI</div>
       <div class="eq-wrap">
         <div class="dancer dancer-g">
           <svg viewBox="0 0 32 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -651,6 +651,8 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
     <button class="station-tab" onclick="switchStation('blanik', this)">Rádio Blaník</button>
+    <button class="station-tab" onclick="switchStation('impuls', this)">Rádio Impuls</button>
+    <button class="station-tab" onclick="switchStation('dance', this)">Dance Radio</button>
   </div>
 
   <div class="live-badge">
@@ -686,12 +688,18 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     var CURRENT_STATION = 'housetime';
     var STATION_META = {
       housetime: { label: 'HOUSETIME.FM',   color: 'var(--neon-purple)' },
-      blanik:    { label: 'RÁDIO BLANÍK',   color: '#00ff88' }
+      blanik:    { label: 'RÁDIO BLANÍK',   color: '#00ff88' },
+      orion:     { label: 'HITRÁDIO ORION', color: '#00d4ff' },
+      impuls:    { label: 'RÁDIO IMPULS',   color: '#ff8800' },
+      dance:     { label: 'DANCE RADIO',    color: '#ff44aa' }
     };
 
     // Icecast status endpointy pro non-HouseTime stanice
     var ICECAST_STATIONS = {
-      blanik: { label: 'Rádio Blaník',   apiUrl: 'https://radia.cz/api/stations/218/now-playing' }
+      blanik: { label: 'Rádio Blaník',   apiUrl: 'https://radia.cz/api/stations/218/now-playing' },
+      orion:  { label: 'Hitrádio Orion', apiUrl: null },
+      impuls: { label: 'Rádio Impuls',   apiUrl: null },
+      dance:  { label: 'Dance Radio',    apiUrl: null }
     };
 
     function fetchIcecastStation(stationId) {
@@ -724,7 +732,10 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
     function fetchIcecastFallback(stationId) {
       var mounts = {
-        blanik: { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'blanikmorava128' }
+        blanik: { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'blanikmorava128' },
+        orion:  { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'orion128' },
+        impuls: { url: 'http://icecast5.play.cz/status-json.xsl', mount: 'impuls128' },
+        dance:  { url: 'http://icecast2.play.cz:8000/status-json.xsl', mount: 'dance-radio128' }
       };
       var m = mounts[stationId];
       var ts = Date.now();
@@ -8045,7 +8056,7 @@ h1{font-family:'Orbitron',monospace;font-size:1.35rem;font-weight:900;letter-spa
 </head>
 <body>
 <header>
-  <div class="topbar"><span class="ver">ver.1.3</span><span id="sync-dot">💾 Start...</span></div>
+  <div class="topbar"><span class="ver">ver.1.2</span><span id="sync-dot">💾 Start...</span></div>
   <h1>🩸 GLUKÓZA</h1>
   <div class="hline"></div>
 </header>
@@ -8439,33 +8450,6 @@ if(bs)bs.onclick=function(){
   CUR=ym;SAVE();RM();
   alert('✓ Uloženo!');
 };
-
-// Auto-save: Oninput na všechna pole glukózy
-function autoSaveGluco(){
-  var date=document.getElementById('gi-date').value;
-  if(!date)return;
-  var l=parseFloat(document.getElementById('gi-l').value);
-  var s=parseFloat(document.getElementById('gi-s').value);
-  var o=parseFloat(document.getElementById('gi-o').value);
-  var v=parseFloat(document.getElementById('gi-v').value);
-  var sys=parseFloat(document.getElementById('gi-sys').value);
-  var dia=parseFloat(document.getElementById('gi-dia').value);
-  var puls=parseFloat(document.getElementById('gi-puls').value);
-  var ym=date.substring(0,7);
-  if(!DAT[ym])DAT[ym]={};
-  DAT[ym][date]={l:isNaN(l)?null:l,s:isNaN(s)?null:s,o:isNaN(o)?null:o,v:isNaN(v)?null:v,sys:isNaN(sys)?null:sys,dia:isNaN(dia)?null:dia,puls:isNaN(puls)?null:puls};
-  CUR=ym;SAVE();RM();
-}
-
-// Podepři inputy oninput eventem
-document.getElementById('gi-date').addEventListener('change',autoSaveGluco);
-document.getElementById('gi-l').addEventListener('input',autoSaveGluco);
-document.getElementById('gi-s').addEventListener('input',autoSaveGluco);
-document.getElementById('gi-o').addEventListener('input',autoSaveGluco);
-document.getElementById('gi-v').addEventListener('input',autoSaveGluco);
-document.getElementById('gi-sys').addEventListener('input',autoSaveGluco);
-document.getElementById('gi-dia').addEventListener('input',autoSaveGluco);
-document.getElementById('gi-puls').addEventListener('input',autoSaveGluco);
 
 // Tisk
 var bt=document.getElementById('btn-tisk');
