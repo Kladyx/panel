@@ -10662,29 +10662,35 @@ APP_HTML["vocabulary"] = `<!DOCTYPE html>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
   --bg:#0d0d1f;--card:#15152a;--border:#222240;
-  --green:#3b82f6;--red:#ef4444;--white:#f5f5f5;
+  --green:#2ecc71;--red:#e74c3c;--white:#f5f5f5;
   --gold:#f0c040;--purple:#a78bfa;--blue:#60a5fa;
   --muted:#9999bb;
 }
 html,body{width:100%;height:100%;background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:#f0f0f8;overflow-x:hidden;}
-body{background:radial-gradient(circle at 15% 0%,rgba(59,130,246,0.09),transparent 40%),radial-gradient(circle at 85% 100%,rgba(239,68,68,0.07),transparent 40%),var(--bg);}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#080d1c;border-bottom:2px solid rgba(59,130,246,0.25);gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:10;}
+body{background:radial-gradient(circle at 15% 0%,rgba(46,204,113,0.09),transparent 40%),radial-gradient(circle at 85% 100%,rgba(231,76,60,0.07),transparent 40%),var(--bg);}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#080d1c;border-bottom:2px solid rgba(46,204,113,0.25);gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:10;}
 .logo{font-size:1rem;font-weight:800;display:flex;align-items:center;gap:7px;white-space:nowrap;}
 .logo-flag{font-size:1.35rem;}
-.logo-text{background:linear-gradient(135deg,#3b82f6,#f0f0f0,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-text{background:linear-gradient(135deg,#2ecc71,#f0c040,#e74c3c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .prog-wrap{flex:1;min-width:110px;max-width:190px;}
 .prog-meta{display:flex;justify-content:space-between;font-size:0.61rem;color:#888;margin-bottom:3px;font-weight:700;}
 .prog-track{height:5px;background:#1e1e38;border-radius:99px;overflow:hidden;}
-.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#3b82f6,#f0f0f0,#ef4444);transition:width 0.6s;box-shadow:0 0 10px rgba(59,130,246,0.4);}
+.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#2ecc71,#f0c040,#e74c3c);transition:width 0.6s;box-shadow:0 0 10px rgba(46,204,113,0.4);}
 .tab-group{display:flex;gap:3px;background:#1a1a2e;border-radius:10px;padding:3px;flex-wrap:wrap;}
 .tab-btn{padding:6px 10px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:0.7rem;font-weight:700;transition:all 0.2s;background:transparent;color:#888;}
-.tab-btn.active{background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;}
+.tab-btn.active{background:linear-gradient(135deg,#2ecc71,#f0c040);color:#0d0d1f;}
 .tab-btn:active{transform:scale(0.94);}
+
+/* ── CATEGORY CHIPS ── */
 .cat-row{display:flex;gap:6px;padding:10px 14px;overflow-x:auto;scrollbar-width:none;background:#080d1c;border-bottom:1px solid #111128;}
 .cat-row::-webkit-scrollbar{display:none;}
 .chip{white-space:nowrap;padding:5px 13px;border-radius:99px;border:1.5px solid #252548;background:transparent;color:#888;font-family:inherit;font-size:0.72rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
 .chip:active{transform:scale(0.92);}
 .chip.active{border-color:transparent;color:#0d0d1f;font-weight:800;}
+
+/* ── CARDS ── */
 .cards-wrap{padding:16px 14px 0;}
 .card-outer{transition:opacity 0.2s,transform 0.2s;}
 .card-outer.hide{opacity:0;transform:translateX(-30px);}
@@ -10700,35 +10706,39 @@ body{background:radial-gradient(circle at 15% 0%,rgba(59,130,246,0.09),transpare
 .speak-btn{width:46px;height:46px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.25rem;transition:all 0.2s;flex-shrink:0;}
 .speak-btn:active{transform:scale(0.9);}
 .speak-btn.pulse{animation:pulseBtn 0.8s ease infinite;}
-@keyframes pulseBtn{0%{box-shadow:0 0 0 0 rgba(59,130,246,0.6);}100%{box-shadow:0 0 0 14px transparent;}}
+@keyframes pulseBtn{0%{box-shadow:0 0 0 0 rgba(46,204,113,0.6);}100%{box-shadow:0 0 0 14px transparent;}}
 .learned-btn{padding:9px 16px;border-radius:11px;border:1.5px solid;font-family:inherit;font-size:0.75rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.2s;}
 .learned-btn:active{transform:scale(0.94);}
 .learned-btn.no{border-color:#252548;background:transparent;color:#666688;}
-.learned-btn.yes{border-color:#3b82f6;background:rgba(59,130,246,0.14);color:#3b82f6;box-shadow:0 0 12px rgba(59,130,246,0.2);}
+.learned-btn.yes{border-color:#2ecc71;background:rgba(46,204,113,0.14);color:#2ecc71;box-shadow:0 0 12px rgba(46,204,113,0.2);}
 .nav-row{display:flex;align-items:center;justify-content:space-between;padding:14px;}
 .nav-btn{width:48px;height:48px;border-radius:50%;border:1.5px solid #252548;background:#15152a;color:#888;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.05rem;transition:all 0.2s;}
-.nav-btn:hover{border-color:#3b82f6;color:#3b82f6;}
+.nav-btn:hover{border-color:#2ecc71;color:#2ecc71;}
 .nav-btn:active{transform:scale(0.92);}
 .counter{font-size:0.82rem;color:#666688;font-weight:800;letter-spacing:0.5px;}
 .shuffle-btn{padding:6px 12px;border-radius:99px;border:1.5px solid #252548;background:transparent;color:#888;font-family:inherit;font-size:0.7rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
 .shuffle-btn:active{transform:scale(0.94);}
 .shuffle-btn.on{border-color:#a78bfa;color:#a78bfa;background:rgba(167,139,250,0.1);}
+
+/* ── EBOOK ── */
 .ebook-wrap{padding:14px;}
 .ebook-head{margin-bottom:14px;}
 .ebook-title{font-size:1.05rem;font-weight:800;color:#e0e0f5;}
 .ebook-sub{font-size:0.72rem;color:#666688;margin-top:3px;}
 .search-box{width:100%;padding:10px 14px;border-radius:12px;border:1.5px solid #252548;background:#15152a;color:#e0e0f5;font-family:inherit;font-size:0.85rem;margin-top:10px;outline:none;transition:all 0.2s;}
-.search-box:focus{border-color:#3b82f6;}
+.search-box:focus{border-color:#2ecc71;}
 .sec-header{display:flex;align-items:center;gap:8px;font-size:0.82rem;font-weight:800;margin:18px 0 8px;}
 .sec-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .sec-count{color:#444466;font-weight:500;}
 .eb-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;border:1px solid #222240;background:#15152a;margin-bottom:5px;transition:all 0.2s;}
-.eb-row.learned{border-color:rgba(59,130,246,0.3);background:rgba(59,130,246,0.06);}
+.eb-row.learned{border-color:rgba(46,204,113,0.3);background:rgba(46,204,113,0.06);}
 .eb-speak{width:34px;height:34px;border-radius:50%;border:none;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
 .eb-speak:active{transform:scale(0.9);}
 .eb-it{font-size:0.9rem;font-weight:700;color:#e0e0f5;}
 .eb-cs{font-size:0.78rem;color:#777799;margin-top:1px;}
-.eb-check{font-size:0.9rem;font-weight:700;color:#3b82f6;margin-left:auto;flex-shrink:0;}
+.eb-check{font-size:0.9rem;font-weight:700;color:#2ecc71;margin-left:auto;flex-shrink:0;}
+
+/* ── TEST ── */
 .test-wrap{padding:14px;}
 .test-intro{background:linear-gradient(145deg,#15152a,#1a1a32);border:1px solid #252548;border-radius:18px;padding:22px 18px;text-align:center;}
 .test-icon{font-size:3rem;margin-bottom:8px;}
@@ -10738,31 +10748,31 @@ body{background:radial-gradient(circle at 15% 0%,rgba(59,130,246,0.09),transpare
 .test-opt-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:11px;border:1.5px solid #252548;background:#0d0d1f;}
 .test-opt-row label{color:#aaa;font-size:0.78rem;font-weight:600;}
 .test-opt-row select{background:#1a1a2e;color:#e0e0f5;border:1px solid #252548;border-radius:7px;padding:5px 10px;font-family:inherit;font-size:0.8rem;font-weight:700;outline:none;cursor:pointer;}
-.start-btn{padding:13px 28px;border-radius:14px;border:none;font-family:inherit;font-size:0.95rem;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;transition:all 0.2s;width:100%;box-shadow:0 6px 20px rgba(59,130,246,0.3);}
+.start-btn{padding:13px 28px;border-radius:14px;border:none;font-family:inherit;font-size:0.95rem;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#2ecc71,#f0c040);color:#0d0d1f;transition:all 0.2s;width:100%;box-shadow:0 6px 20px rgba(46,204,113,0.3);}
 .start-btn:active{transform:scale(0.97);}
 .q-card{background:linear-gradient(145deg,#15152a,#1a1a32);border:1px solid #252548;border-radius:18px;padding:20px 18px;margin-bottom:14px;}
 .q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
 .q-num{font-size:0.72rem;font-weight:800;color:#666688;letter-spacing:1px;}
-.q-score{font-size:0.78rem;font-weight:800;color:#3b82f6;}
+.q-score{font-size:0.78rem;font-weight:800;color:#2ecc71;}
 .q-prog{height:4px;background:#1e1e38;border-radius:99px;overflow:hidden;margin-bottom:16px;}
-.q-prog-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);transition:width 0.4s;}
+.q-prog-fill{height:100%;background:linear-gradient(90deg,#2ecc71,#f0c040);transition:width 0.4s;}
 .q-prompt{font-size:0.78rem;color:#888;margin-bottom:6px;font-weight:700;}
 .q-word{font-size:1.7rem;font-weight:800;color:#f0f0fa;margin-bottom:18px;line-height:1.25;}
 .q-answers{display:flex;flex-direction:column;gap:8px;}
 .q-ans{padding:13px 16px;border-radius:12px;border:1.5px solid #252548;background:#0d0d1f;color:#e0e0f5;font-family:inherit;font-size:0.92rem;font-weight:600;cursor:pointer;text-align:left;transition:all 0.2s;}
 .q-ans:active{transform:scale(0.98);}
-.q-ans:hover{border-color:#3b82f6;}
-.q-ans.correct{border-color:#3b82f6;background:rgba(59,130,246,0.12);color:#3b82f6;font-weight:800;animation:correctPulse 0.5s;}
+.q-ans:hover{border-color:#2ecc71;}
+.q-ans.correct{border-color:#2ecc71;background:rgba(46,204,113,0.12);color:#2ecc71;font-weight:800;animation:correctPulse 0.5s;}
 .q-ans.wrong{border-color:#f87171;background:rgba(248,113,113,0.12);color:#f87171;font-weight:800;animation:wrongShake 0.4s;}
 .q-ans.disabled{pointer-events:none;}
 @keyframes correctPulse{0%{transform:scale(1);}50%{transform:scale(1.03);}100%{transform:scale(1);}}
 @keyframes wrongShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
-.next-btn{margin-top:14px;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;font-family:inherit;font-size:0.88rem;font-weight:800;cursor:pointer;width:100%;transition:all 0.2s;}
+.next-btn{margin-top:14px;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,#2ecc71,#f0c040);color:#0d0d1f;font-family:inherit;font-size:0.88rem;font-weight:800;cursor:pointer;width:100%;transition:all 0.2s;}
 .next-btn:active{transform:scale(0.97);}
 .result-card{text-align:center;padding:30px 20px;}
 .result-emoji{font-size:4rem;margin-bottom:10px;animation:bounce 0.6s ease;}
 @keyframes bounce{0%{transform:scale(0);}60%{transform:scale(1.2);}100%{transform:scale(1);}}
-.result-score{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,#3b82f6,#f0f0f0,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
+.result-score{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,#2ecc71,#f0c040,#e74c3c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
 .result-pct{font-size:1.1rem;color:#888;font-weight:700;margin-bottom:6px;}
 .result-msg{font-size:0.9rem;color:#aaa;margin-bottom:20px;font-weight:600;}
 .confetti{position:fixed;width:8px;height:8px;pointer-events:none;animation:confettiFall 2.5s linear forwards;}
@@ -10771,6 +10781,8 @@ body{background:radial-gradient(circle at 15% 0%,rgba(59,130,246,0.09),transpare
 .empty-state .ic{font-size:3rem;margin-bottom:10px;}
 .empty-state .ti{font-size:1rem;font-weight:700;color:#aaa;margin-bottom:6px;}
 .empty-state .ds{font-size:0.82rem;}
+
+/* ── SPEAKING MODE ── */
 .speak-wrap{padding:14px;}
 .speak-card{background:linear-gradient(145deg,#15152a,#1a1a32);border:1px solid #252548;border-radius:22px;padding:24px 20px;text-align:center;}
 .speak-mode-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px;}
@@ -10782,18 +10794,18 @@ body{background:radial-gradient(circle at 15% 0%,rgba(59,130,246,0.09),transpare
 .speak-main-word{font-size:2.1rem;font-weight:800;color:#f0f0fa;line-height:1.2;margin-bottom:8px;}
 .speak-hint-sub{font-size:0.95rem;color:var(--muted);margin-bottom:12px;}
 .speak-progress{font-size:0.7rem;color:#444466;font-weight:700;margin-bottom:18px;}
-.mic-btn-big{width:84px;height:84px;border-radius:50%;border:3px solid rgba(59,130,246,0.4);background:rgba(59,130,246,0.1);font-size:2.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;transition:all 0.2s;}
+.mic-btn-big{width:84px;height:84px;border-radius:50%;border:3px solid rgba(46,204,113,0.4);background:rgba(46,204,113,0.1);font-size:2.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;transition:all 0.2s;}
 .mic-btn-big:active{transform:scale(0.92);}
-.mic-btn-big.listening{border-color:#ef4444;background:rgba(239,68,68,0.15);animation:micPulse 1s ease infinite;}
-@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.5);}50%{box-shadow:0 0 0 20px rgba(239,68,68,0);}}
+.mic-btn-big.listening{border-color:#e74c3c;background:rgba(231,76,60,0.15);animation:micPulse 1s ease infinite;}
+@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,0.5);}50%{box-shadow:0 0 0 20px rgba(231,76,60,0);}}
 .mic-label{font-size:0.72rem;color:#888;font-weight:700;min-height:20px;margin-bottom:14px;}
 .speak-status{padding:12px 16px;border-radius:12px;margin:14px 0 6px;font-size:0.88rem;font-weight:700;line-height:1.6;text-align:left;}
-.speak-status.ok{background:rgba(59,130,246,0.12);border:1.5px solid rgba(59,130,246,0.3);color:#3b82f6;}
+.speak-status.ok{background:rgba(46,204,113,0.12);border:1.5px solid rgba(46,204,113,0.3);color:#2ecc71;}
 .speak-status.fail{background:rgba(248,113,113,0.1);border:1.5px solid rgba(248,113,113,0.3);color:#f87171;}
 .speak-correct-word{font-size:1.05rem;font-weight:800;display:block;margin-top:4px;}
 .speak-heard-text{font-size:0.78rem;opacity:0.75;font-style:italic;display:block;margin-top:2px;}
 .speak-nav-row{display:flex;gap:8px;justify-content:center;margin-top:14px;}
-.speak-next-btn{padding:12px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;font-family:inherit;font-size:0.88rem;font-weight:800;cursor:pointer;transition:all 0.2s;}
+.speak-next-btn{padding:12px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,#2ecc71,#f0c040);color:#0d0d1f;font-family:inherit;font-size:0.88rem;font-weight:800;cursor:pointer;transition:all 0.2s;}
 .speak-next-btn:active{transform:scale(0.97);}
 .speak-no-support{text-align:center;padding:30px 20px;}
 .speak-no-support .ic{font-size:3rem;margin-bottom:12px;}
@@ -10801,35 +10813,45 @@ body{background:radial-gradient(circle at 15% 0%,rgba(59,130,246,0.09),transpare
 .speak-no-support .ds{font-size:0.82rem;color:#888;line-height:1.6;}
 .speak-stats-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px;}
 .speak-stat{background:#1e1e38;border-radius:10px;padding:8px 14px;text-align:center;}
-.speak-stat-num{font-size:1.2rem;font-weight:800;color:#3b82f6;}
+.speak-stat-num{font-size:1.2rem;font-weight:800;color:#2ecc71;}
 .speak-stat-num.wrong{color:#f87171;}
 .speak-stat-num.pct{color:#a78bfa;}
 .speak-stat-lbl{font-size:0.59rem;color:#555577;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+
+/* ── WELCOME SCREEN ── */
 .welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;padding:30px 24px;text-align:center;gap:16px;}
 .welcome-flag{font-size:5rem;animation:flagWave 2s ease infinite;}
 @keyframes flagWave{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg);}}
-.welcome-title{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#3b82f6,#f0f0f0,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;}
+.welcome-title{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#2ecc71,#f0c040,#e74c3c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;}
 .welcome-sub{font-size:0.85rem;color:var(--muted);line-height:1.6;max-width:320px;}
 .welcome-stats{display:flex;gap:12px;margin-top:8px;}
 .wstat{background:#15152a;border:1px solid #252548;border-radius:12px;padding:12px 18px;text-align:center;}
-.wstat-num{font-size:1.4rem;font-weight:800;color:#3b82f6;}
+.wstat-num{font-size:1.4rem;font-weight:800;color:#2ecc71;}
 .wstat-lbl{font-size:0.62rem;color:#666688;text-transform:uppercase;letter-spacing:1px;}
-.welcome-btn{padding:14px 32px;border-radius:14px;border:none;background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;font-family:inherit;font-size:1rem;font-weight:800;cursor:pointer;transition:all 0.2s;box-shadow:0 6px 24px rgba(59,130,246,0.35);}
+.welcome-btn{padding:14px 32px;border-radius:14px;border:none;background:linear-gradient(135deg,#2ecc71,#f0c040);color:#0d0d1f;font-family:inherit;font-size:1rem;font-weight:800;cursor:pointer;transition:all 0.2s;box-shadow:0 6px 24px rgba(46,204,113,0.35);}
 .welcome-btn:active{transform:scale(0.97);}
+/* ── MIC ── */
 .mic-btn{width:46px;height:46px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.25rem;transition:all 0.2s;flex-shrink:0;}
 .mic-btn:active{transform:scale(0.9);}
-.mic-btn.listening{animation:micPulse 1s ease infinite;background:rgba(239,68,68,0.28)!important;color:#ef4444!important;box-shadow:0 0 18px rgba(239,68,68,0.55);}
+.mic-btn.listening{animation:micPulse 1s ease infinite;background:rgba(231,76,60,0.28)!important;color:#e74c3c!important;box-shadow:0 0 18px rgba(231,76,60,0.55);}
+@keyframes micPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
 .speech-feedback{margin-top:10px;padding:10px 14px;border-radius:12px;font-size:0.85rem;font-weight:600;text-align:center;animation:fbIn 0.3s ease;display:none;}
 @keyframes fbIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-.speech-feedback.ok{background:rgba(59,130,246,0.18);color:#3b82f6;border:1.5px solid rgba(59,130,246,0.4);}
-.speech-feedback.bad{background:rgba(239,68,68,0.16);color:#ef4444;border:1.5px solid rgba(239,68,68,0.4);}
+@keyframes fbCorrect{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+@keyframes fbWrong{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.speech-feedback.ok{background:rgba(46,204,113,0.18);color:#2ecc71;border:1.5px solid rgba(46,204,113,0.4);animation:fbIn 0.3s ease, fbCorrect 0.6s ease;}
+.speech-feedback.bad{background:rgba(231,76,60,0.16);color:#e74c3c;border:1.5px solid rgba(231,76,60,0.4);animation:fbIn 0.3s ease, fbWrong 0.4s ease;}
+.speech-feedback.listening{background:rgba(231,76,60,0.12);color:#fca5a5;border:1.5px solid rgba(231,76,60,0.25);}
 .speech-feedback .heard{display:block;font-size:0.72rem;font-weight:500;color:#aaa;margin-top:4px;font-style:italic;}
-<\/style>
+.speech-stats{display:flex;justify-content:center;gap:14px;margin-top:6px;font-size:0.72rem;color:#888;font-weight:600;}
+.speech-stats .ok{color:#2ecc71;}
+.speech-stats .bad{color:#e74c3c;}
+</style>
 </head>
 <body>
 
 <div class="topbar">
-  <div class="logo"><span class="logo-flag">🇬🇧</span><span class="logo-text">VocabMaster</span><span style="font-size:0.55rem;color:#10b981;background:#10b98122;padding:2px 6px;border-radius:6px;margin-left:6px;font-weight:700;">v7.4 · 1564</span></div>
+  <div class="logo"><span class="logo-flag">🇬🇧</span><span class="logo-text">VocabMaster</span><span style="font-size:0.55rem;color:#10b981;background:#10b98122;padding:2px 6px;border-radius:6px;margin-left:6px;font-weight:700;">v1.0 · 1564</span></div>
   <div class="prog-wrap">
     <div class="prog-meta"><span id="prog-text">0 / 0</span><span id="prog-pct">0%</span></div>
     <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
@@ -10860,6 +10882,9 @@ body{background:radial-gradient(circle at 15% 0%,rgba(59,130,246,0.09),transpare
 <div id="view-speak" style="display:none;overflow-y:auto;height:calc(100vh - 60px);"><div class="speak-wrap" id="speak-inner"></div></div>
 
 <script>
+// ══════════════════════════════════════════════════════
+//  SLOVNÍ ZÁSOBA — Italština → Čeština
+// ══════════════════════════════════════════════════════
 var VOCAB = [
 // ── Základní (80) ──
 {en:"Hello",cs:"Ahoj / Dobrý den",cat:"Základní"},
@@ -12480,310 +12505,584 @@ var VOCAB = [
 {en:"Routine",cs:"Rutina",cat:"Pocity"},
 ];
 
-var CATS={
-  "Základní":"#3b82f6","Fráze":"#8b5cf6","Rodina":"#ec4899",
-  "Tělo & Zdraví":"#ef4444","Příroda & Počasí":"#10b981",
-  "Barvy":"#f59e0b","Oblečení":"#06b6d4","Pocity":"#a78bfa",
-  "Domov":"#f97316","Nakupování":"#14b8a6","Technologie":"#6366f1",
-  "Práce":"#84cc16","Jídlo & Pití":"#f43f5e","Cestování":"#0ea5e9",
-  "Doprava":"#f59e0b","Čas":"#8b5cf6","Čísla":"#22d3ee",
-  "Přídavná jména":"#34d399","Slovesa":"#60a5fa","Vzdělání":"#fbbf24",
-  "Město":"#a3e635","Sport":"#f97316","Hudba & Zábava":"#c084fc"
+// Barvy kategorií
+var CATS = {
+  "Základní":"#2ecc71",
+  "Čísla":"#f0c040",
+  "Čas":"#a78bfa",
+  "Fráze":"#fb923c",
+  "Jídlo & Pití":"#fb7185",
+  "Cestování":"#34d399",
+  "Slovesa":"#60a5fa",
+  "Rodina":"#fda4af",
+  "Tělo & Zdraví":"#f87171",
+  "Příroda & Počasí":"#22d3ee",
+  "Barvy":"#e879f9",
+  "Oblečení":"#c084fc",
+  "Pocity":"#f9a8d4",
+  "Domov":"#a3e635",
+  "Nakupování":"#38bdf8",
+  "Technologie":"#818cf8",
+  "Přídavná jména":"#f472b6",
+  "Práce":"#94a3b8",
+  "Doprava":"#facc15",
+  "Zvířata":"#fbbf24"
 };
 
-var learned={};
-try{var _ls=localStorage.getItem('kladyx_vocab_learned');if(_ls)learned=JSON.parse(_ls);}catch(e){}
-var view='cards';
-var catFilter='Vše';
-var idx=0;
-var shuffle=false;
-var shuffleOrder=[];
-var testState=null;
-var testSettings={count:20,dir:'en-cs'};
-var speakMode='pronounce';
-var speakWordIdx=0;
-var speakOrder=[];
-var speakScore={ok:0,fail:0};
-var speakResult=null;
-var speakListening=false;
-var speakRecog=null;
+// ══ STAV ══
+var learned = [];
+var filterCat = 'Vše';
+var idx = 0;
+var speaking = false;
+var view = 'cards';
+var shuffleMode = false;
+var shuffleOrder = null;
+var testState = {running:false,questions:[],current:0,score:0,wrong:0,answered:false,scope:'all',count:10};
+var speakRecog = null;
+var speakListening = false;
+var speakWordIdx = 0;
+var speakResult = null;
+var speakMode = 'translate';
+var speakOrder = [];
+var speakScore = {ok:0,fail:0};
+// FLIP CARD MIC
+var listening = false;
+var recognition = null;
+var speechStats = {};
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+var micSupported = !!SR;
+
+// ── Persistentní úložiště: window.storage (Claude.ai) → localStorage → paměť ──
+function _storeSave(key, val){
+  if(window.storage && typeof window.storage.set === 'function'){
+    try{ window.storage.set(key, val); }catch(e){}
+  }
+  try{ localStorage.setItem(key, val); }catch(e){}
+}
+function _storeLoad(key, cb){
+  if(window.storage && typeof window.storage.get === 'function'){
+    try{
+      window.storage.get(key).then(function(r){ cb(r ? r.value : null); }).catch(function(){
+        try{ cb(localStorage.getItem(key)); }catch(e){ cb(null); }
+      });
+      return;
+    }catch(e){}
+  }
+  try{ cb(localStorage.getItem(key)); }catch(e){ cb(null); }
+}
+
+function save(){ _storeSave('vocabmaster_learned', JSON.stringify(learned)); }
+function ebLearn(it){
+  var i=learned.indexOf(it);
+  if(i>=0){learned.splice(i,1);}else{learned.push(it);spawnConfetti();}
+  save();updateProg();renderEbook();
+}
+function saveSpeechStats(){ _storeSave('vocabmaster_speech_stats', JSON.stringify(speechStats)); }
+
+function normalizeText(s){
+  if(!s)return '';
+  s=s.toLowerCase();
+  // Remove diacritics for comparison (è→e, à→a etc)
+  s=s.normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');
+  // Strip punctuation
+  s=s.replace(/[.,!?;:'"()\\-_/\\\\]/g,' ');
+  return s.replace(/\\s+/g,' ').trim();
+}
+
+function listen(it){
+  if(!micSupported){showFb('bad','🚫 Mikrofon není podporován v tomto prohlížeči','');return;}
+  if(listening){try{recognition&&recognition.stop();}catch(e){}return;}
+  try{
+    recognition = new SR();
+    recognition.lang = 'en-GB';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 5;
+    recognition.continuous = false;
+    listening = true;
+    renderCard();
+    showFb('listening','🎤 Poslouchám... řekni: '+it,'');
+    recognition.onresult = function(ev){
+      var alts=[];
+      try{for(var i=0;i<ev.results[0].length;i++){alts.push(ev.results[0][i].transcript);}}catch(e){}
+      var heard = alts[0]||'';
+      var target = normalizeText(it);
+      var ok = false;
+      for(var i=0;i<alts.length;i++){
+        if(normalizeText(alts[i])===target){ok=true;break;}
+      }
+      if(!ok){
+        var hn = normalizeText(heard);
+        if(hn===target || (target.length>3 && hn.indexOf(target)>=0)) ok=true;
+      }
+      speechStats[it] = speechStats[it] || {ok:0,fail:0};
+      if(ok){
+        speechStats[it].ok++;
+        saveSpeechStats();
+        showFb('ok','✅ Bravissimo!','Slyšel jsem: "'+heard+'"');
+        spawnConfetti();
+      }else{
+        speechStats[it].fail++;
+        saveSpeechStats();
+        showFb('bad','❌ Skoro... zkus znovu','Slyšel jsem: "'+heard+'"');
+      }
+    };
+    recognition.onerror = function(ev){
+      listening=false;renderCard();
+      var msg='❌ Chyba mikrofonu';
+      if(ev.error==='not-allowed')msg='🚫 Přístup k mikrofonu zamítnut';
+      else if(ev.error==='no-speech')msg='🔇 Nic jsem neslyšel';
+      else if(ev.error==='audio-capture')msg='🎤 Mikrofon nedostupný';
+      else if(ev.error==='network')msg='📡 Chyba sítě';
+      showFb('bad',msg,'');
+    };
+    recognition.onend = function(){listening=false;renderCard();};
+    recognition.start();
+  }catch(e){
+    listening=false;renderCard();
+    showFb('bad','❌ '+(e.message||'Chyba'),'');
+  }
+}
+
+function showFb(type,msg,heard){
+  var fb=document.getElementById('speech-feedback');
+  if(!fb)return;
+  fb.className='speech-feedback '+type;
+  fb.innerHTML=msg+(heard?'<span class="heard">'+heard.replace(/</g,'&lt;')+'</span>':'');
+  fb.style.display='block';
+  if(type==='ok'||type==='bad'){
+    setTimeout(function(){
+      var f=document.getElementById('speech-feedback');
+      if(f && f.className.indexOf('listening')<0) f.style.display='none';
+    },4000);
+  }
+}
 
 function filtered(){
-  if(catFilter==='Vše')return VOCAB;
-  return VOCAB.filter(function(w){return w.cat===catFilter;});
+  var base = filterCat==='Vše' ? VOCAB : VOCAB.filter(function(w){return w.cat===filterCat;});
+  if(shuffleMode && shuffleOrder){
+    var ordered=[];
+    for(var i=0;i<shuffleOrder.length;i++){if(shuffleOrder[i]<base.length)ordered.push(base[shuffleOrder[i]]);}
+    return ordered.length ? ordered : base;
+  }
+  return base;
 }
-function card(){var f=filtered();if(!f.length)return null;var i=shuffle?shuffleOrder[idx%shuffleOrder.length]:idx;return f[i%f.length];}
+
+function buildShuffleOrder(){
+  var len = (filterCat==='Vše'?VOCAB:VOCAB.filter(function(w){return w.cat===filterCat;})).length;
+  var arr=[];for(var i=0;i<len;i++)arr.push(i);
+  for(var j=arr.length-1;j>0;j--){var k=Math.floor(Math.random()*(j+1));var t=arr[j];arr[j]=arr[k];arr[k]=t;}
+  shuffleOrder=arr;
+}
+
+function toggleShuffle(){
+  shuffleMode=!shuffleMode;
+  if(shuffleMode)buildShuffleOrder(); else shuffleOrder=null;
+  idx=0;
+  var sb=document.getElementById('shuffle-btn');
+  sb.className='shuffle-btn'+(shuffleMode?' on':'');
+  sb.textContent=shuffleMode?'🔀 Náhodně ✓':'🔀 Náhodně';
+  renderCard();
+}
+
+function card(){var f=filtered();return f[Math.min(idx,f.length-1)]||f[0];}
+
+function setView(v){
+  view=v;
+  document.getElementById('view-cards').style.display=v==='cards'?'block':'none';
+  document.getElementById('view-ebook').style.display=v==='ebook'?'block':'none';
+  document.getElementById('view-test').style.display=v==='test'?'block':'none';
+  document.getElementById('view-speak').style.display=v==='speak'?'block':'none';
+  document.getElementById('tbtn-cards').className='tab-btn'+(v==='cards'?' active':'');
+  document.getElementById('tbtn-ebook').className='tab-btn'+(v==='ebook'?' active':'');
+  document.getElementById('tbtn-test').className='tab-btn'+(v==='test'?' active':'');
+  document.getElementById('tbtn-speak').className='tab-btn'+(v==='speak'?' active':'');
+  if(v==='ebook')renderEbook();
+  if(v==='test')renderTest();
+  if(v==='speak')renderSpeak();
+}
+
+// ── SPEAK — robustní verze (iOS fix + fallback hlas) ──
+var _voicesReady = false;
+var _voicesCache = [];
+function _loadVoices(){
+  var v = window.speechSynthesis.getVoices();
+  if(v && v.length){ _voicesCache = v; _voicesReady = true; }
+}
+if(window.speechSynthesis){
+  _loadVoices();
+  if(window.speechSynthesis.onvoiceschanged !== undefined){
+    window.speechSynthesis.onvoiceschanged = _loadVoices;
+  }
+}
+function _getBestVoice(){
+  _loadVoices();
+  var voices = _voicesCache;
+  // Priorita: přesná it-IT shoda → libovolný anglický hlas → default
+  var best = null;
+  for(var i=0;i<voices.length;i++){
+    if(voices[i].lang === 'en-GB'){ best=voices[i]; break; }
+  }
+  if(!best){
+    for(var i=0;i<voices.length;i++){
+      if(voices[i].lang && voices[i].lang.toLowerCase().indexOf('it')===0){ best=voices[i]; break; }
+    }
+  }
+  return best; // null = použije se výchozí hlas prohlížeče
+}
+function speak(txt){
+  if(!window.speechSynthesis) return;
+  try{
+    // iOS fix: synthezátor se zasekne ve stavu paused po uzamčení obrazovky
+    if(window.speechSynthesis.paused){ window.speechSynthesis.resume(); }
+    window.speechSynthesis.cancel();
+    // Krátké zpoždění po cancel() — nutné pro Chrome na Androidu
+    setTimeout(function(){
+      try{
+        var u = new SpeechSynthesisUtterance(txt);
+        var v = _getBestVoice();
+        if(v){ u.voice = v; u.lang = v.lang; }
+        else { u.lang = 'en-GB'; }
+        u.rate = 0.85;
+        u.onstart = function(){ speaking=true; renderCard(); };
+        u.onend = u.onerror = function(){ speaking=false; renderCard(); };
+        window.speechSynthesis.speak(u);
+        // iOS workaround: bez resume() se někdy nespustí
+        if(window.speechSynthesis.paused){ window.speechSynthesis.resume(); }
+      }catch(e){ speaking=false; }
+    }, 50);
+  }catch(e){ speaking=false; }
+}
+
+function toggleLearned(){
+  var k=card().en;
+  var wasL=learned.indexOf(k)>=0;
+  if(wasL){learned=learned.filter(function(x){return x!==k;});}
+  else{learned.push(k);spawnConfetti();}
+  save();renderCard();updateProg();
+}
+
+function spawnConfetti(){
+  var colors=['#2ecc71','#f0c040','#e74c3c','#a78bfa','#60a5fa','#fb923c'];
+  for(var i=0;i<28;i++){
+    var c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=(Math.random()*100)+'%';
+    c.style.top='-2vh';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDelay=(Math.random()*0.3)+'s';
+    c.style.animationDuration=(2+Math.random()*1.2)+'s';
+    if(Math.random()>0.5)c.style.borderRadius='50%';
+    document.body.appendChild(c);
+    setTimeout((function(el){return function(){if(el.parentNode)el.parentNode.removeChild(el);};})(c),3500);
+  }
+}
+
+function go(dir){
+  var f=filtered();
+  if(!f.length)return;
+  if(listening){try{recognition&&recognition.stop();}catch(e){}listening=false;}
+  var outer=document.getElementById('card-outer');
+  outer.className='card-outer '+(dir>0?'hide':'hide-r');
+  setTimeout(function(){
+    idx=(idx+dir+f.length)%f.length;
+    renderCard();
+    outer.className='card-outer';
+  },180);
+}
+
 function buildCats(){
   var row=document.getElementById('cat-row');
-  var cats=['Vše'].concat(Object.keys(CATS));
   row.innerHTML='';
+  var cats=['Vše'].concat(Object.keys(CATS));
   cats.forEach(function(c){
     var b=document.createElement('button');
-    b.className='chip'+(c===catFilter?' active':'');
+    b.className='chip'+(c===filterCat?' active':'');
     b.textContent=c;
-    if(c!=='Vše')b.style.background=c===catFilter?(CATS[c]||'#3b82f6'):'';
-    b.onclick=function(){catFilter=c;idx=0;shuffleOrder=[];buildCats();renderCard();updateProg();};
+    if(c!=='Vše'&&CATS[c]){b.style.background=c===filterCat?CATS[c]:'transparent';}
+    else if(c==='Vše'&&filterCat==='Vše'){b.style.background='#2ecc71';b.style.color='#0d0d1f';}
+    b.onclick=function(){
+      filterCat=c;idx=0;
+      if(shuffleMode)buildShuffleOrder();
+      buildCats();renderCard();
+    };
     row.appendChild(b);
   });
 }
-function buildShuffleOrder(){
-  var f=filtered();
-  shuffleOrder=f.map(function(_,i){return i;});
-  for(var i=shuffleOrder.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=shuffleOrder[i];shuffleOrder[i]=shuffleOrder[j];shuffleOrder[j]=t;}
-}
+
 function renderCard(){
+  var w=card();if(!w){
+    document.getElementById('the-card').innerHTML='<div class="empty-state"><div class="ic">🔍</div><div class="ti">Žádná slovíčka</div><div class="ds">V této kategorii nic není</div></div>';
+    document.getElementById('nav-counter').textContent='0 / 0';
+    return;
+  }
+  var color=CATS[w.cat]||'#2ecc71';
+  var isL=learned.indexOf(w.en)>=0;
   var f=filtered();
-  var outer=document.getElementById('card-outer');
-  var cardEl=document.getElementById('the-card');
-  var counter=document.getElementById('nav-counter');
-  if(!f.length){cardEl.innerHTML='<div class="empty-state"><div class="ic">🔍</div><div class="ti">Žádná slovíčka</div></div>';counter.textContent='0 / 0';return;}
-  if(shuffle&&!shuffleOrder.length)buildShuffleOrder();
-  var realIdx=shuffle?shuffleOrder[idx%shuffleOrder.length]:idx%f.length;
-  var w=f[realIdx];
-  var color=CATS[w.cat]||'#3b82f6';
-  var isLearned=!!learned[w.en];
-  counter.textContent=(realIdx+1)+' / '+f.length;
-  cardEl.innerHTML=
-    '<div class="card-top-bar" style="background:linear-gradient(90deg,'+color+','+color+'88)"></div>'+
+  document.getElementById('nav-counter').textContent=(Math.min(idx,f.length-1)+1)+' / '+f.length;
+  var enEsc=w.en.replace(/'/g,"\\\\'").replace(/"/g,'&quot;');
+  var c=document.getElementById('the-card');
+  var st=speechStats[w.en]||{ok:0,fail:0};
+  var statsHtml=micSupported?'<div class="speech-stats"><span class="ok">🎤✓ '+st.ok+'</span><span class="bad">🎤✗ '+st.fail+'</span></div>':'';
+  var micBtn=micSupported?'<button class="mic-btn'+(listening?' listening':'')+'" style="background:'+color+'22;color:'+color+'" onclick="listen(\\''+enEsc+'\\')" title="Vyslovit a vyhodnotit">🎤</button>':'';
+  c.innerHTML='<div class="card-top-bar" style="background:'+color+'"></div>'+
     '<div class="card-glow" style="background:'+color+'"></div>'+
     '<div class="cat-badge" style="background:'+color+'22;color:'+color+'">'+w.cat+'</div>'+
     '<div class="it-word">'+w.en+'</div>'+
     '<div class="cs-word">'+w.cs+'</div>'+
     '<div class="card-actions">'+
-    '<button class="speak-btn" style="background:'+color+'22;color:'+color+'" onclick="speak(\''+w.en.replace(/'/g,"\\'")+'\')" title="Přečíst">🔊</button>'+
-    '<button class="learned-btn '+(isLearned?'yes':'no')+'" onclick="toggleLearned()">'+
-    (isLearned?'✅ Umím':'○ Umím')+
-    '</button></div>';
+    '<button class="speak-btn'+(speaking?' pulse':'')+'" style="background:'+color+'22;color:'+color+'" onclick="speak(\\''+enEsc+'\\')" title="Přehrát anglicky">🔊</button>'+
+    micBtn+
+    '<button class="learned-btn '+(isL?'yes':'no')+'" onclick="toggleLearned()">'+(isL?'✓ Naučeno':'+ Označit naučené')+'</button>'+
+    '</div>'+
+    statsHtml+
+    '<div class="speech-feedback" id="speech-feedback"></div>';
+  updateProg();
 }
-function speak(text){
-  try{var u=new SpeechSynthesisUtterance(text);u.lang='en-GB';u.rate=0.85;window.speechSynthesis.cancel();window.speechSynthesis.speak(u);}catch(e){}
-}
-function toggleLearned(){
-  var w=card();if(!w)return;
-  if(learned[w.en])delete learned[w.en];else learned[w.en]=true;
-  try{localStorage.setItem('kladyx_vocab_learned',JSON.stringify(learned));}catch(e){}
-  renderCard();updateProg();
-}
-function go(dir){
-  var f=filtered();if(!f.length)return;
-  var outer=document.getElementById('card-outer');
-  outer.classList.add(dir>0?'hide':'hide-r');
-  setTimeout(function(){
-    idx=(idx+dir+f.length*10)%f.length;
-    if(shuffle&&!shuffleOrder.length)buildShuffleOrder();
-    outer.classList.remove('hide','hide-r');
-    renderCard();
-  },180);
-}
-function toggleShuffle(){
-  shuffle=!shuffle;
-  var btn=document.getElementById('shuffle-btn');
-  btn.classList.toggle('on',shuffle);
-  btn.textContent=shuffle?'🔀 Náhodně ✓':'🔀 Náhodně';
-  if(shuffle)buildShuffleOrder();
-  idx=0;renderCard();
-}
+
 function updateProg(){
-  var total=VOCAB.length;
-  var done=Object.keys(learned).length;
-  var pct=total?Math.round(done/total*100):0;
-  document.getElementById('prog-text').textContent=done+' / '+total;
-  document.getElementById('prog-pct').textContent=pct+'%';
+  var pct=VOCAB.length?Math.round(learned.length/VOCAB.length*100):0;
   document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-text').textContent=learned.length+' / '+VOCAB.length;
+  document.getElementById('prog-pct').textContent=pct+'%';
 }
-function setView(v){
-  view=v;
-  ['cards','ebook','test','speak'].forEach(function(x){
-    document.getElementById('view-'+x).style.display=x===v?'block':'none';
-    document.getElementById('tbtn-'+x).classList.toggle('active',x===v);
-  });
-  if(v==='cards'){document.getElementById('view-cards').style.display='block';}
-  if(v==='ebook')renderEbook();
-  if(v==='test')renderTest();
-  if(v==='speak')renderSpeak();
-}
+
+// ── EBOOK ──
 function renderEbook(){
   var inner=document.getElementById('ebook-inner');
-  var cats={};
-  var f=filtered();
-  var search=document.getElementById('eb-search');
-  var q=search?search.value.toLowerCase():'';
-  f.forEach(function(w){
-    if(q&&w.en.toLowerCase().indexOf(q)<0&&w.cs.toLowerCase().indexOf(q)<0)return;
-    if(!cats[w.cat])cats[w.cat]=[];
-    cats[w.cat].push(w);
-  });
-  var total=f.length;
-  var done=f.filter(function(w){return learned[w.en];}).length;
-  var html='<div class="ebook-head"><div class="ebook-title">📚 Seznam slovíček</div>'+
-    '<div class="ebook-sub">Anglicky → Česky · '+total+' slovíček · '+done+' naučeno</div>'+
-    '<input class="search-box" id="eb-search" type="text" placeholder="🔍 Hledat..." value="'+q+'" oninput="renderEbook()" /></div>';
-  Object.keys(cats).forEach(function(cat){
-    var color=CATS[cat]||'#3b82f6';
-    var ws=cats[cat];
-    html+='<div class="sec-header"><div class="sec-dot" style="background:'+color+'"></div>'+
-      '<span style="color:'+color+'">'+cat+'</span>'+
-      '<span class="sec-count">('+ws.length+')</span></div>';
-    ws.forEach(function(w){
-      var lrn=!!learned[w.en];
-      html+='<div class="eb-row'+(lrn?' learned':'')+'" onclick="ebLearn(\''+w.en.replace(/'/g,"\\'")+'\')" style="cursor:pointer;">'+
-        '<button class="eb-speak" style="background:'+color+'22;color:'+color+'" onclick="event.stopPropagation();speak(\''+w.en.replace(/'/g,"\\'")+'\')" >🔊</button>'+
-        '<div><div class="eb-it">'+w.en+'</div><div class="eb-cs">'+w.cs+'</div></div>'+
-        (lrn?'<div class="eb-check">✓</div>':'')+
-      '</div>';
+  var search=(document.getElementById('eb-search')?document.getElementById('eb-search').value.toLowerCase():'');
+  inner.innerHTML='<div class="ebook-head"><div class="ebook-title">📚 Všechna slovíčka & fráze</div><div class="ebook-sub">'+VOCAB.length+' výrazů · naučeno '+learned.length+'</div><input class="search-box" id="eb-search" placeholder="🔍 Hledat anglicky nebo česky..." oninput="renderEbook()" value="'+search.replace(/"/g,'&quot;')+'" /></div>';
+  Object.keys(CATS).forEach(function(cat){
+    var words=VOCAB.filter(function(w){
+      if(w.cat!==cat)return false;
+      if(search&&w.en.toLowerCase().indexOf(search)<0&&w.cs.toLowerCase().indexOf(search)<0)return false;
+      return true;
     });
+    if(!words.length)return;
+    var color=CATS[cat];
+    var sec=document.createElement('div');
+    sec.innerHTML='<div class="sec-header" style="color:'+color+'"><div class="sec-dot" style="background:'+color+'"></div>'+cat+' <span class="sec-count">('+words.length+')</span></div>';
+    words.forEach(function(w){
+      var isL=learned.indexOf(w.en)>=0;
+      var enEsc=w.en.replace(/'/g,"\\\\'");
+      var row=document.createElement('div');
+      row.className='eb-row'+(isL?' learned':'');
+      row.style.cursor='pointer';
+      row.onclick=function(it){return function(){ebLearn(it);};}(w.en);
+      row.innerHTML='<button class="eb-speak" style="background:'+color+'20;color:'+color+'" onclick="event.stopPropagation();speak(\\''+enEsc+'\\')">🔊</button>'+
+        '<div style="flex:1;min-width:0"><div class="eb-it">'+w.en+'</div><div class="eb-cs">'+w.cs+'</div></div>'+
+        (isL?'<span class="eb-check">✓</span>':'');
+      sec.appendChild(row);
+    });
+    inner.appendChild(sec);
   });
-  if(!Object.keys(cats).length)html+='<div class="empty-state"><div class="ic">🔍</div><div class="ti">Nic nenalezeno</div></div>';
-  inner.innerHTML=html;
+  var sb=document.getElementById('eb-search');
+  if(sb&&search){sb.focus();sb.setSelectionRange(search.length,search.length);}
 }
-function ebLearn(en){
-  if(learned[en])delete learned[en];else learned[en]=true;
-  try{localStorage.setItem('kladyx_vocab_learned',JSON.stringify(learned));}catch(e){}
-  updateProg();renderEbook();
-}
+
+// ── TEST ──
 function renderTest(){
   var inner=document.getElementById('test-inner');
-  if(!testState){
+  if(!testState.running){
+    var canTestLearned=learned.length>=4;
+    var allCount=VOCAB.length;
     inner.innerHTML='<div class="test-intro">'+
       '<div class="test-icon">🎯</div>'+
-      '<div class="test-title">Otestuj se!</div>'+
-      '<div class="test-desc">Otestuj svou znalost anglické slovní zásoby. Vyber správný překlad.</div>'+
+      '<div class="test-title">Vyzkoušej se!</div>'+
+      '<div class="test-desc">Zobrazí se česky a vybíráš ze 4 anglických možností.</div>'+
       '<div class="test-options">'+
-        '<div class="test-opt-row"><label>Počet otázek</label><select id="t-count"><option value="10">10</option><option value="20" selected>20</option><option value="30">30</option><option value="50">50</option></select></div>'+
-        '<div class="test-opt-row"><label>Směr</label><select id="t-dir"><option value="en-cs">EN → CS</option><option value="cs-en">CS → EN</option></select></div>'+
+        '<div class="test-opt-row"><label>Z čeho zkoušet?</label>'+
+          '<select id="test-scope">'+
+            '<option value="all">Všechna slovíčka ('+allCount+')</option>'+
+            '<option value="learned"'+(canTestLearned?'':' disabled')+'>Naučená ('+learned.length+')</option>'+
+            '<option value="notlearned">Nenaučená ('+(allCount-learned.length)+')</option>'+
+          '</select>'+
+        '</div>'+
+        '<div class="test-opt-row"><label>Kolik otázek?</label>'+
+          '<select id="test-count">'+
+            '<option value="10">10 otázek</option>'+
+            '<option value="20">20 otázek</option>'+
+            '<option value="50">50 otázek</option>'+
+          '</select>'+
+        '</div>'+
+        '<div class="test-opt-row"><label>Kategorie?</label>'+
+          '<select id="test-cat">'+
+            '<option value="Vše">Všechny kategorie</option>'+
+            Object.keys(CATS).map(function(c){return '<option value="'+c+'">'+c+'</option>';}).join('')+
+          '</select>'+
+        '</div>'+
       '</div>'+
-      '<button class="start-btn" onclick="startTest()">▶ Spustit test</button></div>';
-  } else {renderTestQuestion();}
-}
-function startTest(){
-  testSettings.count=parseInt(document.getElementById('t-count').value);
-  testSettings.dir=document.getElementById('t-dir').value;
-  var pool=filtered();
-  if(pool.length<4){alert('Potřebuji alespoň 4 slovíčka v kategorii.');return;}
-  var questions=[];
-  var src=pool.slice().sort(function(){return Math.random()-0.5;});
-  var cnt=Math.min(testSettings.count,src.length);
-  for(var i=0;i<cnt;i++){
-    var w=src[i];
-    var wrongs=pool.filter(function(x){return x.en!==w.en;}).sort(function(){return Math.random()-0.5;}).slice(0,3);
-    var answers=[w].concat(wrongs).sort(function(){return Math.random()-0.5;});
-    questions.push({word:w,answers:answers,answered:null});
+      '<button class="start-btn" onclick="startTest()">▶ Spustit test</button>'+
+    '</div>';
+    return;
   }
-  testState={questions:questions,current:0,score:0};
-  renderTestQuestion();
-}
-function renderTestQuestion(){
-  var inner=document.getElementById('test-inner');
-  var s=testState;
-  if(s.current>=s.questions.length){renderResult();return;}
-  var q=s.questions[s.current];
-  var w=q.word;
-  var pct=Math.round((s.current/s.questions.length)*100);
-  var isEnCs=testSettings.dir==='en-cs';
-  var prompt=isEnCs?'Jak se česky řekne:':'Jak se anglicky řekne:';
-  var mainWord=isEnCs?w.en:w.cs;
+  if(testState.current>=testState.questions.length){renderTestResult();return;}
+  var q=testState.questions[testState.current];
+  var pct=Math.round((testState.current/testState.questions.length)*100);
   var html='<div class="q-card">'+
-    '<div class="q-meta"><span class="q-num">OTÁZKA '+(s.current+1)+' / '+s.questions.length+'</span>'+
-    '<span class="q-score">✓ '+s.score+'</span></div>'+
+    '<div class="q-meta"><span class="q-num">OTÁZKA '+(testState.current+1)+' / '+testState.questions.length+'</span>'+
+    '<span class="q-score">Skóre: '+testState.score+'</span></div>'+
     '<div class="q-prog"><div class="q-prog-fill" style="width:'+pct+'%"></div></div>'+
-    '<div class="q-prompt">'+prompt+'</div>'+
-    '<div class="q-word">'+mainWord+'</div>'+
+    '<div class="q-prompt">Jak se řekne anglicky:</div>'+
+    '<div class="q-word">'+q.word.cs+'</div>'+
     '<div class="q-answers">';
-  q.answers.forEach(function(a,i){
-    var ansText=isEnCs?a.cs:a.en;
-    html+='<button class="q-ans" id="qa-'+i+'" onclick="answerTest('+i+')">'+ansText+'</button>';
-  });
+  for(var i=0;i<q.options.length;i++){
+    html+='<button class="q-ans" id="qa-'+i+'" onclick="answerTest('+i+')">'+q.options[i]+'</button>';
+  }
   html+='</div></div>';
+  if(testState.answered){
+    html+='<button class="next-btn" onclick="nextTest()">'+(testState.current+1>=testState.questions.length?'✓ Vyhodnotit':'Další otázka ▶')+'</button>';
+  }
   inner.innerHTML=html;
 }
-function answerTest(i){
-  var s=testState;
-  var q=s.questions[s.current];
-  if(q.answered!==null)return;
-  var isEnCs=testSettings.dir==='en-cs';
-  var chosen=q.answers[i];
-  var correct=chosen.en===q.word.en;
-  q.answered=i;
-  if(correct)s.score++;
-  document.querySelectorAll('.q-ans').forEach(function(b,j){
-    b.classList.add('disabled');
-    if(q.answers[j].en===q.word.en)b.classList.add('correct');
-    else if(j===i)b.classList.add('wrong');
-  });
-  var nb=document.createElement('button');
-  nb.className='next-btn';
-  nb.textContent=s.current+1<s.questions.length?'Další ▶':'Výsledky 🏆';
-  nb.onclick=function(){s.current++;renderTestQuestion();};
-  document.querySelector('.q-card').appendChild(nb);
-  if(correct)spawnConfetti();
-}
-function renderResult(){
-  var inner=document.getElementById('test-inner');
-  var s=testState;
-  var pct=Math.round(s.score/s.questions.length*100);
-  var emoji=pct>=90?'🏆':pct>=70?'🎉':pct>=50?'😊':'💪';
-  var msg=pct>=90?'Výborně! Jsi skutečný expert!':pct>=70?'Skvělá práce!':pct>=50?'Dobrý výsledek, pokračuj!':'Nevzdávej to, zkus to znovu!';
-  inner.innerHTML='<div class="result-card">'+
-    '<div class="result-emoji">'+emoji+'</div>'+
-    '<div class="result-score">'+s.score+' / '+s.questions.length+'</div>'+
-    '<div class="result-pct">'+pct+' %</div>'+
-    '<div class="result-msg">'+msg+'</div>'+
-    '<button class="start-btn" onclick="testState=null;renderTest()">🔄 Hrát znovu</button></div>';
-  testState=null;
-  if(pct>=70)spawnConfetti();
-}
-function spawnConfetti(){
-  var colors=['#3b82f6','#ef4444','#f0f0f0','#f59e0b','#a78bfa'];
-  for(var i=0;i<18;i++){
-    var el=document.createElement('div');
-    el.className='confetti';
-    el.style.left=Math.random()*100+'vw';
-    el.style.background=colors[Math.floor(Math.random()*colors.length)];
-    el.style.animationDelay=Math.random()*0.8+'s';
-    document.body.appendChild(el);
-    setTimeout(function(e){e.remove();},3000,el);
+
+function startTest(){
+  var scope=document.getElementById('test-scope').value;
+  var count=parseInt(document.getElementById('test-count').value)||10;
+  var cat=document.getElementById('test-cat').value;
+  var pool=VOCAB.slice();
+  if(cat!=='Vše')pool=pool.filter(function(w){return w.cat===cat;});
+  if(scope==='learned')pool=pool.filter(function(w){return learned.indexOf(w.en)>=0;});
+  else if(scope==='notlearned')pool=pool.filter(function(w){return learned.indexOf(w.en)<0;});
+  if(pool.length<4){alert('Pro test je potřeba alespoň 4 slovíčka v zvolené sadě.');return;}
+  count=Math.min(count,pool.length);
+  var qs=[];var used={};
+  while(qs.length<count){
+    var ri=Math.floor(Math.random()*pool.length);
+    if(used[ri])continue;
+    used[ri]=true;
+    var w=pool[ri];
+    var distractors=[];var dused={};dused[w.en]=true;
+    var allPool=VOCAB.slice();
+    while(distractors.length<3){
+      var di=Math.floor(Math.random()*allPool.length);
+      var dw=allPool[di];
+      if(dused[dw.en])continue;
+      dused[dw.en]=true;
+      distractors.push(dw.en);
+    }
+    var options=[w.en].concat(distractors);
+    for(var j=options.length-1;j>0;j--){var k=Math.floor(Math.random()*(j+1));var t=options[j];options[j]=options[k];options[k]=t;}
+    qs.push({word:w,options:options,correct:w.en});
   }
+  testState={running:true,questions:qs,current:0,score:0,wrong:0,answered:false,scope:scope,count:count};
+  renderTest();
 }
+
+function answerTest(i){
+  if(testState.answered)return;
+  testState.answered=true;
+  var q=testState.questions[testState.current];
+  var sel=q.options[i];
+  var btns=document.querySelectorAll('.q-ans');
+  for(var b=0;b<btns.length;b++){btns[b].classList.add('disabled');}
+  if(sel===q.correct){
+    btns[i].classList.add('correct');
+    testState.score++;
+    speak(q.correct);
+  }else{
+    btns[i].classList.add('wrong');
+    testState.wrong++;
+    for(var cc=0;cc<q.options.length;cc++){
+      if(q.options[cc]===q.correct){btns[cc].classList.add('correct');break;}
+    }
+  }
+  renderTest();
+}
+
+function nextTest(){testState.current++;testState.answered=false;renderTest();}
+
+function renderTestResult(){
+  var total=testState.questions.length;
+  var sc=testState.score;
+  var pct=Math.round(sc/total*100);
+  var emoji='👍',msg='Bene! Dobrý výkon!';
+  if(pct===100){emoji='🏆';msg='Perfetto! Plný počet bodů!';spawnConfetti();spawnConfetti();}
+  else if(pct>=80){emoji='🎉';msg='Ottimo! Skoro všechno správně.';spawnConfetti();}
+  else if(pct>=60){emoji='💪';msg='Buono! Ale pořád je co zlepšovat.';}
+  else if(pct>=40){emoji='📚';msg='Studia ancora! Ještě je co procvičit.';}
+  else{emoji='🎯';msg='Non mollare! Nevzdávej to!';}
+  document.getElementById('test-inner').innerHTML='<div class="test-intro result-card">'+
+    '<div class="result-emoji">'+emoji+'</div>'+
+    '<div class="result-score">'+sc+' / '+total+'</div>'+
+    '<div class="result-pct">'+pct+'% správně</div>'+
+    '<div class="result-msg">'+msg+'</div>'+
+    '<button class="start-btn" onclick="resetTest()">🔁 Zkusit znovu</button>'+
+  '</div>';
+}
+
+function resetTest(){
+  testState={running:false,questions:[],current:0,score:0,wrong:0,answered:false,scope:'all',count:10};
+  renderTest();
+}
+
+// ── SPEAKING MODE ──
 function speakBuildOrder(){
   var f=filtered();
-  speakOrder=f.map(function(_,i){return i;});
-  for(var i=speakOrder.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=speakOrder[i];speakOrder[i]=speakOrder[j];speakOrder[j]=t;}
+  var arr=[];for(var i=0;i<f.length;i++)arr.push(i);
+  for(var j=arr.length-1;j>0;j--){var rk=Math.floor(Math.random()*(j+1));var rt=arr[j];arr[j]=arr[rk];arr[rk]=rt;}
+  speakOrder=arr;
+  speakWordIdx=0;
 }
-function setSpeakMode(m){speakMode=m;speakResult=null;renderSpeak();}
-function speakNext(){speakWordIdx++;speakResult=null;renderSpeak();}
+
+function setSpeakMode(mode){
+  speakMode=mode;speakResult=null;renderSpeak();
+}
+
+function speakNext(){
+  speakWordIdx++;
+  if(speakWordIdx>=speakOrder.length)speakBuildOrder();
+  speakResult=null;renderSpeak();
+}
+
 function normalizeSpeak(s){
-  return s.toLowerCase().replace(/[àáâãäå]/g,'a').replace(/[èéêë]/g,'e').replace(/[ìíîï]/g,'i').replace(/[òóôõö]/g,'o').replace(/[ùúûü]/g,'u').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
+  return s.toLowerCase().replace(/[àáâãäå]/g,'a').replace(/[èéêë]/g,'e').replace(/[ìíîï]/g,'i').replace(/[òóôõö]/g,'o').replace(/[ùúûü]/g,'u').replace(/[^a-z0-9 ]/g,'').replace(/\\s+/g,' ').trim();
 }
+
 function renderSpeak(){
   var inner=document.getElementById('speak-inner');
   if(!inner)return;
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){inner.innerHTML='<div class="speak-no-support"><div class="ic">🎤</div><div class="ti">Rozpoznávání řeči není dostupné</div><div class="ds">Tato funkce vyžaduje Chrome nebo Edge.<br><br>Na iOS Safari bohužel nefunguje.</div></div>';return;}
+  if(!SR){
+    inner.innerHTML='<div class="speak-no-support"><div class="ic">🎤</div><div class="ti">Rozpoznávání řeči není dostupné</div><div class="ds">Tato funkce vyžaduje Chrome nebo Edge na Androidu.<br><br>Na iOS Safari bohužel nefunguje.<br><br>Zkus otevřít tuto stránku v Chrome.</div></div>';
+    return;
+  }
   if(!speakOrder.length)speakBuildOrder();
   var f=filtered();
   if(!f.length){inner.innerHTML='<div class="empty-state"><div class="ic">🔍</div><div class="ti">Žádná slovíčka</div></div>';return;}
   var safeIdx=speakWordIdx%speakOrder.length;
   var w=f[speakOrder[safeIdx]];
-  var color=CATS[w.cat]||'#3b82f6';
+  var color=CATS[w.cat]||'#2ecc71';
   var isTranslate=speakMode==='translate';
   var mainWord=isTranslate?w.cs:w.en;
   var hintHtml=isTranslate?'':'<div class="speak-hint-sub">'+w.cs+'</div>';
-  var instruction=isTranslate?'VIDÍŠ ČESKY → ŘEKNI ANGLICKY':'VIDÍŠ ANGLICKY → PŘEČTI NAHLAS';
+  var instruction=isTranslate?'VIDÍŠ ČESKY → ŘEKNI ITALSKY':'VIDÍŠ ITALSKY → PŘEČTI NAHLAS';
   var statusHtml='';
   if(speakResult!==null){
-    if(speakResult.ok){statusHtml='<div class="speak-status ok">✅ Správně! Great job!<span class="speak-heard-text">Řekl jsi: "'+speakResult.heard+'"</span></div>';}
-    else{statusHtml='<div class="speak-status fail">❌ Špatně<span class="speak-correct-word">Správně: '+speakResult.expected+'</span>'+(speakResult.heard?'<span class="speak-heard-text">Řekl jsi: "'+speakResult.heard+'"</span>':'<span class="speak-heard-text">Nic jsem neslyšel — zkus znovu</span>')+'</div>';}
+    if(speakResult.ok){
+      statusHtml='<div class="speak-status ok">✅ Správně! Bravo!<span class="speak-heard-text">Řekla jsi: "'+speakResult.heard+'"</span></div>';
+    } else {
+      statusHtml='<div class="speak-status fail">❌ Špatně<span class="speak-correct-word">Správně: '+speakResult.expected+'</span>'+(speakResult.heard?'<span class="speak-heard-text">Řekla jsi: "'+speakResult.heard+'"</span>':'<span class="speak-heard-text">Nic jsem neslyšel — zkus znovu</span>')+'</div>';
+    }
   }
   var total=speakScore.ok+speakScore.fail;
   var statsHtml='';
-  if(total>0){statsHtml='<div class="speak-stats-row"><div class="speak-stat"><div class="speak-stat-num">'+speakScore.ok+'</div><div class="speak-stat-lbl">✅ Správně</div></div><div class="speak-stat"><div class="speak-stat-num wrong">'+speakScore.fail+'</div><div class="speak-stat-lbl">❌ Chyby</div></div><div class="speak-stat"><div class="speak-stat-num pct">'+Math.round(speakScore.ok/total*100)+'%</div><div class="speak-stat-lbl">Úspěšnost</div></div></div>';}
+  if(total>0){
+    statsHtml='<div class="speak-stats-row">'+
+      '<div class="speak-stat"><div class="speak-stat-num">'+speakScore.ok+'</div><div class="speak-stat-lbl">✅ Správně</div></div>'+
+      '<div class="speak-stat"><div class="speak-stat-num wrong">'+speakScore.fail+'</div><div class="speak-stat-lbl">❌ Chyby</div></div>'+
+      '<div class="speak-stat"><div class="speak-stat-num pct">'+Math.round(speakScore.ok/total*100)+'%</div><div class="speak-stat-lbl">Úspěšnost</div></div>'+
+    '</div>';
+  }
   var micIcon=speakListening?'⏹':'🎤';
   var micClass='mic-btn-big'+(speakListening?' listening':'');
   var micLabel=speakListening?'Poslouchám... klepni pro zastavení':(speakResult!==null?'':'Klepni a mluv anglicky');
   var nextBtn=speakResult!==null?'<div class="speak-nav-row"><button class="speak-next-btn" onclick="speakNext()">Další slovo ▶</button></div>':'';
   inner.innerHTML='<div class="speak-card">'+
-    '<div class="speak-mode-row"><button class="smode-btn'+(isTranslate?' active':'')+'" onclick="setSpeakMode(\'translate\')">🔤 Překlad</button><button class="smode-btn'+(!isTranslate?' active':'')+'" onclick="setSpeakMode(\'pronounce\')">🗣️ Výslovnost</button></div>'+
-    statsHtml+'<div class="speak-instruction">'+instruction+'</div>'+
+    '<div class="speak-mode-row">'+
+    '<button class="smode-btn'+(isTranslate?' active':'')+'" onclick="setSpeakMode(\\'translate\\')">🔤 Překlad</button>'+
+    '<button class="smode-btn'+(!isTranslate?' active':'')+'" onclick="setSpeakMode(\\'pronounce\\')">🗣️ Výslovnost</button>'+
+    '</div>'+statsHtml+
+    '<div class="speak-instruction">'+instruction+'</div>'+
     '<div class="speak-cat-badge" style="background:'+color+'22;color:'+color+'">'+w.cat+'</div>'+
     '<div class="speak-main-word">'+mainWord+'</div>'+hintHtml+
     '<div class="speak-progress">'+(safeIdx+1)+' / '+f.length+'</div>'+
@@ -12792,6 +13091,7 @@ function renderSpeak(){
     '<div class="mic-label">'+micLabel+'</div>'+nextBtn+
   '</div>';
 }
+
 function startSpeakListen(){
   if(speakListening){if(speakRecog)speakRecog.stop();return;}
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -12816,7 +13116,7 @@ function startSpeakListen(){
     if(ok){speakScore.ok++;spawnConfetti();}else{speakScore.fail++;}
     speakResult={ok:ok,heard:heard,expected:w.en};
     renderSpeak();
-    try{var u=new SpeechSynthesisUtterance(w.en);u.lang='en-GB';u.rate=0.85;window.speechSynthesis.speak(u);}catch(ex){}
+    speak(w.en);
   };
   speakRecog.onerror=function(ev){
     speakListening=false;
@@ -12826,6 +13126,8 @@ function startSpeakListen(){
   speakRecog.onend=function(){speakListening=false;if(!speakResult)renderSpeak();};
   try{speakRecog.start();}catch(ex){speakListening=false;renderSpeak();}
 }
+
+// ── SWIPE ──
 var touchX=0,touchY=0;
 document.addEventListener('touchstart',function(e){if(view!=='cards')return;touchX=e.touches[0].clientX;touchY=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchend',function(e){
@@ -12841,9 +13143,20 @@ document.addEventListener('keydown',function(e){
   else if(e.key===' '){e.preventDefault();var w=card();if(w)speak(w.en);}
   else if(e.key==='Enter')toggleLearned();
 });
-buildCats();
-renderCard();
-updateProg();
+
+// ── INIT ──
+function _startApp(){
+  buildCats();
+  renderCard();
+  updateProg();
+}
+_storeLoad('vocabmaster_learned', function(s){
+  if(s){ try{ learned = JSON.parse(s); }catch(e){} }
+  _storeLoad('vocabmaster_speech_stats', function(ss){
+    if(ss){ try{ speechStats = JSON.parse(ss); }catch(e){} }
+    _startApp();
+  });
+});
 <\/script>
 </body>
 </html>
