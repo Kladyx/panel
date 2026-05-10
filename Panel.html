@@ -281,7 +281,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo">KLADYX</div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v7.4</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v7.5</span> · VYBERTE APLIKACI</div>
       <div class="eq-wrap">
         <div class="dancer dancer-g">
           <svg viewBox="0 0 32 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -651,6 +651,8 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
     <button class="station-tab" onclick="switchStation('blanik', this)">Rádio Blaník</button>
+    <button class="station-tab" onclick="switchStation('orion', this)">Hitrádio Orion</button>
+    <button class="station-tab" onclick="switchStation('kiss', this)">Kiss 98</button>
     <button class="station-tab" onclick="switchStation('impuls', this)">Rádio Impuls</button>
     <button class="station-tab" onclick="switchStation('dance', this)">Dance Radio</button>
   </div>
@@ -690,6 +692,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       housetime: { label: 'HOUSETIME.FM',   color: 'var(--neon-purple)' },
       blanik:    { label: 'RÁDIO BLANÍK',   color: '#00ff88' },
       orion:     { label: 'HITRÁDIO ORION', color: '#00d4ff' },
+      kiss:      { label: 'KISS 98',        color: '#ff00ff' },
       impuls:    { label: 'RÁDIO IMPULS',   color: '#ff8800' },
       dance:     { label: 'DANCE RADIO',    color: '#ff44aa' }
     };
@@ -698,6 +701,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     var ICECAST_STATIONS = {
       blanik: { label: 'Rádio Blaník',   apiUrl: 'https://radia.cz/api/stations/218/now-playing' },
       orion:  { label: 'Hitrádio Orion', apiUrl: null },
+      kiss:   { label: 'Kiss 98',        apiUrl: null },
       impuls: { label: 'Rádio Impuls',   apiUrl: null },
       dance:  { label: 'Dance Radio',    apiUrl: null }
     };
@@ -734,6 +738,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       var mounts = {
         blanik: { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'blanikmorava128' },
         orion:  { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'orion128' },
+        kiss:   { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'kiss128' },
         impuls: { url: 'http://icecast5.play.cz/status-json.xsl', mount: 'impuls128' },
         dance:  { url: 'http://icecast2.play.cz:8000/status-json.xsl', mount: 'dance-radio128' }
       };
