@@ -1445,6 +1445,11 @@ var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 var micSupported = !!SR;
 
 function save(){try{localStorage.setItem('italmaster_learned',JSON.stringify(learned));}catch(e){}}
+function ebLearn(it){
+  var i=learned.indexOf(it);
+  if(i>=0){learned.splice(i,1);}else{learned.push(it);spawnConfetti();}
+  save();updateProg();renderEbook();
+}
 function saveSpeechStats(){try{localStorage.setItem('italmaster_speech_stats',JSON.stringify(speechStats));}catch(e){}}
 
 function normalizeText(s){
@@ -1694,7 +1699,9 @@ function renderEbook(){
       var itEsc=w.it.replace(/'/g,"\\'");
       var row=document.createElement('div');
       row.className='eb-row'+(isL?' learned':'');
-      row.innerHTML='<button class="eb-speak" style="background:'+color+'20;color:'+color+'" onclick="speak(\''+itEsc+'\')">🔊</button>'+
+      row.style.cursor='pointer';
+      row.onclick=function(it){return function(){ebLearn(it);};}(w.it);
+      row.innerHTML='<button class="eb-speak" style="background:'+color+'20;color:'+color+'" onclick="event.stopPropagation();speak(\''+itEsc+'\')">🔊</button>'+
         '<div style="flex:1;min-width:0"><div class="eb-it">'+w.it+'</div><div class="eb-cs">'+w.cs+'</div></div>'+
         (isL?'<span class="eb-check">✓</span>':'');
       sec.appendChild(row);
