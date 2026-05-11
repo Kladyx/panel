@@ -653,6 +653,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     <button class="station-tab" onclick="switchStation('blanik', this)">Rádio Blaník</button>
     <button class="station-tab" onclick="switchStation('impuls', this)">Rádio Impuls</button>
     <button class="station-tab" onclick="switchStation('dance', this)">Dance Radio</button>
+    <button class="station-tab" onclick="switchStation('dragon', this)">Hitradio Dragon</button>
   </div>
 
   <div class="live-badge">
@@ -691,7 +692,8 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       blanik:    { label: 'RÁDIO BLANÍK',   color: '#00ff88' },
       orion:     { label: 'HITRÁDIO ORION', color: '#00d4ff' },
       impuls:    { label: 'RÁDIO IMPULS',   color: '#ff8800' },
-      dance:     { label: 'DANCE RADIO',    color: '#ff44aa' }
+      dance:     { label: 'DANCE RADIO',    color: '#ff44aa' },
+      dragon:    { label: 'HITRADIO DRAGON', color: '#ff2200' }
     };
 
     // Icecast status endpointy pro non-HouseTime stanice
@@ -699,7 +701,8 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       blanik: { label: 'Rádio Blaník',   apiUrl: 'https://radia.cz/api/stations/218/now-playing' },
       orion:  { label: 'Hitrádio Orion', apiUrl: null },
       impuls: { label: 'Rádio Impuls',   apiUrl: null },
-      dance:  { label: 'Dance Radio',    apiUrl: null }
+      dance:  { label: 'Dance Radio',    apiUrl: null },
+      dragon: { label: 'Hitradio Dragon', apiUrl: null }
     };
 
     function fetchIcecastStation(stationId) {
@@ -735,7 +738,8 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
         blanik: { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'blanikmorava128' },
         orion:  { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'orion128' },
         impuls: { url: 'http://icecast5.play.cz/status-json.xsl', mount: 'impuls128' },
-        dance:  { url: 'http://icecast2.play.cz:8000/status-json.xsl', mount: 'dance-radio128' }
+        dance:  { url: 'http://icecast2.play.cz:8000/status-json.xsl', mount: 'dance-radio128' },
+        dragon: { url: 'https://ice.abradio.cz/status-json.xsl', mount: 'dragon128' }
       };
       var m = mounts[stationId];
       var ts = Date.now();
