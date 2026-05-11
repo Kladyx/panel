@@ -8133,10 +8133,16 @@ var DAT={};
 var REF=null;
 var SAV=false;
 
+// localStorage s fallbackem na parent (řeší problémy v srcdoc iframe)
+function _lsGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e){}try{var v=window.parent.localStorage.getItem(k);if(v!==null)return v;}catch(e){}return null;}
+function _lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}try{window.parent.localStorage.setItem(k,v);}catch(e){}}
+// Merge: base = Firebase, extra = lokální. Lokální záznamy co nejsou ve Firebase se zachovají
+function _mergeGluco(base,extra){var r=JSON.parse(JSON.stringify(base));Object.keys(extra).forEach(function(ym){if(!r[ym])r[ym]={};Object.keys(extra[ym]).forEach(function(dt){if(!r[ym][dt])r[ym][dt]=extra[ym][dt];});});return r;}
+
 var gi=document.getElementById('gi-date');
 if(gi)gi.value=t.getFullYear()+'-'+('0'+(t.getMonth()+1)).slice(-2)+'-'+('0'+t.getDate()).slice(-2);
 
-try{var ls=localStorage.getItem('gluco2');if(ls)DAT=JSON.parse(ls);}catch(e){}
+try{var ls=_lsGet('gluco2');if(ls)DAT=JSON.parse(ls);}catch(e){}
 
 function SS(m,c){var e=document.getElementById('sync-dot');if(e){e.textContent=m;e.style.color=c||'#4a6d90';}}
 function yr(){return parseInt(CUR.split('-')[0]);}
@@ -8144,11 +8150,11 @@ function mo(){return parseInt(CUR.split('-')[1]);}
 function pad(n){return('0'+n).slice(-2);}
 
 function SAVE(){
-  try{localStorage.setItem('gluco2',JSON.stringify(DAT));}catch(e){}
+  _lsSet('gluco2',JSON.stringify(DAT));
   if(!REF){SS('💾 Lokálně','#f39c12');return;}
-  SAV=true;setTimeout(function(){SAV=false;},3000);
+  SAV=true;setTimeout(function(){SAV=false;},10000);
   SS('⏳','#f39c12');
-  REF.set(DAT).then(function(){SS('✅ Sync','#2ecc71');}).catch(function(){SS('❌','#e74c3c');});
+  REF.set(DAT).then(function(){SAV=false;SS('✅ Sync','#2ecc71');}).catch(function(){SAV=false;SS('❌','#e74c3c');});
 }
 
 function colorVal(val,idx){
@@ -8541,9 +8547,9 @@ function initFB(){
       clearTimeout(_timer);
       REF.on('value',function(snap){
         var fb=snap.val();
-        if(FL){FL=false;if(fb&&typeof fb==='object'){DAT=fb;try{localStorage.setItem('gluco2',JSON.stringify(DAT));}catch(ex){}}RL();SS('✅ Sync','#2ecc71');return;}
+        if(FL){FL=false;if(fb&&typeof fb==='object'){var _m=_mergeGluco(fb,DAT);if(JSON.stringify(_m)!==JSON.stringify(fb)){REF.set(_m).catch(function(){});}DAT=_m;_lsSet('gluco2',JSON.stringify(DAT));}RL();SS('✅ Sync','#2ecc71');return;}
         if(SAV)return;
-        if(fb&&typeof fb==='object'&&JSON.stringify(fb)!==JSON.stringify(DAT)){DAT=fb;try{localStorage.setItem('gluco2',JSON.stringify(DAT));}catch(ex){}RL();SS('🔄','#2ecc71');}
+        if(fb&&typeof fb==='object'&&JSON.stringify(fb)!==JSON.stringify(DAT)){var _m=_mergeGluco(fb,DAT);DAT=_m;_lsSet('gluco2',JSON.stringify(DAT));RL();SS('🔄','#2ecc71');}
       },function(e){SS('❌ '+e.code,'#e74c3c');});
     }
     REF.once('value').then(function(){startSync();}).catch(function(){
@@ -13314,8 +13320,12 @@ var CATS={
   "Phrasal verbs":"#67e8f9"
 };
 
+// localStorage s fallbackem na parent (řeší srcdoc iframe na Androidu)
+function _wmLsGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e){}try{var v=window.parent.localStorage.getItem(k);if(v!==null)return v;}catch(e){}return null;}
+function _wmLsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}try{window.parent.localStorage.setItem(k,v);}catch(e){}}
+
 var learned=[];
-try{var s=localStorage.getItem('wm_learned');if(s)learned=JSON.parse(s);}catch(e){}
+try{var s=_wmLsGet('wm_learned');if(s)learned=JSON.parse(s);}catch(e){}
 var filterCat='Vše';
 var idx=0;
 var speaking=false;
@@ -13326,15 +13336,15 @@ var shuffleOrder=null;
 var listening=false;
 var recognition=null;
 var speechStats={};
-try{var ss=localStorage.getItem('wm_speech_stats');if(ss)speechStats=JSON.parse(ss);}catch(e){}
+try{var ss=_wmLsGet('wm_speech_stats');if(ss)speechStats=JSON.parse(ss);}catch(e){}
 var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 var micSupported=!!SR;
 
 // TEST STATE
 var testState={running:false,questions:[],current:0,score:0,wrong:0,answered:false,scope:'all',count:10};
 
-function save(){try{localStorage.setItem('wm_learned',JSON.stringify(learned));}catch(e){}}
-function saveSpeechStats(){try{localStorage.setItem('wm_speech_stats',JSON.stringify(speechStats));}catch(e){}}
+function save(){_wmLsSet('wm_learned',JSON.stringify(learned));}
+function saveSpeechStats(){_wmLsSet('wm_speech_stats',JSON.stringify(speechStats));}
 
 function normalizeText(s){
   if(!s)return '';
