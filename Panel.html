@@ -8022,6 +8022,22 @@ h1{font-family:'Orbitron',monospace;font-size:1.35rem;font-weight:900;letter-spa
 .chart-cnt-row{display:flex;gap:6px;justify-content:center;margin-bottom:10px;}
 .cnt-btn{font-family:'Share Tech Mono',monospace;font-size:.58rem;padding:4px 12px;border-radius:4px;border:1px solid rgba(0,245,255,.3);background:rgba(0,245,255,.05);color:rgba(200,216,232,.6);cursor:pointer;}
 .cnt-btn.active{background:rgba(0,245,255,.15);border-color:#00f5ff;color:#00f5ff;}
+/* INLINE EDIT v přehledu */
+.mrow-edit-inp{width:100%;background:rgba(0,245,255,.08);border:1px solid #00f5ff;border-radius:4px;padding:3px 6px;color:#00f5ff;font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;outline:none;text-align:center;margin-top:2px;}
+.mrow.editing{background:rgba(0,245,255,.06);border:1px solid rgba(0,245,255,.3);}
+.mrow-val.editable{cursor:pointer;border-bottom:1px dashed rgba(0,245,255,.25);transition:color .15s;}
+.mrow-val.editable:hover{color:#00f5ff!important;border-bottom-color:#00f5ff;}
+.mrow-val.v-none.editable{cursor:pointer;color:rgba(0,245,255,.35)!important;font-size:.72rem!important;}
+.mrow-val.v-none.editable:hover{color:#00f5ff!important;}
+.prehled-add-row{max-width:580px;margin:0 auto 10px;display:flex;gap:8px;align-items:center;}
+.prehled-add-date{flex:1;background:rgba(0,245,255,.04);border:1px solid rgba(0,245,255,.2);border-radius:5px;padding:7px 10px;color:#c8d8e8;font-family:'Share Tech Mono',monospace;font-size:.72rem;outline:none;}
+.prehled-add-date:focus{border-color:#00f5ff;}
+.prehled-add-btn{font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:.08em;padding:7px 14px;background:rgba(0,200,100,.1);border:1px solid rgba(0,200,100,.3);color:#00c864;border-radius:5px;cursor:pointer;white-space:nowrap;}
+.prehled-add-btn:hover{background:rgba(0,200,100,.2);}
+/* Tlak inline edit */
+.tlak-val-edit{cursor:pointer;border-bottom:1px dashed rgba(255,100,100,.3);transition:color .15s;}
+.tlak-val-edit:hover{color:#ff8888!important;border-bottom-color:#ff8888;}
+.tlak-edit-inp{width:48px;background:rgba(255,100,100,.08);border:1px solid rgba(255,68,102,.5);border-radius:4px;padding:2px 4px;color:#ff8888;font-family:'Orbitron',monospace;font-size:.78rem;font-weight:700;outline:none;text-align:center;}
 /* ARCHIV */
 .amonth{max-width:580px;margin:0 auto 12px;background:#0e1118;border:1px solid rgba(0,245,255,.12);border-radius:8px;overflow:hidden;}
 .ahead{padding:9px 14px;display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,245,255,.1);}
@@ -8089,7 +8105,7 @@ h1{font-family:'Orbitron',monospace;font-size:1.35rem;font-weight:900;letter-spa
     </div>
   </div>
 </div>
-<div class="panel" id="p-prehled"><div class="print-btn"><button id="btn-tisk">🖨️ TISKNOUT MĚSÍC</button></div><div id="prehled-list"></div></div>
+<div class="panel" id="p-prehled"><div class="print-btn"><button id="btn-tisk">🖨️ TISKNOUT MĚSÍC</button></div><div class="prehled-add-row"><input class="prehled-add-date" type="date" id="prehled-add-date"/><button class="prehled-add-btn" id="prehled-add-btn">+ PŘIDAT DEN</button></div><div id="prehled-list"></div></div>
 <div class="panel" id="p-archiv"><div id="arch"></div></div>
 <div class="panel" id="p-graf">
   <div class="graf-wrap">
@@ -8187,9 +8203,16 @@ function RM(){
 
 function RP(){
   var el=document.getElementById('prehled-list');if(!el)return;el.innerHTML='';
+  // Set default date for add-row
+  var pad2=function(n){return('0'+n).slice(-2);};
+  var today=new Date();
+  var addDateEl=document.getElementById('prehled-add-date');
+  if(addDateEl&&!addDateEl.value){
+    addDateEl.value=today.getFullYear()+'-'+pad2(today.getMonth()+1)+'-'+pad2(today.getDate());
+  }
   var monthDat=DAT[CUR]||{};
   var days=Object.keys(monthDat).sort().reverse();
-  if(!days.length){el.innerHTML='<div class="empty">// žádné záznamy pro tento měsíc</div>';return;}
+  if(!days.length){el.innerHTML='<div class="empty">// žádné záznamy pro tento měsíc<br/><small style="opacity:.5;font-size:.6rem;">Použij tlačítko výše nebo záložku ZÁPIS</small></div>';return;}
   days.forEach(function(date){
     var d=monthDat[date];
     var dp=date.split('-').slice(1).join('.');
@@ -8205,10 +8228,45 @@ function RP(){
       var row=document.createElement('div');row.className='mrow';
       var cls=colorVal(val,i);
       var vstr=(val!==null&&val!==undefined&&!isNaN(val))?parseFloat(val).toFixed(1):'—';
-      row.innerHTML='<button class="mrow-del" title="Smazat toto měření">✕</button><span class="mrow-lbl">'+LABELS[i]+'</span><span class="mrow-val '+cls+'">'+vstr+(vstr!=='—'?' <small style="font-size:.5rem;opacity:.5">mmol/L</small>':'')+'</span>';
+      row.innerHTML='<button class="mrow-del" title="Smazat toto měření">✕</button><span class="mrow-lbl">'+LABELS[i]+'</span><span class="mrow-val '+cls+' editable" title="Klikni pro úpravu">'+vstr+(vstr!=='—'?' <small style="font-size:.5rem;opacity:.5">mmol/L</small>':'')+'</span>';
       var delMrow=row.querySelector('.mrow-del');
+      var valSpan=row.querySelector('.mrow-val');
       if(vstr==='—'){delMrow.style.display='none';}
-      (function(dt,key,rowEl){
+      // Inline edit on click
+      (function(dt,key,rowEl,valSpanEl,keyIdx){
+        valSpanEl.onclick=function(e){
+          e.stopPropagation();
+          if(rowEl.classList.contains('editing'))return;
+          rowEl.classList.add('editing');
+          var curVal=(DAT[CUR][dt][key]!==null&&DAT[CUR][dt][key]!==undefined&&!isNaN(DAT[CUR][dt][key]))?parseFloat(DAT[CUR][dt][key]).toFixed(1):'';
+          var inp=document.createElement('input');
+          inp.className='mrow-edit-inp';
+          inp.type='number';inp.step='0.1';inp.min='0';inp.max='30';
+          inp.value=curVal;
+          inp.placeholder='mmol/L';
+          valSpanEl.style.display='none';
+          rowEl.appendChild(inp);
+          inp.focus();inp.select();
+          function commitEdit(){
+            var newVal=parseFloat(inp.value);
+            if(!isNaN(newVal)&&newVal>=0&&newVal<=30){
+              if(!DAT[CUR][dt])DAT[CUR][dt]={};
+              DAT[CUR][dt][key]=newVal;
+              SAVE();
+            }
+            rowEl.classList.remove('editing');
+            valSpanEl.style.display='';
+            if(inp.parentNode)inp.parentNode.removeChild(inp);
+            RP();RM();
+          }
+          function cancelEdit(){
+            rowEl.classList.remove('editing');
+            valSpanEl.style.display='';
+            if(inp.parentNode)inp.parentNode.removeChild(inp);
+          }
+          inp.onblur=function(){setTimeout(commitEdit,120);};
+          inp.onkeydown=function(ev){if(ev.key==='Enter'){inp.onblur=null;commitEdit();}else if(ev.key==='Escape'){inp.onblur=null;cancelEdit();}};
+        };
         delMrow.onclick=function(e){
           e.stopPropagation();
           if(confirm('Smazat toto měření?')){
@@ -8219,7 +8277,7 @@ function RP(){
             SAVE();RP();RM();
           }
         };
-      })(date,k,row);
+      })(date,k,row,valSpan,i);
       grid.appendChild(row);
     });
     // Tlak
@@ -8231,15 +8289,44 @@ function RP(){
       var pulsV=d.puls?Math.round(d.puls):'—';
       var sysCls=(d.sys&&d.sys>140)?'v-high':(d.sys&&d.sys>120)?'v-warn':'v-ok';
       tlakRow.innerHTML='<span style="font-size:.45rem;color:rgba(200,216,232,.35);text-transform:uppercase;letter-spacing:.08em;margin-right:4px;">💓 Tlak</span>'
-        +'<span class="mrow-val '+sysCls+'" style="font-size:.82rem;">'+sysV+'</span>'
+        +'<span class="mrow-val '+sysCls+' tlak-val-edit" data-tlak="sys" style="font-size:.82rem;" title="Klikni pro úpravu">'+sysV+'</span>'
         +'<span style="color:rgba(200,216,232,.3);font-size:.7rem;">/</span>'
-        +'<span class="mrow-val" style="font-size:.82rem;color:#00c864;">'+diaV+'</span>'
+        +'<span class="mrow-val tlak-val-edit" data-tlak="dia" style="font-size:.82rem;color:#00c864;" title="Klikni pro úpravu">'+diaV+'</span>'
         +'<span style="color:rgba(200,216,232,.2);font-size:.5rem;align-self:flex-end;margin-bottom:1px;">mmHg</span>'
         +'<span style="margin-left:auto;font-size:.45rem;color:rgba(200,216,232,.35);">💗</span>'
-        +'<span class="mrow-val" style="font-size:.82rem;color:#00f5ff;">'+pulsV+'</span>'
+        +'<span class="mrow-val tlak-val-edit" data-tlak="puls" style="font-size:.82rem;color:#00f5ff;" title="Klikni pro úpravu">'+pulsV+'</span>'
         +'<span style="color:rgba(200,216,232,.2);font-size:.5rem;align-self:flex-end;margin-bottom:1px;">/min</span>'
         +'<button class="tlak-del-btn" title="Smazat tlak">✕</button>';
+      // Tlak inline edit
       (function(dt){
+        tlakRow.querySelectorAll('.tlak-val-edit').forEach(function(span){
+          span.onclick=function(e){
+            e.stopPropagation();
+            if(span._editing)return;
+            span._editing=true;
+            var tlakKey=span.dataset.tlak;
+            var curV=(DAT[CUR][dt][tlakKey]&&!isNaN(DAT[CUR][dt][tlakKey]))?Math.round(DAT[CUR][dt][tlakKey]):'';
+            var inp=document.createElement('input');
+            inp.className='tlak-edit-inp';
+            inp.type='number';inp.step='1';
+            inp.min=(tlakKey==='puls')?'30':'40';
+            inp.max=(tlakKey==='puls')?'220':(tlakKey==='sys'?'250':'150');
+            inp.value=curV;
+            span.style.display='none';
+            span.parentNode.insertBefore(inp,span.nextSibling);
+            inp.focus();inp.select();
+            function commitTlak(){
+              var nv=parseFloat(inp.value);
+              if(!isNaN(nv)){if(!DAT[CUR][dt])DAT[CUR][dt]={};DAT[CUR][dt][tlakKey]=nv;SAVE();}
+              span._editing=false;span.style.display='';
+              if(inp.parentNode)inp.parentNode.removeChild(inp);
+              RP();RM();
+            }
+            function cancelTlak(){span._editing=false;span.style.display='';if(inp.parentNode)inp.parentNode.removeChild(inp);}
+            inp.onblur=function(){setTimeout(commitTlak,120);};
+            inp.onkeydown=function(ev){if(ev.key==='Enter'){inp.onblur=null;commitTlak();}else if(ev.key==='Escape'){inp.onblur=null;cancelTlak();}};
+          };
+        });
         tlakRow.querySelector('.tlak-del-btn').onclick=function(e){
           e.stopPropagation();
           if(confirm('Smazat tlak/puls pro tento den?')){
@@ -8251,6 +8338,43 @@ function RP(){
         };
       })(date);
       grid.appendChild(tlakRow);
+    } else {
+      // Show add blood pressure link if missing
+      var addTlakRow=document.createElement('div');
+      addTlakRow.style.cssText='grid-column:1/-1;display:flex;gap:6px;align-items:center;padding:4px 6px;';
+      addTlakRow.innerHTML='<span style="font-size:.48rem;color:rgba(0,245,255,.2);letter-spacing:.07em;">💓 Tlak: </span>'
+        +'<span style="font-size:.52rem;color:rgba(0,245,255,.25);cursor:pointer;border-bottom:1px dashed rgba(0,245,255,.15);" class="tlak-add-link">SYS</span>'
+        +'<span style="color:rgba(200,216,232,.15);font-size:.6rem;">/</span>'
+        +'<span style="font-size:.52rem;color:rgba(0,200,100,.25);cursor:pointer;border-bottom:1px dashed rgba(0,200,100,.15);" class="tlak-add-link">DIA</span>'
+        +'<span style="color:rgba(200,216,232,.15);font-size:.45rem;align-self:flex-end;">mmHg</span>'
+        +'<span style="margin-left:auto;font-size:.48rem;color:rgba(0,245,255,.2);">💗</span>'
+        +'<span style="font-size:.52rem;color:rgba(0,245,255,.25);cursor:pointer;border-bottom:1px dashed rgba(0,245,255,.15);" class="tlak-add-link">Puls</span>'
+        +'<span style="color:rgba(200,216,232,.15);font-size:.45rem;align-self:flex-end;">/min</span>';
+      (function(dt){
+        addTlakRow.querySelectorAll('.tlak-add-link').forEach(function(span,si){
+          span.onclick=function(e){
+            e.stopPropagation();
+            var keys=['sys','dia','puls'];
+            var mins=[60,40,30];var maxs=[250,150,220];
+            var tlakKey=keys[si];
+            var inp=document.createElement('input');
+            inp.className='tlak-edit-inp';
+            inp.type='number';inp.step='1';inp.min=mins[si];inp.max=maxs[si];inp.placeholder='—';
+            span.style.display='none';
+            span.parentNode.insertBefore(inp,span.nextSibling);
+            inp.focus();
+            function commitNew(){
+              var nv=parseFloat(inp.value);
+              if(!isNaN(nv)){if(!DAT[CUR][dt])DAT[CUR][dt]={};DAT[CUR][dt][tlakKey]=nv;SAVE();}
+              span.style.display='';if(inp.parentNode)inp.parentNode.removeChild(inp);
+              RP();RM();
+            }
+            inp.onblur=function(){setTimeout(commitNew,120);};
+            inp.onkeydown=function(ev){if(ev.key==='Enter'){inp.onblur=null;commitNew();}else if(ev.key==='Escape'){span.style.display='';if(inp.parentNode)inp.parentNode.removeChild(inp);}};
+          };
+        });
+      })(date);
+      grid.appendChild(addTlakRow);
     }
     el.appendChild(card);
   });
@@ -8294,7 +8418,13 @@ var ta=document.getElementById('t-archiv');
 var tg=document.getElementById('t-graf');
 function hideAll(){['p-zapis','p-prehled','p-archiv','p-graf'].forEach(function(id){var e=document.getElementById(id);if(e)e.className='panel';});[tz,tp,ta,tg].forEach(function(b){if(b)b.className='tab';});}
 if(tz)tz.onclick=function(){hideAll();TAB='zapis';tz.className='tab active';document.getElementById('p-zapis').className='panel on';};
-if(tp)tp.onclick=function(){hideAll();TAB='prehled';tp.className='tab active';document.getElementById('p-prehled').className='panel on';RP();};
+if(tp)tp.onclick=function(){
+  hideAll();TAB='prehled';tp.className='tab active';document.getElementById('p-prehled').className='panel on';
+  var pad2=function(n){return('0'+n).slice(-2);};var td=new Date();
+  var addD=document.getElementById('prehled-add-date');
+  if(addD&&!addD.value)addD.value=td.getFullYear()+'-'+pad2(td.getMonth()+1)+'-'+pad2(td.getDate());
+  RP();
+};
 if(ta)ta.onclick=function(){hideAll();TAB='archiv';ta.className='tab active';document.getElementById('p-archiv').className='panel on';RA();};
 if(tg)tg.onclick=function(){hideAll();TAB='graf';tg.className='tab active';document.getElementById('p-graf').className='panel on';RG();};
 
@@ -8530,6 +8660,23 @@ if(bt)bt.onclick=function(){
     '</body></html>';
   var w=window.open('','_blank','width=900,height=600');
   if(w){w.document.write(html);w.document.close();setTimeout(function(){w.print();},500);}
+};
+
+// Přidat den z přehledu
+var bAdd=document.getElementById('prehled-add-btn');
+if(bAdd)bAdd.onclick=function(){
+  var addD=document.getElementById('prehled-add-date');
+  if(!addD||!addD.value){alert('Zadej datum!');return;}
+  var date=addD.value;
+  var ym=date.substring(0,7);
+  if(!DAT[ym])DAT[ym]={};
+  if(!DAT[ym][date])DAT[ym][date]={l:null,s:null,o:null,v:null,sys:null,dia:null,puls:null};
+  CUR=ym;SAVE();RM();RP();
+  // Scroll to card
+  setTimeout(function(){
+    var list=document.getElementById('prehled-list');
+    if(list)list.scrollTop=0;
+  },100);
 };
 
 // Start
