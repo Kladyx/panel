@@ -204,7 +204,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v7.6</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v7.5</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -276,15 +276,12 @@
     <button class="app-btn" id="btn-wordmaster" style="--ac:#34d399;--ac-rgb:52,211,153" onclick="openApp('wordmaster')">
       <div class="bd"></div><div class="bi">🇬🇧</div><div class="bl">WordMaster</div>
     </button>
-    <button class="app-btn" id="btn-faktor" style="--ac:#e61015;--ac-rgb:230,16,21" onclick="openApp('faktor')">
-      <div class="bd"></div><div class="bi">📻</div><div class="bl">Faktor</div>
-    </button>
 
   </div>
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo">KLADYX</div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v7.6</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v7.3</span> · VYBERTE APLIKACI</div>
       <div class="eq-wrap">
         <div class="dancer dancer-g">
           <svg viewBox="0 0 32 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -340,7 +337,6 @@
         <div class="wcard" onclick="openApp('zxnext')" onmouseover="this.style.borderColor='#00ff88';this.style.boxShadow='0 0 14px rgba(0,255,136,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🖥️</div><div class="wn">ZX Next</div><div class="wd">Diář & Novinky</div></div>
         <div class="wcard" onclick="openApp('reader')" onmouseover="this.style.borderColor='#a78bfa';this.style.boxShadow='0 0 14px rgba(167,139,250,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">📚</div><div class="wn">Čtečka</div><div class="wd">E-Book Reader</div></div>
         <div class="wcard" onclick="openApp('wordmaster')" onmouseover="this.style.borderColor='#34d399';this.style.boxShadow='0 0 14px rgba(52,211,153,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🇬🇧</div><div class="wn">WordMaster</div><div class="wd">Slovíčka EN/CZ</div></div>
-        <div class="wcard" onclick="openApp('faktor')" onmouseover="this.style.borderColor='#e61015';this.style.boxShadow='0 0 14px rgba(230,16,21,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">📻</div><div class="wn">Faktor</div><div class="wd">Now Playing</div></div>
 
       </div>
       <div style="margin-top:22px;display:flex;align-items:center;justify-content:center;gap:24px;padding:12px 20px;border:1px solid rgba(0,212,255,0.1);border-radius:8px;background:rgba(255,255,255,0.025);">
@@ -372,7 +368,6 @@
     <iframe id="frame-zxnext" class="app-frame" title="zxnext" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
     <iframe id="frame-reader" class="app-frame" title="reader" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-wordmaster" class="app-frame" title="wordmaster" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
-    <iframe id="frame-faktor" class="app-frame" title="faktor" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
 
   </div>
 </div>
@@ -10545,157 +10540,6 @@ function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').
 // ──────────────────────────────────────────────────────────────
 <\/script>
 </body></html>
-`;
-
-APP_HTML["faktor"] = `<!DOCTYPE html>
-<html lang="cs">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Faktor Now Playing</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{--bg:#0a0a14;--card:#13131f;--red:#e61015;--muted:#888;}
-html,body{width:100%;height:100%;background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:#f0f0f8;overflow-x:hidden;}
-body{display:flex;flex-direction:column;align-items:center;padding:20px 16px;}
-.header{width:100%;max-width:480px;display:flex;align-items:center;gap:10px;margin-bottom:24px;}
-.logo{font-size:0.7rem;font-weight:800;letter-spacing:3px;color:var(--red);text-shadow:0 0 12px rgba(230,16,21,0.5);}
-.logo span{display:block;font-size:0.5rem;color:var(--muted);letter-spacing:2px;font-weight:400;}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red);animation:pulse 1.5s infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.85);}}
-.card{width:100%;max-width:480px;background:var(--card);border:1px solid rgba(230,16,21,0.25);border-radius:16px;padding:20px;display:flex;gap:16px;align-items:center;margin-bottom:16px;min-height:100px;}
-.cover{width:80px;height:80px;border-radius:10px;object-fit:cover;background:#1a1a2a;flex-shrink:0;border:2px solid rgba(230,16,21,0.3);}
-.cover-placeholder{width:80px;height:80px;border-radius:10px;background:linear-gradient(135deg,#1a0a0a,#2a1010);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:2rem;border:2px solid rgba(230,16,21,0.2);}
-.info{flex:1;min-width:0;}
-.label{font-size:0.58rem;color:var(--red);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;font-weight:700;}
-.title{font-size:1.05rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.artist{font-size:0.8rem;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.history{width:100%;max-width:480px;}
-.hist-title{font-size:0.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
-.hist-item{background:var(--card);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;}
-.hist-cover{width:40px;height:40px;border-radius:6px;object-fit:cover;background:#1a1a2a;flex-shrink:0;}
-.hist-cover-ph{width:40px;height:40px;border-radius:6px;background:#1a1a2a;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;}
-.hist-info{flex:1;min-width:0;}
-.hist-t{font-size:0.8rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.hist-a{font-size:0.68rem;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.hist-time{font-size:0.6rem;color:#555;flex-shrink:0;}
-.refresh-bar{width:100%;max-width:480px;display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
-.refresh-txt{font-size:0.58rem;color:#444;letter-spacing:1px;}
-.refresh-btn{font-size:0.65rem;color:var(--red);cursor:pointer;border:1px solid rgba(230,16,21,0.3);border-radius:6px;padding:4px 10px;background:none;transition:all 0.2s;}
-.refresh-btn:hover{background:rgba(230,16,21,0.1);}
-.err{color:#f87171;font-size:0.8rem;text-align:center;padding:20px;}
-.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(230,16,21,0.3);border-top-color:var(--red);border-radius:50%;animation:spin 0.7s linear infinite;margin-right:8px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.loading{display:flex;align-items:center;color:var(--muted);font-size:0.8rem;padding:20px;}
-</style>
-</head>
-<body>
-<div class="header">
-  <div class="dot"></div>
-  <div class="logo">HITRÁDIO FAKTOR<span>LIVE · NOW PLAYING</span></div>
-</div>
-
-<div id="np-card" class="card">
-  <div class="loading"><div class="spinner"></div>Načítám...</div>
-</div>
-
-<div class="history" id="history-wrap" style="display:none">
-  <div class="hist-title">▸ Naposledy hrané</div>
-  <div id="history-list"></div>
-</div>
-
-<div class="refresh-bar">
-  <span class="refresh-txt" id="last-update">—</span>
-  <button class="refresh-btn" onclick="fetchFaktor()">↺ Refresh</button>
-</div>
-
-<script>
-var PROXY = 'https://api.allorigins.win/get?url=';
-var RADIO_URL = 'https://hitradiofaktor.cz/';
-var refreshTimer = null;
-
-function parsePlaylist(html) {
-  var results = [];
-  // Hledat img+čas+název+interpret vzory
-  // Pattern: cdb.radia.cz cover URL + alt="Název - INTERPRET"
-  var re = /<img[^>]+src="(https:\/\/cdb\.radia\.cz\/content\/covers\/[^"]+image\(image200\)[^"]*)"[^>]*alt="([^"]+)"[^>]*>/gi;
-  // Alternativně: hledat strukturu s časem
-  // Zkus nejdřív alt z img tagů s cdb URL
-  var m;
-  while ((m = re.exec(html)) !== null && results.length < 8) {
-    var cover = m[1];
-    var alt = m[2];
-    var sep = alt.indexOf(' - ');
-    var title = sep > -1 ? alt.slice(0, sep) : alt;
-    var artist = sep > -1 ? alt.slice(sep + 3) : '';
-    if (title && title.length > 1) {
-      results.push({ title: title, artist: artist, cover: cover });
-    }
-  }
-  // Pokud žádné alt, zkus jiný pattern
-  if (results.length === 0) {
-    var re2 = /cdb\.radia\.cz\/content\/covers\/([a-f0-9\/]+)thumbnails\/([^"]+image\(image200\)[^"]*)/gi;
-    while ((m = re2.exec(html)) !== null && results.length < 8) {
-      results.push({ title: '—', artist: '', cover: 'https://cdb.radia.cz/content/covers/' + m[1] + 'thumbnails/' + m[2] });
-    }
-  }
-  return results;
-}
-
-function renderCard(item, isFirst) {
-  var coverHtml = item.cover
-    ? '<img class="' + (isFirst ? 'cover' : 'hist-cover') + '" src="' + item.cover + '" onerror="this.style.display=\'none\'">'
-    : '<div class="' + (isFirst ? 'cover-placeholder' : 'hist-cover-ph') + '">🎵</div>';
-  if (isFirst) {
-    return '<div style="display:flex;gap:16px;align-items:center;width:100%">'
-      + coverHtml
-      + '<div class="info"><div class="label">▶ Právě hraje</div>'
-      + '<div class="title">' + item.title + '</div>'
-      + '<div class="artist">' + item.artist + '</div></div></div>';
-  }
-  return '<div class="hist-item">' + coverHtml
-    + '<div class="hist-info"><div class="hist-t">' + item.title + '</div>'
-    + '<div class="hist-a">' + item.artist + '</div></div></div>';
-}
-
-function fetchFaktor() {
-  document.getElementById('np-card').innerHTML = '<div class="loading"><div class="spinner"></div>Načítám...</div>';
-  var url = PROXY + encodeURIComponent(RADIO_URL);
-  fetch(url)
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      var html = d.contents || '';
-      if (!html) throw new Error('Prázdná odpověď');
-      var items = parsePlaylist(html);
-      if (items.length === 0) {
-        document.getElementById('np-card').innerHTML = '<div class="err">⚠ Data nenalezena – zkus Refresh</div>';
-        return;
-      }
-      // Now playing
-      document.getElementById('np-card').innerHTML = renderCard(items[0], true);
-      // History
-      var histWrap = document.getElementById('history-wrap');
-      var histList = document.getElementById('history-list');
-      if (items.length > 1) {
-        histList.innerHTML = items.slice(1).map(function(x){ return renderCard(x, false); }).join('');
-        histWrap.style.display = 'block';
-      }
-      // Čas
-      var now = new Date();
-      document.getElementById('last-update').textContent = 'Aktualizováno: ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
-    })
-    .catch(function(e){
-      document.getElementById('np-card').innerHTML = '<div class="err">⚠ Chyba: ' + e.message + '</div>';
-    });
-  // Naplánuj příští refresh
-  if (refreshTimer) clearTimeout(refreshTimer);
-  refreshTimer = setTimeout(fetchFaktor, 30000);
-}
-
-fetchFaktor();
-<\/script>
-</body>
-</html>
 `;
 
 APP_HTML["wordmaster"] = `<!DOCTYPE html>
