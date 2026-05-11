@@ -8022,22 +8022,27 @@ h1{font-family:'Orbitron',monospace;font-size:1.35rem;font-weight:900;letter-spa
 .chart-cnt-row{display:flex;gap:6px;justify-content:center;margin-bottom:10px;}
 .cnt-btn{font-family:'Share Tech Mono',monospace;font-size:.58rem;padding:4px 12px;border-radius:4px;border:1px solid rgba(0,245,255,.3);background:rgba(0,245,255,.05);color:rgba(200,216,232,.6);cursor:pointer;}
 .cnt-btn.active{background:rgba(0,245,255,.15);border-color:#00f5ff;color:#00f5ff;}
-/* INLINE EDIT v přehledu */
-.mrow-edit-inp{width:100%;background:rgba(0,245,255,.08);border:1px solid #00f5ff;border-radius:4px;padding:3px 6px;color:#00f5ff;font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;outline:none;text-align:center;margin-top:2px;}
-.mrow.editing{background:rgba(0,245,255,.06);border:1px solid rgba(0,245,255,.3);}
-.mrow-val.editable{cursor:pointer;border-bottom:1px dashed rgba(0,245,255,.25);transition:color .15s;}
-.mrow-val.editable:hover{color:#00f5ff!important;border-bottom-color:#00f5ff;}
-.mrow-val.v-none.editable{cursor:pointer;color:rgba(0,245,255,.35)!important;font-size:.72rem!important;}
-.mrow-val.v-none.editable:hover{color:#00f5ff!important;}
+/* PŘEHLED – edit formulář */
 .prehled-add-row{max-width:580px;margin:0 auto 10px;display:flex;gap:8px;align-items:center;}
 .prehled-add-date{flex:1;background:rgba(0,245,255,.04);border:1px solid rgba(0,245,255,.2);border-radius:5px;padding:7px 10px;color:#c8d8e8;font-family:'Share Tech Mono',monospace;font-size:.72rem;outline:none;}
 .prehled-add-date:focus{border-color:#00f5ff;}
 .prehled-add-btn{font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:.08em;padding:7px 14px;background:rgba(0,200,100,.1);border:1px solid rgba(0,200,100,.3);color:#00c864;border-radius:5px;cursor:pointer;white-space:nowrap;}
 .prehled-add-btn:hover{background:rgba(0,200,100,.2);}
-/* Tlak inline edit */
-.tlak-val-edit{cursor:pointer;border-bottom:1px dashed rgba(255,100,100,.3);transition:color .15s;}
-.tlak-val-edit:hover{color:#ff8888!important;border-bottom-color:#ff8888;}
-.tlak-edit-inp{width:48px;background:rgba(255,100,100,.08);border:1px solid rgba(255,68,102,.5);border-radius:4px;padding:2px 4px;color:#ff8888;font-family:'Orbitron',monospace;font-size:.78rem;font-weight:700;outline:none;text-align:center;}
+/* Edit panel uvnitř kartičky */
+.day-edit-panel{display:none;margin-top:10px;border-top:1px solid rgba(0,245,255,.1);padding-top:10px;}
+.day-edit-panel.open{display:block;}
+.dep-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.dep-field{display:flex;flex-direction:column;gap:3px;}
+.dep-lbl{font-size:.46rem;letter-spacing:.08em;color:rgba(200,216,232,.35);text-transform:uppercase;}
+.dep-inp{background:rgba(0,245,255,.05);border:1px solid rgba(0,245,255,.2);border-radius:4px;padding:6px 8px;color:#c8d8e8;font-family:'Share Tech Mono',monospace;font-size:.75rem;outline:none;width:100%;}
+.dep-inp:focus{border-color:#00f5ff;background:rgba(0,245,255,.09);}
+.dep-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;}
+.dep-sep{font-size:.46rem;letter-spacing:.08em;color:rgba(255,100,100,.4);text-transform:uppercase;margin-bottom:6px;margin-top:2px;}
+.dep-save{width:100%;padding:8px;background:rgba(0,200,100,.12);border:1px solid rgba(0,200,100,.35);border-radius:5px;color:#00c864;font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:.1em;cursor:pointer;}
+.dep-save:hover{background:rgba(0,200,100,.22);}
+.day-edit-btn{background:transparent;border:1px solid rgba(0,245,255,.2);color:rgba(0,245,255,.5);font-size:.6rem;padding:2px 8px;border-radius:4px;cursor:pointer;font-family:'Share Tech Mono',monospace;margin-left:auto;}
+.day-edit-btn:hover{border-color:#00f5ff;color:#00f5ff;}
+.day-edit-btn.active{background:rgba(0,245,255,.1);border-color:#00f5ff;color:#00f5ff;}
 /* ARCHIV */
 .amonth{max-width:580px;margin:0 auto 12px;background:#0e1118;border:1px solid rgba(0,245,255,.12);border-radius:8px;overflow:hidden;}
 .ahead{padding:9px 14px;display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,245,255,.1);}
@@ -8203,84 +8208,40 @@ function RM(){
 
 function RP(){
   var el=document.getElementById('prehled-list');if(!el)return;el.innerHTML='';
-  // Set default date for add-row
   var pad2=function(n){return('0'+n).slice(-2);};
   var today=new Date();
   var addDateEl=document.getElementById('prehled-add-date');
-  if(addDateEl&&!addDateEl.value){
-    addDateEl.value=today.getFullYear()+'-'+pad2(today.getMonth()+1)+'-'+pad2(today.getDate());
-  }
+  if(addDateEl&&!addDateEl.value)addDateEl.value=today.getFullYear()+'-'+pad2(today.getMonth()+1)+'-'+pad2(today.getDate());
   var monthDat=DAT[CUR]||{};
   var days=Object.keys(monthDat).sort().reverse();
-  if(!days.length){el.innerHTML='<div class="empty">// žádné záznamy pro tento měsíc<br/><small style="opacity:.5;font-size:.6rem;">Použij tlačítko výše nebo záložku ZÁPIS</small></div>';return;}
+  if(!days.length){el.innerHTML='<div class="empty">// žádné záznamy pro tento měsíc<br/><small style="opacity:.5;font-size:.6rem;">Použij tlačítko níže nebo záložku ZÁPIS</small></div>';return;}
   days.forEach(function(date){
     var d=monthDat[date];
     var dp=date.split('-').slice(1).join('.');
     var card=document.createElement('div');card.className='day-card';
-    var hdr='<div class="day-header"><span class="day-date">'+dp+'</span>';
+
+    // Header
+    var header=document.createElement('div');header.className='day-header';
+    var dateSpan=document.createElement('span');dateSpan.className='day-date';dateSpan.textContent=dp;
+    var editBtn=document.createElement('button');editBtn.className='day-edit-btn';editBtn.textContent='✏️ Upravit';
     var delBtn=document.createElement('span');delBtn.className='day-del';delBtn.textContent='✕';
-    (function(dt){delBtn.onclick=function(){if(confirm('Smazat záznam '+dt+'?')){delete DAT[CUR][dt];if(!Object.keys(DAT[CUR]).length)delete DAT[CUR];SAVE();RP();RM();}};})(date);
-    card.innerHTML=hdr+'</div><div class="day-grid"></div>';
-    card.querySelector('.day-header').appendChild(delBtn);
-    var grid=card.querySelector('.day-grid');
+    header.appendChild(dateSpan);
+    header.appendChild(editBtn);
+    header.appendChild(delBtn);
+    card.appendChild(header);
+
+    // Day grid (display)
+    var grid=document.createElement('div');grid.className='day-grid';
     KEYS.forEach(function(k,i){
       var val=d[k];
       var row=document.createElement('div');row.className='mrow';
       var cls=colorVal(val,i);
       var vstr=(val!==null&&val!==undefined&&!isNaN(val))?parseFloat(val).toFixed(1):'—';
-      row.innerHTML='<button class="mrow-del" title="Smazat toto měření">✕</button><span class="mrow-lbl">'+LABELS[i]+'</span><span class="mrow-val '+cls+' editable" title="Klikni pro úpravu">'+vstr+(vstr!=='—'?' <small style="font-size:.5rem;opacity:.5">mmol/L</small>':'')+'</span>';
-      var delMrow=row.querySelector('.mrow-del');
-      var valSpan=row.querySelector('.mrow-val');
-      if(vstr==='—'){delMrow.style.display='none';}
-      // Inline edit on click
-      (function(dt,key,rowEl,valSpanEl,keyIdx){
-        valSpanEl.onclick=function(e){
-          e.stopPropagation();
-          if(rowEl.classList.contains('editing'))return;
-          rowEl.classList.add('editing');
-          var curVal=(DAT[CUR][dt][key]!==null&&DAT[CUR][dt][key]!==undefined&&!isNaN(DAT[CUR][dt][key]))?parseFloat(DAT[CUR][dt][key]).toFixed(1):'';
-          var inp=document.createElement('input');
-          inp.className='mrow-edit-inp';
-          inp.type='number';inp.step='0.1';inp.min='0';inp.max='30';
-          inp.value=curVal;
-          inp.placeholder='mmol/L';
-          valSpanEl.style.display='none';
-          rowEl.appendChild(inp);
-          inp.focus();inp.select();
-          function commitEdit(){
-            var newVal=parseFloat(inp.value);
-            if(!isNaN(newVal)&&newVal>=0&&newVal<=30){
-              if(!DAT[CUR][dt])DAT[CUR][dt]={};
-              DAT[CUR][dt][key]=newVal;
-              SAVE();
-            }
-            rowEl.classList.remove('editing');
-            valSpanEl.style.display='';
-            if(inp.parentNode)inp.parentNode.removeChild(inp);
-            RP();RM();
-          }
-          function cancelEdit(){
-            rowEl.classList.remove('editing');
-            valSpanEl.style.display='';
-            if(inp.parentNode)inp.parentNode.removeChild(inp);
-          }
-          inp.onblur=function(){setTimeout(commitEdit,120);};
-          inp.onkeydown=function(ev){if(ev.key==='Enter'){inp.onblur=null;commitEdit();}else if(ev.key==='Escape'){inp.onblur=null;cancelEdit();}};
-        };
-        delMrow.onclick=function(e){
-          e.stopPropagation();
-          if(confirm('Smazat toto měření?')){
-            DAT[CUR][dt][key]=null;
-            var allNull=KEYS.every(function(kk){return DAT[CUR][dt][kk]===null;});
-            var noTlak=!DAT[CUR][dt].sys&&!DAT[CUR][dt].dia&&!DAT[CUR][dt].puls;
-            if(allNull&&noTlak){delete DAT[CUR][dt];if(!Object.keys(DAT[CUR]).length)delete DAT[CUR];}
-            SAVE();RP();RM();
-          }
-        };
-      })(date,k,row,valSpan,i);
+      row.innerHTML='<span class="mrow-lbl">'+LABELS[i]+'</span>'
+        +'<span class="mrow-val '+cls+'">'+vstr+(vstr!=='—'?' <small style="font-size:.5rem;opacity:.5">mmol/L</small>':'')+'</span>';
       grid.appendChild(row);
     });
-    // Tlak
+    // Tlak display
     if(d.sys||d.dia||d.puls){
       var tlakRow=document.createElement('div');
       tlakRow.style.cssText='grid-column:1/-1;display:flex;gap:8px;align-items:center;background:rgba(255,100,100,.07);border-radius:5px;padding:6px 10px;margin-top:4px;';
@@ -8289,93 +8250,96 @@ function RP(){
       var pulsV=d.puls?Math.round(d.puls):'—';
       var sysCls=(d.sys&&d.sys>140)?'v-high':(d.sys&&d.sys>120)?'v-warn':'v-ok';
       tlakRow.innerHTML='<span style="font-size:.45rem;color:rgba(200,216,232,.35);text-transform:uppercase;letter-spacing:.08em;margin-right:4px;">💓 Tlak</span>'
-        +'<span class="mrow-val '+sysCls+' tlak-val-edit" data-tlak="sys" style="font-size:.82rem;" title="Klikni pro úpravu">'+sysV+'</span>'
+        +'<span class="mrow-val '+sysCls+'" style="font-size:.82rem;">'+sysV+'</span>'
         +'<span style="color:rgba(200,216,232,.3);font-size:.7rem;">/</span>'
-        +'<span class="mrow-val tlak-val-edit" data-tlak="dia" style="font-size:.82rem;color:#00c864;" title="Klikni pro úpravu">'+diaV+'</span>'
+        +'<span class="mrow-val" style="font-size:.82rem;color:#00c864;">'+diaV+'</span>'
         +'<span style="color:rgba(200,216,232,.2);font-size:.5rem;align-self:flex-end;margin-bottom:1px;">mmHg</span>'
         +'<span style="margin-left:auto;font-size:.45rem;color:rgba(200,216,232,.35);">💗</span>'
-        +'<span class="mrow-val tlak-val-edit" data-tlak="puls" style="font-size:.82rem;color:#00f5ff;" title="Klikni pro úpravu">'+pulsV+'</span>'
-        +'<span style="color:rgba(200,216,232,.2);font-size:.5rem;align-self:flex-end;margin-bottom:1px;">/min</span>'
-        +'<button class="tlak-del-btn" title="Smazat tlak">✕</button>';
-      // Tlak inline edit
-      (function(dt){
-        tlakRow.querySelectorAll('.tlak-val-edit').forEach(function(span){
-          span.onclick=function(e){
-            e.stopPropagation();
-            if(span._editing)return;
-            span._editing=true;
-            var tlakKey=span.dataset.tlak;
-            var curV=(DAT[CUR][dt][tlakKey]&&!isNaN(DAT[CUR][dt][tlakKey]))?Math.round(DAT[CUR][dt][tlakKey]):'';
-            var inp=document.createElement('input');
-            inp.className='tlak-edit-inp';
-            inp.type='number';inp.step='1';
-            inp.min=(tlakKey==='puls')?'30':'40';
-            inp.max=(tlakKey==='puls')?'220':(tlakKey==='sys'?'250':'150');
-            inp.value=curV;
-            span.style.display='none';
-            span.parentNode.insertBefore(inp,span.nextSibling);
-            inp.focus();inp.select();
-            function commitTlak(){
-              var nv=parseFloat(inp.value);
-              if(!isNaN(nv)){if(!DAT[CUR][dt])DAT[CUR][dt]={};DAT[CUR][dt][tlakKey]=nv;SAVE();}
-              span._editing=false;span.style.display='';
-              if(inp.parentNode)inp.parentNode.removeChild(inp);
-              RP();RM();
-            }
-            function cancelTlak(){span._editing=false;span.style.display='';if(inp.parentNode)inp.parentNode.removeChild(inp);}
-            inp.onblur=function(){setTimeout(commitTlak,120);};
-            inp.onkeydown=function(ev){if(ev.key==='Enter'){inp.onblur=null;commitTlak();}else if(ev.key==='Escape'){inp.onblur=null;cancelTlak();}};
-          };
-        });
-        tlakRow.querySelector('.tlak-del-btn').onclick=function(e){
-          e.stopPropagation();
-          if(confirm('Smazat tlak/puls pro tento den?')){
-            DAT[CUR][dt].sys=null;DAT[CUR][dt].dia=null;DAT[CUR][dt].puls=null;
-            var allNull=KEYS.every(function(kk){return DAT[CUR][dt][kk]===null;});
-            if(allNull){delete DAT[CUR][dt];if(!Object.keys(DAT[CUR]).length)delete DAT[CUR];}
-            SAVE();RP();RM();
-          }
-        };
-      })(date);
+        +'<span class="mrow-val" style="font-size:.82rem;color:#00f5ff;">'+pulsV+'</span>'
+        +'<span style="color:rgba(200,216,232,.2);font-size:.5rem;align-self:flex-end;margin-bottom:1px;">/min</span>';
       grid.appendChild(tlakRow);
-    } else {
-      // Show add blood pressure link if missing
-      var addTlakRow=document.createElement('div');
-      addTlakRow.style.cssText='grid-column:1/-1;display:flex;gap:6px;align-items:center;padding:4px 6px;';
-      addTlakRow.innerHTML='<span style="font-size:.48rem;color:rgba(0,245,255,.2);letter-spacing:.07em;">💓 Tlak: </span>'
-        +'<span style="font-size:.52rem;color:rgba(0,245,255,.25);cursor:pointer;border-bottom:1px dashed rgba(0,245,255,.15);" class="tlak-add-link">SYS</span>'
-        +'<span style="color:rgba(200,216,232,.15);font-size:.6rem;">/</span>'
-        +'<span style="font-size:.52rem;color:rgba(0,200,100,.25);cursor:pointer;border-bottom:1px dashed rgba(0,200,100,.15);" class="tlak-add-link">DIA</span>'
-        +'<span style="color:rgba(200,216,232,.15);font-size:.45rem;align-self:flex-end;">mmHg</span>'
-        +'<span style="margin-left:auto;font-size:.48rem;color:rgba(0,245,255,.2);">💗</span>'
-        +'<span style="font-size:.52rem;color:rgba(0,245,255,.25);cursor:pointer;border-bottom:1px dashed rgba(0,245,255,.15);" class="tlak-add-link">Puls</span>'
-        +'<span style="color:rgba(200,216,232,.15);font-size:.45rem;align-self:flex-end;">/min</span>';
-      (function(dt){
-        addTlakRow.querySelectorAll('.tlak-add-link').forEach(function(span,si){
-          span.onclick=function(e){
-            e.stopPropagation();
-            var keys=['sys','dia','puls'];
-            var mins=[60,40,30];var maxs=[250,150,220];
-            var tlakKey=keys[si];
-            var inp=document.createElement('input');
-            inp.className='tlak-edit-inp';
-            inp.type='number';inp.step='1';inp.min=mins[si];inp.max=maxs[si];inp.placeholder='—';
-            span.style.display='none';
-            span.parentNode.insertBefore(inp,span.nextSibling);
-            inp.focus();
-            function commitNew(){
-              var nv=parseFloat(inp.value);
-              if(!isNaN(nv)){if(!DAT[CUR][dt])DAT[CUR][dt]={};DAT[CUR][dt][tlakKey]=nv;SAVE();}
-              span.style.display='';if(inp.parentNode)inp.parentNode.removeChild(inp);
-              RP();RM();
-            }
-            inp.onblur=function(){setTimeout(commitNew,120);};
-            inp.onkeydown=function(ev){if(ev.key==='Enter'){inp.onblur=null;commitNew();}else if(ev.key==='Escape'){span.style.display='';if(inp.parentNode)inp.parentNode.removeChild(inp);}};
-          };
-        });
-      })(date);
-      grid.appendChild(addTlakRow);
     }
+    card.appendChild(grid);
+
+    // ── Edit panel ──
+    var ep=document.createElement('div');ep.className='day-edit-panel';
+    ep.innerHTML=
+      '<div class="dep-grid">'
+        +'<div class="dep-field"><div class="dep-lbl">🌅 Na lačno (mmol/L)</div><input class="dep-inp" type="number" step="0.1" min="0" max="30" placeholder="—" data-key="l"/></div>'
+        +'<div class="dep-field"><div class="dep-lbl">🍳 Po snídani (mmol/L)</div><input class="dep-inp" type="number" step="0.1" min="0" max="30" placeholder="—" data-key="s"/></div>'
+        +'<div class="dep-field"><div class="dep-lbl">🍽️ Po obědě (mmol/L)</div><input class="dep-inp" type="number" step="0.1" min="0" max="30" placeholder="—" data-key="o"/></div>'
+        +'<div class="dep-field"><div class="dep-lbl">🌙 Po večeři (mmol/L)</div><input class="dep-inp" type="number" step="0.1" min="0" max="30" placeholder="—" data-key="v"/></div>'
+      +'</div>'
+      +'<div class="dep-sep">💓 Krevní tlak &amp; puls</div>'
+      +'<div class="dep-grid3">'
+        +'<div class="dep-field"><div class="dep-lbl">🔺 SYS (mmHg)</div><input class="dep-inp" type="number" step="1" min="60" max="250" placeholder="—" data-key="sys"/></div>'
+        +'<div class="dep-field"><div class="dep-lbl">🔻 DIA (mmHg)</div><input class="dep-inp" type="number" step="1" min="40" max="150" placeholder="—" data-key="dia"/></div>'
+        +'<div class="dep-field"><div class="dep-lbl">💗 Puls (/min)</div><input class="dep-inp" type="number" step="1" min="30" max="220" placeholder="—" data-key="puls"/></div>'
+      +'</div>'
+      +'<button class="dep-save">✓ ULOŽIT ZMĚNY</button>';
+    card.appendChild(ep);
+
+    // Wire up edit button toggle
+    (function(dt, epEl, editBtnEl, cardEl){
+      // Pre-fill inputs when opening
+      editBtnEl.onclick=function(){
+        var isOpen=epEl.classList.contains('open');
+        if(isOpen){
+          epEl.classList.remove('open');
+          editBtnEl.classList.remove('active');
+          editBtnEl.textContent='✏️ Upravit';
+        } else {
+          epEl.classList.add('open');
+          editBtnEl.classList.add('active');
+          editBtnEl.textContent='✖ Zavřít';
+          // Fill current values
+          var entry=DAT[CUR][dt]||{};
+          epEl.querySelectorAll('.dep-inp').forEach(function(inp){
+            var k=inp.dataset.key;
+            var v=entry[k];
+            inp.value=(v!==null&&v!==undefined&&!isNaN(v))
+              ?( (k==='l'||k==='s'||k==='o'||k==='v') ? parseFloat(v).toFixed(1) : Math.round(v) )
+              :'';
+          });
+          // Scroll card into view
+          setTimeout(function(){cardEl.scrollIntoView({behavior:'smooth',block:'nearest'});},80);
+        }
+      };
+      // Save button
+      epEl.querySelector('.dep-save').onclick=function(){
+        var entry=DAT[CUR][dt]||{};
+        var changed=false;
+        epEl.querySelectorAll('.dep-inp').forEach(function(inp){
+          var k=inp.dataset.key;
+          var v=parseFloat(inp.value);
+          if(!isNaN(v)){
+            entry[k]=v;
+            changed=true;
+          }
+          // If field cleared (empty string) but had value → set null
+          if(inp.value===''&&entry[k]!==null&&entry[k]!==undefined){
+            entry[k]=null;
+            changed=true;
+          }
+        });
+        if(!DAT[CUR])DAT[CUR]={};
+        DAT[CUR][dt]=entry;
+        if(changed){SAVE();SS('✅ Uloženo','#2ecc71');}
+        epEl.classList.remove('open');
+        editBtnEl.classList.remove('active');
+        editBtnEl.textContent='✏️ Upravit';
+        RP();RM();
+      };
+      // Delete whole day
+      delBtn.onclick=function(){
+        if(confirm('Smazat celý záznam '+dt+'?')){
+          delete DAT[CUR][dt];
+          if(!Object.keys(DAT[CUR]).length)delete DAT[CUR];
+          SAVE();RP();RM();
+        }
+      };
+    })(date, ep, editBtn, card);
+
     el.appendChild(card);
   });
 }
