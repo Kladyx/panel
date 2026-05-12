@@ -135,14 +135,7 @@
     <div class="upload-types">(nebo přetáhni soubor)</div>
     <input type="file" id="file-input" accept=".epub,.pdf">
   </div>
-  <div style="max-width:320px;text-align:center;">
-    <div class="recent-label">NEBO</div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
-      <input type="text" id="github-url-input" placeholder="GitHub RAW URL..." style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.25);color:var(--light);padding:9px 12px;border-radius:5px;font-family:var(--font);font-size:.65rem;">
-      <button onclick="loadFromGithub()" style="background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.3);color:var(--cyan);padding:9px 12px;border-radius:5px;cursor:pointer;font-family:var(--font);font-size:.65rem;transition:.15s;">📥 NAČÍST Z GITHUB</button>
-    </div>
-  </div>
-  <button onclick="openArchive()" class="nav-btn" style="margin-top:8px;">📚 ARCHIV</button>
+  <button onclick="openArchive()" class="nav-btn" style="margin-top:24px;">📚 ARCHIV KNIH</button>
 </div>
 
 <!-- READER SCREEN -->
@@ -534,30 +527,6 @@
     var fakeFile={name:bk.filename};
     if(bk.type==='epub')loadEpub(fakeFile,bk.buffer);
     else loadPdf(fakeFile,bk.buffer);
-  }
-  
-  function loadFromGithub(){
-    var url=(document.getElementById('github-url-input').value||'').trim();
-    if(!url){toast('⚠ Zadej GitHub URL nebo raw URL');return;}
-    url=url.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/')
-           .replace('https://raw.githubusercontent.com/raw/','https://raw.githubusercontent.com/');
-    var ext=url.match(/\.pdf(\?|$)/i)?'pdf':'epub';
-    var fname=url.split('/').pop().split('?')[0]||('kniha.'+ext);
-    toast('📥 Stahuji z GitHub…');
-    function tryLoad(src,isProxy){
-      var x=new XMLHttpRequest();
-      x.open('GET',src,true);x.responseType='arraybuffer';
-      x.onload=function(){
-        if(x.status===200){var ff={name:fname};if(ext==='epub')loadEpub(ff,x.response);else loadPdf(ff,x.response);document.getElementById('github-url-input').value='';}
-        else{toast('⛔ Chyba stahování: HTTP '+x.status+(isProxy?' (proxy)':''));}
-      };
-      x.onerror=function(){
-        if(!isProxy){toast('⚠ CORS chyba — zkouším proxy…');tryLoad('https://corsproxy.io/?url='+encodeURIComponent(url),true);}
-        else{toast('⛔ Nelze načíst soubor. Zkontroluj URL a opakuj.');}
-      };
-      x.send();
-    }
-    tryLoad(url,false);
   }
   
   function loadSettings(){
