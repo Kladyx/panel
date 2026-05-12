@@ -10302,7 +10302,7 @@ APP_HTML["reader"] = `<!DOCTYPE html>
     <div class="github-label">🐙 Načíst z GitHub</div>
     <div class="github-row">
       <input type="text" id="github-url-input" class="github-input" placeholder="Vlož GitHub raw URL (.epub nebo .pdf)">
-      <button class="github-btn" onclick="loadFromGithub()">▶</button>
+      <button class="github-btn" onclick="(function(){var u=(document.getElementById('github-url-input').value||'').trim();if(!u){toast('⚠ Zadej URL');return;}u=u.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/');var ext=u.match(/\.pdf(\?|$)/i)?'pdf':'epub';var fn=u.split('/').pop().split('?')[0]||('kniha.'+ext);toast('📥 Stahuji…');var x=new XMLHttpRequest();x.open('GET',u,true);x.responseType='arraybuffer';x.onload=function(){if(x.status===200){var ff={name:fn};if(ext==='epub')loadEpub(ff,x.response);else loadPdf(ff,x.response);document.getElementById('github-url-input').value='';}else{toast('⛔ Chyba: '+x.status);}};x.onerror=function(){window.open(u,'_blank');};x.send();})()">▶</button>
     </div>
     <div class="github-hint">github.com → soubor → Raw → zkopíruj URL</div>
   </div>
