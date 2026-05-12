@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>KLADYX READER</title>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/epubjs@0.3.93/dist/epub.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    :root{--bg:#050810;--surface:#080d1c;--surface2:#0d1428;--cyan:#00d4ff;--muted:#5a6488;--light:#dde4ff;--border:rgba(0,212,255,0.18);--font:"Courier New",monospace;--fs:17px;--lh:1.75;--mx:20px;}
+    html,body{width:100%;height:100%;background:var(--bg);font-family:var(--font);color:var(--light);overflow:hidden;}
+    @keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
+    .star{position:absolute;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;pointer-events:none;}
+    .star.big{width:7px;height:7px;}
+    #stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+    #upload-screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .4s;}
+    #upload-screen.hidden{opacity:0;pointer-events:none;}
+    .logo{font-size:1.9rem;font-weight:900;letter-spacing:8px;color:var(--cyan);text-shadow:0 0 30px var(--cyan);}
+    .logo-sub{font-size:.55rem;letter-spacing:4px;color:var(--muted);margin-top:-12px;}
+    .upload-zone{position:relative;width:min(320px,90vw);padding:36px 24px;border:1px dashed rgba(0,212,255,.35);border-radius:10px;background:rgba(0,212,255,.04);display:flex;flex-direction:column;align-items:center;gap:16px;cursor:pointer;transition:background .2s,border-color .2s;}
+    .upload-zone:hover,.upload-zone.drag{background:rgba(0,212,255,.1);border-color:var(--cyan);}
+    .upload-icon{font-size:2.8rem;line-height:1;}
+    .upload-label{font-size:.72rem;letter-spacing:2px;color:var(--muted);text-align:center;text-transform:uppercase;}
+    .upload-types{font-size:.6rem;letter-spacing:1px;color:rgba(90,100,136,.7);}
+    #file-input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+    .recent-label{font-size:.55rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+    #reader-screen{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .4s;}
+    #reader-screen.active{opacity:1;pointer-events:all;}
+    #topbar{flex-shrink:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:rgba(5,8,16,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:20;}
+    .tb-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:6px;line-height:1;transition:color .15s;}
+    .tb-btn:hover{color:var(--cyan);}
+    #book-title{font-size:.6rem;letter-spacing:2px;color:var(--light);max-width:55vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    #content-area{flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column;}
+    #epub-viewer{flex:1;overflow:hidden;background:var(--bg);}
+    #pdf-viewer{flex:1;overflow-y:auto;overflow-x:hidden;display:none;flex-direction:column;align-items:center;padding:16px var(--mx);gap:12px;background:var(--bg);-webkit-overflow-scrolling:touch;}
+    #pdf-viewer canvas{max-width:100%;height:auto!important;border:1px solid var(--border);border-radius:4px;display:block;}
+    #bottombar{flex-shrink:0;background:rgba(5,8,16,.92);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:8px 16px 12px;display:flex;flex-direction:column;gap:8px;z-index:20;}
+    #progress-bar-wrap{width:100%;height:3px;background:rgba(0,212,255,.1);border-radius:2px;cursor:pointer;}
+    #progress-bar{height:100%;background:var(--cyan);border-radius:2px;width:0%;transition:width .3s;}
+    .nav-row{display:flex;align-items:center;justify-content:space-between;}
+    .nav-btn{display:flex;align-items:center;gap:6px;background:rgba(0,212,255,.07);border:1px solid var(--border);color:var(--light);font-family:var(--font);font-size:.65rem;letter-spacing:1.5px;padding:7px 14px;border-radius:5px;cursor:pointer;transition:background .15s,border-color .15s;}
+    .nav-btn:hover{background:rgba(0,212,255,.15);border-color:var(--cyan);}
+    .nav-btn:disabled{opacity:.3;cursor:not-allowed;}
+    #page-info{font-size:.58rem;letter-spacing:1px;color:var(--muted);}
+    #settings-panel{position:fixed;bottom:0;left:0;right:0;z-index:30;background:rgba(8,13,28,.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);border-radius:16px 16px 0 0;padding:20px 20px 32px;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);}
+    #settings-panel.open{transform:translateY(0);}
+    .panel-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px;}
+    .panel-title{font-size:.6rem;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:18px;}
+    .setting-row{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+    .setting-label{font-size:.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;display:flex;justify-content:space-between;}
+    .setting-label span{color:var(--cyan);}
+    input[type=range]{-webkit-appearance:none;width:100%;height:4px;background:rgba(0,212,255,.15);border-radius:2px;outline:none;}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--cyan);border-radius:50%;cursor:pointer;box-shadow:0 0 8px rgba(0,212,255,.5);}
+    .font-family-btns{display:flex;gap:8px;flex-wrap:wrap;}
+    .ff-btn{padding:6px 12px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--muted);font-family:var(--font);font-size:.65rem;cursor:pointer;transition:.15s;}
+    .ff-btn.active,.ff-btn:hover{border-color:var(--cyan);color:var(--light);background:rgba(0,212,255,.1);}
+    .theme-btns{display:flex;gap:8px;}
+    .theme-btn{flex:1;padding:8px;border-radius:5px;border:1px solid var(--border);cursor:pointer;font-family:var(--font);font-size:.6rem;letter-spacing:1px;transition:.15s;}
+    .theme-btn.dark{background:#050810;color:#dde4ff;}
+    .theme-btn.sepia{background:#1a1208;color:#d4b896;}
+    .theme-btn.light{background:#f0ede8;color:#1a1208;}
+    .theme-btn.active{border-color:var(--cyan);box-shadow:0 0 8px rgba(0,212,255,.3);}
+    #toc-panel{position:fixed;inset:0;z-index:25;background:rgba(5,8,16,.96);backdrop-filter:blur(20px);transform:translateX(-100%);transition:transform .3s;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch;}
+    #toc-panel.open{transform:translateX(0);}
+    .toc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+    .toc-title{font-size:.65rem;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;}
+    .toc-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;}
+    .toc-item{display:block;padding:11px 14px;margin-bottom:4px;border:1px solid transparent;border-radius:5px;color:var(--muted);font-size:.7rem;letter-spacing:1px;cursor:pointer;transition:.15s;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .toc-item:hover{color:var(--light);border-color:var(--border);background:rgba(0,212,255,.06);}
+    .toc-item.active{color:var(--cyan);border-color:rgba(0,212,255,.3);}
+    #pdf-loading{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;background:rgba(5,8,16,.85);z-index:15;}
+    #pdf-loading.show{display:flex;}
+    .loading-spinner{width:36px;height:36px;border:2px solid rgba(0,212,255,.2);border-top-color:var(--cyan);border-radius:50%;animation:spin .8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .loading-text{font-size:.6rem;letter-spacing:2px;color:var(--muted);}
+    #toast{position:fixed;top:56px;left:50%;transform:translateX(-50%);background:rgba(8,13,28,.95);border:1px solid var(--border);color:var(--light);font-size:.65rem;letter-spacing:1.5px;padding:8px 18px;border-radius:5px;z-index:50;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
+    #toast.show{opacity:1;}
+    #overlay{position:fixed;inset:0;z-index:22;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .3s;}
+    #overlay.show{opacity:1;pointer-events:all;}
+    #bookmarks-panel{position:fixed;inset:0;z-index:25;background:rgba(5,8,16,.97);backdrop-filter:blur(20px);transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch;}
+    #bookmarks-panel.open{transform:translateX(0);}
+    .bm-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+    .bm-title{font-size:.65rem;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;}
+    .bm-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;}
+    .bm-save-btn{width:100%;padding:11px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.35);border-radius:6px;color:var(--cyan);font-family:var(--font);font-size:.65rem;letter-spacing:2px;cursor:pointer;margin-bottom:10px;transition:.15s;}
+    .bm-save-btn:hover{background:rgba(0,212,255,.2);}
+    #save-file-btn.saving { animation: saveBtnSaving 0.6s ease-in-out; }
+    #save-file-btn.saved { background:rgba(255,60,90,.2) !important; border-color:rgba(255,60,90,.4) !important; color:#ff3c5a !important; }
+    @keyframes saveBtnSaving { 0% { transform:scale(1); } 50% { transform:scale(1.05); } 100% { transform:scale(1); } }
+    .bm-io-row{display:flex;gap:8px;margin-bottom:18px;}
+    .bm-io-btn{flex:1;padding:9px 6px;border-radius:6px;font-family:var(--font);font-size:.6rem;letter-spacing:1.5px;cursor:pointer;transition:.15s;}
+    .bm-io-btn.export{background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.3);color:#00ff88;}
+    .bm-io-btn.export:hover{background:rgba(0,255,136,.15);}
+    .bm-io-btn.import{background:rgba(255,200,0,.07);border:1px solid rgba(255,200,0,.3);color:#ffc800;}
+    .bm-io-btn.import:hover{background:rgba(255,200,0,.15);}
+    .bm-section{font-size:.55rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
+    .bm-item{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:.15s;gap:8px;}
+    .bm-item:hover{background:rgba(0,212,255,.06);border-color:rgba(0,212,255,.3);}
+    .bm-info{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;}
+    .bm-name{font-size:.7rem;letter-spacing:1px;color:var(--light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .bm-meta{font-size:.58rem;letter-spacing:1px;color:var(--muted);}
+    .bm-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;padding:5px 7px;border-radius:4px;transition:.15s;flex-shrink:0;}
+    .bm-del:hover{color:#ff3c5a;background:rgba(255,60,90,.1);}
+    .bm-empty{font-size:.62rem;letter-spacing:2px;color:var(--muted);text-align:center;padding:40px 0;}
+    .tb-btn.bm-active{color:#ffd700;text-shadow:0 0 8px rgba(255,215,0,.5);}
+    .archive-btn{display:flex;align-items:center;gap:10px;padding:11px 28px;border:1px solid rgba(0,212,255,.3);background:rgba(0,212,255,.06);color:var(--muted);font-family:var(--font);font-size:.65rem;letter-spacing:2px;cursor:pointer;border-radius:6px;transition:.15s;}
+    .archive-btn:hover{background:rgba(0,212,255,.14);color:var(--light);}
+    .github-loader{display:flex;flex-direction:column;gap:6px;width:min(320px,90vw);}
+    .github-label{font-size:.55rem;letter-spacing:3px;color:#a78bfa;text-transform:uppercase;}
+    .github-row{display:flex;gap:6px;}
+    .github-input{flex:1;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.35);border-radius:6px;color:var(--light);font-family:var(--font);font-size:.65rem;padding:9px 12px;outline:none;letter-spacing:1px;}
+    .github-input:focus{border-color:#a78bfa;}
+    .github-btn{background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.4);color:#a78bfa;font-size:1rem;padding:9px 14px;border-radius:6px;cursor:pointer;transition:.15s;font-family:var(--font);}
+    .github-btn:hover{background:rgba(167,139,250,.28);}
+    .github-hint{font-size:.5rem;letter-spacing:1px;color:rgba(90,100,136,.65);}
+    #archive-panel{position:fixed;inset:0;z-index:15;background:rgba(5,8,16,.97);backdrop-filter:blur(20px);display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .3s;}
+    #archive-panel.open{opacity:1;pointer-events:all;}
+    .arc-header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--border);}
+    .arc-title{font-size:.65rem;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;}
+    .arc-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;padding:4px 8px;}
+    .arc-list{flex:1;overflow-y:auto;padding:16px 20px;-webkit-overflow-scrolling:touch;}
+    .arc-item{display:flex;align-items:center;gap:14px;padding:14px;margin-bottom:8px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:.15s;}
+    .arc-item:hover{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.4);}
+    .arc-icon{font-size:1.6rem;flex-shrink:0;}
+    .arc-info{flex:1;min-width:0;}
+    .arc-name{font-size:.72rem;letter-spacing:1px;color:var(--light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;}
+    .arc-meta{font-size:.57rem;letter-spacing:1px;color:var(--muted);}
+    .arc-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:6px 8px;border-radius:4px;flex-shrink:0;transition:.15s;}
+    .arc-del:hover{color:#ff3c5a;background:rgba(255,60,90,.1);}
+    .arc-empty{font-size:.65rem;letter-spacing:2px;color:var(--muted);text-align:center;padding:60px 0;}
+    .arc-size-warn{font-size:.55rem;letter-spacing:1px;color:rgba(90,100,136,.6);text-align:center;padding:10px 0 0;}
+  </style>
+</head>
+<body>
+<div id="stars"></div>
+<div id="toast"></div>
+<div id="overlay" onclick="['toc-panel','settings-panel','bookmarks-panel','archive-panel'].forEach(function(id){document.getElementById(id).classList.remove('open');});"></div>
+<div id="upload-screen">
+  <div class="logo">KLADYX</div>
+  <div class="logo-sub">READER v7.5Kl · EPUB · PDF</div>
+  <div class="upload-zone" id="upload-zone">
+    <input type="file" id="file-input" accept=".epub,.pdf">
+    <div class="upload-icon">📚</div>
+    <div class="upload-label">Nahrát e-knihu<br>Klikněte nebo přetáhněte soubor</div>
+    <div class="upload-types">Podporované formáty: EPUB · PDF</div>
+  </div>
+  <div class="recent-label">— KLADYX READER —</div>
+  <div class="github-loader">
+    <div class="github-label">🐙 Načíst z GitHub</div>
+    <div class="github-row">
+      <input type="text" id="github-url-input" class="github-input" placeholder="Vlož GitHub raw URL (.epub nebo .pdf)">
+      <button class="github-btn" onclick="(function(){var u=(document.getElementById('github-url-input').value||'').trim();if(!u){toast('⚠ Zadej URL');return;}u=u.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/');var ext=u.match(/\.pdf(\?|$)/i)?'pdf':'epub';var fn=u.split('/').pop().split('?')[0]||('kniha.'+ext);toast('📥 Stahuji…');var x=new XMLHttpRequest();x.open('GET',u,true);x.responseType='arraybuffer';x.onload=function(){if(x.status===200){var ff={name:fn};if(ext==='epub')loadEpub(ff,x.response);else loadPdf(ff,x.response);document.getElementById('github-url-input').value='';}else{toast('⛔ Chyba: '+x.status);}};x.onerror=function(){window.open(u,'_blank');};x.send();})()">▶</button>
+    </div>
+    <div class="github-hint">github.com → soubor → Raw → zkopíruj URL</div>
+  </div>
+  <button class="archive-btn" onclick="renderArchive();document.getElementById('archive-panel').classList.add('open')">📂 ARCHIV KNIH</button>
+</div>
+<div id="archive-panel">
+  <div class="arc-header">
+    <div class="arc-title">📂 Archiv knih</div>
+    <button class="arc-close" onclick="document.getElementById('archive-panel').classList.remove('open')">✕</button>
+  </div>
+  <div class="arc-list" id="arc-list"></div>
+  <div class="arc-size-warn">📱 Knihy zůstávají trvale v paměti telefonu (IndexedDB)</div>
+</div>
+<div id="reader-screen">
+  <div id="topbar">
+    <button class="tb-btn" id="toc-btn" onclick="openToc()">☰</button>
+    <div id="book-title">—</div>
+    <div style="display:flex;gap:4px">
+      <button class="tb-btn" id="bm-btn" onclick="openBookmarks()" title="Záložky">🔖</button>
+      <button class="tb-btn" onclick="openSettings()">⚙</button>
+      <button class="tb-btn" onclick="closeBook()">✕</button>
+    </div>
+  </div>
+  <div id="content-area">
+    <div id="epub-viewer"></div>
+    <div id="pdf-viewer"></div>
+    <div id="pdf-loading"><div class="loading-spinner"></div><div class="loading-text">Načítám PDF...</div></div>
+  </div>
+  <div id="bottombar">
+    <div id="progress-bar-wrap" onclick="seekProgress(event)"><div id="progress-bar"></div></div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="prevPage()">◀ PŘEDCHOZÍ</button>
+      <div id="page-info">—</div>
+      <button class="nav-btn" onclick="nextPage()">DALŠÍ ▶</button>
+    </div>
+  </div>
+</div>
+<div id="toc-panel">
+  <div class="toc-header">
+    <div class="toc-title">📋 Obsah knihy</div>
+    <button class="toc-close" onclick="document.getElementById('toc-panel').classList.remove('open')">✕</button>
+  </div>
+  <div id="toc-list"></div>
+</div>
+<div id="bookmarks-panel">
+  <div class="bm-header">
+    <div class="bm-title">🔖 Záložky</div>
+    <button class="bm-close" onclick="document.getElementById('bookmarks-panel').classList.remove('open')">✕</button>
+  </div>
+  <button class="bm-save-btn" id="save-file-btn" onclick="saveCurrentFile()" style="background:rgba(0,255,136,.15);border:1px solid rgba(0,255,136,.4);color:#00ff88;">💾 ULOŽIT SOUBOR</button>
+  <button class="bm-save-btn" onclick="saveBookmark()">🔖 ULOŽIT POZICI</button>
+  <div class="bm-io-row">
+    <button class="bm-io-btn export" onclick="exportCurrentFile()" title="Stáhnout PDF/EPUB">📥 EXPORT SOUBOR</button>
+    <button class="bm-io-btn export" onclick="exportBookmarks()">⬇ EXPORT JSON</button>
+  </div>
+  <div class="bm-io-row">
+    <button class="bm-io-btn import" onclick="document.getElementById('bm-import-input').click()">⬆ IMPORT JSON</button>
+    <input type="file" id="bm-import-input" accept=".json" style="display:none" onchange="importBookmarks(this)">
+  </div>
+  <div class="bm-section">Uložené záložky</div>
+  <div id="bm-list"></div>
+</div>
+<div id="settings-panel">
+  <div class="panel-handle"></div>
+  <div class="panel-title">⚙ Nastavení čtení</div>
+  <div class="setting-row">
+    <div class="setting-label">Velikost písma <span id="fs-val">17px</span></div>
+    <input type="range" id="fs-slider" min="12" max="28" value="17" oninput="updateFontSize(this.value)">
+  </div>
+  <div class="setting-row">
+    <div class="setting-label">Výška řádku <span id="lh-val">1.75</span></div>
+    <input type="range" id="lh-slider" min="120" max="260" value="175" oninput="updateLineHeight(this.value)">
+  </div>
+  <div class="setting-row">
+    <div class="setting-label">Okraje stránky <span id="mx-val">20px</span></div>
+    <input type="range" id="mx-slider" min="8" max="56" value="20" oninput="updateMargin(this.value)">
+  </div>
+  <div class="setting-row">
+    <div class="setting-label">Písmo</div>
+    <div class="font-family-btns">
+      <button class="ff-btn active" onclick="setFont('mono')" data-ff="mono">Mono</button>
+      <button class="ff-btn" onclick="setFont('serif')" data-ff="serif">Serif</button>
+      <button class="ff-btn" onclick="setFont('sans')" data-ff="sans">Sans</button>
+    </div>
+  </div>
+  <div class="setting-row">
+    <div class="setting-label">Motiv</div>
+    <div class="theme-btns">
+      <button class="theme-btn dark active" onclick="setTheme('dark')" data-theme="dark">🌙 Tmavý</button>
+      <button class="theme-btn sepia" onclick="setTheme('sepia')" data-theme="sepia">🕯 Sepia</button>
+      <button class="theme-btn light" onclick="setTheme('light')" data-theme="light">☀ Světlý</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){var c=document.getElementById('stars');for(var i=0;i<55;i++){var s=document.createElement('div');s.className='star'+(Math.random()>.75?' big':'');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*4+'s';s.style.animationDuration=(1.5+Math.random()*2.5)+'s';c.appendChild(s);}})();
+var bookType=null,epubBook=null,epubRendition=null,pdfDoc=null,pdfPage=1,pdfTotal=0,pdfRendering=false,currentFile=null;
+document.getElementById('file-input').addEventListener('change',function(e){var f=e.target.files[0];if(f)loadFile(f);});
+var zone=document.getElementById('upload-zone');
+zone.addEventListener('dragover',function(e){e.preventDefault();zone.classList.add('drag');});
+zone.addEventListener('dragleave',function(){zone.classList.remove('drag');});
+zone.addEventListener('drop',function(e){e.preventDefault();zone.classList.remove('drag');var f=e.dataTransfer.files[0];if(f)loadFile(f);});
+function loadFile(file){var sizeMB=(file.size/1048576).toFixed(2);var ext=file.name.split('.').pop().toLowerCase();if(ext!=='epub'&&ext!=='pdf'){toast('Nepodporovaný formát: .'+ext);return;}if(!confirm('\u2b06 IMPORT KNIHY\\n\\nN\u00e1zev souboru:\\n   '+file.name+'\\n\\nForm\u00e1t: '+ext.toUpperCase()+'\\nVelikost: '+sizeMB+' MB\\n\\nOtev\u0159\u00edt knihu?')){document.getElementById('file-input').value='';return;}if(ext==='epub')loadEpub(file);else loadPdf(file);}
+function showReader(title,fileObj){document.getElementById('upload-screen').classList.add('hidden');document.getElementById('reader-screen').classList.add('active');document.getElementById('book-title').textContent=title||'—';if(fileObj)currentFile=fileObj;}
+function closeBook(){if(epubBook){epubBook.destroy();epubBook=null;epubRendition=null;}pdfDoc=null;pdfPage=1;pdfTotal=0;document.getElementById('epub-viewer').innerHTML='';document.getElementById('pdf-viewer').innerHTML='';document.getElementById('pdf-viewer').style.display='none';document.getElementById('epub-viewer').style.display='block';document.getElementById('reader-screen').classList.remove('active');document.getElementById('upload-screen').classList.remove('hidden');document.getElementById('file-input').value='';bookType=null;}
+function loadEpub(file,buf){bookType='epub';function _open(b){try{var bufForEpub=b.slice(0);if(epubBook)epubBook.destroy();epubBook=ePub(bufForEpub);epubBook.ready.then(function(){return epubBook.locations.generate(1200);});epubBook.loaded.metadata.then(function(meta){var t=meta.title||file.name;showReader(t,{name:file.name,data:b,type:'epub'});});var viewer=document.getElementById('epub-viewer');viewer.style.display='block';document.getElementById('pdf-viewer').style.display='none';epubRendition=epubBook.renderTo('epub-viewer',{manager:'continuous',flow:'scrolled',width:'100%',height:'100%',spread:'none'});applyEpubTheme();epubRendition.display();epubRendition.on('relocated',function(loc){updateProgress(loc.start.percentage||0);var ci=loc.start.displayed;if(ci)setPageInfo(ci.page,ci.total);});epubBook.loaded.navigation.then(function(nav){buildToc(nav.toc);});addSwipe(viewer);}catch(err){toast('Chyba EPUB: '+err.message);}}if(buf){_open(buf);}else{var r=new FileReader();r.onload=function(e){_open(e.target.result);};r.readAsArrayBuffer(file);}}
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+function loadPdf(file,buf){bookType='pdf';function _open(b){var loading=document.getElementById('pdf-loading');loading.classList.add('show');var bufForPdf=b.slice(0);var typedArray=new Uint8Array(bufForPdf);pdfjsLib.getDocument({data:typedArray}).promise.then(function(pdf){pdfDoc=pdf;pdfTotal=pdf.numPages;pdfPage=1;var t=file.name.replace(/\.pdf$/i,'');showReader(t,{name:file.name,data:b,type:'pdf'});document.getElementById('epub-viewer').style.display='none';var pv=document.getElementById('pdf-viewer');pv.style.display='flex';loading.classList.remove('show');renderPdfPage(pdfPage);buildPdfToc();addSwipe(pv);}).catch(function(err){loading.classList.remove('show');toast('Chyba PDF: '+err.message);});}if(buf){_open(buf);}else{var r=new FileReader();r.onload=function(e){_open(e.target.result);};r.readAsArrayBuffer(file);}}
+function renderPdfPage(num){if(!pdfDoc||pdfRendering)return;pdfRendering=true;var pv=document.getElementById('pdf-viewer');pv.innerHTML='';pdfDoc.getPage(num).then(function(page){var vw=Math.min(window.innerWidth-32,800);var viewport=page.getViewport({scale:1});var scale2=vw/viewport.width;var scaledVP=page.getViewport({scale:scale2});var canvas=document.createElement('canvas');canvas.width=scaledVP.width;canvas.height=scaledVP.height;canvas.style.width='100%';pv.appendChild(canvas);page.render({canvasContext:canvas.getContext('2d'),viewport:scaledVP}).promise.then(function(){pdfRendering=false;pdfPage=num;setPageInfo(num,pdfTotal);updateProgress(num/pdfTotal);pv.scrollTop=0;});});}
+function buildPdfToc(){if(!pdfDoc)return;pdfDoc.getOutline().then(function(outline){if(!outline||!outline.length){buildPdfPageList();return;}var list=document.getElementById('toc-list');list.innerHTML='';function addItems(items,depth){items.forEach(function(item){var el=document.createElement('div');el.className='toc-item';el.style.paddingLeft=(14+depth*16)+'px';el.textContent=(depth?'└ ':'')+item.title;el.onclick=function(){if(item.dest){pdfDoc.getDestination(item.dest).then(function(dest){pdfDoc.getPageIndex(dest[0]).then(function(idx){renderPdfPage(idx+1);closeToc();});});}};list.appendChild(el);if(item.items&&item.items.length)addItems(item.items,depth+1);});}addItems(outline,0);}).catch(function(){buildPdfPageList();});}
+function buildPdfPageList(){var list=document.getElementById('toc-list');list.innerHTML='';for(var i=1;i<=Math.min(pdfTotal,200);i++){(function(n){var el=document.createElement('div');el.className='toc-item';el.textContent='Stránka '+n;el.onclick=function(){renderPdfPage(n);closeToc();};list.appendChild(el);})(i);}}
+function prevPage(){if(bookType==='epub'&&epubRendition)epubRendition.prev();else if(bookType==='pdf'&&pdfPage>1)renderPdfPage(pdfPage-1);}
+function nextPage(){if(bookType==='epub'&&epubRendition)epubRendition.next();else if(bookType==='pdf'&&pdfPage<pdfTotal)renderPdfPage(pdfPage+1);}
+function setPageInfo(cur,total){document.getElementById('page-info').textContent=cur+' / '+total;}
+function updateProgress(frac){document.getElementById('progress-bar').style.width=Math.round((frac||0)*100)+'%';}
+function seekProgress(e){var rect=e.currentTarget.getBoundingClientRect();var frac=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));if(bookType==='epub'&&epubRendition){if(epubBook.locations.length()){var loc=epubBook.locations.cfiFromPercentage(frac);epubRendition.display(loc);}}else if(bookType==='pdf'){renderPdfPage(Math.max(1,Math.min(pdfTotal,Math.round(frac*pdfTotal))));}}
+function buildToc(items){var list=document.getElementById('toc-list');list.innerHTML='';function add(arr,depth){arr.forEach(function(item){var el=document.createElement('div');el.className='toc-item';el.style.paddingLeft=(14+depth*14)+'px';el.textContent=(depth?'└ ':'')+item.label.trim();el.onclick=function(){if(epubRendition)epubRendition.display(item.href);closeToc();};list.appendChild(el);if(item.subitems&&item.subitems.length)add(item.subitems,depth+1);});}add(items,0);}
+function openToc(){document.getElementById('toc-panel').classList.add('open');showOverlay();}
+function closeToc(){document.getElementById('toc-panel').classList.remove('open');hideOverlay();}
+function openSettings(){document.getElementById('settings-panel').classList.add('open');showOverlay();}
+function closeSettings(){document.getElementById('settings-panel').classList.remove('open');hideOverlay();}
+function closeAllPanels(){closeToc();closeSettings();closeBookmarks();closeArchive();}
+function showOverlay(){document.getElementById('overlay').classList.add('show');}
+function hideOverlay(){document.getElementById('overlay').classList.remove('show');}
+var BM_KEY='kladyx_bookmarks';
+function getBookmarks(){try{return JSON.parse(localStorage.getItem(BM_KEY)||'[]');}catch(e){return[];}}
+function setBookmarks(arr){try{localStorage.setItem(BM_KEY,JSON.stringify(arr));}catch(e){toast('Záložky nelze uložit (chyba úložiště)');}}
+function saveBookmark(){
+  var title=document.getElementById('book-title').textContent||'Neznámá kniha';
+  var pos=null,label='';
+  if(bookType==='epub'&&epubRendition){
+    var loc=epubRendition.currentLocation();
+    if(loc&&loc.start){pos={type:'epub',cfi:loc.start.cfi,pct:Math.round((loc.start.percentage||0)*100)};label=pos.pct+'%';}
+  }else if(bookType==='pdf'){
+    pos={type:'pdf',page:pdfPage};label='Strana '+pdfPage+' / '+pdfTotal;
+  }
+  if(!pos){toast('Nelze uložit — žádná kniha není otevřena.');return;}
+  var bms=getBookmarks();
+  var bm={id:Date.now(),title:title,pos:pos,label:label,date:new Date().toLocaleString('cs-CZ')};
+  bms.unshift(bm);
+  if(bms.length>50)bms=bms.slice(0,50);
+  setBookmarks(bms);
+  var btn=document.getElementById('bm-btn');
+  if(btn){btn.classList.add('bm-active');setTimeout(function(){btn.classList.remove('bm-active');},1800);}
+  toast('✅ Záložka uložena — '+label);
+  renderBookmarks();
+}
+function openBookmarks(){
+  renderBookmarks();
+  document.getElementById('bookmarks-panel').classList.add('open');
+  showOverlay();
+}
+function closeBookmarks(){
+  document.getElementById('bookmarks-panel').classList.remove('open');
+  hideOverlay();
+}
+function renderBookmarks(){
+  var list=document.getElementById('bm-list');
+  var bms=getBookmarks();
+  if(!bms.length){list.innerHTML='<div class="bm-empty">Žádné záložky</div>';return;}
+  list.innerHTML='';
+  bms.forEach(function(bm){
+    var item=document.createElement('div');item.className='bm-item';
+    var info=document.createElement('div');info.className='bm-info';
+    var name=document.createElement('div');name.className='bm-name';name.textContent=bm.title+' — '+bm.label;
+    var meta=document.createElement('div');meta.className='bm-meta';meta.textContent=bm.date;
+    info.appendChild(name);info.appendChild(meta);
+    var del=document.createElement('button');del.className='bm-del';del.textContent='🗑';
+    del.onclick=function(e){e.stopPropagation();deleteBookmark(bm.id);};
+    item.appendChild(info);item.appendChild(del);
+    item.onclick=function(){goToBookmark(bm);};
+    list.appendChild(item);
+  });
+}
+function deleteBookmark(id){
+  var bms=getBookmarks().filter(function(b){return b.id!==id;});
+  setBookmarks(bms);
+  renderBookmarks();
+  toast('🗑 Záložka smazána');
+}
+function exportBookmarks(){
+  var bms=getBookmarks();
+  if(!bms.length){toast('Žádné záložky k exportu');return;}
+  var json=JSON.stringify(bms,null,2);
+  var fname='kladyx-zalozky-'+new Date().toISOString().slice(0,10)+'.json';
+  var sizeKB=(json.length/1024).toFixed(1);
+  var msg='\u2b07 EXPORT ZÁLOŽEK (JSON)\\n\\nN\u00e1zev souboru:\\n   '+fname+'\\n\\nPo\u010det z\u00e1lo\u017eek: '+bms.length+'\\nVelikost: '+sizeKB+' KB\\n\\nUm\u00edst\u011bn\u00ed po sta\u017een\u00ed:\\n   \ud83d\udcc1 Sta\u017een\u00e9 soubory (Downloads)\\n\\nPokra\u010dovat?';
+  if(!confirm(msg))return;
+  var blob=new Blob([json],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download=fname;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('\u2705 Stahuji: '+fname+' \u2192 Sta\u017een\u00e9 soubory');
+}
+function importBookmarks(input){
+  var file=input.files[0];
+  if(!file)return;
+  var sizeKB=(file.size/1024).toFixed(1);
+  if(!confirm('\u2b06 IMPORT ZÁLOŽEK (JSON)\\n\\nN\u00e1zev souboru:\\n   '+file.name+'\\n\\nVelikost: '+sizeKB+' KB\\n\\nNa\u010d\u00edst tento soubor?')){input.value='';return;}
+  var r=new FileReader();
+  r.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      if(!Array.isArray(data))throw new Error('Neplatný formát');
+      var existing=getBookmarks();
+      var existingIds=existing.map(function(b){return b.id;});
+      var added=0;
+      data.forEach(function(bm){
+        if(bm.id&&bm.pos&&existingIds.indexOf(bm.id)===-1){
+          existing.push(bm);
+          added++;
+        }
+      });
+      existing.sort(function(a,b){return b.id-a.id;});
+      setBookmarks(existing);
+      renderBookmarks();
+      toast('✅ Importováno '+added+' nových záložek');
+    }catch(err){
+      toast('⛔ Chyba importu: '+err.message);
+    }
+    input.value='';
+  };
+  r.readAsText(file);
+}
+function goToBookmark(bm){
+  if(bm.pos.type==='epub'&&epubRendition&&bookType==='epub'){
+    epubRendition.display(bm.pos.cfi);closeBookmarks();toast('📖 Přešlo na záložku');
+  }else if(bm.pos.type==='pdf'&&bookType==='pdf'){
+    renderPdfPage(bm.pos.page);closeBookmarks();toast('📖 Přešlo na záložku');
+  }else{
+    toast('⚠ Nejprve otevři: '+bm.title);closeBookmarks();
+  }
+}
+
+
+function updateFontSize(v){document.getElementById('fs-val').textContent=v+'px';document.documentElement.style.setProperty('--fs',v+'px');applyEpubTheme();}
+function updateLineHeight(v){var lh=(v/100).toFixed(2);document.getElementById('lh-val').textContent=lh;document.documentElement.style.setProperty('--lh',lh);applyEpubTheme();}
+function updateMargin(v){document.getElementById('mx-val').textContent=v+'px';document.documentElement.style.setProperty('--mx',v+'px');applyEpubTheme();if(bookType==='pdf')renderPdfPage(pdfPage);}
+var fontMap={mono:'"Courier New", monospace',serif:'Georgia, "Times New Roman", serif',sans:'"Segoe UI", Helvetica, Arial, sans-serif'};
+function setFont(key){document.querySelectorAll('.ff-btn').forEach(function(b){b.classList.toggle('active',b.dataset.ff===key);});document.documentElement.style.setProperty('--font',fontMap[key]);applyEpubTheme();}
+var themes={dark:{bg:'#050810',fg:'#dde4ff'},sepia:{bg:'#100e08',fg:'#d4b896'},light:{bg:'#f5f2ed',fg:'#1a1208'}};
+function setTheme(key){document.querySelectorAll('.theme-btn').forEach(function(b){b.classList.toggle('active',b.dataset.theme===key);});var t=themes[key];document.documentElement.style.setProperty('--bg',t.bg);document.documentElement.style.setProperty('--light',t.fg);document.getElementById('epub-viewer').style.background=t.bg;document.getElementById('pdf-viewer').style.background=t.bg;document.body.style.background=t.bg;applyEpubTheme();}
+function applyEpubTheme(){if(!epubRendition)return;var cs=getComputedStyle(document.documentElement);var bg=cs.getPropertyValue('--bg').trim()||'#050810';var fg=cs.getPropertyValue('--light').trim()||'#dde4ff';var fs=cs.getPropertyValue('--fs').trim()||'17px';var lh=cs.getPropertyValue('--lh').trim()||'1.75';var mx=cs.getPropertyValue('--mx').trim()||'20px';var ff=cs.getPropertyValue('--font').trim()||'"Courier New",monospace';epubRendition.themes.default({'body':{'background':bg+'!important','color':fg+'!important','font-size':fs+'!important','line-height':lh+'!important','padding':'16px '+mx+'!important','font-family':ff+'!important','max-width':'100%!important','margin':'0!important'},'p,div,span,li,td':{'color':fg+'!important','font-size':fs+'!important','line-height':lh+'!important','font-family':ff+'!important'},'h1,h2,h3,h4,h5,h6':{'color':fg+'!important','font-family':ff+'!important'},'a':{'color':'#00d4ff!important'}});epubRendition.themes.select('default');}
+function addSwipe(el){var sx=0,sy=0;el.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});el.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;var dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>50){if(dx<0)nextPage();else prevPage();}},{passive:true});}
+var toastTimer;function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove('show');},3200);}
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowDown')nextPage();if(e.key==='ArrowLeft'||e.key==='ArrowUp')prevPage();if(e.key==='Escape')closeAllPanels();});
+window.addEventListener('resize',function(){if(bookType==='pdf'&&!pdfRendering)renderPdfPage(pdfPage);});
+// ── Archiv knih — IndexedDB (TRVALÉ úložiště v paměti telefonu) ───
+var IDB_NAME='kladyx-reader-db', IDB_STORE='books', IDB_VERSION=1;
+var _idbInst=null;
+function _idbOpen(){
+  return new Promise(function(resolve,reject){
+    if(_idbInst){resolve(_idbInst);return;}
+    var req=indexedDB.open(IDB_NAME,IDB_VERSION);
+    req.onupgradeneeded=function(){
+      var db=req.result;
+      if(!db.objectStoreNames.contains(IDB_STORE)){
+        db.createObjectStore(IDB_STORE,{keyPath:'filename'});
+      }
+    };
+    req.onsuccess=function(){_idbInst=req.result;resolve(_idbInst);};
+    req.onerror=function(){reject(req.error);};
+  });
+}
+function _idbReq(req){return new Promise(function(resolve,reject){req.onsuccess=function(){resolve(req.result);};req.onerror=function(){reject(req.error);};});}
+
+function dbSaveBook(filename,title,type,buf){
+  return _idbOpen().then(function(db){
+    var tx=db.transaction(IDB_STORE,'readwrite');
+    return _idbReq(tx.objectStore(IDB_STORE).put({
+      filename:filename,
+      title:title||filename,
+      type:type,
+      buffer:buf,
+      size:buf.byteLength,
+      date:new Date().toLocaleString('cs-CZ'),
+      ts:Date.now()
+    }));
+  });
+}
+function dbGetAll(cb){
+  _idbOpen().then(function(db){
+    return _idbReq(db.transaction(IDB_STORE,'readonly').objectStore(IDB_STORE).getAll());
+  }).then(function(books){
+    books.sort(function(a,b){return (b.ts||0)-(a.ts||0);});
+    cb(books);
+  }).catch(function(){cb([]);});
+}
+function dbDelete(filename,cb){
+  _idbOpen().then(function(db){
+    return _idbReq(db.transaction(IDB_STORE,'readwrite').objectStore(IDB_STORE).delete(filename));
+  }).then(function(){if(cb)cb();}).catch(function(e){toast('\u26a0 '+e.message);});
+}
+
+// ── ULOŽIT do paměti telefonu (zelená → žlutá UKLÁDÁM → červená ULOŽENO → zelená) ──
+function saveCurrentFile(){
+  if(!currentFile){toast('\u26d4 \u017d\u00e1dn\u00e1 kniha nen\u00ed otev\u0159ena');return;}
+  if(!currentFile.data){toast('\u26d4 Data knihy nejsou dostupn\u00e1');return;}
+  var btn=document.getElementById('save-file-btn');
+  btn.disabled=true;
+  btn.style.background='rgba(255,200,0,.18)';
+  btn.style.borderColor='rgba(255,200,0,.5)';
+  btn.style.color='#ffc800';
+  btn.textContent='\ud83d\udcbe UKL\u00c1D\u00c1M\u2026';
+  dbSaveBook(currentFile.name,currentFile.name,bookType,currentFile.data).then(function(){
+    btn.style.background='rgba(255,60,90,.22)';
+    btn.style.borderColor='rgba(255,60,90,.55)';
+    btn.style.color='#ff3c5a';
+    btn.textContent='\u2713 ULO\u017dENO';
+    toast('\u2713 Kniha trvale ulo\u017eena do pam\u011bti telefonu');
+    setTimeout(function(){
+      btn.disabled=false;
+      btn.style.background='rgba(0,255,136,.15)';
+      btn.style.borderColor='rgba(0,255,136,.4)';
+      btn.style.color='#00ff88';
+      btn.textContent='\ud83d\udcbe ULO\u017dIT SOUBOR';
+    },2500);
+  }).catch(function(e){
+    btn.disabled=false;
+    btn.style.background='rgba(0,255,136,.15)';
+    btn.style.borderColor='rgba(0,255,136,.4)';
+    btn.style.color='#00ff88';
+    btn.textContent='\ud83d\udcbe ULO\u017dIT SOUBOR';
+    toast('\u26d4 Chyba ulo\u017een\u00ed: '+e.message);
+  });
+}
+
+// ── EXPORT (před stažením ukáže název + cestu) ──
+function exportCurrentFile(){
+  if(!currentFile||!currentFile.data){toast('\u26d4 \u017d\u00e1dn\u00e1 kniha nen\u00ed otev\u0159ena');return;}
+  var fname=currentFile.name;
+  var sizeMB=(currentFile.data.byteLength/1048576).toFixed(2);
+  var msg='\ud83d\udce4 EXPORT KNIHY\\n\\nN\u00e1zev souboru:\\n   '+fname+'\\n\\nVelikost: '+sizeMB+' MB\\n\\nUm\u00edst\u011bn\u00ed po sta\u017een\u00ed:\\n   \ud83d\udcc1 Sta\u017een\u00e9 soubory (Downloads)\\n\\nPokra\u010dovat?';
+  if(!confirm(msg))return;
+  var blob=new Blob([currentFile.data],{type:bookType==='pdf'?'application/pdf':'application/epub+zip'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download=fname;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  toast('\ud83d\udce5 Stahuji: '+fname+' \u2192 Sta\u017een\u00e9 soubory');
+}
+
+function openArchive(){renderArchive();document.getElementById('archive-panel').classList.add('open');}
+function closeArchive(){document.getElementById('archive-panel').classList.remove('open');}
+function renderArchive(){
+  var list=document.getElementById('arc-list');
+  dbGetAll(function(books){
+    if(!books.length){list.innerHTML='<div class="arc-empty">Archiv je pr\u00e1zdn\u00fd<br><br>Otev\u0159i knihu a klikni \ud83d\udcbe ULO\u017dIT SOUBOR<br>(z\u00e1lo\u017eky \ud83d\udd16)</div>';return;}
+    list.innerHTML='';
+    books.forEach(function(bk){
+      var item=document.createElement('div');item.className='arc-item';
+      var icon=bk.type==='epub'?'\ud83d\udcd6':'\ud83d\udcc4';
+      var sizeMB=((bk.size||0)/1048576).toFixed(1);
+      item.innerHTML='<div class="arc-icon">'+icon+'</div><div class="arc-info"><div class="arc-name">'+escHtml(bk.title)+'</div><div class="arc-meta">'+escHtml(bk.filename)+' \u00b7 '+sizeMB+' MB \u00b7 '+escHtml(bk.date)+'</div></div><button class="arc-del" title="Smazat z archivu">\ud83d\uddd1</button>';
+      item.querySelector('.arc-del').onclick=function(e){e.stopPropagation();if(!confirm('Smazat z pam\u011bti telefonu?\\n\\n'+bk.title))return;dbDelete(bk.filename,function(){renderArchive();toast('\ud83d\uddd1 Smaz\u00e1no z archivu');});};
+      item.onclick=function(){openFromArchive(bk);};
+      list.appendChild(item);
+    });
+  });
+}
+function openFromArchive(bk){
+  if(!bk.buffer){toast('\u26a0 Data nejsou v pam\u011bti');return;}
+  closeArchive();
+  var fakeFile={name:bk.filename};
+  if(bk.type==='epub')loadEpub(fakeFile,bk.buffer);
+  else loadPdf(fakeFile,bk.buffer);
+}
+// ── NAČÍST Z GITHUB RAW URL ──
+function loadFromGithub(){
+  var url=(document.getElementById('github-url-input').value||'').trim();
+  if(!url){toast('⚠ Zadej GitHub raw URL');return;}
+  url=url.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/')
+         .replace('https://raw.githubusercontent.com/raw/','https://raw.githubusercontent.com/');
+  if(!url.match(/\.(epub|pdf|mobi)(\?|$)/i)){toast('⚠ URL musí končit .epub nebo .pdf');return;}
+  var ext=url.match(/\.pdf(\?|$)/i)?'pdf':'epub';
+  var fname=url.split('/').pop().split('?')[0]||('kniha.'+ext);
+  toast('📥 Stahuji z GitHub…');
+  var xhr=new XMLHttpRequest();
+  xhr.open('GET',url,true);
+  xhr.responseType='arraybuffer';
+  xhr.onload=function(){
+    if(xhr.status===200){
+      var buf=xhr.response;
+      var fakeFile={name:fname};
+      if(ext==='epub')loadEpub(fakeFile,buf);
+      else loadPdf(fakeFile,buf);
+      document.getElementById('github-url-input').value='';
+    } else {
+      toast('⛔ Chyba stahování: '+xhr.status);
+    }
+  };
+  xhr.onerror=function(){
+    toast('⚠ CORS blokuje přímé načtení. Otevírám soubor…');
+    window.open(url,'_blank');
+  };
+  xhr.send();
+}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+// ──────────────────────────────────────────────────────────────
+</script>
+</body></html>
