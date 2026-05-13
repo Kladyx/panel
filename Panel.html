@@ -702,22 +702,37 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       var btn = document.getElementById('refreshBtn');
       if (btn) btn.disabled = true;
 
-      // DI.FM — AudioAddict veřejné API
+      // DI.FM — AudioAddict API s proxy fallbackem (CORS)
       if (stationId === 'difm_trance') {
-        var difmChannel = 'trance';
-        fetch('https://api.audioaddict.com/v1/di/track_history/channel/' + difmChannel + '?_t=' + Date.now(), {cache:'no-store'})
-          .then(function(r){ return r.json(); })
-          .then(function(d) {
-            var item = Array.isArray(d) ? d[0] : null;
-            if (!item) { document.getElementById('nowCard').innerHTML = '<div class="now-loading">❌ Nelze načíst</div>'; if (btn) btn.disabled = false; resetCountdown(); return; }
-            var track = item.track || item;
-            var artist = (track.artist || track.display_artist || '').trim();
-            var song   = (track.title  || track.display_title  || '').trim();
-            showResult(artist, song); addHistory(artist, song);
-            if (btn) btn.disabled = false;
-            resetCountdown();
-          })
-          .catch(function() { document.getElementById('nowCard').innerHTML = '<div class="now-loading">❌ DI.FM nedostupné</div>'; if (btn) btn.disabled = false; resetCountdown(); });
+        var difmBase = 'https://api.audioaddict.com/v1/di/track_history/channel/trance';
+        var ts = Date.now();
+        var difmProxies = [
+          difmBase + '?_t=' + ts,
+          'https://corsproxy.io/?' + encodeURIComponent(difmBase + '?_t=' + ts),
+          'https://api.allorigins.win/get?url=' + encodeURIComponent(difmBase + '?_t=' + ts),
+          'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(difmBase + '?_t=' + ts)
+        ];
+        function tryDifm(i) {
+          if (i >= difmProxies.length) {
+            document.getElementById('nowCard').innerHTML = '<div class="now-loading">❌ DI.FM nedostupné</div>';
+            if (btn) btn.disabled = false; resetCountdown(); return;
+          }
+          fetch(difmProxies[i], {cache:'no-store'})
+            .then(function(r){ return r.json(); })
+            .then(function(raw) {
+              var d = (raw && raw.contents) ? JSON.parse(raw.contents) : raw;
+              var item = Array.isArray(d) ? d[0] : null;
+              if (!item) { tryDifm(i+1); return; }
+              var track = item.track || item;
+              var artist = (track.artist || track.display_artist || '').trim();
+              var song   = (track.title  || track.display_title  || '').trim();
+              if (!artist && !song) { tryDifm(i+1); return; }
+              showResult(artist, song); addHistory(artist, song);
+              if (btn) btn.disabled = false; resetCountdown();
+            })
+            .catch(function(){ tryDifm(i+1); });
+        }
+        tryDifm(0);
         return;
       }
 
