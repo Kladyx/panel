@@ -651,7 +651,9 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
     <button class="station-tab" onclick="switchStation('blanik', this)">Rádio Blaník</button>
-    <button class="station-tab" onclick="switchStation('pasion', this)">Pasión Dance</button>
+    <button class="station-tab" onclick="switchStation('difm_trance', this)">DI.FM Trance</button>
+    <button class="station-tab" onclick="switchStation('czro1', this)">ČRo Radiožurnál</button>
+    <button class="station-tab" onclick="switchStation('czro2', this)">ČRo Dvojka</button>
   </div>
 
   <div class="live-badge">
@@ -688,19 +690,60 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
     var STATION_META = {
       housetime: { label: 'HOUSETIME.FM',   color: 'var(--neon-purple)' },
       blanik:    { label: 'RÁDIO BLANÍK',   color: '#00ff88' },
-      pasion:    { label: 'PASIÓN POR EL DANCE', color: '#e60026' }
+      difm_trance: { label: 'DI.FM TRANCE',         color: '#aa00ff' },
+      czro1:       { label: 'ČRo RADIOŽURNÁL',        color: '#0055cc' },
+      czro2:       { label: 'ČRo DVOJKA',              color: '#cc5500' }
     };
 
     // Icecast status endpointy pro non-HouseTime stanice
     var ICECAST_STATIONS = {
       blanik: { label: 'Rádio Blaník',        apiUrl: 'https://radia.cz/api/stations/218/now-playing' },
-      pasion: { label: 'Pasión por el Dance', apiUrl: null }
+      difm_trance: { label: 'DI.FM Trance',        apiUrl: 'difm_trance' },
+      czro1:       { label: 'ČRo Radiožurnál',       apiUrl: 'czro1' },
+      czro2:       { label: 'ČRo Dvojka',             apiUrl: 'czro2' }
     };
 
     function fetchIcecastStation(stationId) {
       var st = ICECAST_STATIONS[stationId];
       var btn = document.getElementById('refreshBtn');
       if (btn) btn.disabled = true;
+
+      // ČRo — Český rozhlas veřejné API
+      if (stationId === 'czro1' || stationId === 'czro2') {
+        var czroStation = stationId === 'czro1' ? 'radiozurnal' : 'dvojka';
+        fetch('https://api.rozhlas.cz/data/v2/playlist/now-playing/' + czroStation + '.json?_t=' + Date.now(), {cache:'no-store'})
+          .then(function(r){ return r.json(); })
+          .then(function(d) {
+            var item = d && d.data && d.data[0];
+            if (!item) { document.getElementById('nowCard').innerHTML = '<div class="now-loading">❌ Nelze načíst</div>'; if (btn) btn.disabled = false; resetCountdown(); return; }
+            var artist = (item.interpret || item.artist || '').trim();
+            var song   = (item.track    || item.title  || '').trim();
+            if (!song) { document.getElementById('nowCard').innerHTML = '<div class="now-loading">⏸ Mluví se</div>'; if (btn) btn.disabled = false; resetCountdown(); return; }
+            showResult(artist, song); addHistory(artist, song);
+            if (btn) btn.disabled = false;
+            resetCountdown();
+          })
+          .catch(function() { document.getElementById('nowCard').innerHTML = '<div class="now-loading">❌ ČRo nedostupné</div>'; if (btn) btn.disabled = false; resetCountdown(); });
+        return;
+      }
+
+      // DI.FM — AudioAddict veřejné API
+      if (stationId === 'difm_trance') {
+        var difmChannel = 'trance';
+        fetch('https://api.audioaddict.com/v1/di/track_history/channel/' + difmChannel + '?_t=' + Date.now(), {cache:'no-store'})
+          .then(function(r){ return r.json(); })
+          .then(function(d) {
+            var track = Array.isArray(d) ? d[0] : (d.tracks ? d.tracks[0] : null);
+            if (!track) { document.getElementById('nowCard').innerHTML = '<div class="now-loading">❌ Nelze načíst</div>'; if (btn) btn.disabled = false; resetCountdown(); return; }
+            var artist = (track.artist || track.display_artist || '').trim();
+            var song   = (track.title  || track.display_title  || '').trim();
+            showResult(artist, song); addHistory(artist, song);
+            if (btn) btn.disabled = false;
+            resetCountdown();
+          })
+          .catch(function() { document.getElementById('nowCard').innerHTML = '<div class="now-loading">❌ DI.FM nedostupné</div>'; if (btn) btn.disabled = false; resetCountdown(); });
+        return;
+      }
 
       // Stanice s radia.cz API (CORS, funguje bez proxy)
       if (st.apiUrl) {
