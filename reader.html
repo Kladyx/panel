@@ -556,41 +556,54 @@
     var btn=document.getElementById('auto-load-btn');
     btn.disabled=true;
     btn.classList.add('loading');
-    btn.textContent='⏳ NAČÍTÁM…';
-    
-    // Zde zadej URL s seznamem knih
-    var githubListUrl='https://raw.githubusercontent.com/tvuj-username/tvuj-repo/main/books-list.json';
-    
+    btn.textContent='⏳ NAČÍTÁM SEZNAM…';
+
+    var apiUrl='https://api.github.com/repos/Kladyx/books-readme.md/git/trees/main?recursive=1';
+
     function tryLoad(src,isProxy){
       var x=new XMLHttpRequest();
       x.open('GET',src,true);
       x.responseType='json';
       x.onload=function(){
-        if(x.status===200&&x.response&&Array.isArray(x.response.books)){
-          loadBooksFromList(x.response.books,btn);
+        var data=x.response;
+        if(x.status===200&&data&&data.tree){
+          var files=data.tree.filter(function(f){
+            return f.type==='blob'&&/\.(epub|pdf)$/i.test(f.path);
+          });
+          if(!files.length){
+            toast('⚠ Žádné epub/pdf soubory nenalezeny');
+            btn.disabled=false;btn.classList.remove('loading');
+            btn.textContent='🔄 AUTO NAČÍST Z GITHUB';
+            return;
+          }
+          var books=files.map(function(f){
+            return {
+              url:'https://raw.githubusercontent.com/Kladyx/books-readme.md/main/'+f.path,
+              title:f.path.replace(/\.(epub|pdf)$/i,'').replace(/_/g,' ')
+            };
+          });
+          toast('📚 Nalezeno knih: '+books.length);
+          loadBooksFromList(books,btn);
         } else {
           toast('⛔ Chyba načtení seznamu: HTTP '+x.status);
-          btn.disabled=false;
-          btn.classList.remove('loading');
+          btn.disabled=false;btn.classList.remove('loading');
           btn.textContent='🔄 AUTO NAČÍST Z GITHUB';
         }
       };
       x.onerror=function(){
         if(!isProxy){
-          toast('⚠ CORS chyba — zkouším proxy…');
           btn.textContent='⏳ Proxy…';
-          tryLoad('https://corsproxy.io/?url='+encodeURIComponent(src),true);
+          tryLoad('https://corsproxy.io/?url='+encodeURIComponent(apiUrl),true);
         } else {
           toast('⛔ Nelze načíst seznam knih');
-          btn.disabled=false;
-          btn.classList.remove('loading');
+          btn.disabled=false;btn.classList.remove('loading');
           btn.textContent='🔄 AUTO NAČÍST Z GITHUB';
         }
       };
       x.send();
     }
-    
-    tryLoad(githubListUrl,false);
+
+    tryLoad(apiUrl,false);
   }
   
   function loadBooksFromList(books,btn){
