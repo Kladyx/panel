@@ -13412,7 +13412,7 @@ function openApp(id) {
         // srcdoc je spolehlivější při načítání z content:// na Androidu
         try {
           if (id === 'reader') {
-            frame.src = 'https://kladyx.github.io/panel/reader.html';
+            frame.src = 'https://kladyx.github.io/reader/reader.html';
           } else {
             frame.srcdoc = html;
           }
@@ -13477,6 +13477,14 @@ window.addEventListener('error', function(event) {
 
 window.addEventListener('unhandledrejection', function(event) {
   console.error('Unhandled promise rejection:', event.reason);
+});
+
+// ── LISTENER PRO READER HOME TLAČÍTKO ──
+window.addEventListener('message', function(event) {
+  if (event.data && event.data.action === 'goHome') {
+    var homeBtn = document.getElementById('btn-home');
+    if (homeBtn) homeBtn.click();
+  }
 });
 
 // HODINY + DATUM
