@@ -243,6 +243,7 @@
 <div id="archive-panel">
   <div class="arc-header">
     <div class="arc-title">ARCHIV KNIH</div>
+    <div id="arc-count" style="font-size:.6rem;letter-spacing:2px;color:#00ff88;margin-top:-10px;margin-bottom:12px;">POČET KNIH V ARCHIVU: 0</div>
     <button class="arc-close" onclick="closeArchive()">✕</button>
   </div>
   <div class="arc-auto-row">
@@ -744,6 +745,8 @@
   function renderArchive(){
     var list=document.getElementById('arc-list');
     dbGetAll(function(books){
+      var countEl=document.getElementById('arc-count');
+      if(countEl)countEl.textContent='POČET KNIH V ARCHIVU: '+books.length;
       if(!books.length){list.innerHTML='<div class="arc-empty">Archiv je prázdný<br><br>Otevři knihu a klikni 💾 ULOŽIT SOUBOR<br>(nastavení ⚙️)</div>';return;}
       list.innerHTML='';
       books.forEach(function(bk){
