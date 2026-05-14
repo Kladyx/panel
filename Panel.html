@@ -13215,6 +13215,7 @@ function renderEbook(){
     var words=VOCAB.filter(function(w){
       if(w.cat!==cat)return false;
       if(search&&w.en.toLowerCase().indexOf(search)<0&&w.cs.toLowerCase().indexOf(search)<0)return false;
+      if(learned.indexOf(w.en)>=0)return false;
       return true;
     });
     if(!words.length)return;
