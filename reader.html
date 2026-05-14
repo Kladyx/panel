@@ -221,6 +221,7 @@
     <div class="bm-title">ZÁLOŽKY</div>
     <button class="bm-close" onclick="closeBookmarks()">✕</button>
   </div>
+  <button class="bm-save-btn" id="bm-add-here-btn" onclick="saveBookmarkHere()">📌 ULOŽIT ZÁLOŽKU ZDE</button>
   <div class="bm-io-row">
     <button class="bm-io-btn export" onclick="exportBookmarks()">📤 EXPORT</button>
     <button class="bm-io-btn import" onclick="importBookmarks()">📥 IMPORT</button>
@@ -486,10 +487,47 @@
     bookmarks.forEach(function(bm,i){
       var item=document.createElement('div');
       item.className='bm-item';
-      item.innerHTML='<div class="bm-info"><div class="bm-name">'+escHtml(bm.label)+'</div><div class="bm-meta">'+escHtml(bm.book)+'</div></div><button class="bm-del">🗑</button>';
+      item.innerHTML='<div class="bm-info"><div class="bm-name">'+escHtml(bm.label)+'</div><div class="bm-meta">'+(bm.date?escHtml(bm.date):escHtml(bm.book))+'</div></div><button class="bm-del">🗑</button>';
       item.querySelector('.bm-del').onclick=function(e){e.stopPropagation();bookmarks.splice(i,1);localStorage.setItem('kladyx-bm',JSON.stringify(bookmarks));renderBookmarks();};
+      item.onclick=function(e){
+        if(e.target.classList.contains('bm-del'))return;
+        if(bm.book!==currentFile.name){toast('⚠ Tato záložka patří jiné knize');return;}
+        if(bookType==='epub'&&bm.cfi&&epubBook){
+          epubBook.display(bm.cfi);
+          closeBookmarks();
+          toast('📌 Přeskočeno na záložku');
+        } else if(bookType==='pdf'&&bm.page){
+          renderPdfPage(bm.page);
+          closeBookmarks();
+          toast('📌 Přeskočeno na záložku');
+        } else {
+          toast('⚠ Záložka nemá pozici');
+        }
+      };
       list.appendChild(item);
     });
+  }
+
+  function saveBookmarkHere(){
+    if(!currentFile||!currentFile.name){toast('⚠ Žádná kniha není otevřena');return;}
+    var label,cfi=null,page=null;
+    if(bookType==='epub'&&epubBook){
+      var loc=epubBook.rendition.currentLocation();
+      if(!loc||!loc.start){toast('⚠ Nelze zjistit pozici');return;}
+      cfi=loc.start.cfi;
+      var pct=loc.start.percentage?Math.round(loc.start.percentage*100):0;
+      label='📌 '+currentFile.name+' — '+pct+'%';
+    } else if(bookType==='pdf'&&pdfDoc){
+      page=currentPdfPage;
+      label='📌 '+currentFile.name+' — strana '+page+'/'+pdfPages;
+    } else {
+      toast('⚠ Žádná kniha není otevřena');return;
+    }
+    var bm={label:label,book:currentFile.name,cfi:cfi,page:page,date:new Date().toLocaleString('cs-CZ')};
+    bookmarks.push(bm);
+    localStorage.setItem('kladyx-bm',JSON.stringify(bookmarks));
+    renderBookmarks();
+    toast('✓ Záložka uložena');
   }
   
   function exportBookmarks(){
