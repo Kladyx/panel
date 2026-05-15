@@ -7296,17 +7296,9 @@ header h1{font-family:'Orbitron',monospace;font-size:1.55rem;font-weight:900;let
 </head>
 <body>
 <div id="platby-lock">
-  <div class="lock-icon">🔒</div>
+  <div class="lock-icon">💳</div>
   <div class="lock-title">PLATBY 2026</div>
-  <div class="lock-sub">Zabezpečená sekce · Zadej heslo</div>
-  <div class="lock-input-wrap">
-    <input class="lock-input" id="platby-pw" type="password" placeholder="Heslo..." onkeydown="if(event.key==='Enter')_platbyLogin()"/>
-    <button class="lock-eye" onclick="(function(){var i=document.getElementById('platby-pw');i.type=i.type==='password'?'text':'password';})()" title="Zobrazit/skrýt heslo">👁️</button>
-  </div>
-  <label class="lock-remember">
-    <input type="checkbox" id="platby-remember"/> 💾 Zapamatovat heslo
-  </label>
-  <button class="lock-btn" onclick="_platbyLogin()">▶ ODEMKNOUT</button>
+  <button class="lock-btn" onclick="_platbyGoogleSignIn()">🔐 PŘIHLÁSIT SE PŘES GOOGLE</button>
   <div class="lock-err" id="platby-err"></div>
 </div>
 <div id="platby-main">
@@ -7445,29 +7437,17 @@ function _showLock(){
 }
 function _hideLock(){document.getElementById('platby-lock').style.display='none';document.getElementById('platby-main').style.display='block';}
 
-function _platbyLogin(){
-  const pw=document.getElementById('platby-pw').value;
-  const remember=document.getElementById('platby-remember').checked;
-  const err=document.getElementById('platby-err');
-  err.textContent='';
-  firebase.auth().signInWithEmailAndPassword('kovalcikmichal@post.cz',pw)
-    .then(()=>{
-      if(remember){
-        try{localStorage.setItem('platby_pw_remember',btoa(pw));}catch(e){}
-      } else {
-        try{localStorage.removeItem('platby_pw_remember');}catch(e){}
-      }
-      document.getElementById('platby-pw').value='';
-    })
-    .catch(e=>{err.textContent='✗ '+(e.code||e.message||'Chyba přihlášení');});
-}
-
 let _dataInited=false;
 // Auth listener – na nejvyšší úrovni
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 firebase.auth().onAuthStateChanged(user=>{
   if(user&&user.email){_hideLock();_initData();}else{_showLock();}
 });
+function _platbyGoogleSignIn(){
+  const provider=new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider)
+    .catch(e=>{document.getElementById('platby-err').textContent='✗ '+(e.message||'Chyba přihlášení');});
+}
 
 function _initData(){
   if(_dataInited)return;
@@ -7526,8 +7506,8 @@ _startPlatbyListener();
 // ── VERZE ──
 const VER_KEY='platby_ver';
 function loadVer(){try{return parseInt(localStorage.getItem(VER_KEY)||'0',10)||0;}catch(e){return 0;}}
-function bumpVer(){const v=loadVer()+1;localStorage.setItem(VER_KEY,v);document.getElementById('ver-badge').textContent='v7.8Kl'+v;}
-function initVer(){document.getElementById('ver-badge').textContent='v7.8Kl'+loadVer();}
+function bumpVer(){const v=loadVer()+1;localStorage.setItem(VER_KEY,v);document.getElementById('ver-badge').textContent='v7.9Kl'+v;}
+function initVer(){document.getElementById('ver-badge').textContent='v7.9Kl'+loadVer();}
 
 let _toastTimer=null;
 function showToast(){const t=document.getElementById('save-toast');t.classList.add('show');clearTimeout(_toastTimer);_toastTimer=setTimeout(()=>t.classList.remove('show'),1600);}
