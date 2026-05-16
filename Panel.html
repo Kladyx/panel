@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v10.6 - Kladyx 2026</title>
+  <title>KLADYX PANEL v10.7 - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -195,7 +195,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v10.6 · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v10.7 · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -205,7 +205,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v10.6</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v10.7</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -281,11 +281,15 @@
       <div class="bd"></div><div class="bi">📻</div><div class="bl">Multitrack</div>
     </button>
 
+    <button class="app-btn" id="btn-status" style="--ac:#00ff88;--ac-rgb:0,255,136" onclick="openApp('status')">
+      <div class="bd"></div><div class="bi">🟢</div><div class="bl">Status</div>
+    </button>
+
   </div>
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v10.6</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v10.7</span> · VYBERTE APLIKACI</div>
       <div class="eq-wrap">
         <div class="dancer dancer-g">
           <svg viewBox="0 0 32 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -342,6 +346,7 @@
         <div class="wcard" onclick="openApp('reader')" onmouseover="this.style.borderColor='#a78bfa';this.style.boxShadow='0 0 14px rgba(167,139,250,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">📚</div><div class="wn">Čtečka</div><div class="wd">E-Book Reader</div></div>
         <div class="wcard" onclick="openApp('wordmaster')" onmouseover="this.style.borderColor='#34d399';this.style.boxShadow='0 0 14px rgba(52,211,153,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🇬🇧</div><div class="wn">WordMaster</div><div class="wd">Slovíčka EN/CZ</div></div>
         <div class="wcard" onclick="openApp('multitrack')" onmouseover="this.style.borderColor='#0088ff';this.style.boxShadow='0 0 14px rgba(0,136,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">📻</div><div class="wn">Multitrack</div><div class="wd">Radio Player</div></div>
+        <div class="wcard" onclick="openApp('status')" onmouseover="this.style.borderColor='#00ff88';this.style.boxShadow='0 0 14px rgba(0,255,136,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🟢</div><div class="wn">Status</div><div class="wd">System Monitor</div></div>
 
       </div>
       <div style="margin-top:22px;display:flex;align-items:center;justify-content:center;gap:24px;padding:12px 20px;border:1px solid rgba(0,212,255,0.1);border-radius:8px;background:rgba(255,255,255,0.025);">
@@ -374,6 +379,7 @@
     <iframe id="frame-reader" class="app-frame" title="reader" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-downloads allow-top-navigation-by-user-activation" allowfullscreen></iframe>
     <iframe id="frame-wordmaster" class="app-frame" title="wordmaster" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-multitrack" class="app-frame" title="multitrack" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allow="autoplay" allowfullscreen></iframe>
+    <iframe id="frame-status" class="app-frame" title="status" sandbox="allow-scripts allow-same-origin allow-forms allow-modals" allowfullscreen></iframe>
 
   </div>
 </div>
@@ -652,7 +658,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v10.6</div>
+  <div class="version">v10.7</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -1810,7 +1816,7 @@ APP_HTML["cd"] = `<!DOCTYPE html>
   <div class="header-top">
     <div>
       <div class="app-title">KLADYXLAND</div>
-      <div class="app-subtitle">Moje CD <span style="font-size:.55rem;color:rgba(255,255,255,.2);font-family:monospace;margin-left:6px;">v10.6</span></div>
+      <div class="app-subtitle">Moje CD <span style="font-size:.55rem;color:rgba(255,255,255,.2);font-family:monospace;margin-left:6px;">v10.7</span></div>
     </div>
     <div class="count-badge" id="countBadge">0 CD</div>
   </div>
@@ -2504,7 +2510,7 @@ APP_HTML["cd"] = `<!DOCTYPE html>
   <span id="cd-lightbox-close">✕</span>
   <img id="cd-lightbox-img" src="" alt="">
 </div>
-<div style="text-align:center;padding:8px;font-size:.6rem;color:rgba(255,255,255,.2);font-family:monospace;">v10.6</div>
+<div style="text-align:center;padding:8px;font-size:.6rem;color:rgba(255,255,255,.2);font-family:monospace;">v10.7</div>
 <div class="app-brand-bar">
     <span class="app-brand-bar-label">POWERED BY</span>
     <img src="data:image/jpeg;base64,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" alt="PreSonus" style="height:50px;width:auto;object-fit:contain;display:block;" />
@@ -3046,7 +3052,7 @@ APP_HTML["hardware"] = `<!DOCTYPE html>
       <div class="logo-icon">🎛️</div>
       <div>
         <div class="app-title">KLADYXLAND</div>
-        <div class="app-subtitle">Studio Manager <span style="font-size:.55rem;color:rgba(255,255,255,.2);font-family:monospace;margin-left:6px;">v10.6</span></div>
+        <div class="app-subtitle">Studio Manager <span style="font-size:.55rem;color:rgba(255,255,255,.2);font-family:monospace;margin-left:6px;">v10.7</span></div>
       </div>
     </div>
     <div class="count-badge" id="countBadge">0 položek</div>
@@ -3722,7 +3728,7 @@ APP_HTML["hardware"] = `<!DOCTYPE html>
   <span id="hw-lightbox-close">✕</span>
   <img id="hw-lightbox-img" src="" alt="">
 </div>
-<div style="text-align:center;padding:8px;font-size:.6rem;color:rgba(255,255,255,.2);font-family:monospace;">v10.6</div>
+<div style="text-align:center;padding:8px;font-size:.6rem;color:rgba(255,255,255,.2);font-family:monospace;">v10.7</div>
 <div class="app-brand-bar">
     <span class="app-brand-bar-label">POWERED BY</span>
     <img src="data:image/jpeg;base64,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" alt="PreSonus" style="height:50px;width:auto;object-fit:contain;display:block;" />
@@ -4796,7 +4802,7 @@ APP_HTML["lp"] = `<!DOCTYPE html>
   <div class="header-top">
     <div>
       <div class="app-title">KLADYXLAND</div>
-      <div class="app-subtitle">Moje LP desky <span style="font-size:.55rem;color:rgba(255,255,255,.2);font-family:monospace;margin-left:6px;">v10.6</span></div>
+      <div class="app-subtitle">Moje LP desky <span style="font-size:.55rem;color:rgba(255,255,255,.2);font-family:monospace;margin-left:6px;">v10.7</span></div>
     </div>
     <div class="count-badge" id="countBadge">0 desek</div>
   </div>
@@ -5497,7 +5503,7 @@ APP_HTML["lp"] = `<!DOCTYPE html>
   <span id="lp-lightbox-close">✕</span>
   <img id="lp-lightbox-img" src="" alt="">
 </div>
-<div style="text-align:center;padding:8px;font-size:.6rem;color:rgba(255,255,255,.2);font-family:monospace;">v10.6</div>
+<div style="text-align:center;padding:8px;font-size:.6rem;color:rgba(255,255,255,.2);font-family:monospace;">v10.7</div>
 <div class="app-brand-bar">
     <span class="app-brand-bar-label">POWERED BY</span>
     <img src="data:image/jpeg;base64,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" alt="PreSonus" style="height:50px;width:auto;object-fit:contain;display:block;" />
@@ -6078,7 +6084,7 @@ APP_HTML["mixcloud"] = `<!DOCTYPE html>
           Poslouchej hudbu z <span class="hl">KLADYXLAND</span>
         </div>
         <div class="footer-brand">Powered by Mixcloud</div>
-        <div class="footer-brand" style="margin-top:6px;">v10.6</div>
+        <div class="footer-brand" style="margin-top:6px;">v10.7</div>
       </div>
 
     </div>
@@ -6550,7 +6556,7 @@ header h1{font-family:'Orbitron',monospace;font-size:1.55rem;font-weight:900;let
 <header>
   <div class="title-top">
     <div class="title-year">UTILITY TRACKER · 2026</div>
-    <div class="ver-badge">v10.6</div>
+    <div class="ver-badge">v10.7</div>
     <span id="sync-dot" style="font-size:.58rem;color:#4a6d90;letter-spacing:.05em;margin-left:4px;">⏳</span>
   </div>
   <h1>ODEČTY</h1>
@@ -7311,7 +7317,7 @@ header h1{font-family:'Orbitron',monospace;font-size:1.55rem;font-weight:900;let
 <header>
   <div class="title-top">
     <div class="title-year">KLADYXLAND · 2026</div>
-    <div class="ver-badge" id="ver-badge">v10.6</div>
+    <div class="ver-badge" id="ver-badge">v10.7</div>
     <span id="sync-dot" style="font-size:.58rem;color:#4a6d90;letter-spacing:.05em;margin-left:4px;">⏳</span>
   </div>
   <h1>PLATBY</h1>
@@ -7541,8 +7547,8 @@ _startPlatbyListener();
 // ── VERZE ──
 const VER_KEY='platby_ver';
 function loadVer(){try{return parseInt(localStorage.getItem(VER_KEY)||'0',10)||0;}catch(e){return 0;}}
-function bumpVer(){const v=loadVer()+1;localStorage.setItem(VER_KEY,v);document.getElementById('ver-badge').textContent='v10.6'+v;}
-function initVer(){document.getElementById('ver-badge').textContent='v10.6'+loadVer();}
+function bumpVer(){const v=loadVer()+1;localStorage.setItem(VER_KEY,v);document.getElementById('ver-badge').textContent='v10.7'+v;}
+function initVer(){document.getElementById('ver-badge').textContent='v10.7'+loadVer();}
 
 let _toastTimer=null;
 function showToast(){const t=document.getElementById('save-toast');t.classList.add('show');clearTimeout(_toastTimer);_toastTimer=setTimeout(()=>t.classList.remove('show'),1600);}
@@ -7795,7 +7801,7 @@ h1{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;letter-spac
 </head>
 <body>
 <header>
-  <div class="topbar"><span class="ver">v10.6</span><span id="sync-dot">💾 Start...</span></div>
+  <div class="topbar"><span class="ver">v10.7</span><span id="sync-dot">💾 Start...</span></div>
   <h1>🍽️ JÍDLO</h1>
   <div class="hline"></div>
 </header>
@@ -8127,7 +8133,7 @@ h1{font-family:'Orbitron',monospace;font-size:1.35rem;font-weight:900;letter-spa
 </head>
 <body>
 <header>
-  <div class="topbar"><span class="ver">v10.6</span><span id="sync-dot">💾 Start...</span></div>
+  <div class="topbar"><span class="ver">v10.7</span><span id="sync-dot">💾 Start...</span></div>
   <h1>🩸 GLUKÓZA</h1>
   <div class="hline"></div>
 </header>
@@ -9078,7 +9084,7 @@ button.del{float:right;background:none;border:1px solid rgba(255,68,102,.3);colo
 </style>
 </head>
 <body>
-<div class="topbar"><span class="ver">v10.6</span><span id="sync-dot">💾 Start...</span></div>
+<div class="topbar"><span class="ver">v10.7</span><span id="sync-dot">💾 Start...</span></div>
 <h1>📝 POZNÁMKY</h1>
 
 <div class="box">
@@ -13697,6 +13703,230 @@ try {
     currentStation = findStation(last);
   }
 } catch(e){}
+<\/script>
+</body></html>
+`;
+
+
+APP_HTML["status"] = `<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Status Checker</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0e1a;color:#e0e8ff;font-family:'Courier New',monospace;min-height:100vh;padding:12px}
+h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transform:uppercase;margin-bottom:4px}
+.sub{text-align:center;font-size:.6rem;color:rgba(255,255,255,.3);margin-bottom:14px;letter-spacing:2px}
+.section{margin-bottom:14px}
+.sec-title{font-size:.6rem;letter-spacing:3px;color:#00d4ff;text-transform:uppercase;margin-bottom:6px;border-bottom:1px solid rgba(0,212,255,.2);padding-bottom:3px}
+.item{display:flex;align-items:center;gap:10px;padding:7px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:8px;margin-bottom:5px;transition:all .3s}
+.item.ok{border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.05)}
+.item.err{border-color:rgba(255,60,60,.3);background:rgba(255,60,60,.05)}
+.item.local{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.02)}
+.item.checking{border-color:rgba(255,200,0,.2)}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:#444}
+.dot.ok{background:#00ff88;box-shadow:0 0 8px #00ff88}
+.dot.err{background:#ff3c3c;box-shadow:0 0 8px #ff3c3c}
+.dot.local{background:#888}
+.dot.checking{background:#ffcc00;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.name{flex:1;font-size:.75rem;color:#e0e8ff}
+.name.err{color:#ff9090}
+.sub2{font-size:.6rem;color:rgba(255,255,255,.3);margin-top:1px}
+.status{font-size:.6rem;color:rgba(255,255,255,.4);white-space:nowrap}
+.status.ok{color:#00ff88}
+.status.err{color:#ff6060}
+.status.local{color:#888}
+.status.checking{color:#ffcc00}
+.footer{text-align:center;margin-top:14px;padding-bottom:20px}
+.btn-refresh{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);color:#00ff88;padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'Courier New',monospace;font-size:.7rem;letter-spacing:2px;text-transform:uppercase}
+.btn-refresh:hover{background:rgba(0,255,136,.2)}
+.refresh-info{font-size:.55rem;color:rgba(255,255,255,.25);margin-top:6px;letter-spacing:1px}
+.apps-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.apps-grid .item{margin-bottom:0;flex-direction:column;align-items:flex-start;gap:4px;padding:6px 8px}
+.apps-grid .item .row1{display:flex;align-items:center;gap:6px;width:100%}
+</style>
+</head>
+<body>
+<h1>⬡ STATUS CHECKER</h1>
+<div class="sub">KLADYXLAND SYSTEM MONITOR · v1.1</div>
+
+<div class="section">
+  <div class="sec-title">🌐 Web & GitHub</div>
+  <div class="item checking" id="i-web">
+    <div class="dot checking" id="d-web"></div>
+    <div style="flex:1"><div class="name" id="n-web">KLADYXLAND Web</div><div class="sub2">kladyx.github.io/kladyxland</div></div>
+    <div class="status checking" id="s-web">Checking…</div>
+  </div>
+  <div class="item checking" id="i-repo">
+    <div class="dot checking" id="d-repo"></div>
+    <div style="flex:1"><div class="name" id="n-repo">GitHub Repo</div><div class="sub2" id="repo-info">github.com/Kladyx/kladyxland</div></div>
+    <div class="status checking" id="s-repo">Checking…</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">🔥 Firebase</div>
+  <div class="item checking" id="i-db">
+    <div class="dot checking" id="d-db"></div>
+    <div style="flex:1"><div class="name" id="n-db">Realtime Database</div><div class="sub2">kladyxland-default-rtdb</div></div>
+    <div class="status checking" id="s-db">Checking…</div>
+  </div>
+  <div class="item checking" id="i-storage">
+    <div class="dot checking" id="d-storage"></div>
+    <div style="flex:1"><div class="name" id="n-storage">Firebase Storage</div><div class="sub2">kladyxland.firebasestorage.app</div></div>
+    <div class="status checking" id="s-storage">Checking…</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">📻 Radio Stanice</div>
+  <div class="item checking" id="i-kiss98"><div class="dot checking" id="d-kiss98"></div><div class="name" id="n-kiss98">💋 Kiss 98</div><div class="status checking" id="s-kiss98">Checking…</div></div>
+  <div class="item checking" id="i-blanik"><div class="dot checking" id="d-blanik"></div><div class="name" id="n-blanik">🏔️ Rádio Blaník</div><div class="status checking" id="s-blanik">Checking…</div></div>
+  <div class="item checking" id="i-krokodyl"><div class="dot checking" id="d-krokodyl"></div><div class="name" id="n-krokodyl">🐊 Krokodýl</div><div class="status checking" id="s-krokodyl">Checking…</div></div>
+  <div class="item checking" id="i-rcity"><div class="dot checking" id="d-rcity"></div><div class="name" id="n-rcity">🏙️ Radio City</div><div class="status checking" id="s-rcity">Checking…</div></div>
+  <div class="item checking" id="i-radio1"><div class="dot checking" id="d-radio1"></div><div class="name" id="n-radio1">📡 Radio 1</div><div class="status checking" id="s-radio1">Checking…</div></div>
+  <div class="item checking" id="i-impuls"><div class="dot checking" id="d-impuls"></div><div class="name" id="n-impuls">⚡ Rádio Impuls</div><div class="status checking" id="s-impuls">Checking…</div></div>
+  <div class="item checking" id="i-intense"><div class="dot checking" id="d-intense"></div><div class="name" id="n-intense">⚡ Intense Radio</div><div class="status checking" id="s-intense">Checking…</div></div>
+  <div class="item checking" id="i-funkstar"><div class="dot checking" id="d-funkstar"></div><div class="name" id="n-funkstar">🎶 Funkstar Radio</div><div class="status checking" id="s-funkstar">Checking…</div></div>
+  <div class="item checking" id="i-evropa2"><div class="dot checking" id="d-evropa2"></div><div class="name" id="n-evropa2">🎵 Evropa 2</div><div class="status checking" id="s-evropa2">Checking…</div></div>
+</div>
+
+<div class="section">
+  <div class="sec-title">📱 Panel Appky</div>
+  <div class="item checking" id="i-ap-housetime"><div class="dot checking" id="d-ap-housetime"></div><div style="flex:1"><div class="name" id="n-ap-housetime">🎵 HouseTime</div><div class="sub2">DI.FM stream</div></div><div class="status checking" id="s-ap-housetime">Checking…</div></div>
+  <div class="item checking" id="i-ap-pocasi"><div class="dot checking" id="d-ap-pocasi"></div><div style="flex:1"><div class="name" id="n-ap-pocasi">🌤️ Počasí</div><div class="sub2">OpenWeatherMap API</div></div><div class="status checking" id="s-ap-pocasi">Checking…</div></div>
+  <div class="item checking" id="i-ap-mixcloud"><div class="dot checking" id="d-ap-mixcloud"></div><div style="flex:1"><div class="name" id="n-ap-mixcloud">☁️ Mixcloud</div><div class="sub2">mixcloud.com</div></div><div class="status checking" id="s-ap-mixcloud">Checking…</div></div>
+  <div class="item checking" id="i-ap-reader"><div class="dot checking" id="d-ap-reader"></div><div style="flex:1"><div class="name" id="n-ap-reader">📚 Čtečka</div><div class="sub2">GitHub reader.html</div></div><div class="status checking" id="s-ap-reader">Checking…</div></div>
+  <div class="apps-grid">
+    <div class="item local" id="i-ap-cd"><div class="row1"><div class="dot local" id="d-ap-cd"></div><div class="name">💿 CD databáze</div><div class="status local" id="s-ap-cd">Lokální</div></div></div>
+    <div class="item local" id="i-ap-hardware"><div class="row1"><div class="dot local" id="d-ap-hardware"></div><div class="name">🎛️ Hardware</div><div class="status local" id="s-ap-hardware">Lokální</div></div></div>
+    <div class="item local" id="i-ap-lp"><div class="row1"><div class="dot local" id="d-ap-lp"></div><div class="name">🎵 LP Desky</div><div class="status local" id="s-ap-lp">Lokální</div></div></div>
+    <div class="item local" id="i-ap-odecty"><div class="row1"><div class="dot local" id="d-ap-odecty"></div><div class="name">⚡ Odečty</div><div class="status local" id="s-ap-odecty">Lokální</div></div></div>
+    <div class="item local" id="i-ap-platby"><div class="row1"><div class="dot local" id="d-ap-platby"></div><div class="name">💳 Platby</div><div class="status local" id="s-ap-platby">Lokální</div></div></div>
+    <div class="item local" id="i-ap-jidlo"><div class="row1"><div class="dot local" id="d-ap-jidlo"></div><div class="name">🍽️ Jídlo</div><div class="status local" id="s-ap-jidlo">Lokální</div></div></div>
+    <div class="item local" id="i-ap-gluco"><div class="row1"><div class="dot local" id="d-ap-gluco"></div><div class="name">🩸 Glukóza</div><div class="status local" id="s-ap-gluco">Lokální</div></div></div>
+    <div class="item local" id="i-ap-notes"><div class="row1"><div class="dot local" id="d-ap-notes"></div><div class="name">📝 Poznámky</div><div class="status local" id="s-ap-notes">Lokální</div></div></div>
+    <div class="item local" id="i-ap-wordmaster"><div class="row1"><div class="dot local" id="d-ap-wordmaster"></div><div class="name">🇬🇧 WordMaster</div><div class="status local" id="s-ap-wordmaster">Lokální</div></div></div>
+    <div class="item local" id="i-ap-kalendar"><div class="row1"><div class="dot local" id="d-ap-kalendar"></div><div class="name">📅 Kalendář</div><div class="status local" id="s-ap-kalendar">Lokální</div></div></div>
+    <div class="item local" id="i-ap-obs"><div class="row1"><div class="dot local" id="d-ap-obs"></div><div class="name">🔴 OBS Status</div><div class="status local" id="s-ap-obs">Lokální</div></div></div>
+    <div class="item local" id="i-ap-manualy"><div class="row1"><div class="dot local" id="d-ap-manualy"></div><div class="name">📖 Manuály</div><div class="status local" id="s-ap-manualy">Lokální</div></div></div>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="btn-refresh" onclick="runAllChecks()">↻ REFRESH</button>
+  <div class="refresh-info" id="last-check">Spouštím kontrolu…</div>
+</div>
+
+<script>
+var CHECKS = {
+  web:     { type:'nocors', url:'https://kladyx.github.io/kladyxland/' },
+  repo:    { type:'github', url:'https://api.github.com/repos/Kladyx/kladyxland' },
+  db:      { type:'firebase_db', url:'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/.json?shallow=true&timeout=5s' },
+  storage: { type:'firebase_storage', url:'https://firebasestorage.googleapis.com/v0/b/kladyxland.firebasestorage.app/o?maxResults=1' },
+  kiss98:    { type:'nocors', url:'https://icecast4.play.cz/kiss128.mp3' },
+  blanik:    { type:'nocors', url:'https://ice.abradio.cz/blanikfm128.mp3' },
+  krokodyl:  { type:'nocors', url:'https://icecast4.play.cz/krokodyl128.mp3' },
+  rcity:     { type:'nocors', url:'https://ice.abradio.cz/cityfm128.mp3' },
+  radio1:    { type:'nocors', url:'https://icecast6.play.cz/radio1-128.mp3' },
+  impuls:    { type:'nocors', url:'https://icecast5.play.cz/impuls128.mp3' },
+  intense:   { type:'nocors', url:'https://intenseradio.live-streams.nl/live' },
+  funkstar:  { type:'nocors', url:'https://funkstar.radioca.st/stream' },
+  evropa2:   { type:'nocors', url:'https://icecast3.play.cz/evropa2-128.mp3' },
+  'ap-housetime': { type:'nocors', url:'https://pub7.di.fm/di_classichouseclub' },
+  'ap-pocasi':    { type:'cors',   url:'https://api.open-meteo.com/v1/forecast?latitude=49.64&longitude=18.14&current=temperature_2m' },
+  'ap-mixcloud':  { type:'nocors', url:'https://www.mixcloud.com/' },
+  'ap-reader':    { type:'nocors', url:'https://kladyx.github.io/panel/reader.html' }
+};
+
+function setStatus(id, state, text) {
+  var dot = document.getElementById('d-' + id);
+  var stat = document.getElementById('s-' + id);
+  var item = document.getElementById('i-' + id);
+  var name = document.getElementById('n-' + id);
+  if (!dot) return;
+  dot.className = 'dot ' + state;
+  stat.className = 'status ' + state;
+  stat.textContent = text;
+  item.className = 'item ' + state;
+  if (name) name.className = state === 'err' ? 'name err' : 'name';
+}
+
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise(function(_, rej) { setTimeout(function(){ rej(new Error('timeout')); }, ms); })
+  ]);
+}
+
+function checkNoCors(id, url) {
+  return withTimeout(fetch(url, { method:'HEAD', mode:'no-cors', cache:'no-store' }), 6000)
+  .then(function() { setStatus(id, 'ok', 'Online ✓'); })
+  .catch(function() { setStatus(id, 'err', 'Offline ✗'); });
+}
+
+function checkCors(id, url) {
+  return withTimeout(fetch(url, { cache:'no-store' }), 6000)
+  .then(function(r) {
+    if (r.ok) setStatus(id, 'ok', 'Online ✓');
+    else setStatus(id, 'err', 'Chyba ' + r.status);
+  })
+  .catch(function() { setStatus(id, 'err', 'Offline ✗'); });
+}
+
+function checkGitHub(id, url) {
+  return withTimeout(fetch(url, { headers:{'Accept':'application/vnd.github.v3+json'}, cache:'no-store' }), 8000)
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data && data.full_name) {
+      var pushed = data.pushed_at ? new Date(data.pushed_at).toLocaleDateString('cs-CZ') : '';
+      document.getElementById('repo-info').textContent = '⭐ ' + (data.stargazers_count||0) + ' · Push: ' + pushed;
+      setStatus(id, 'ok', 'Online ✓');
+    } else { setStatus(id, 'err', 'Chyba ✗'); }
+  })
+  .catch(function() { setStatus(id, 'err', 'Offline ✗'); });
+}
+
+function checkFirebaseDB(id, url) {
+  return withTimeout(fetch(url, { cache:'no-store' }), 8000)
+  .then(function(r) {
+    setStatus(id, (r.status===200||r.status===401||r.status===403) ? 'ok' : 'err',
+      (r.status===200||r.status===401||r.status===403) ? 'Online ✓' : 'Chyba ' + r.status);
+  })
+  .catch(function() { setStatus(id, 'err', 'Offline ✗'); });
+}
+
+function checkFirebaseStorage(id, url) {
+  return withTimeout(fetch(url, { cache:'no-store' }), 8000)
+  .then(function(r) {
+    setStatus(id, (r.status===200||r.status===401||r.status===403) ? 'ok' : 'err',
+      (r.status===200||r.status===401||r.status===403) ? 'Online ✓' : 'Chyba ' + r.status);
+  })
+  .catch(function() { setStatus(id, 'err', 'Offline ✗'); });
+}
+
+function runAllChecks() {
+  Object.keys(CHECKS).forEach(function(id) { setStatus(id, 'checking', 'Checking…'); });
+  document.getElementById('last-check').textContent = 'Kontroluji…';
+  var promises = Object.keys(CHECKS).map(function(id) {
+    var c = CHECKS[id];
+    if (c.type === 'github') return checkGitHub(id, c.url);
+    if (c.type === 'firebase_db') return checkFirebaseDB(id, c.url);
+    if (c.type === 'firebase_storage') return checkFirebaseStorage(id, c.url);
+    if (c.type === 'cors') return checkCors(id, c.url);
+    return checkNoCors(id, c.url);
+  });
+  Promise.all(promises).then(function() {
+    var now = new Date();
+    document.getElementById('last-check').textContent = 'Check: ' + now.toLocaleTimeString('cs-CZ') + ' · Auto: 60s';
+  });
+}
+
+runAllChecks();
+setInterval(runAllChecks, 60000);
 <\/script>
 </body></html>
 `;
