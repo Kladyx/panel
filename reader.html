@@ -36,6 +36,13 @@
     #epub-viewer{flex:1;overflow:hidden;background:var(--bg);}
     #pdf-viewer{flex:1;overflow-y:auto;overflow-x:hidden;display:none;flex-direction:column;align-items:center;padding:16px var(--mx);gap:12px;background:var(--bg);-webkit-overflow-scrolling:touch;}
     #pdf-viewer canvas{max-width:100%;height:auto!important;border:1px solid var(--border);border-radius:4px;display:block;}
+    .tap-zone{position:absolute;top:0;bottom:0;width:50%;z-index:10;cursor:pointer;-webkit-tap-highlight-color:transparent;display:none;}
+    #tap-prev{left:0;}
+    #tap-next{right:0;}
+    .tap-zone.flash{background:rgba(0,212,255,0.07);}
+    .tap-hint{position:absolute;top:50%;transform:translateY(-50%);font-size:1.8rem;opacity:0;transition:opacity 0.15s;pointer-events:none;color:rgba(0,212,255,0.4);}
+    #tap-prev .tap-hint{left:8px;}
+    #tap-next .tap-hint{right:8px;}
     #bottombar{flex-shrink:0;background:rgba(5,8,16,.92);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:8px 16px 12px;display:flex;flex-direction:column;gap:8px;z-index:20;}
     #progress-bar-wrap{width:100%;height:3px;background:rgba(0,212,255,.1);border-radius:2px;cursor:pointer;}
     #progress-bar{height:100%;background:var(--cyan);border-radius:2px;width:0%;transition:width .3s;}
@@ -162,6 +169,8 @@
     </div>
   </div>
   <div id="content-area">
+    <div id="tap-prev" class="tap-zone"><span class="tap-hint">‹</span></div>
+    <div id="tap-next" class="tap-zone"><span class="tap-hint">›</span></div>
     <div id="epub-viewer"></div>
     <div id="pdf-viewer"></div>
     <div id="pdf-loading"><div class="loading-spinner"></div><div class="loading-text">NAČÍTÁM PDF…</div></div>
@@ -183,7 +192,7 @@
   
   <div class="setting-row">
     <div class="setting-label">Velikost písma <span id="fs-val">100%</span></div>
-    <input type="range" id="font-size-slider" min="50" max="200" value="100">
+    <input type="range" id="font-size-slider" min="50" max="250" value="100">
   </div>
   
   <div class="setting-row">
@@ -212,6 +221,9 @@
   
   <div class="setting-row">
     <button id="save-file-btn" class="bm-save-btn">💾 ULOŽIT SOUBOR</button>
+  </div>
+  <div class="setting-row" style="margin-top:8px;">
+    <button id="reset-settings-btn" class="bm-save-btn" style="background:rgba(255,60,90,.08);border-color:rgba(255,60,90,.3);color:#ff3c5a;">↺ RESET NASTAVENÍ</button>
   </div>
 </div>
 
@@ -289,12 +301,33 @@
     document.getElementById('prev-btn').addEventListener('click',prevPage);
     document.getElementById('next-btn').addEventListener('click',nextPage);
     
+    // TAP ZONES - poklepání na levou/pravou část obrazovky
+    function setupTapZones(){
+      var tzPrev=document.getElementById('tap-prev');
+      var tzNext=document.getElementById('tap-next');
+      function flashZone(el,fn){
+        el.classList.add('flash');
+        el.querySelector('.tap-hint').style.opacity='1';
+        setTimeout(function(){el.classList.remove('flash');el.querySelector('.tap-hint').style.opacity='0';},200);
+        fn();
+      }
+      tzPrev.addEventListener('click',function(){flashZone(tzPrev,prevPage);});
+      tzNext.addEventListener('click',function(){flashZone(tzNext,nextPage);});
+    }
+    setupTapZones();
+    
     // Settings
     document.getElementById('font-size-slider').addEventListener('input',function(){settings.fs=this.value;applySettings();});
     document.getElementById('line-height-slider').addEventListener('input',function(){settings.lh=this.value;applySettings();});
     document.querySelectorAll('.ff-btn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.ff-btn').forEach(function(x){x.classList.remove('active');});this.classList.add('active');settings.font=this.dataset.font;applySettings();});});
     document.querySelectorAll('.theme-btn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.theme-btn').forEach(function(x){x.classList.remove('active');});this.classList.add('active');settings.theme=this.dataset.theme;applySettings();});});
     document.getElementById('save-file-btn').addEventListener('click',saveCurrentFile);
+    document.getElementById('reset-settings-btn').addEventListener('click',function(){
+      localStorage.removeItem('kladyx-settings');
+      settings={fs:window.innerWidth<768?150:100,lh:1.75,font:'Courier New',theme:'dark'};
+      loadSettings();
+      toast('✓ Nastavení resetováno');
+    });
     
     // Panels
     document.getElementById('bm-import-file').addEventListener('change',function(){if(this.files.length){var r=new FileReader();r.onload=function(e){try{var data=JSON.parse(e.target.result);bookmarks=data;localStorage.setItem('kladyx-bm',JSON.stringify(bookmarks));renderBookmarks();toast('✓ Záložky načteny');}catch(err){toast('⛔ Chyba načtení záložek');}};r.readAsText(this.files[0]);}});
@@ -336,6 +369,8 @@
       document.getElementById('reader-screen').classList.remove('active');
       document.getElementById('upload-screen').classList.remove('hidden');
       document.getElementById('book-title').textContent='';
+      document.getElementById('tap-prev').style.display='none';
+      document.getElementById('tap-next').style.display='none';
       closeAllPanels();
     }
   }
@@ -420,7 +455,7 @@
     currentPdfPage=num;
     document.getElementById('pdf-loading').classList.add('show');
     pdfDoc.getPage(num).then(function(pg){
-      var vp=pg.getViewport({scale:2});
+      var vp=pg.getViewport({scale:window.innerWidth<768?3:2});
       var c=document.createElement('canvas');
       c.width=vp.width;c.height=vp.height;
       var ctx=c.getContext('2d');
@@ -813,6 +848,7 @@
   function loadSettings(){
     var saved=localStorage.getItem('kladyx-settings');
     if(saved){settings=JSON.parse(saved);}
+    else if(window.innerWidth<768){settings.fs=150;}
     document.getElementById('font-size-slider').value=settings.fs;
     document.getElementById('line-height-slider').value=settings.lh;
     document.querySelectorAll('.ff-btn').forEach(function(b){b.classList.remove('active');if(b.dataset.font===settings.font)b.classList.add('active');});
@@ -894,6 +930,8 @@
   function showReaderScreen(){
     document.getElementById('upload-screen').classList.add('hidden');
     document.getElementById('reader-screen').classList.add('active');
+    document.getElementById('tap-prev').style.display='block';
+    document.getElementById('tap-next').style.display='block';
   }
   
   function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
