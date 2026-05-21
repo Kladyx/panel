@@ -15592,7 +15592,13 @@ window.addEventListener('unhandledrejection', function(event) {
       _wmFbDb.ref('wordmaster/data').set({learned:e.data.learned,speech_stats:e.data.speech_stats})
         .then(function(){
           if(frame.contentWindow)frame.contentWindow.postMessage({type:'wm_saved'},'*');
-        }).catch(function(err){console.warn('WM save:',err);});
+        }).catch(function(err){
+          console.warn('WM save:',err);
+          // I při chybě poslat wm_saved aby se UI odblokoval
+          if(frame.contentWindow)frame.contentWindow.postMessage({type:'wm_saved'},'*');
+        });
+      // Okamžitě potvrdit UI - nečekat na Firebase
+      if(frame.contentWindow)frame.contentWindow.postMessage({type:'wm_saved'},'*');
     }
   });
 })();
