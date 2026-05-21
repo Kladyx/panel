@@ -10311,8 +10311,13 @@ body{background:radial-gradient(circle at 20% 0%,rgba(52,211,153,0.08),transpare
 .speech-stats .ok{color:#34d399;}
 .speech-stats .bad{color:#f87171;}
 .speech-feedback .heard{display:block;font-size:0.72rem;font-weight:500;color:#aaa;margin-top:4px;font-style:italic;}
+.wm-sync{font-size:0.6rem;color:#444466;text-align:center;padding:2px 0;letter-spacing:0.03em;}
+.wm-sync.ok{color:#34d399;}.wm-sync.err{color:#f87171;}
 </style>
-</head>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
+<\/head>
 <body>
 <div class="topbar">
   <div class="logo">🇬🇧 WordMaster</div>
@@ -10326,6 +10331,7 @@ body{background:radial-gradient(circle at 20% 0%,rgba(52,211,153,0.08),transpare
     <button class="tab-btn" id="tbtn-test" onclick="setView('test')">🎯 Test</button>
   </div>
 </div>
+<div class="wm-sync" id="wm-sync">⏳ Synchronizuji...</div>
 <div id="view-cards">
   <div class="cat-row" id="cat-row"></div>
   <div class="cards-wrap"><div class="card-outer" id="card-outer"><div class="card" id="the-card"></div></div></div>
@@ -13458,12 +13464,43 @@ var CATS={
   "Každodenní fráze":"#f0abfc"
 };
 
-// localStorage s fallbackem na parent (řeší srcdoc iframe na Androidu)
+// ── Firebase sync ──
+var _wmDb=null;
+var _wmReady=false;
+(function(){
+  var cfg={apiKey:"AIzaSyAd5weXm18FyZ21zo9Y1JsdVYRW1hxecOw",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland"};
+  try{
+    if(!firebase.apps.length)firebase.initializeApp(cfg);
+    _wmDb=firebase.database();
+    firebase.auth().signInAnonymously().then(function(){
+      _wmDb.ref('wordmaster/data').on('value',function(snap){
+        var d=snap.val();
+        if(d){
+          try{learned=JSON.parse(d.learned||'[]');}catch(e){learned=[];}
+          try{speechStats=JSON.parse(d.speech_stats||'{}');}catch(e){speechStats={};}
+        }
+        _wmReady=true;
+        buildCats();renderCard();updateProg();
+        _wmSyncDot('ok','☁ Sync');
+      },function(){_wmSyncDot('err','☁ Offline');_wmLocalLoad();});
+    }).catch(function(){_wmSyncDot('err','☁ Offline');_wmLocalLoad();});
+  }catch(e){_wmSyncDot('err','☁ Offline');_wmLocalLoad();}
+})();
+function _wmLocalLoad(){
+  try{var s=localStorage.getItem('wm_learned');if(s)learned=JSON.parse(s);}catch(e){}
+  try{var ss=localStorage.getItem('wm_speech_stats');if(ss)speechStats=JSON.parse(ss);}catch(e){}
+  _wmReady=true;buildCats();renderCard();updateProg();
+}
+function _wmSyncDot(cls,txt){
+  var el=document.getElementById('wm-sync');
+  if(!el)return;el.className='wm-sync '+cls;el.textContent=txt;
+  if(cls==='ok')setTimeout(function(){el.textContent='';},2000);
+}
+// localStorage fallback (lokální záloha)
 function _wmLsGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e){}try{var v=window.parent.localStorage.getItem(k);if(v!==null)return v;}catch(e){}return null;}
 function _wmLsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}try{window.parent.localStorage.setItem(k,v);}catch(e){}}
 
 var learned=[];
-try{var s=_wmLsGet('wm_learned');if(s)learned=JSON.parse(s);}catch(e){}
 var filterCat='Vše';
 var hideLearned=true;
 var idx=0;
@@ -13475,15 +13512,32 @@ var shuffleOrder=null;
 var listening=false;
 var recognition=null;
 var speechStats={};
-try{var ss=_wmLsGet('wm_speech_stats');if(ss)speechStats=JSON.parse(ss);}catch(e){}
 var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 var micSupported=!!SR;
 
 // TEST STATE
 var testState={running:false,questions:[],current:0,score:0,wrong:0,answered:false,scope:'all',count:10};
 
-function save(){_wmLsSet('wm_learned',JSON.stringify(learned));}
-function saveSpeechStats(){_wmLsSet('wm_speech_stats',JSON.stringify(speechStats));}
+var _wmSaveTimer=null;
+function save(){
+  _wmLsSet('wm_learned',JSON.stringify(learned));
+  clearTimeout(_wmSaveTimer);
+  _wmSaveTimer=setTimeout(function(){
+    if(_wmDb){
+      _wmSyncDot('','☁ Ukládám...');
+      _wmDb.ref('wordmaster/data').set({learned:JSON.stringify(learned),speech_stats:JSON.stringify(speechStats)})
+        .then(function(){_wmSyncDot('ok','☁ Uloženo');})
+        .catch(function(){_wmSyncDot('err','☁ Chyba sync');});
+    }
+  },800);
+}
+function saveSpeechStats(){
+  _wmLsSet('wm_speech_stats',JSON.stringify(speechStats));
+  if(_wmDb){
+    _wmDb.ref('wordmaster/data').set({learned:JSON.stringify(learned),speech_stats:JSON.stringify(speechStats)})
+      .catch(function(){});
+  }
+}
 
 function normalizeText(s){
   if(!s)return '';
