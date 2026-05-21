@@ -10314,8 +10314,10 @@ body{background:radial-gradient(circle at 20% 0%,rgba(52,211,153,0.08),transpare
 .speech-stats .ok{color:#34d399;}
 .speech-stats .bad{color:#f87171;}
 .speech-feedback .heard{display:block;font-size:0.72rem;font-weight:500;color:#aaa;margin-top:4px;font-style:italic;}
-.wm-sync{font-size:0.6rem;color:#444466;text-align:center;padding:2px 0;letter-spacing:0.03em;}
-.wm-sync.ok{color:#34d399;}.wm-sync.err{color:#f87171;}
+.wm-sync{font-size:0.6rem;color:#444488;letter-spacing:0.05em;white-space:nowrap;padding:2px 7px;border-radius:99px;border:1px solid #222244;background:#0d0d1f;}
+.wm-sync.ok{color:#34d399;border-color:rgba(52,211,153,0.3);}
+.wm-sync.err{color:#f87171;border-color:rgba(248,113,113,0.3);}
+.wm-sync.saving{color:#facc15;border-color:rgba(250,204,21,0.3);}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -10328,13 +10330,13 @@ body{background:radial-gradient(circle at 20% 0%,rgba(52,211,153,0.08),transpare
     <div class="prog-meta"><span id="prog-text">0 / 0</span><span id="prog-pct">0%</span></div>
     <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
   </div>
+  <div id="wm-sync" class="wm-sync">⏳ Sync...</div>
   <div class="tab-group">
     <button class="tab-btn active" id="tbtn-cards" onclick="setView('cards')">🃏 Karty</button>
     <button class="tab-btn" id="tbtn-ebook" onclick="setView('ebook')">📚 Seznam</button>
     <button class="tab-btn" id="tbtn-test" onclick="setView('test')">🎯 Test</button>
   </div>
 </div>
-<div class="wm-sync" id="wm-sync">⏳ Synchronizuji...</div>
 <div id="view-cards">
   <div class="cat-row" id="cat-row"></div>
   <div class="cards-wrap"><div class="card-outer" id="card-outer"><div class="card" id="the-card"></div></div></div>
@@ -13484,12 +13486,10 @@ window.addEventListener('message',function(e){
     if(d.speech_stats!==undefined){try{speechStats=JSON.parse(d.speech_stats||'{}');}catch(ex){speechStats={};}}
     _wmReady=true;
     buildCats();renderCard();updateProg();
-    _wmSyncDot('ok','☁ Sync');
-    setTimeout(function(){_wmSyncDot('','');},2000);
+    _wmSyncDot('ok','☁ Online');
   }
   if(e.data.type==='wm_saved'){
     _wmSyncDot('ok','☁ Uloženo');
-    setTimeout(function(){_wmSyncDot('','');},2000);
   }
 });
 
@@ -13535,7 +13535,7 @@ function save(){
   _wmLsSet('wm_learned',JSON.stringify(learned));
   clearTimeout(_wmSaveTimer);
   _wmSaveTimer=setTimeout(function(){
-    _wmSyncDot('','☁ Ukládám...');
+    _wmSyncDot('saving','☁ Ukládám...');
     window.parent.postMessage({type:'wm_save',learned:JSON.stringify(learned),speech_stats:JSON.stringify(speechStats)},'*');
   },800);
 }
@@ -14388,13 +14388,13 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
     <div class="item ok"><div class="dot ok"></div><div class="name">🔴 OBS Status</div><div class="status ok">Firebase ✓</div></div>
     <div class="item ok"><div class="dot ok"></div><div class="name">🏛️ Architektura</div><div class="status ok">Firebase ✓</div></div>
     <div class="item ok"><div class="dot ok"></div><div class="name">💾 ZXNext</div><div class="status ok">Firebase ✓</div></div>
+    <div class="item checking" id="i-wordmaster"><div class="dot checking" id="d-wordmaster"></div><div class="name">🇬🇧 WordMaster</div><div class="status checking" id="s-wordmaster">Checking…</div></div>
   </div>
 </div>
 
 <div class="section">
   <div class="sec-title">💾 Panel Appky — Lokální</div>
   <div class="apps-grid">
-    <div class="item local"><div class="dot local"></div><div class="name">🇬🇧 WordMaster</div><div class="status local">Lokální</div></div>
     <div class="item local"><div class="dot local"></div><div class="name">📖 Manuály</div><div class="status local">Lokální</div></div>
   </div>
 </div>
@@ -14518,6 +14518,13 @@ function runAllChecks() {
     if (c.type === 'cors') return checkCors(id, c.url);
     return checkNoCors(id, c.url);
   });
+  // WordMaster Firebase sync check
+  setStatus('wordmaster','checking','Checking…');
+  fetch('https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/wordmaster/data.json')
+    .then(function(r){
+      if(r.ok)setStatus('wordmaster','ok','Firebase ✓');
+      else setStatus('wordmaster','err','HTTP '+r.status);
+    }).catch(function(){setStatus('wordmaster','err','Offline');});
   Promise.all(promises).then(function() {
     var now = new Date();
     document.getElementById('last-check').textContent = 'Check: ' + now.toLocaleTimeString('cs-CZ') + ' · Auto: 60s';
