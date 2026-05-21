@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v15.6Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v15.8Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -195,7 +195,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v15.6Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v15.8Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -205,7 +205,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v15.6Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v15.8Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -296,7 +296,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v15.6Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v15.8Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -675,7 +675,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v15.6Kl</div>
+  <div class="version">v15.8Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -13466,36 +13466,34 @@ var CATS={
   "Každodenní fráze":"#f0abfc"
 };
 
-// ── Firebase sync přes parent postMessage ──
+// ── Firebase sync přímý (stejně jako ostatní appky) ──
 var _wmDb=null;
 var _wmReady=false;
-var _wmSaveTimer=null;
-
-// Požádat parenta o data při startu
-window.parent.postMessage({type:'wm_load'},'*');
-
-// Přijímat data od parenta
-window.addEventListener('message',function(e){
-  if(!e.data)return;
-  if(e.data.type==='wm_data'){
-    var d=e.data;
-    if(d.learned!==undefined){try{learned=JSON.parse(d.learned||'[]');}catch(ex){learned=[];}}
-    if(d.speech_stats!==undefined){try{speechStats=JSON.parse(d.speech_stats||'{}');}catch(ex){speechStats={};}}
-    _wmReady=true;
-    buildCats();renderCard();updateProg();
-    _wmSyncDot('ok','☁ Sync ✓');
-  }
-  if(e.data.type==='wm_saved'){
-    clearTimeout(_wmSaveFallback);
-    _wmSyncDot('ok','☁ Uloženo');
-  }
-});
-
-// Fallback - pokud parent neodpovídá do 3s
-setTimeout(function(){
-  if(!_wmReady){_wmLocalLoad();}
-},3000);
-
+(function(){
+  var cfg={
+    apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",
+    authDomain:"kladyxland.firebaseapp.com",
+    databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId:"kladyxland",
+    storageBucket:"kladyxland.firebasestorage.app",
+    messagingSenderId:"178078059030",
+    appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"
+  };
+  try{
+    if(!firebase.apps.length)firebase.initializeApp(cfg);
+    _wmDb=firebase.database();
+    firebase.auth().signInAnonymously().then(function(){
+      _wmDb.ref('wordmaster/data').once('value').then(function(snap){
+        var d=snap.val()||{};
+        try{learned=JSON.parse(d.learned||'[]');}catch(e){learned=[];}
+        try{speechStats=JSON.parse(d.speech_stats||'{}');}catch(e){speechStats={};}
+        _wmReady=true;
+        buildCats();renderCard();updateProg();
+        _wmSyncDot('ok','☁ Sync ✓');
+      }).catch(function(){_wmLocalLoad();});
+    }).catch(function(){_wmLocalLoad();});
+  }catch(e){console.warn('WM FB:',e);_wmLocalLoad();}
+})();
 function _wmLocalLoad(){
   try{var s=localStorage.getItem('wm_learned');if(s)learned=JSON.parse(s);}catch(e){}
   try{var ss=localStorage.getItem('wm_speech_stats');if(ss)speechStats=JSON.parse(ss);}catch(e){}
@@ -13534,18 +13532,19 @@ function save(){
   _wmLsSet('wm_learned',JSON.stringify(learned));
   clearTimeout(_wmSaveTimer);
   _wmSaveTimer=setTimeout(function(){
-    _wmSyncDot('saving','☁ Ukládám...');
-    window.parent.postMessage({type:'wm_save',learned:JSON.stringify(learned),speech_stats:JSON.stringify(speechStats)},'*');
-    // Fallback - pokud wm_saved nepřijde do 1.5s, přepni sám
-    clearTimeout(_wmSaveFallback);
-    _wmSaveFallback=setTimeout(function(){
-      _wmSyncDot('ok','☁ Uloženo');
-    },1500);
+    if(_wmDb){
+      _wmSyncDot('saving','☁ Ukládám...');
+      _wmDb.ref('wordmaster/data').set({learned:JSON.stringify(learned),speech_stats:JSON.stringify(speechStats)})
+        .then(function(){_wmSyncDot('ok','☁ Uloženo');})
+        .catch(function(){_wmSyncDot('err','☁ Chyba');});
+    }
   },800);
 }
 function saveSpeechStats(){
   _wmLsSet('wm_speech_stats',JSON.stringify(speechStats));
-  window.parent.postMessage({type:'wm_save',learned:JSON.stringify(learned),speech_stats:JSON.stringify(speechStats)},'*');
+  if(_wmDb){
+    _wmDb.ref('wordmaster/data').set({learned:JSON.stringify(learned),speech_stats:JSON.stringify(speechStats)}).catch(function(){});
+  }
 }
 
 function normalizeText(s){
@@ -15550,50 +15549,6 @@ window.addEventListener('unhandledrejection', function(event) {
   console.error('Unhandled promise rejection:', event.reason);
 });
 
-// ── WordMaster Firebase sync handler ──
-(function(){
-  var _wmFbDb=null;
-  function _wmFbStart(){
-    try{
-      var app=firebase.app('gate-app');
-      _wmFbDb=app.database();
-    }catch(e){console.warn('WM firebase:',e);}
-  }
-  // Spustit po přihlášení - gate-app existuje až po gateInit
-  window.addEventListener('kladyx-auth-ready',function(){
-    _wmFbStart();
-  });
-  window.addEventListener('message',function(e){
-    if(!e.data)return;
-    var frame=document.getElementById('frame-wordmaster');
-    if(!frame)return;
-    if(e.data.type==='wm_load'){
-      if(_wmFbDb){
-        _wmFbDb.ref('wordmaster/data').once('value').then(function(snap){
-          var d=snap.val()||{};
-          frame.contentWindow.postMessage({type:'wm_data',learned:d.learned||'[]',speech_stats:d.speech_stats||'{}'},'*');
-        }).catch(function(){
-          frame.contentWindow.postMessage({type:'wm_data',learned:'[]',speech_stats:'{}'},'*');
-        });
-      } else {
-        frame.contentWindow.postMessage({type:'wm_data',learned:'[]',speech_stats:'{}'},'*');
-      }
-    }
-    if(e.data.type==='wm_save'&&_wmFbDb){
-      _wmFbDb.ref('wordmaster/data').set({learned:e.data.learned,speech_stats:e.data.speech_stats})
-        .then(function(){
-          if(frame.contentWindow)frame.contentWindow.postMessage({type:'wm_saved'},'*');
-        }).catch(function(err){
-          console.warn('WM save:',err);
-          // I při chybě poslat wm_saved aby se UI odblokoval
-          if(frame.contentWindow)frame.contentWindow.postMessage({type:'wm_saved'},'*');
-        });
-      // Okamžitě potvrdit UI - nečekat na Firebase
-      if(frame.contentWindow)frame.contentWindow.postMessage({type:'wm_saved'},'*');
-    }
-  });
-})();
-
 // HODINY + DATUM
 (function() {
   const DNY = ['NEDĚLE','PONDĚLÍ','ÚTERÝ','STŘEDA','ČTVRTEK','PÁTEK','SOBOTA'];
@@ -15780,8 +15735,6 @@ function unlockPanel(user) {
   var gate=document.getElementById('panel-gate');
   gate.classList.add('hidden'); setTimeout(function(){gate.style.display='none';},400);
   var sb=document.getElementById('signout-btn'); if(sb)sb.style.display='inline-block';
-  // Notifikovat WM handler že gate-app je připravená
-  window.dispatchEvent(new Event('kladyx-auth-ready'));
 }
 function lockPanel() {
   var gate=document.getElementById('panel-gate'); gate.style.display='flex'; gate.classList.remove('hidden');
