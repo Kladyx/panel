@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v16.4Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v16.6Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -137,7 +137,8 @@
     @keyframes eqb7{from{height:9px}to{height:36px}}@keyframes eqb8{from{height:4px}to{height:22px}}
     @keyframes eqb9{from{height:7px}to{height:34px}}@keyframes eqb10{from{height:3px}to{height:30px}}
     .wclock{font-family:"Courier New",monospace;font-size:1.8rem;font-weight:bold;color:var(--cyan);letter-spacing:4px;text-shadow:0 0 15px var(--cyan);margin:4px 0 0;}
-    .wdate{font-size:0.55rem;letter-spacing:2px;color:rgba(0,212,255,0.5);text-transform:uppercase;margin-bottom:6px;}
+    .wdate{font-size:0.65rem;letter-spacing:2px;color:#00ff88;text-transform:uppercase;margin-bottom:4px;text-shadow:0 0 10px rgba(0,255,136,0.7);font-weight:700;}
+    .wsvatek{font-size:0.6rem;letter-spacing:1px;color:#facc15;text-shadow:0 0 8px rgba(250,204,21,0.6);margin-bottom:6px;font-weight:600;}
     .wsocket{background:linear-gradient(135deg,rgba(255,140,0,0.15),rgba(255,60,90,0.1));border:1px solid rgba(255,140,0,0.4);border-radius:14px;padding:14px 12px;cursor:pointer;transition:all 0.3s;display:flex;flex-direction:column;align-items:center;gap:5px;width:100%;max-width:420px;position:relative;margin-bottom:8px;}
     .wsocket-on{border-color:#00ff88;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.1));box-shadow:0 0 20px rgba(0,255,136,0.3);}
     .wsocket-off{border-color:#ff3c5a;background:rgba(255,60,90,0.1);}
@@ -195,7 +196,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v16.4Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v16.6Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -205,7 +206,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v16.4Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v16.6Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -294,12 +295,15 @@
     <button class="app-btn" id="btn-worldtime" style="--ac:#00d4ff;--ac-rgb:0,212,255" onclick="openApp('worldtime')">
       <div class="bd"></div><div class="bi">🌍</div><div class="bl">World Time</div>
     </button>
+    <button class="app-btn" id="btn-user" style="--ac:#a78bfa;--ac-rgb:167,139,250" onclick="openApp('user')">
+      <div class="bd"></div><div class="bi">👤</div><div class="bl">Moje Apky</div>
+    </button>
 
   </div>
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v16.4Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v16.6Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -335,6 +339,7 @@
       </div>
       <div id="wclock-time" class="wclock">00:00:00</div>
       <div id="wclock-date" class="wdate">···</div>
+      <div id="wclock-svatek" class="wsvatek"></div>
       <div class="wsocket" id="wsocket-card" style="cursor: default;">
         <div class="wsocket-dot"></div>
         <div class="wsocket-icon">🔌</div>
@@ -366,6 +371,7 @@
         <div class="wcard" onclick="openApp('radio')" onmouseover="this.style.borderColor='#ff4466';this.style.boxShadow='0 0 14px rgba(255,68,102,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🎤</div><div class="wn">Radio ID</div><div class="wd">Music Recognition</div></div>
         <div class="wcard" onclick="openApp('zxgames')" onmouseover="this.style.borderColor='#0088ff';this.style.boxShadow='0 0 14px rgba(0,136,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🕹️</div><div class="wn">ZX Games</div><div class="wd">Arcade Browser</div></div>
         <div class="wcard" onclick="openApp('worldtime')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">🌍</div><div class="wn">World Time</div><div class="wd">Hodiny & Stopky</div></div>
+        <div class="wcard" onclick="openApp('user')" onmouseover="this.style.borderColor='#a78bfa';this.style.boxShadow='0 0 14px rgba(167,139,250,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><div class="wi">👤</div><div class="wn">Moje Apky</div><div class="wd">Správce aplikací</div></div>
 
       </div>
       <div style="margin-top:22px;display:flex;align-items:center;justify-content:center;gap:24px;padding:12px 20px;border:1px solid rgba(0,212,255,0.1);border-radius:8px;background:rgba(255,255,255,0.025);">
@@ -402,6 +408,7 @@
     <iframe id="frame-radio" class="app-frame" title="radio" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allow="microphone" allowfullscreen></iframe>
     <iframe id="frame-zxgames" class="app-frame" title="zxgames" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-downloads" allowfullscreen></iframe>
     <iframe id="frame-worldtime" class="app-frame" title="worldtime" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
+    <iframe id="frame-user" class="app-frame" title="user" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
 
   </div>
 </div>
@@ -680,7 +687,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v16.4Kl</div>
+  <div class="version">v16.6Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -16259,6 +16266,157 @@ cdUpdateDisplay();
 </html>
 `;
 
+APP_HTML["user"] = `<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MOJE APKY</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#080818;color:#e0e0f0;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding:16px;}
+h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transform:uppercase;margin-bottom:16px;border-bottom:1px solid rgba(167,139,250,0.2);padding-bottom:10px;}
+.app-list{list-style:none;margin-bottom:20px;}
+.app-list li{display:flex;align-items:center;gap:10px;padding:10px 14px;margin-bottom:6px;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.15);border-radius:12px;font-size:0.88rem;}
+.app-list li .num{font-size:0.72rem;font-weight:800;color:#a78bfa;min-width:22px;}
+.app-list li .name{flex:1;color:#e0e0f0;}
+.app-list li .del{background:none;border:none;color:#f87171;cursor:pointer;font-size:1rem;padding:2px 6px;border-radius:6px;opacity:0.6;transition:opacity 0.2s;}
+.app-list li .del:hover{opacity:1;}
+.add-box{background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.25);border-radius:14px;padding:16px;}
+.add-box h2{font-size:0.72rem;font-weight:800;color:#a78bfa;letter-spacing:1px;margin-bottom:10px;}
+.add-row{display:flex;gap:8px;}
+.add-row input{flex:1;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(167,139,250,0.25);background:#0d0d22;color:#e0e0f0;font-size:0.9rem;font-family:inherit;outline:none;}
+.add-row input:focus{border-color:#a78bfa;}
+.add-row button{padding:10px 16px;border-radius:10px;border:none;background:linear-gradient(135deg,#a78bfa,#f472b6);color:#0d0d1f;font-weight:800;font-family:inherit;cursor:pointer;white-space:nowrap;font-size:0.88rem;}
+.status{font-size:0.7rem;color:#666688;margin-top:10px;min-height:18px;}
+.sync-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:0.65rem;font-weight:700;letter-spacing:1px;background:rgba(52,211,153,0.15);color:#34d399;border:1px solid rgba(52,211,153,0.3);margin-bottom:14px;}
+</style>
+</head>
+<body>
+<h1>👤 Moje Apky</h1>
+<div class="sync-badge" id="sync-badge">⟳ Načítám...</div>
+<ul class="app-list" id="app-list"></ul>
+<div class="add-box">
+  <h2>➕ PŘIDAT NOVOU APLIKACI</h2>
+  <div class="add-row">
+    <input id="new-app-name" type="text" placeholder="Název nové aplikace..." maxlength="60"/>
+    <button onclick="addApp()">Uložit</button>
+  </div>
+  <div class="status" id="status-msg"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\\/script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\\/script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\\/script>
+<script>
+var _fbCfg={apiKey:"AIzaSyDK1aCuYHOZ62jB0Ll-bOUg6xmfgWHhYtE",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"521867423946",appId:"1:521867423946:web:kladyxpanel"};
+if(!firebase.apps.length)firebase.initializeApp(_fbCfg);
+var _db=firebase.database();
+firebase.auth().signInAnonymously().catch(function(e){console.warn('Auth:',e);});
+
+var DEFAULT_APPS=[
+  {id:1,name:"🏠 HouseTime"},
+  {id:2,name:"💿 CD databáze"},
+  {id:3,name:"🔧 Hardware"},
+  {id:4,name:"🏗 Architektura"},
+  {id:5,name:"💿 LP Desky"},
+  {id:6,name:"☁️ Mixcloud"},
+  {id:7,name:"📊 Odečty"},
+  {id:8,name:"💳 Platby"},
+  {id:9,name:"🍽 Jídlo"},
+  {id:10,name:"🩸 Glukóza"},
+  {id:11,name:"🎙 OBS Status"},
+  {id:12,name:"🌤 Počasí"},
+  {id:13,name:"📝 Poznámky"},
+  {id:14,name:"📅 Kalendář"},
+  {id:15,name:"🕹 ZX Next"},
+  {id:16,name:"📖 Manuály"},
+  {id:17,name:"📚 Čtečka"},
+  {id:18,name:"🇬🇧 WordMaster"},
+  {id:19,name:"📻 Multitrack"},
+  {id:20,name:"🟢 Status"},
+  {id:21,name:"🎤 Radio ID"},
+  {id:22,name:"🎮 ZX Games"},
+  {id:23,name:"🌍 World Time"}
+];
+
+var apps=[];
+var _REF=_db.ref('user_apps');
+
+function render(){
+  var ul=document.getElementById('app-list');
+  ul.innerHTML='';
+  apps.forEach(function(a,i){
+    var li=document.createElement('li');
+    li.innerHTML='<span class="num">'+(i+1)+'.</span><span class="name">'+esc(a.name)+'</span>'
+      +(a.custom?'<button class="del" onclick="delApp('+a.id+')" title="Odstranit">✕</button>':'');
+    ul.appendChild(li);
+  });
+}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function setStatus(msg,ok){
+  var el=document.getElementById('status-msg');
+  el.textContent=msg;
+  el.style.color=ok?'#34d399':'#f87171';
+}
+
+function setSyncBadge(txt,ok){
+  var b=document.getElementById('sync-badge');
+  b.textContent=txt;
+  b.style.background=ok?'rgba(52,211,153,0.15)':'rgba(250,204,21,0.15)';
+  b.style.color=ok?'#34d399':'#facc15';
+  b.style.borderColor=ok?'rgba(52,211,153,0.3)':'rgba(250,204,21,0.3)';
+}
+
+function addApp(){
+  var val=document.getElementById('new-app-name').value.trim();
+  if(!val){setStatus('Zadej název aplikace.',false);return;}
+  var newId=Date.now();
+  var newApps=apps.concat([{id:newId,name:val,custom:true}]);
+  var customApps=newApps.filter(function(a){return a.custom;});
+  var obj={};
+  customApps.forEach(function(a){obj[a.id]={id:a.id,name:a.name,custom:true};});
+  _REF.set(obj).then(function(){
+    document.getElementById('new-app-name').value='';
+    setStatus('✅ Uloženo a synchronizováno.',true);
+    setTimeout(function(){setStatus('');},3000);
+  }).catch(function(e){setStatus('❌ Chyba: '+e.message,false);});
+}
+
+function delApp(id){
+  _REF.child(String(id)).remove()
+    .then(function(){setStatus('✅ Odstraněno.',true);setTimeout(function(){setStatus('');},2000);})
+    .catch(function(e){setStatus('❌ Chyba: '+e.message,false);});
+}
+
+// Real-time listener
+firebase.auth().onAuthStateChanged(function(user){
+  if(!user)return;
+  _REF.on('value',function(snap){
+    var customApps=[];
+    if(snap.exists()){
+      snap.forEach(function(child){customApps.push(child.val());});
+    }
+    apps=DEFAULT_APPS.concat(customApps);
+    render();
+    setSyncBadge('✅ Synchronizováno',true);
+  },function(err){
+    setSyncBadge('⚠️ Offline',false);
+    apps=DEFAULT_APPS.slice();
+    render();
+  });
+});
+
+document.getElementById('new-app-name').addEventListener('keydown',function(e){
+  if(e.key==='Enter')addApp();
+});
+<\/script>
+</body>
+</html>
+`;
+
 
 function openApp(id) {
   try {
@@ -16362,7 +16520,27 @@ window.addEventListener('unhandledrejection', function(event) {
 // WELCOME CLOCK
 (function(){
   var D=['NE','PO','ÚT','ST','ČT','PÁ','SO'],M=['LED','ÚNO','BŘE','DUB','KVĚ','ČVN','ČVC','SRP','ZÁŘ','ŘÍJ','LIS','PRO'];
-  function tick(){var n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0');var e=document.getElementById('wclock-time'),e2=document.getElementById('wclock-date');if(e)e.textContent=h+':'+m+':'+s;if(e2)e2.textContent=D[n.getDay()]+' · '+n.getDate()+'. '+M[n.getMonth()]+' '+n.getFullYear();}
+  var SVATKY={
+    '1.1':'Nový rok · Nový rok','2.1':'Abel','3.1':'Radmila','4.1':'Diana','5.1':'Dalimil','6.1':'Tři králové · Kašpar','7.1':'Vilma','8.1':'Čestmír','9.1':'Vladan','10.1':'Břetislav','11.1':'Bohdana','12.1':'Pravoslav','13.1':'Edita','14.1':'Radovan','15.1':'Alice','16.1':'Ctirad','17.1':'Drahoslav','18.1':'Vladislav','19.1':'Doubravka','20.1':'Ilona','21.1':'Běla','22.1':'Slavomír','23.1':'Zdeněk','24.1':'Milena','25.1':'Miloš','26.1':'Zora','27.1':'Ingrid','28.1':'Otýlie','29.1':'Zdislava','30.1':'Robin','31.1':'Marika',
+    '1.2':'Hynek','2.2':'Nela','3.2':'Blažej','4.2':'Jarmila','5.2':'Dobromila','6.2':'Vanda','7.2':'Veronika','8.2':'Milada','9.2':'Apolena','10.2':'Mojmír','11.2':'Dezider','12.2':'Slavěna','13.2':'Věnceslava','14.2':'Valentýn · Valentin','15.2':'Jiřina','16.2':'Ljuba','17.2':'Miloslava','18.2':'Gizela','19.2':'Patrik','20.2':'Oldřich','21.2':'Lenka','22.2':'Petr','23.2':'Svatopluk','24.2':'Matěj','25.2':'Liliana','26.2':'Dorota','27.2':'Alexandr','28.2':'Lumír','29.2':'Přikmet',
+    '1.3':'Bedřich','2.3':'Anežka','3.3':'Kamil','4.3':'Stela','5.3':'Kazimír','6.3':'Miroslav','7.3':'Tomáš','8.3':'Mezinárodní den žen · Gabriela','9.3':'Františka','10.3':'Viktorie','11.3':'Anděla','12.3':'Řehoř','13.3':'Růžena','14.3':'Rút','15.3':'Ida','16.3':'Elena','17.3':'Vlastimil','18.3':'Eduard','19.3':'Josef','20.3':'Světlana','21.3':'Radek','22.3':'Leona','23.3':'Ivona','24.3':'Gabriel','25.3':'Marián','26.3':'Emanuel','27.3':'Dita','28.3':'Soňa','29.3':'Taťána','30.3':'Arnošt','31.3':'Kvido',
+    '1.4':'Hugo','2.4':'Erika','3.4':'Richard','4.4':'Ivana','5.4':'Miroslava','6.4':'Vendula','7.4':'Heřman','8.4':'Ema','9.4':'Dušan','10.4':'Darja','11.4':'Jakub','12.4':'Julius','13.4':'Aleš','14.4':'Vincenc','15.4':'Anastázie','16.4':'Irena','17.4':'Rudolf','18.4':'Valérie','19.4':'Rostislav','20.4':'Marcela','21.4':'Alexandra','22.4':'Evženie','23.4':'Vojtěch','24.4':'Jiří','25.4':'Marek','26.4':'Oto','27.4':'Jaroslav','28.4':'Vlastislav','29.4':'Robert','30.4':'Blahoslav',
+    '1.5':'Svátek práce · Vlastimila','2.5':'Zikmund','3.5':'Alexej','4.5':'Květoslav','5.5':'Klaudie','6.5':'Radoslav','7.5':'Stanislav','8.5':'Den vítězství · Stanislava','9.5':'Ctibor','10.5':'Blažena','11.5':'Svatava','12.5':'Pankrác','13.5':'Servác','14.5':'Bonifác','15.5':'Žofie','16.5':'Přemysl','17.5':'Aneta','18.5':'Nataša','19.5':'Ivo','20.5':'Zbyněk','21.5':'Monika','22.5':'Emil','23.5':'Vladimír','24.5':'Jana','25.5':'Viola','26.5':'Filip','27.5':'Valdemar','28.5':'Vilém','29.5':'Maxmilián','30.5':'Ferdinand','31.5':'Kamila',
+    '1.6':'Laura','2.6':'Jarmil','3.6':'Tamara','4.6':'Dalibor','5.6':'Dobroslav','6.6':'Norbert','7.6':'Iveta','8.6':'Medard','9.6':'Stanislava','10.6':'Gita','11.6':'Bohuslav','12.6':'Antonie','13.6':'Antonín','14.6':'Roland','15.6':'Vít','16.6':'Zbyněk','17.6':'Adolf','18.6':'Milan','19.6':'Leoš','20.6':'Květa','21.6':'Alois','22.6':'Pavla','23.6':'Zdeňka','24.6':'Jan','25.6':'Ivan','26.6':'Adriana','27.6':'Ladislav','28.6':'Lubomír','29.6':'Petr a Pavel · Petr','30.6':'Šárka',
+    '1.7':'Jaroslava','2.7':'Patricie','3.7':'Radomír','4.7':'Prokop','5.7':'Cyril a Metoděj · Cyril','6.7':'Mistr Jan Hus · Jan','7.7':'Bohuslava','8.7':'Nora','9.7':'Drahoslava','10.7':'Libuše','11.7':'Olga','12.7':'Bořek','13.7':'Markéta','14.7':'Karolína','15.7':'Jindřich','16.7':'Luboš','17.7':'Martina','18.7':'Drahomíra','19.7':'Čeněk','20.7':'Ilja','21.7':'Vítězslav','22.7':'Magdaléna','23.7':'Libor','24.7':'Kristýna','25.7':'Jakub','26.7':'Anna','27.7':'Božena','28.7':'Viktor','29.7':'Marta','30.7':'Bořivoj','31.7':'Ignác',
+    '1.8':'Oskar','2.8':'Gustav','3.8':'Miluše','4.8':'Dominik','5.8':'Kristián','6.8':'Oldřiška','7.8':'Lada','8.8':'Soběslav','9.8':'Roman','10.8':'Vavřinec','11.8':'Zuzana','12.8':'Klára','13.8':'Alena','14.8':'Mojžíš','15.8':'Hana','16.8':'Jáchym','17.8':'Petra','18.8':'Helena','19.8':'Ludvík','20.8':'Bernard','21.8':'Johanka','22.8':'Bohuslav','23.8':'Sandra','24.8':'Bartoloměj','25.8':'Radim','26.8':'Luděk','27.8':'Otakar','28.8':'Augustýn','29.8':'Ola','30.8':'Vladěna','31.8':'Pavlína',
+    '1.9':'Linda','2.9':'Adéla','3.9':'Bronislav','4.9':'Jindřiška','5.9':'Boris','6.9':'Boleslav','7.9':'Regína','8.9':'Mariana','9.9':'Daniela','10.9':'Irma','11.9':'Denisa','12.9':'Marie','13.9':'Lubor','14.9':'Radka','15.9':'Jolana','16.9':'Ludmila','17.9':'Naděžda','18.9':'Kryštof','19.9':'Zita','20.9':'Oleg','21.9':'Matouš','22.9':'Darina','23.9':'Bořivoj','24.9':'Jaromír','25.9':'Zlata','26.9':'Andrea','27.9':'Jonáš','28.9':'Václav','29.9':'Michal','30.9':'Jeroným',
+    '1.10':'Igor','2.10':'Olívie','3.10':'Bohumil','4.10':'František','5.10':'Eliška','6.10':'Hanuš','7.10':'Justýna','8.10':'Věra','9.10':'Štefan','10.10':'Marina','11.10':'Andrej','12.10':'Marcel','13.10':'Renáta','14.10':'Agáta','15.10':'Tereza','16.10':'Havel','17.10':'Hedvika','18.10':'Lukáš','19.10':'Michaela','20.10':'Vendelín','21.10':'Brigita','22.10':'Sabina','23.10':'Teodor','24.10':'Nina','25.10':'Beáta','26.10':'Erik','27.10':'Šarlota','28.10':'Den vzniku ČSR · Renatka','29.10':'Silvie','30.10':'Tadeáš','31.10':'Halloween · Štěpánka',
+    '1.11':'Felix','2.11':'Dušičky · Dušan','3.11':'Hubert','4.11':'Karel','5.11':'Miriam','6.11':'Liběna','7.11':'Saskie','8.11':'Bohumír','9.11':'Bohdan','10.11':'Evžen','11.11':'Martin','12.11':'Benedikt','13.11':'Tibor','14.11':'Sáva','15.11':'Leopold','16.11':'Otmar','17.11':'Den boje za svobodu · Mahulena','18.11':'Romana','19.11':'Alžběta','20.11':'Nikola','21.11':'Cecílie','22.11':'Cecílie','23.11':'Klement','24.11':'Emílie','25.11':'Kateřina','26.11':'Artur','27.11':'Xenie','28.11':'René','29.11':'Zina','30.11':'Ondřej',
+    '1.12':'Iva','2.12':'Blanka','3.12':'Svatoslav','4.12':'Barbora','5.12':'Mikuláš','6.12':'Mikuláš','7.12':'Ambrož','8.12':'Květoslava','9.12':'Vratislav','10.12':'Julie','11.12':'Dana','12.12':'Simona','13.12':'Lucie','14.12':'Lýdie','15.12':'Radana','16.12':'Albína','17.12':'Daniel','18.12':'Miloslav','19.12':'Ester','20.12':'Dagmar','21.12':'Natálie','22.12':'Šimon','23.12':'Vlasta','24.12':'Štědrý den · Adam a Eva','25.12':'Boží hod · Anastázie','26.12':'Štěpán','27.12':'Žaneta','28.12':'Bohumila','29.12':'David','30.12':'David','31.12':'Silvestr · Silvestr'
+  };
+  function tick(){
+    var n=new Date(),h=String(n.getHours()).padStart(2,'0'),mi=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0');
+    var e=document.getElementById('wclock-time'),e2=document.getElementById('wclock-date'),e3=document.getElementById('wclock-svatek');
+    if(e)e.textContent=h+':'+mi+':'+s;
+    if(e2)e2.textContent=D[n.getDay()]+' · '+n.getDate()+'. '+M[n.getMonth()]+' '+n.getFullYear();
+    if(e3){var key=n.getDate()+'.'+(n.getMonth()+1);var sv=SVATKY[key];e3.textContent=sv?'🎂 Svátek: '+sv:'';}
+  }
   tick();setInterval(tick,1000);
 })();
 
