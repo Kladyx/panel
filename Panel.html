@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v16.2Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v16.4Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -195,7 +195,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v16.2Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v16.4Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -205,7 +205,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v16.2Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v16.4Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -299,7 +299,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v16.2Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v16.4Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -680,7 +680,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v16.2Kl</div>
+  <div class="version">v16.4Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -10337,6 +10337,7 @@ body{background:radial-gradient(circle at 20% 0%,rgba(52,211,153,0.08),transpare
     <button class="tab-btn active" id="tbtn-cards" onclick="setView('cards')">🃏 Karty</button>
     <button class="tab-btn" id="tbtn-ebook" onclick="setView('ebook')">📚 Seznam</button>
     <button class="tab-btn" id="tbtn-test" onclick="setView('test')">🎯 Test</button>
+    <button class="tab-btn" id="tbtn-translate" onclick="setView('translate')">🌐 Přeložit</button>
   </div>
 </div>
 <div id="view-cards">
@@ -10354,6 +10355,72 @@ body{background:radial-gradient(circle at 20% 0%,rgba(52,211,153,0.08),transpare
 </div>
 <div id="view-ebook" style="display:none;overflow-y:auto;height:calc(100vh - 60px);"><div class="ebook-wrap" id="ebook-inner"></div></div>
 <div id="view-test" style="display:none;overflow-y:auto;height:calc(100vh - 60px);"><div class="test-wrap" id="test-inner"></div></div>
+<div id="view-translate" style="display:none;overflow-y:auto;height:calc(100vh - 60px);padding:18px 14px;">
+  <div style="background:linear-gradient(145deg,#15152a,#1a1a32);border:1px solid #252548;border-radius:18px;padding:20px 18px;margin-bottom:14px;">
+    <div style="font-size:0.78rem;font-weight:800;color:#888;letter-spacing:1px;margin-bottom:10px;">ANGLICKY → ČESKY</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <input id="tr-input" type="text" placeholder="Napiš anglické slovo..." style="flex:1;padding:12px 14px;border-radius:12px;border:1.5px solid #252548;background:#0d0d1f;color:#f0f0f8;font-family:inherit;font-size:1rem;font-weight:600;outline:none;transition:all 0.2s;" onfocus="this.style.borderColor='#34d399'" onblur="this.style.borderColor='#252548'" onkeydown="if(event.key==='Enter')trTranslate()"/>
+      <button onclick="trTranslate()" style="padding:12px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,#34d399,#60a5fa);color:#0d0d1f;font-family:inherit;font-size:0.95rem;font-weight:800;cursor:pointer;white-space:nowrap;transition:all 0.2s;">Přeložit</button>
+    </div>
+    <div id="tr-result" style="display:none;padding:16px;border-radius:12px;background:rgba(52,211,153,0.08);border:1.5px solid rgba(52,211,153,0.25);">
+      <div style="font-size:0.65rem;color:#34d399;font-weight:800;letter-spacing:1px;margin-bottom:6px;">PŘEKLAD</div>
+      <div id="tr-text" style="font-size:1.4rem;font-weight:800;color:#f0f0fa;"></div>
+      <div id="tr-orig" style="font-size:0.78rem;color:#666688;margin-top:4px;"></div>
+    </div>
+    <div id="tr-error" style="display:none;padding:12px;border-radius:12px;background:rgba(248,113,113,0.1);border:1.5px solid rgba(248,113,113,0.3);color:#f87171;font-size:0.85rem;font-weight:600;"></div>
+    <div id="tr-loading" style="display:none;text-align:center;padding:16px;color:#666688;font-size:0.85rem;">⏳ Překládám...</div>
+  </div>
+  <div style="background:linear-gradient(145deg,#15152a,#1a1a32);border:1px solid #252548;border-radius:18px;padding:16px 18px;">
+    <div style="font-size:0.78rem;font-weight:800;color:#888;letter-spacing:1px;margin-bottom:10px;">ČESKY → ANGLICKY</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <input id="tr-input2" type="text" placeholder="Napiš české slovo..." style="flex:1;padding:12px 14px;border-radius:12px;border:1.5px solid #252548;background:#0d0d1f;color:#f0f0f8;font-family:inherit;font-size:1rem;font-weight:600;outline:none;transition:all 0.2s;" onfocus="this.style.borderColor='#a78bfa'" onblur="this.style.borderColor='#252548'" onkeydown="if(event.key==='Enter')trTranslate2()"/>
+      <button onclick="trTranslate2()" style="padding:12px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,#a78bfa,#f472b6);color:#0d0d1f;font-family:inherit;font-size:0.95rem;font-weight:800;cursor:pointer;white-space:nowrap;transition:all 0.2s;">Přeložit</button>
+    </div>
+    <div id="tr-result2" style="display:none;padding:16px;border-radius:12px;background:rgba(167,139,250,0.08);border:1.5px solid rgba(167,139,250,0.25);">
+      <div style="font-size:0.65rem;color:#a78bfa;font-weight:800;letter-spacing:1px;margin-bottom:6px;">PŘEKLAD</div>
+      <div id="tr-text2" style="font-size:1.4rem;font-weight:800;color:#f0f0fa;"></div>
+      <div id="tr-orig2" style="font-size:0.78rem;color:#666688;margin-top:4px;"></div>
+    </div>
+    <div id="tr-error2" style="display:none;padding:12px;border-radius:12px;background:rgba(248,113,113,0.1);border:1.5px solid rgba(248,113,113,0.3);color:#f87171;font-size:0.85rem;font-weight:600;"></div>
+    <div id="tr-loading2" style="display:none;text-align:center;padding:16px;color:#666688;font-size:0.85rem;">⏳ Překládám...</div>
+  </div>
+
+  <!-- HLASOVÁ KONVERZACE -->
+  <div style="background:linear-gradient(145deg,#15152a,#1a1a32);border:1px solid rgba(250,204,21,0.25);border-radius:18px;padding:16px 18px;margin-top:14px;">
+    <div style="font-size:0.78rem;font-weight:800;color:#facc15;letter-spacing:1px;margin-bottom:4px;">🎙 HLASOVÁ KONVERZACE</div>
+    <div style="font-size:0.7rem;color:#666688;margin-bottom:14px;">Zmáčkni tlačítko → mluv → přeloží a vysloví</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <button id="vc-btn-cs" onclick="vcStart('cs')" style="padding:16px 8px;border-radius:14px;border:2px solid rgba(52,211,153,0.4);background:rgba(52,211,153,0.08);color:#34d399;font-family:inherit;font-size:0.8rem;font-weight:800;cursor:pointer;transition:all 0.2s;line-height:1.4;">
+        🇨🇿 MLUVÍM JÁ<br><span style="font-size:0.65rem;font-weight:500;color:#666688;">česky → přeloží AJ</span>
+      </button>
+      <button id="vc-btn-en" onclick="vcStart('en')" style="padding:16px 8px;border-radius:14px;border:2px solid rgba(96,165,250,0.4);background:rgba(96,165,250,0.08);color:#60a5fa;font-family:inherit;font-size:0.8rem;font-weight:800;cursor:pointer;transition:all 0.2s;line-height:1.4;">
+        🇬🇧 MLUVÍ ON<br><span style="font-size:0.65rem;font-weight:500;color:#666688;">anglicky → přeloží CZ</span>
+      </button>
+    </div>
+
+    <div id="vc-status" style="text-align:center;font-size:0.78rem;color:#444466;margin-bottom:10px;">Stiskni tlačítko a mluv...</div>
+
+    <div id="vc-result" style="display:none;padding:14px;border-radius:12px;background:rgba(0,0,0,0.3);border:1px solid #252548;">
+      <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;">
+        <span id="vc-flag-orig" style="font-size:1.2rem;">🇨🇿</span>
+        <div>
+          <div style="font-size:0.6rem;color:#666688;font-weight:700;letter-spacing:1px;margin-bottom:2px;">SLYŠEL JSEM</div>
+          <div id="vc-orig-text" style="font-size:0.9rem;color:#aaa;font-weight:600;"></div>
+        </div>
+      </div>
+      <div style="height:1px;background:#252548;margin-bottom:8px;"></div>
+      <div style="display:flex;gap:8px;align-items:flex-start;">
+        <span id="vc-flag-trans" style="font-size:1.2rem;">🇬🇧</span>
+        <div style="flex:1;">
+          <div style="font-size:0.6rem;color:#facc15;font-weight:700;letter-spacing:1px;margin-bottom:2px;">PŘEKLAD</div>
+          <div id="vc-trans-text" style="font-size:1.1rem;color:#f0f0fa;font-weight:800;"></div>
+        </div>
+        <button onclick="vcSpeak()" id="vc-speak-btn" style="width:38px;height:38px;border-radius:50%;border:none;background:rgba(250,204,21,0.15);color:#facc15;font-size:1rem;cursor:pointer;flex-shrink:0;">🔊</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 var VOCAB=[
@@ -13700,11 +13767,148 @@ function setView(v){
   document.getElementById('view-cards').style.display=v==='cards'?'block':'none';
   document.getElementById('view-ebook').style.display=v==='ebook'?'block':'none';
   document.getElementById('view-test').style.display=v==='test'?'block':'none';
+  document.getElementById('view-translate').style.display=v==='translate'?'block':'none';
   document.getElementById('tbtn-cards').className='tab-btn'+(v==='cards'?' active':'');
   document.getElementById('tbtn-ebook').className='tab-btn'+(v==='ebook'?' active':'');
   document.getElementById('tbtn-test').className='tab-btn'+(v==='test'?' active':'');
+  document.getElementById('tbtn-translate').className='tab-btn'+(v==='translate'?' active':'');
   if(v==='ebook')renderEbook();
   if(v==='test')renderTest();
+}
+
+function trTranslate(){
+  var q=document.getElementById('tr-input').value.trim();
+  if(!q)return;
+  document.getElementById('tr-result').style.display='none';
+  document.getElementById('tr-error').style.display='none';
+  document.getElementById('tr-loading').style.display='block';
+  fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair=en|cs')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      document.getElementById('tr-loading').style.display='none';
+      if(d.responseStatus===200){
+        document.getElementById('tr-text').textContent=d.responseData.translatedText;
+        document.getElementById('tr-orig').textContent='🇬🇧 '+q;
+        document.getElementById('tr-result').style.display='block';
+      } else {
+        document.getElementById('tr-error').textContent='Chyba překladu. Zkus znovu.';
+        document.getElementById('tr-error').style.display='block';
+      }
+    })
+    .catch(function(){
+      document.getElementById('tr-loading').style.display='none';
+      document.getElementById('tr-error').textContent='Chyba připojení. Zkontroluj internet.';
+      document.getElementById('tr-error').style.display='block';
+    });
+}
+
+function trTranslate2(){
+  var q=document.getElementById('tr-input2').value.trim();
+  if(!q)return;
+  document.getElementById('tr-result2').style.display='none';
+  document.getElementById('tr-error2').style.display='none';
+  document.getElementById('tr-loading2').style.display='block';
+  fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair=cs|en')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      document.getElementById('tr-loading2').style.display='none';
+      if(d.responseStatus===200){
+        document.getElementById('tr-text2').textContent=d.responseData.translatedText;
+        document.getElementById('tr-orig2').textContent='🇨🇿 '+q;
+        document.getElementById('tr-result2').style.display='block';
+      } else {
+        document.getElementById('tr-error2').textContent='Chyba překladu. Zkus znovu.';
+        document.getElementById('tr-error2').style.display='block';
+      }
+    })
+    .catch(function(){
+      document.getElementById('tr-loading2').style.display='none';
+      document.getElementById('tr-error2').textContent='Chyba připojení. Zkontroluj internet.';
+      document.getElementById('tr-error2').style.display='block';
+    });
+}
+
+/* HLASOVÁ KONVERZACE */
+var _vcLang=null;var _vcRec=null;var _vcLastTrans='';
+function vcStart(lang){
+  if(_vcRec){try{_vcRec.stop();}catch(e){}  _vcRec=null;}
+  var SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechRecognition){
+    document.getElementById('vc-status').textContent='❌ Prohlížeč nepodporuje mikrofon. Použij Chrome.';
+    return;
+  }
+  _vcLang=lang;
+  var fromLang=lang==='cs'?'cs-CZ':'en-US';
+  var btnId=lang==='cs'?'vc-btn-cs':'vc-btn-en';
+  var otherBtn=lang==='cs'?'vc-btn-en':'vc-btn-cs';
+  document.getElementById(btnId).style.animation='micPulse 1s ease infinite';
+  document.getElementById(otherBtn).disabled=true;
+  document.getElementById(otherBtn).style.opacity='0.4';
+  document.getElementById('vc-status').textContent='🎙 Poslouchám... mluv!';
+  document.getElementById('vc-result').style.display='none';
+  _vcRec=new SpeechRecognition();
+  _vcRec.lang=fromLang;
+  _vcRec.interimResults=false;
+  _vcRec.maxAlternatives=1;
+  _vcRec.onresult=function(e){
+    var text=e.results[0][0].transcript;
+    vcDoTranslate(text,lang);
+  };
+  _vcRec.onerror=function(e){
+    vcReset();
+    document.getElementById('vc-status').textContent='❌ Chyba mikrofonu: '+e.error;
+  };
+  _vcRec.onend=function(){vcReset();};
+  _vcRec.start();
+}
+function vcReset(){
+  document.getElementById('vc-btn-cs').style.animation='';
+  document.getElementById('vc-btn-en').style.animation='';
+  document.getElementById('vc-btn-cs').disabled=false;
+  document.getElementById('vc-btn-en').disabled=false;
+  document.getElementById('vc-btn-cs').style.opacity='1';
+  document.getElementById('vc-btn-en').style.opacity='1';
+  if(document.getElementById('vc-status').textContent==='🎙 Poslouchám... mluv!')
+    document.getElementById('vc-status').textContent='Stiskni tlačítko a mluv...';
+}
+function vcDoTranslate(text,lang){
+  var fromLang=lang==='cs'?'cs':'en';
+  var toLang=lang==='cs'?'en':'cs';
+  document.getElementById('vc-status').textContent='⏳ Překládám...';
+  document.getElementById('vc-flag-orig').textContent=lang==='cs'?'🇨🇿':'🇬🇧';
+  document.getElementById('vc-flag-trans').textContent=lang==='cs'?'🇬🇧':'🇨🇿';
+  document.getElementById('vc-orig-text').textContent=text;
+  fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(text)+'&langpair='+fromLang+'|'+toLang)
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.responseStatus===200){
+        var trans=d.responseData.translatedText;
+        _vcLastTrans=trans;
+        document.getElementById('vc-trans-text').textContent=trans;
+        document.getElementById('vc-result').style.display='block';
+        document.getElementById('vc-status').textContent='✅ Hotovo — 🔊 tlačítko přehraje';
+        vcSpeakText(trans,toLang);
+      } else {
+        document.getElementById('vc-status').textContent='❌ Chyba překladu.';
+      }
+    })
+    .catch(function(){
+      document.getElementById('vc-status').textContent='❌ Chyba připojení.';
+    });
+}
+function vcSpeakText(text,lang){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='en'?'en-GB':'cs-CZ';
+  u.rate=0.9;
+  window.speechSynthesis.speak(u);
+}
+function vcSpeak(){
+  if(_vcLastTrans&&_vcLang){
+    var toLang=_vcLang==='cs'?'en':'cs';
+    vcSpeakText(_vcLastTrans,toLang);
+  }
 }
 
 function speak(txt){
@@ -15623,8 +15827,7 @@ html,body{width:100%;min-height:100vh;background:#050810;font-family:"Courier Ne
       <button class="add-btn" id="show-search-btn" onclick="toggleSearch(true)">＋ PŘIDAT MĚSTO</button>
     </div>
     <div id="search-bar-active" style="display:none" class="search-bar">
-      <input class="search-input" id="city-search" placeholder="Hledat město..." oninput="onSearch(this.value)" onkeydown="if(event.key==='Enter')onSearch(document.getElementById('city-search').value)">
-      <button class="add-btn" style="padding:8px 12px" onclick="onSearch(document.getElementById('city-search').value)">🔍</button>
+      <input class="search-input" id="city-search" placeholder="Hledat město..." oninput="onSearch(this.value)">
       <button class="close-btn" onclick="toggleSearch(false)">✕</button>
     </div>
     <div class="chips" id="chips-wrap" style="display:none"></div>
@@ -15720,7 +15923,6 @@ var ZONES = [
 ];
 
 var CITY_DB = [
-  // EVROPA - střední
   {city:'BERLÍN',zone:'Europe/Berlin',flag:'🇩🇪',label:'CET'},
   {city:'MADRID',zone:'Europe/Madrid',flag:'🇪🇸',label:'CET'},
   {city:'ŘÍM',zone:'Europe/Rome',flag:'🇮🇹',label:'CET'},
@@ -15728,155 +15930,28 @@ var CITY_DB = [
   {city:'VARŠAVA',zone:'Europe/Warsaw',flag:'🇵🇱',label:'CET'},
   {city:'VÍDEŇ',zone:'Europe/Vienna',flag:'🇦🇹',label:'CET'},
   {city:'STOCKHOLM',zone:'Europe/Stockholm',flag:'🇸🇪',label:'CET'},
-  {city:'OSLO',zone:'Europe/Oslo',flag:'🇳🇴',label:'CET'},
-  {city:'KODAŇ',zone:'Europe/Copenhagen',flag:'🇩🇰',label:'CET'},
-  {city:'BRUSEL',zone:'Europe/Brussels',flag:'🇧🇪',label:'CET'},
-  {city:'CURYCH',zone:'Europe/Zurich',flag:'🇨🇭',label:'CET'},
-  {city:'ŽENEVA',zone:'Europe/Zurich',flag:'🇨🇭',label:'CET'},
-  {city:'BARCELONA',zone:'Europe/Madrid',flag:'🇪🇸',label:'CET'},
-  {city:'MILÁN',zone:'Europe/Rome',flag:'🇮🇹',label:'CET'},
-  {city:'MÜNCHEN',zone:'Europe/Berlin',flag:'🇩🇪',label:'CET'},
-  {city:'HAMBURG',zone:'Europe/Berlin',flag:'🇩🇪',label:'CET'},
-  {city:'FRANKFURT',zone:'Europe/Berlin',flag:'🇩🇪',label:'CET'},
-  {city:'BRATISLAVA',zone:'Europe/Bratislava',flag:'🇸🇰',label:'CET'},
-  {city:'BUDAPEST',zone:'Europe/Budapest',flag:'🇭🇺',label:'CET'},
-  {city:'ZÁHŘEB',zone:'Europe/Zagreb',flag:'🇭🇷',label:'CET'},
-  {city:'LUBLAŇ',zone:'Europe/Ljubljana',flag:'🇸🇮',label:'CET'},
-  {city:'BĚLEHRAD',zone:'Europe/Belgrade',flag:'🇷🇸',label:'CET'},
-  {city:'SARAJEVO',zone:'Europe/Sarajevo',flag:'🇧🇦',label:'CET'},
-  {city:'TIRANA',zone:'Europe/Tirane',flag:'🇦🇱',label:'CET'},
-  {city:'PODGORICA',zone:'Europe/Podgorica',flag:'🇲🇪',label:'CET'},
-  {city:'SKOPJE',zone:'Europe/Skopje',flag:'🇲🇰',label:'CET'},
-  // EVROPA - východní
   {city:'MOSKVA',zone:'Europe/Moscow',flag:'🇷🇺',label:'MSK'},
   {city:'ISTANBUL',zone:'Europe/Istanbul',flag:'🇹🇷',label:'TRT'},
   {city:'ATÉNY',zone:'Europe/Athens',flag:'🇬🇷',label:'EET'},
-  {city:'HELSINKI',zone:'Europe/Helsinki',flag:'🇫🇮',label:'EET'},
-  {city:'TALLINN',zone:'Europe/Tallinn',flag:'🇪🇪',label:'EET'},
-  {city:'RIGA',zone:'Europe/Riga',flag:'🇱🇻',label:'EET'},
-  {city:'VILNIUS',zone:'Europe/Vilnius',flag:'🇱🇹',label:'EET'},
-  {city:'BUKUREŠŤ',zone:'Europe/Bucharest',flag:'🇷🇴',label:'EET'},
-  {city:'SOFIE',zone:'Europe/Sofia',flag:'🇧🇬',label:'EET'},
-  {city:'VARNA',zone:'Europe/Sofia',flag:'🇧🇬',label:'EET'},
-  {city:'PLOVDIV',zone:'Europe/Sofia',flag:'🇧🇬',label:'EET'},
-  {city:'KYJEV',zone:'Europe/Kiev',flag:'🇺🇦',label:'EET'},
-  {city:'MINSK',zone:'Europe/Minsk',flag:'🇧🇾',label:'FET'},
-  {city:'CHISINAU',zone:'Europe/Chisinau',flag:'🇲🇩',label:'EET'},
-  {city:'NIKOSIA',zone:'Asia/Nicosia',flag:'🇨🇾',label:'EET'},
-  // EVROPA - západ
-  {city:'LISABON',zone:'Europe/Lisbon',flag:'🇵🇹',label:'WET'},
-  {city:'DUBLIN',zone:'Europe/Dublin',flag:'🇮🇪',label:'GMT'},
-  {city:'EDINBURGH',zone:'Europe/London',flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',label:'GMT'},
-  {city:'MANCHESTER',zone:'Europe/London',flag:'🇬🇧',label:'GMT'},
-  {city:'REYKJAVÍK',zone:'Atlantic/Reykjavik',flag:'🇮🇸',label:'GMT'},
-  // ASIE
   {city:'CAIRO',zone:'Africa/Cairo',flag:'🇪🇬',label:'EET'},
   {city:'MUMBAI',zone:'Asia/Kolkata',flag:'🇮🇳',label:'IST'},
-  {city:'DELHI',zone:'Asia/Kolkata',flag:'🇮🇳',label:'IST'},
-  {city:'BANGALORE',zone:'Asia/Kolkata',flag:'🇮🇳',label:'IST'},
-  {city:'KOLKATA',zone:'Asia/Kolkata',flag:'🇮🇳',label:'IST'},
   {city:'BANGKOK',zone:'Asia/Bangkok',flag:'🇹🇭',label:'ICT'},
   {city:'SINGAPUR',zone:'Asia/Singapore',flag:'🇸🇬',label:'SGT'},
   {city:'HONGKONG',zone:'Asia/Hong_Kong',flag:'🇭🇰',label:'HKT'},
   {city:'PEKING',zone:'Asia/Shanghai',flag:'🇨🇳',label:'CST'},
-  {city:'ŠANGHAJ',zone:'Asia/Shanghai',flag:'🇨🇳',label:'CST'},
   {city:'SEOUL',zone:'Asia/Seoul',flag:'🇰🇷',label:'KST'},
-  {city:'OSAKA',zone:'Asia/Tokyo',flag:'🇯🇵',label:'JST'},
-  {city:'KYOTO',zone:'Asia/Tokyo',flag:'🇯🇵',label:'JST'},
   {city:'TEL AVIV',zone:'Asia/Jerusalem',flag:'🇮🇱',label:'IST'},
-  {city:'JERUZALÉM',zone:'Asia/Jerusalem',flag:'🇮🇱',label:'IST'},
   {city:'RIJÁD',zone:'Asia/Riyadh',flag:'🇸🇦',label:'AST'},
-  {city:'ABÚ ZABÍ',zone:'Asia/Dubai',flag:'🇦🇪',label:'GST'},
-  {city:'KUVAJT',zone:'Asia/Kuwait',flag:'🇰🇼',label:'AST'},
-  {city:'DOHA',zone:'Asia/Qatar',flag:'🇶🇦',label:'AST'},
-  {city:'BAHRAJN',zone:'Asia/Bahrain',flag:'🇧🇭',label:'AST'},
-  {city:'MUSKAT',zone:'Asia/Muscat',flag:'🇴🇲',label:'GST'},
-  {city:'KARACHI',zone:'Asia/Karachi',flag:'🇵🇰',label:'PKT'},
-  {city:'LAHORE',zone:'Asia/Karachi',flag:'🇵🇰',label:'PKT'},
-  {city:'ISLAMÁBÁD',zone:'Asia/Karachi',flag:'🇵🇰',label:'PKT'},
-  {city:'KÁBUL',zone:'Asia/Kabul',flag:'🇦🇫',label:'AFT'},
-  {city:'TEHRAN',zone:'Asia/Tehran',flag:'🇮🇷',label:'IRST'},
-  {city:'BAGDÁD',zone:'Asia/Baghdad',flag:'🇮🇶',label:'AST'},
-  {city:'BEJRÚT',zone:'Asia/Beirut',flag:'🇱🇧',label:'EET'},
-  {city:'DAMAŠEK',zone:'Asia/Damascus',flag:'🇸🇾',label:'EET'},
-  {city:'AMMÁN',zone:'Asia/Amman',flag:'🇯🇴',label:'EET'},
-  {city:'JAKARTA',zone:'Asia/Jakarta',flag:'🇮🇩',label:'WIB'},
-  {city:'BALI',zone:'Asia/Makassar',flag:'🇮🇩',label:'WITA'},
-  {city:'KUALA LUMPUR',zone:'Asia/Kuala_Lumpur',flag:'🇲🇾',label:'MYT'},
-  {city:'MANILA',zone:'Asia/Manila',flag:'🇵🇭',label:'PHT'},
-  {city:'HANOI',zone:'Asia/Ho_Chi_Minh',flag:'🇻🇳',label:'ICT'},
-  {city:'HO CHI MINH',zone:'Asia/Ho_Chi_Minh',flag:'🇻🇳',label:'ICT'},
-  {city:'PHNOM PENH',zone:'Asia/Phnom_Penh',flag:'🇰🇭',label:'ICT'},
-  {city:'RANGÚN',zone:'Asia/Rangoon',flag:'🇲🇲',label:'MMT'},
-  {city:'COLOMBO',zone:'Asia/Colombo',flag:'🇱🇰',label:'IST'},
-  {city:'KÁTHMÁNDÚ',zone:'Asia/Kathmandu',flag:'🇳🇵',label:'NPT'},
-  {city:'DAKAR',zone:'Africa/Dakar',flag:'🇸🇳',label:'GMT'},
-  {city:'ULÁNBÁTAR',zone:'Asia/Ulaanbaatar',flag:'🇲🇳',label:'ULAT'},
-  {city:'VLADIVOSTOK',zone:'Asia/Vladivostok',flag:'🇷🇺',label:'VLAT'},
-  {city:'NOVOSIBIRSK',zone:'Asia/Novosibirsk',flag:'🇷🇺',label:'NOVT'},
-  // AFRIKA
-  {city:'JOHANNESBURG',zone:'Africa/Johannesburg',flag:'🇿🇦',label:'SAST'},
-  {city:'KAPSKÉ MĚSTO',zone:'Africa/Johannesburg',flag:'🇿🇦',label:'SAST'},
-  {city:'NAIROBI',zone:'Africa/Nairobi',flag:'🇰🇪',label:'EAT'},
-  {city:'LAGOS',zone:'Africa/Lagos',flag:'🇳🇬',label:'WAT'},
-  {city:'AKKRA',zone:'Africa/Accra',flag:'🇬🇭',label:'GMT'},
-  {city:'ADDIS ABEBA',zone:'Africa/Addis_Ababa',flag:'🇪🇹',label:'EAT'},
-  {city:'CASABLANCA',zone:'Africa/Casablanca',flag:'🇲🇦',label:'WET'},
-  {city:'TUNIS',zone:'Africa/Tunis',flag:'🇹🇳',label:'CET'},
-  {city:'TRIPOLIS',zone:'Africa/Tripoli',flag:'🇱🇾',label:'EET'},
-  {city:'ALEXANDRIE',zone:'Africa/Cairo',flag:'🇪🇬',label:'EET'},
-  {city:'DAR ES SALAAM',zone:'Africa/Dar_es_Salaam',flag:'🇹🇿',label:'EAT'},
-  {city:'KAMPALA',zone:'Africa/Kampala',flag:'🇺🇬',label:'EAT'},
-  {city:'HARARE',zone:'Africa/Harare',flag:'🇿🇼',label:'CAT'},
-  {city:'LUSAKA',zone:'Africa/Lusaka',flag:'🇿🇲',label:'CAT'},
-  // SEVERNÍ AMERIKA
-  {city:'HONOLULU',zone:'Pacific/Honolulu',flag:'🇺🇸',label:'HST'},
-  {city:'ANCHORAGE',zone:'America/Anchorage',flag:'🇺🇸',label:'AKST'},
-  {city:'SEATTLE',zone:'America/Los_Angeles',flag:'🇺🇸',label:'PST'},
-  {city:'SAN FRANCISCO',zone:'America/Los_Angeles',flag:'🇺🇸',label:'PST'},
-  {city:'LAS VEGAS',zone:'America/Los_Angeles',flag:'🇺🇸',label:'PST'},
-  {city:'DENVER',zone:'America/Denver',flag:'🇺🇸',label:'MST'},
-  {city:'PHOENIX',zone:'America/Phoenix',flag:'🇺🇸',label:'MST'},
-  {city:'DALLAS',zone:'America/Chicago',flag:'🇺🇸',label:'CST'},
-  {city:'CHICAGO',zone:'America/Chicago',flag:'🇺🇸',label:'CST'},
-  {city:'HOUSTON',zone:'America/Chicago',flag:'🇺🇸',label:'CST'},
-  {city:'ATLANTA',zone:'America/New_York',flag:'🇺🇸',label:'EST'},
-  {city:'MIAMI',zone:'America/New_York',flag:'🇺🇸',label:'EST'},
-  {city:'WASHINGTON',zone:'America/New_York',flag:'🇺🇸',label:'EST'},
-  {city:'BOSTON',zone:'America/New_York',flag:'🇺🇸',label:'EST'},
-  {city:'TORONTO',zone:'America/Toronto',flag:'🇨🇦',label:'EST'},
-  {city:'MONTREAL',zone:'America/Toronto',flag:'🇨🇦',label:'EST'},
-  {city:'VANCOUVER',zone:'America/Vancouver',flag:'🇨🇦',label:'PST'},
-  {city:'CALGARY',zone:'America/Edmonton',flag:'🇨🇦',label:'MST'},
-  {city:'MEXICO CITY',zone:'America/Mexico_City',flag:'🇲🇽',label:'CST'},
-  {city:'GUADALAJARA',zone:'America/Mexico_City',flag:'🇲🇽',label:'CST'},
-  {city:'CANCÚN',zone:'America/Cancun',flag:'🇲🇽',label:'EST'},
-  {city:'HAVANA',zone:'America/Havana',flag:'🇨🇺',label:'CST'},
-  {city:'SAN JOSÉ',zone:'America/Costa_Rica',flag:'🇨🇷',label:'CST'},
-  {city:'PANAMA',zone:'America/Panama',flag:'🇵🇦',label:'EST'},
-  // JIŽNÍ AMERIKA
-  {city:'SAO PAULO',zone:'America/Sao_Paulo',flag:'🇧🇷',label:'BRT'},
-  {city:'RIO DE JANEIRO',zone:'America/Sao_Paulo',flag:'🇧🇷',label:'BRT'},
-  {city:'BRASÍLIA',zone:'America/Sao_Paulo',flag:'🇧🇷',label:'BRT'},
-  {city:'BUENOS AIRES',zone:'America/Argentina/Buenos_Aires',flag:'🇦🇷',label:'ART'},
-  {city:'SANTIAGO',zone:'America/Santiago',flag:'🇨🇱',label:'CLT'},
-  {city:'BOGOTA',zone:'America/Bogota',flag:'🇨🇴',label:'COT'},
-  {city:'LIMA',zone:'America/Lima',flag:'🇵🇪',label:'PET'},
-  {city:'CARACAS',zone:'America/Caracas',flag:'🇻🇪',label:'VET'},
-  {city:'QUITO',zone:'America/Guayaquil',flag:'🇪🇨',label:'ECT'},
-  {city:'LA PAZ',zone:'America/La_Paz',flag:'🇧🇴',label:'BOT'},
-  {city:'MONTEVIDEO',zone:'America/Montevideo',flag:'🇺🇾',label:'UYT'},
-  {city:'ASUNCIÓN',zone:'America/Asuncion',flag:'🇵🇾',label:'PYT'},
-  // AUSTRÁLIE & OCEÁNIE
   {city:'AUCKLAND',zone:'Pacific/Auckland',flag:'🇳🇿',label:'NZST'},
-  {city:'WELLINGTON',zone:'Pacific/Auckland',flag:'🇳🇿',label:'NZST'},
+  {city:'HONOLULU',zone:'Pacific/Honolulu',flag:'🇺🇸',label:'HST'},
+  {city:'CHICAGO',zone:'America/Chicago',flag:'🇺🇸',label:'CST'},
+  {city:'TORONTO',zone:'America/Toronto',flag:'🇨🇦',label:'EST'},
+  {city:'VANCOUVER',zone:'America/Vancouver',flag:'🇨🇦',label:'PST'},
+  {city:'SAO PAULO',zone:'America/Sao_Paulo',flag:'🇧🇷',label:'BRT'},
+  {city:'BUENOS AIRES',zone:'America/Argentina/Buenos_Aires',flag:'🇦🇷',label:'ART'},
   {city:'MELBOURNE',zone:'Australia/Melbourne',flag:'🇦🇺',label:'AEST'},
   {city:'PERTH',zone:'Australia/Perth',flag:'🇦🇺',label:'AWST'},
-  {city:'BRISBANE',zone:'Australia/Brisbane',flag:'🇦🇺',label:'AEST'},
-  {city:'ADELAIDE',zone:'Australia/Adelaide',flag:'🇦🇺',label:'ACST'},
-  {city:'DARWIN',zone:'Australia/Darwin',flag:'🇦🇺',label:'ACST'},
-  {city:'SUVA',zone:'Pacific/Fiji',flag:'🇫🇯',label:'FJT'},
-  {city:'PORT MORESBY',zone:'Pacific/Port_Moresby',flag:'🇵🇬',label:'PGT'}
+  {city:'OSAKA',zone:'Asia/Tokyo',flag:'🇯🇵',label:'JST'}
 ];
 
 function pad(n){return String(Math.max(0,Math.floor(n))).padStart(2,'0');}
