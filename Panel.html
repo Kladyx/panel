@@ -100,8 +100,10 @@
     .wsub { font-size:0.6rem; letter-spacing:3px; color:var(--muted); }
     .wgrid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; max-width:420px; width:100%; margin-top:6px; }
     @media(max-width:460px){ .wgrid { grid-template-columns:repeat(2,1fr); } }
-    .wcard { background:var(--card); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:12px 8px; cursor:pointer; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:4px; }
+    .wcard { background:var(--card); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:12px 8px; cursor:pointer; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:4px; position:relative; overflow:visible; }
     .wcard:active { transform:scale(0.96); }
+    .wdot { position:absolute !important; top:-4px !important; right:-4px !important; width:10px !important; height:10px !important; border-radius:50% !important; z-index:999 !important; pointer-events:none !important; display:block !important; animation:wdotBlink 1.2s ease-in-out infinite !important; }
+    @keyframes wdotBlink { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.2; transform:scale(0.6); } }
     .wi { font-size:1.5rem; }
     .wn { font-size:0.56rem; letter-spacing:1px; text-transform:uppercase; color:var(--light); }
     .wd { font-size:0.5rem; color:var(--muted); }
@@ -169,8 +171,8 @@
     .wbrands svg:hover { opacity:1;filter:drop-shadow(0 0 8px rgba(255,140,0,0.5)); }
 
     /* ── PreSonus vodoznak na spínačích ── */
-    .app-btn, .tapo-btn { position:relative; overflow:visible; }
-    .wcard { position:relative; overflow:visible; }
+    .app-btn, .tapo-btn { position:relative; overflow:hidden; }
+    .wcard { position:relative; overflow:hidden; }
     .app-btn::after, .tapo-btn::after, .wcard::after, .wsocket::after {
       content: 'PreSonus';
       position: absolute;
@@ -16311,7 +16313,7 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 .app-list li .del{background:none;border:none;color:#f87171;cursor:pointer;font-size:1rem;padding:2px 6px;border-radius:6px;opacity:0.6;}
 .app-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;flex-shrink:0;animation:dotPulse 1.4s ease-in-out infinite;vertical-align:middle;}
 .wdot{position:absolute;top:6px;right:6px;width:12px;height:12px;border-radius:50%;animation:dotPulse 1.4s ease-in-out infinite;z-index:99!important;pointer-events:none;}
-@keyframes dotPulse{0%,100%{opacity:1;transform:scale(1);filter:brightness(1.5);}50%{opacity:0.25;transform:scale(0.6);filter:brightness(0.8);}}
+@keyframes dotPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.25;transform:scale(0.6);}}
 .add-box{background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.25);border-radius:14px;padding:16px;}
 .add-box h2{font-size:0.72rem;font-weight:800;color:#a78bfa;letter-spacing:1px;margin-bottom:10px;}
 .icon-picker{margin:12px 0;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;}
