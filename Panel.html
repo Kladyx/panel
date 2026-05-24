@@ -10294,11 +10294,9 @@ function dzDrop(e){
   e.preventDefault();e.stopPropagation();
   document.getElementById('drop-zone').classList.remove('over');
   var files=e.dataTransfer.files;
-  if(!files||!files.length){showMsg('Žádný soubor',true);return;}
+  if(!files||!files.length)return;
   var f=files[0];
-  var fname=f.name.toLowerCase();
-  if(!fname.endsWith('.epub')){showMsg('Pouze .epub soubory! (máš: '+f.name+')',true);return;}
-  if(f.size>524288000){showMsg('Soubor je moc velký (max 500MB)',true);return;}
+  if(!f.name.toLowerCase().endsWith('.epub')){showMsg('Podporovány jsou pouze .epub soubory',true);return;}
   loadFile(f);
 }
 
@@ -10314,33 +10312,16 @@ function loadFile(f){
 function loadUrl(){
   var url=document.getElementById('url-in').value.trim();
   if(!url){showMsg('Zadej URL epub souboru',true);return;}
-  var origUrl=url;
   // GitHub blob → raw
   if(url.indexOf('github.com')>=0&&url.indexOf('raw.githubusercontent.com')<0){
     url=url.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/')
            .replace('/tree/','/');}
   showMsg('Načítám z URL…',false);
-  // CORS proxy pro GitHub raw soubory
   var fetchUrl=url;
-  if(url.indexOf('raw.githubusercontent.com')>=0){
-    fetchUrl='https://cors-anywhere.herokuapp.com/'+url;
-  }
-  fetch(fetchUrl)
-    .then(function(r){
-      if(!r.ok)throw new Error('HTTP '+r.status+': '+r.statusText);
-      return r.arrayBuffer();
-    })
+  if(url.indexOf('raw.githubusercontent.com')>=0){fetchUrl='https://cors-anywhere.herokuapp.com/'+url;}
+  fetch(fetchUrl).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status+': '+r.statusText);return r.arrayBuffer();})
     .then(function(ab){openEpub(ab,decodeURIComponent(url.split('/').pop()||'kniha.epub'));})
-    .catch(function(e){
-      showMsg('Chyba: '+e.message+' - zkouším alternativu…',false);
-      setTimeout(function(){
-        fetch(url).then(function(r){
-          if(!r.ok)throw new Error('HTTP '+r.status);
-          return r.arrayBuffer();
-        }).then(function(ab){openEpub(ab,decodeURIComponent(url.split('/').pop()||'kniha.epub'));})
-        .catch(function(e2){showMsg('Chyba načítání: '+e2.message,true);});
-      },800);
-    });
+    .catch(function(e){fetch(url).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.arrayBuffer();}).then(function(ab){openEpub(ab,decodeURIComponent(url.split('/').pop()||'kniha.epub'));}).catch(function(e2){showMsg('Chyba načítání: '+e2.message,true);});});
 }
 
 function openEpub(src,name){
