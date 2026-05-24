@@ -258,8 +258,9 @@
     <div id="arc-count" style="font-size:.6rem;letter-spacing:2px;color:#00ff88;margin-top:-10px;margin-bottom:12px;">POČET KNIH V ARCHIVU: 0</div>
     <button class="arc-close" onclick="closeArchive()">✕</button>
   </div>
-  <div class="arc-auto-row">
+  <div class="arc-auto-row" style="display:flex;flex-direction:column;gap:8px;">
     <button class="arc-auto-btn" id="auto-load-btn" onclick="autoLoadGithubBooks()">🔄 AUTO NAČÍST Z GITHUB</button>
+    <button class="arc-auto-btn" onclick="closeArchive();openBookmarks();" style="background:linear-gradient(135deg,rgba(255,193,7,.15),rgba(255,193,7,.05));border:1px solid rgba(255,193,7,.4);color:#ffc107;">📌 ZÁLOŽKY</button>
   </div>
   <div id="arc-list"></div>
 </div>
