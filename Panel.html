@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v17.7Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v17.8Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v17.7Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v17.8Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v17.7Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v17.8Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -333,7 +333,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v17.7Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v17.8Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -717,7 +717,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v17.7Kl</div>
+  <div class="version">v17.8Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -10221,7 +10221,180 @@ f();
 </body></html>
 `;
 
-APP_HTML["reader"] = null;
+APP_HTML["reader"] = `<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Čtečka</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#0a0f1e;--surface:#0d1428;--cyan:#00d4ff;--muted:#5a6488;--light:#dde4ff;}
+html,body{width:100%;height:100%;background:var(--bg);color:var(--light);font-family:'Courier New',monospace;overflow:hidden;display:flex;flex-direction:column;}
+#toolbar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border-bottom:1px solid rgba(0,212,255,.15);flex-shrink:0;flex-wrap:wrap;}
+#toolbar button{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--cyan);padding:5px 12px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;font-size:.78rem;white-space:nowrap;transition:background .15s;}
+#toolbar button:hover{background:rgba(0,212,255,.22);}
+#url-in{flex:1;min-width:160px;background:rgba(255,255,255,.06);border:1px solid rgba(0,212,255,.25);color:var(--light);padding:5px 10px;border-radius:4px;font-family:'Courier New',monospace;font-size:.75rem;outline:none;}
+#url-in:focus{border-color:var(--cyan);}
+#navbar{display:flex;align-items:center;justify-content:space-between;padding:4px 12px;background:var(--surface);border-bottom:1px solid rgba(0,212,255,.08);flex-shrink:0;min-height:28px;}
+#book-title{font-size:.7rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;margin-right:8px;}
+#nav-btns{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+#nav-btns button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--light);padding:3px 10px;border-radius:3px;cursor:pointer;font-size:.75rem;transition:background .15s;}
+#nav-btns button:hover{background:rgba(255,255,255,.14);}
+#page-info{font-size:.68rem;color:var(--muted);padding:0 4px;min-width:36px;text-align:center;}
+#msg{padding:7px 14px;font-size:.75rem;background:rgba(0,0,0,.3);border-bottom:1px solid rgba(0,212,255,.1);display:none;flex-shrink:0;}
+#drop-zone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed rgba(0,212,255,.2);margin:20px;border-radius:12px;color:var(--muted);gap:12px;transition:border-color .2s,background .2s;cursor:pointer;text-align:center;padding:24px;}
+#drop-zone:hover,#drop-zone.over{border-color:var(--cyan);background:rgba(0,212,255,.05);}
+#drop-icon{font-size:3.5rem;pointer-events:none;}
+#drop-hint{font-size:.68rem;color:#2a3050;pointer-events:none;}
+#drop-text{font-size:.83rem;pointer-events:none;}
+#viewer{flex:1;overflow:hidden;position:relative;background:#111827;}
+#viewer.hidden{display:none;}
+#drop-zone.hidden{display:none;}
+</style>
+<\/head>
+<body>
+<div id="toolbar">
+  <button onclick="document.getElementById('f-in').click()">📂 Otevřít .epub</button>
+  <input type="file" id="f-in" accept=".epub" style="display:none" onchange="loadFile(this.files[0])">
+  <input type="text" id="url-in" placeholder="URL .epub souboru (GitHub, …)" />
+  <button onclick="loadUrl()">🌐 Načíst URL</button>
+</div>
+<div id="navbar">
+  <span id="book-title">— žádná kniha —</span>
+  <div id="nav-btns" style="display:none">
+    <button onclick="prev()">◀</button>
+    <span id="page-info">—</span>
+    <button onclick="next()">▶</button>
+  </div>
+</div>
+<div id="msg"></div>
+<div id="drop-zone" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event)" onclick="document.getElementById('f-in').click()">
+  <div id="drop-icon">📚</div>
+  <div id="drop-text">Přetáhni .epub sem nebo klikni pro výběr</div>
+  <div id="drop-hint">nebo zadej URL výše a klikni Načíst URL</div>
+</div>
+<div id="viewer" class="hidden"></div>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/epubjs@0.3.93/dist/epub.min.js"><\/script>
+<script>
+var book=null,rend=null;
+
+function showMsg(t,isErr){
+  var m=document.getElementById('msg');
+  m.textContent=t;
+  m.style.color=isErr?'#ff4466':'#00d4ff';
+  m.style.display='block';
+  if(!isErr)setTimeout(function(){m.style.display='none';},4000);
+}
+
+function dzOver(e){e.preventDefault();e.stopPropagation();document.getElementById('drop-zone').classList.add('over');}
+function dzLeave(e){e.preventDefault();document.getElementById('drop-zone').classList.remove('over');}
+function dzDrop(e){
+  e.preventDefault();e.stopPropagation();
+  document.getElementById('drop-zone').classList.remove('over');
+  var files=e.dataTransfer.files;
+  if(!files||!files.length)return;
+  var f=files[0];
+  if(!f.name.toLowerCase().endsWith('.epub')){showMsg('Podporovány jsou pouze .epub soubory',true);return;}
+  loadFile(f);
+}
+
+function loadFile(f){
+  if(!f)return;
+  showMsg('Načítám soubor…',false);
+  var r=new FileReader();
+  r.onload=function(e){openEpub(e.target.result,f.name);};
+  r.onerror=function(){showMsg('Chyba čtení souboru',true);};
+  r.readAsArrayBuffer(f);
+}
+
+function loadUrl(){
+  var url=document.getElementById('url-in').value.trim();
+  if(!url){showMsg('Zadej URL epub souboru',true);return;}
+  // GitHub blob → raw
+  if(url.indexOf('github.com')>=0&&url.indexOf('raw.githubusercontent.com')<0){
+    url=url.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/')
+           .replace('/tree/','/');}
+  showMsg('Načítám z URL…',false);
+  fetch(url)
+    .then(function(r){
+      if(!r.ok)throw new Error('HTTP '+r.status+': '+r.statusText);
+      return r.arrayBuffer();
+    })
+    .then(function(ab){openEpub(ab,decodeURIComponent(url.split('/').pop()||'kniha.epub'));})
+    .catch(function(e){showMsg('Chyba načítání: '+e.message,true);});
+}
+
+function openEpub(src,name){
+  try{
+    if(book){try{book.destroy();}catch(x){}}
+    if(rend){try{rend.destroy();}catch(x){}}
+    rend=null;book=null;
+    var vEl=document.getElementById('viewer');
+    vEl.innerHTML='';
+    document.getElementById('book-title').textContent='Načítám: '+name;
+    book=ePub(src);
+    book.ready.then(function(){
+      var m=book.packaging&&book.packaging.metadata;
+      document.getElementById('book-title').textContent=(m&&m.title)?m.title:name;
+    }).catch(function(){document.getElementById('book-title').textContent=name;});
+    rend=book.renderTo(vEl,{
+      width:'100%',
+      height:'100%',
+      flow:'paginated',
+      allowScriptedContent:true
+    });
+    rend.display().then(function(){
+      document.getElementById('drop-zone').classList.add('hidden');
+      vEl.classList.remove('hidden');
+      document.getElementById('nav-btns').style.display='flex';
+      document.getElementById('msg').style.display='none';
+      updateInfo();
+      book.locations.generate(1024).then(updateInfo).catch(function(){});
+    }).catch(function(e){showMsg('Chyba zobrazení: '+e.message,true);});
+    rend.on('relocated',updateInfo);
+    rend.on('keyup',function(e){
+      if(e.key==='ArrowRight'||e.key==='PageDown')next();
+      if(e.key==='ArrowLeft'||e.key==='PageUp')prev();
+    });
+  }catch(e){showMsg('Chyba: '+e.message,true);}
+}
+
+function prev(){if(rend)rend.prev().then(updateInfo).catch(function(){});}
+function next(){if(rend)rend.next().then(updateInfo).catch(function(){});}
+
+function updateInfo(){
+  if(!rend||!book)return;
+  try{
+    var loc=rend.currentLocation();
+    if(loc&&loc.start){
+      if(book.locations&&book.locations.percentageFromCfi&&book.locations.total>0){
+        var pct=Math.round(book.locations.percentageFromCfi(loc.start.cfi)*100);
+        document.getElementById('page-info').textContent=pct+'%';
+      } else {
+        document.getElementById('page-info').textContent='…';
+      }
+    }
+  }catch(e){}
+}
+
+document.addEventListener('keyup',function(e){
+  if(e.key==='ArrowRight'||e.key==='PageDown')next();
+  if(e.key==='ArrowLeft'||e.key==='PageUp')prev();
+});
+
+// Drag over celou stránku (mimo drop-zone)
+document.addEventListener('dragover',function(e){e.preventDefault();});
+document.addEventListener('drop',function(e){
+  if(e.target.closest&&e.target.closest('#drop-zone'))return;
+  e.preventDefault();
+  var files=e.dataTransfer.files;
+  if(files&&files.length&&files[0].name.toLowerCase().endsWith('.epub'))loadFile(files[0]);
+});
+<\/script>
+</body></html>
+`;
 
 APP_HTML["wordmaster"] = `<!DOCTYPE html>
 <html lang="cs">
@@ -16449,11 +16622,7 @@ function openApp(id) {
         var html = APP_HTML[id];
         // srcdoc je spolehlivější při načítání z content:// na Androidu
         try {
-          if (id === 'reader') {
-            frame.src = 'https://kladyx.github.io/panel/reader.html';
-          } else {
-            frame.srcdoc = html;
-          }
+          frame.srcdoc = html;
         } catch(e) {
           // Fallback: Blob URL
           try {
