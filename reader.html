@@ -401,8 +401,12 @@
     var savedBuf=buf.slice(0);
     currentFile={name:f.name,data:savedBuf};
     bookType='epub';
+    showReaderScreen();
+    var viewer=document.getElementById('epub-viewer');
+    var w=viewer.offsetWidth||window.innerWidth;
+    var h=viewer.offsetHeight||(window.innerHeight-120);
     epubBook=ePub(buf);
-    epubRendition=epubBook.renderTo('epub-viewer',{width:'100%',height:'100%',spread:'none',flow:'paginated'});
+    epubRendition=epubBook.renderTo('epub-viewer',{width:w,height:h,spread:'none',flow:'paginated'});
     epubBook.ready.then(function(){
       var meta=epubBook.packaging&&epubBook.packaging.metadata;
       var title=meta&&meta.title?meta.title:f.name;
@@ -417,8 +421,7 @@
       epubRendition.on('relocated',updateEpubProgress);
       epubRendition.display();
       applySettings();
-    });
-    showReaderScreen();
+    }).catch(function(e){toast('⛔ Chyba EPUB: '+e.message);console.error(e);});
     document.getElementById('prev-btn').onclick=function(){epubRendition.prev();};
     document.getElementById('next-btn').onclick=function(){epubRendition.next();};
   }
