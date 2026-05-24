@@ -82,8 +82,18 @@
     .app-btn:hover { border-color:rgba(255,255,255,0.2); background:rgba(255,255,255,0.05); }
     .app-btn.active { border-color:var(--ac); background:rgba(var(--ac-rgb),0.12); box-shadow:0 0 12px rgba(var(--ac-rgb),0.25); }
     @keyframes blink { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.7);} }
-    .app-dot { display:block; position:absolute; top:3px; right:3px; width:8px; height:8px; border-radius:50%; background:var(--ac); box-shadow:0 0 6px var(--ac); animation:appDotBlink 1.5s ease-in-out infinite; z-index:10; opacity:1; }
-    @keyframes appDotBlink { 0%, 100% { opacity:1; box-shadow:0 0 6px var(--ac), 0 0 12px var(--ac); } 50% { opacity:0.4; box-shadow:0 0 2px var(--ac); } }
+    .app-dot { display:block; position:absolute; top:3px; right:3px; width:8px; height:8px; border-radius:50%; box-shadow:0 0 6px currentColor; animation:appDotBlink 1.2s ease-in-out infinite; z-index:10; pointer-events:none; }
+    @keyframes appDotBlink { 0%, 100% { opacity:1; box-shadow:0 0 6px currentColor, 0 0 14px currentColor; transform:scale(1); } 50% { opacity:0.35; box-shadow:0 0 2px currentColor; transform:scale(0.85); } }
+    .app-dot.cyan { background:#00d4ff; color:#00d4ff; }
+    .app-dot.green { background:#00ff88; color:#00ff88; }
+    .app-dot.orange { background:#ff8c00; color:#ff8c00; }
+    .app-dot.yellow { background:#ffe000; color:#ffe000; }
+    .app-dot.red { background:#ff3c5a; color:#ff3c5a; }
+    .app-dot.lime { background:#5ce65c; color:#5ce65c; }
+    .app-dot.pink { background:#ff4fd8; color:#ff4fd8; }
+    .app-dot.purple { background:#aa00ff; color:#aa00ff; }
+    .app-dot.blue { background:#0088ff; color:#0088ff; }
+    .app-dot.violet { background:#a78bfa; color:#a78bfa; }
     .bi { font-size:1.1rem; line-height:1; }
     .bl { font-size:0.52rem; letter-spacing:1px; text-transform:uppercase; color:var(--muted); }
     .app-btn.active .bl { color:var(--ac); }
@@ -16761,6 +16771,54 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
     document.addEventListener('DOMContentLoaded', createStarParticles);
   } else {
     createStarParticles();
+  }
+})();
+
+// BLIKAJÍCÍ TEČKY U APLIKACÍ - všechny barvy
+(function() {
+  function initAppDots() {
+    var dotColors = {
+      'btn-home': 'cyan',
+      'btn-odecty': 'green',
+      'btn-cd': 'orange',
+      'btn-hardware': 'yellow',
+      'btn-lp': 'red',
+      'btn-mixcloud': 'lime',
+      'btn-architektura': 'cyan',
+      'btn-platby': 'pink',
+      'btn-jidlo': 'orange',
+      'btn-gluco': 'green',
+      'btn-notes': 'yellow',
+      'btn-kalendar': 'blue',
+      'btn-obs': 'red',
+      'btn-pocasi': 'blue',
+      'btn-manualy': 'orange',
+      'btn-zxnext': 'green',
+      'btn-reader': 'violet',
+      'btn-wordmaster': 'green',
+      'btn-housetime': 'purple',
+      'btn-multitrack': 'blue',
+      'btn-status': 'green',
+      'btn-radio': 'red',
+      'btn-zxgames': 'blue',
+      'btn-worldtime': 'cyan',
+      'btn-user': 'violet'
+    };
+
+    for (var btnId in dotColors) {
+      var btn = document.getElementById(btnId);
+      if (btn && !btn.querySelector('.app-dot')) {
+        var dot = document.createElement('span');
+        dot.className = 'app-dot ' + dotColors[btnId];
+        btn.appendChild(dot);
+      }
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAppDots);
+  } else {
+    setTimeout(initAppDots, 100);
   }
 })();
 // ──────────────────────────────────────────────────────────────
