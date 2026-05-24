@@ -361,24 +361,23 @@
   
   // ── PŘEKLADAČ SLOV ──────────────────────────────────────────
   var _tbTimeout=null;
-  function showTranslateBubble(word,x,y){
+
+  function showTranslateBubble(word){
     var bub=document.getElementById('translate-bubble');
     var wEl=document.getElementById('tb-word');
     var tEl=document.getElementById('tb-trans');
     wEl.textContent=word.toUpperCase();
     tEl.textContent='…';
-    // Pozice bubliny
+    // Střed obrazovky - spolehlivé na mobilu
     bub.style.display='block';
-    var bw=bub.offsetWidth||220;
-    var bh=bub.offsetHeight||70;
-    var left=Math.min(x,window.innerWidth-bw-10);
-    var top=y-bh-12;
-    if(top<10)top=y+20;
-    bub.style.left=left+'px';
-    bub.style.top=top+'px';
+    bub.style.left='50%';
+    bub.style.transform='translateX(-50%)';
+    bub.style.top='80px';
+    bub.style.position='fixed';
     clearTimeout(_tbTimeout);
-    _tbTimeout=setTimeout(function(){bub.style.display='none';},5000);
-    // API volání
+    _tbTimeout=setTimeout(function(){bub.style.display='none';},6000);
+    bub.style.pointerEvents='auto';
+    bub.onclick=function(){bub.style.display='none';};
     fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(word)+'&langpair=en|cs')
       .then(function(r){return r.json();})
       .then(function(d){
@@ -386,12 +385,29 @@
         if(t&&t.toLowerCase()!==word.toLowerCase()){
           tEl.textContent=t;
         } else {
-          tEl.textContent='—';
+          tEl.textContent='(nenalezeno)';
         }
       })
-      .catch(function(){tEl.textContent='⛔ chyba';});
+      .catch(function(){tEl.textContent='⛔ offline?';});
   }
 
+  function attachTranslateHook(){
+    if(!epubRendition)return;
+    // epub.js 0.3.x - event 'selected' se spustí při výběru textu
+    epubRendition.on('selected',function(cfiRange,contents){
+      try{
+        var sel=contents.window.getSelection();
+        if(!sel||sel.toString().trim().length===0)return;
+        var raw=sel.toString().trim();
+        // vezmi první slovo výběru
+        var word=raw.split(/\s+/)[0].replace(/[^a-zA-Z'-]/g,'').trim();
+        if(word.length<2)return;
+        showTranslateBubble(word);
+        // zruš výběr
+        sel.removeAllRanges();
+      }catch(e){}
+    });
+  }
   // ────────────────────────────────────────────────────────────
 
   function closeAllPanels(){
@@ -462,6 +478,7 @@
       renderToc(toc,function(item){epubRendition.display(item.href);});
       epubRendition.on('relocated',updateEpubProgress);
       epubRendition.display();
+      attachTranslateHook();
       applySettings();
     }).catch(function(e){toast('⛔ Chyba EPUB: '+e.message);console.error(e);});
     document.getElementById('prev-btn').onclick=function(){epubRendition.prev();};
@@ -469,31 +486,6 @@
     document.addEventListener('click',function(e){
       var bub=document.getElementById('translate-bubble');
       if(bub.style.display!=='none')bub.style.display='none';
-    });
-    epubRendition.on('rendered',function(section,view){
-      try{
-        var iframeDoc=view.document||view.iframe.contentDocument||view.iframe.contentWindow.document;
-        iframeDoc.addEventListener('mouseup',function(e){
-          var sel=iframeDoc.getSelection();
-          var word='';
-          if(sel&&sel.toString().trim().length>0){
-            word=sel.toString().trim().split(/\s+/)[0];
-          } else {
-            // klik bez výběru - vezmi slovo pod kurzorem
-            if(iframeDoc.caretRangeFromPoint){
-              var r=iframeDoc.caretRangeFromPoint(e.clientX,e.clientY);
-              if(r){r.expand('word');word=r.toString();}
-            }
-          }
-          word=word.replace(/[^a-zA-Z'\-]/g,'').trim();
-          if(word.length<2)return;
-          var iframe=document.querySelector('#epub-viewer iframe');
-          var rect=iframe?iframe.getBoundingClientRect():{left:0,top:0};
-          var px=rect.left+e.clientX;
-          var py=rect.top+e.clientY;
-          showTranslateBubble(word,px,py);
-        });
-      }catch(err){console.warn('translate hook:',err);}
     });
   }
   
