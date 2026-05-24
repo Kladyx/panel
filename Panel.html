@@ -81,6 +81,8 @@
     .app-btn { display:flex; flex-direction:column; align-items:center; gap:2px; padding:5px 9px; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.07); border-radius:7px; cursor:pointer; transition:all 0.2s; white-space:nowrap; flex-shrink:0; position:relative; min-width:54px; }
     .app-btn:hover { border-color:rgba(255,255,255,0.2); background:rgba(255,255,255,0.05); }
     .app-btn.active { border-color:var(--ac); background:rgba(var(--ac-rgb),0.12); box-shadow:0 0 12px rgba(var(--ac-rgb),0.25); }
+    @keyframes blink { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.7);} }
+    .app-dot { position:absolute; top:3px; right:3px; width:8px; height:8px; border-radius:50%; background:var(--ac); box-shadow:0 0 6px var(--ac); animation:blink 1.5s ease-in-out infinite; z-index:10; }
     .bi { font-size:1.1rem; line-height:1; }
     .bl { font-size:0.52rem; letter-spacing:1px; text-transform:uppercase; color:var(--muted); }
     .app-btn.active .bl { color:var(--ac); }
@@ -220,82 +222,107 @@
     </button>
     <div class="tdiv"></div>
     <button class="app-btn" id="btn-home" style="--ac:#00d4ff;--ac-rgb:0,212,255" onclick="goHome()">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🏠</div><div class="bl">Domů</div>
     </button>
     <div class="tdiv"></div>
     <button class="app-btn" id="btn-odecty" style="--ac:#00ff88;--ac-rgb:0,255,136" onclick="openApp('odecty')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi" style="font-size:.7rem;letter-spacing:1px;">⚡💧🔥</div><div class="bl">Odečty</div>
     </button>
     <button class="app-btn" id="btn-cd" style="--ac:#ff8c00;--ac-rgb:255,140,0" onclick="openApp('cd')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">💿</div><div class="bl">CD databáze</div>
     </button>
     <button class="app-btn" id="btn-hardware" style="--ac:#ffe000;--ac-rgb:255,224,0" onclick="openApp('hardware')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🎛️</div><div class="bl">Hardware</div>
     </button>
     <button class="app-btn" id="btn-lp" style="--ac:#ff3c5a;--ac-rgb:255,60,90" onclick="openApp('lp')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:1.1rem; height:1.1rem; display:inline-block;"><circle cx="50" cy="50" r="48" fill="#1a1a1a"/><circle cx="50" cy="50" r="40" fill="#0a0a0a"/><circle cx="50" cy="50" r="35" fill="none" stroke="#444" stroke-width="0.8" opacity="0.6"/><circle cx="50" cy="50" r="29" fill="none" stroke="#444" stroke-width="0.8" opacity="0.6"/><circle cx="50" cy="50" r="23" fill="none" stroke="#444" stroke-width="0.8" opacity="0.6"/><circle cx="50" cy="50" r="17" fill="none" stroke="#444" stroke-width="0.8" opacity="0.6"/><circle cx="50" cy="50" r="12" fill="#333"/><circle cx="50" cy="50" r="9" fill="#1a1a1a"/><circle cx="50" cy="50" r="5" fill="#666"/></svg></div><div class="bl">LP Desky</div>
     </button>
     <button class="app-btn" id="btn-mixcloud" style="--ac:#5ce65c;--ac-rgb:92,230,92" onclick="openApp('mixcloud')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">☁️</div><div class="bl">Mixcloud</div>
     </button>
     <button class="app-btn" id="btn-architektura" style="--ac:#00cfff;--ac-rgb:0,207,255" onclick="openApp('architektura')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🏗️</div><div class="bl">Architektura</div>
     </button>
     <button class="app-btn" id="btn-platby" style="--ac:#ff4fd8;--ac-rgb:255,79,216" onclick="openApp('platby')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">💳</div><div class="bl">Platby</div>
     </button>
     <button class="app-btn" id="btn-jidlo" style="--ac:#ff8c00;--ac-rgb:255,140,0" onclick="openApp('jidlo')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🍽️</div><div class="bl">Jídlo</div>
     </button>
     <button class="app-btn" id="btn-gluco" style="--ac:#00c864;--ac-rgb:0,200,100" onclick="openApp('gluco')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🩸</div><div class="bl">Glukóza</div>
     </button>
     <button class="app-btn" id="btn-notes" style="--ac:#f5c842;--ac-rgb:245,200,66" onclick="openApp('notes')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">📝</div><div class="bl">Poznámky</div>
     </button>
     <button class="app-btn" id="btn-kalendar" style="--ac:#00b4ff;--ac-rgb:0,180,255" onclick="openApp('kalendar')">
+      <div class="app-dot"></div>
       <div class="bi">📅</div><div class="bl">KALENDÁŘ</div><div class="bd">Svátky</div>
     </button>
     <button class="app-btn" id="btn-obs" style="--ac:#ff4444;--ac-rgb:255,68,68" onclick="openApp('obs')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🔴</div><div class="bl">OBS</div>
     </button>
     <button class="app-btn" id="btn-pocasi" style="--ac:#00b4ff;--ac-rgb:0,180,255" onclick="openApp('pocasi')">
+      <div class="app-dot"></div>
       <span class="btn-icon">🌤️</span>
       <span class="btn-label">Počasí</span>
     </button>
     <button class="app-btn" id="btn-manualy" style="--ac:#f97316;--ac-rgb:249,115,22" onclick="openApp('manualy')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">📖</div><div class="bl">Manuály</div>
     </button>
     <button class="app-btn" id="btn-zxnext" style="--ac:#00ff88;--ac-rgb:0,255,136" onclick="openApp('zxnext')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🖥️</div><div class="bl">ZX Next</div>
     </button>
     <button class="app-btn" id="btn-reader" style="--ac:#a78bfa;--ac-rgb:167,139,250" onclick="openApp('reader')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">📚</div><div class="bl">Čtečka</div>
     </button>
     <button class="app-btn" id="btn-wordmaster" style="--ac:#34d399;--ac-rgb:52,211,153" onclick="openApp('wordmaster')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🇬🇧</div><div class="bl">WordMaster</div>
     </button>
     <button class="app-btn" id="btn-housetime" style="--ac:#aa00ff;--ac-rgb:170,0,255" onclick="openApp('housetime')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🎵</div><div class="bl">HouseTime</div>
     </button>
 
     <button class="app-btn" id="btn-multitrack" style="--ac:#0088ff;--ac-rgb:0,136,255" onclick="openApp('multitrack')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">📻</div><div class="bl">Multitrack</div>
     </button>
 
     <button class="app-btn" id="btn-status" style="--ac:#00ff88;--ac-rgb:0,255,136" onclick="openApp('status')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🟢</div><div class="bl">Status</div>
     </button>
     <button class="app-btn" id="btn-radio" style="--ac:#ff4466;--ac-rgb:255,68,102" onclick="openApp('radio')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🎤</div><div class="bl">Radio ID</div>
     </button>
     <button class="app-btn" id="btn-zxgames" style="--ac:#0088ff;--ac-rgb:0,136,255" onclick="openApp('zxgames')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🕹️</div><div class="bl">ZX Games</div>
     </button>
     <button class="app-btn" id="btn-worldtime" style="--ac:#00d4ff;--ac-rgb:0,212,255" onclick="openApp('worldtime')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🌍</div><div class="bl">World Time</div>
     </button>
     <button class="app-btn" id="btn-user" style="--ac:#a78bfa;--ac-rgb:167,139,250" onclick="openApp('user')">
+      <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">👤</div><div class="bl">Moje Apky</div>
     </button>
 
@@ -16286,6 +16313,11 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 @keyframes dotPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.25;transform:scale(0.6);}}
 .add-box{background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.25);border-radius:14px;padding:16px;}
 .add-box h2{font-size:0.72rem;font-weight:800;color:#a78bfa;letter-spacing:1px;margin-bottom:10px;}
+.icon-picker{margin:12px 0;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;}
+.icon-picker #icon-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(36px,1fr));gap:6px;}
+.icon-btn{width:40px;height:40px;border:2px solid rgba(167,139,250,0.3);background:rgba(167,139,250,0.1);border-radius:8px;font-size:1.2rem;cursor:pointer;transition:all 0.2s;}
+.icon-btn:hover{border-color:#a78bfa;background:rgba(167,139,250,0.2);}
+.icon-btn.selected{border-color:#a78bfa;background:rgba(167,139,250,0.4);box-shadow:0 0 8px rgba(167,139,250,0.5);}
 .add-row{display:flex;gap:8px;}
 .add-row input{flex:1;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(167,139,250,0.25);background:#0d0d22;color:#e0e0f0;font-size:0.9rem;font-family:inherit;outline:none;}
 .add-row input:focus{border-color:#a78bfa;}
@@ -16302,10 +16334,15 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
     <input id="new-name" type="text" placeholder="Název nové aplikace..." maxlength="60"/>
     <button onclick="addApp()">Uložit</button>
   </div>
+  <div class="icon-picker">
+    <p style="font-size:0.85rem;color:#888;margin-bottom:8px;">Vyber ikonu:</p>
+    <div id="icon-grid"></div>
+  </div>
   <div class="status" id="status-msg"></div>
 </div>
 <script>
 var LS_KEY='kladyx_user_apps';
+var AVAILABLE_ICONS=['🏠','💿','🔧','🏗','📊','💳','🍽','🩸','🎙','🌤','📝','📅','🕹','📖','📚','🇬🇧','📻','🟢','🎤','🎮','🌍','☁️','🎵','💻','⚡','🔒','🎬','🖼','🌟','🎯','💡','🔔','📱','🖥','⌚','🎧','🎸','🎹','🎺','📡','🛰','📡','🔭','🌐','🌊','🌴','🎪','🎭','🎨','🖌','📐','📏'];
 var APP_COLORS=['#aa00ff','#ff8c00','#ffe000','#00cfff','#ff3c5a','#5ce65c','#00ff88','#ff4fd8','#ff7711','#00c864','#ff4444','#38bdf8','#f5c842','#00b4ff','#00ffbb','#f97316','#a78bfa','#34d399','#0088ff','#22c55e','#ff4466','#0066ff','#00d4ff'];
 var DEFAULT=[
   '🏠 HouseTime','💿 CD databáze','🔧 Hardware','🏗 Architektura',
@@ -16314,22 +16351,41 @@ var DEFAULT=[
   '🕹 ZX Next','📖 Manuály','📚 Čtečka','🇬🇧 WordMaster','📻 Multitrack',
   '🟢 Status','🎤 Radio ID','🎮 ZX Games','🌍 World Time'
 ];
+var selectedIcon=AVAILABLE_ICONS[0];
 
 function loadCustom(){try{return JSON.parse(localStorage.getItem(LS_KEY)||'[]');}catch(e){return[];}}
 function saveCustom(arr){try{localStorage.setItem(LS_KEY,JSON.stringify(arr));}catch(e){}}
+
+function initIconPicker(){
+  var grid=document.getElementById('icon-grid');
+  grid.innerHTML='';
+  AVAILABLE_ICONS.forEach(function(icon){
+    var btn=document.createElement('button');
+    btn.className='icon-btn'+(icon===selectedIcon?' selected':'');
+    btn.textContent=icon;
+    btn.onclick=function(){
+      document.querySelectorAll('.icon-btn').forEach(function(b){b.classList.remove('selected');});
+      btn.classList.add('selected');
+      selectedIcon=icon;
+    };
+    grid.appendChild(btn);
+  });
+}
 
 function render(){
   var ul=document.getElementById('app-list');
   ul.innerHTML='';
   var custom=loadCustom();
-  var all=DEFAULT.concat(custom.map(function(n){return '➕ '+n;}));
+  var all=DEFAULT.concat(custom.map(function(n){return n;}));
   all.forEach(function(name,i){
     var isCustom=i>=DEFAULT.length;
     var li=document.createElement('li');
     var color=APP_COLORS[i%APP_COLORS.length];
+    var iconPart=name.split(' ')[0];
     li.innerHTML='<span class="app-dot" style="background:'+color+';box-shadow:0 0 5px '+color+'80"></span>'
       +'<span class="num">'+(i+1)+'.</span>'
-      +'<span class="name">'+esc(name)+'</span>'
+      +'<span class="name">'+esc(name.split(' ').slice(1).join(' ')||name)+'</span>'
+      +'<span style="font-size:1.1rem;margin-left:4px;">'+iconPart+'</span>'
       +(isCustom?'<button class="del" onclick="del('+i+')">✕</button>':'');
     ul.appendChild(li);
   });
@@ -16340,8 +16396,11 @@ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g
 function addApp(){
   var val=document.getElementById('new-name').value.trim();
   if(!val){msg('Zadej název.',false);return;}
-  var arr=loadCustom();arr.push(val);saveCustom(arr);
+  var appName=selectedIcon+' '+val;
+  var arr=loadCustom();arr.push(appName);saveCustom(arr);
   document.getElementById('new-name').value='';
+  selectedIcon=AVAILABLE_ICONS[0];
+  initIconPicker();
   render();msg('✅ Přidáno.',true);setTimeout(function(){msg('');},2500);
 }
 
@@ -16354,6 +16413,7 @@ function del(idx){
 function msg(t,ok){var e=document.getElementById('status-msg');e.textContent=t;e.style.color=ok?'#34d399':'#f87171';}
 
 document.getElementById('new-name').addEventListener('keydown',function(e){if(e.key==='Enter')addApp();});
+initIconPicker();
 render();
 <\/script>
 </body>
