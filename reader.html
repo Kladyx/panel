@@ -165,6 +165,7 @@
     <div style="display:flex;gap:4px;">
       <button class="tb-btn" onclick="openToc()" title="Obsah">📑</button>
       <button class="tb-btn" onclick="openBookmarks()" title="Záložky">🔖</button>
+      <button class="tb-btn" onclick="openTranslate()" title="Přeložit">🌐</button>
       <button class="tb-btn" onclick="openSettings()" title="Nastavení">⚙️</button>
     </div>
   </div>
@@ -265,10 +266,23 @@
   <div id="arc-list"></div>
 </div>
 
-<!-- TRANSLATE BUBBLE -->
-<div id="translate-bubble" style="display:none;position:fixed;z-index:999;max-width:220px;background:rgba(10,15,30,.97);border:1px solid rgba(0,212,255,.4);border-radius:12px;padding:10px 14px;box-shadow:0 4px 24px rgba(0,0,0,.7),0 0 12px rgba(0,212,255,.15);pointer-events:none;">
-  <div id="tb-word" style="font-size:.75rem;letter-spacing:2px;color:#00d4ff;font-family:'Courier New',monospace;font-weight:700;margin-bottom:4px;"></div>
-  <div id="tb-trans" style="font-size:.9rem;color:#e8f4f8;font-family:'Courier New',monospace;"></div>
+<!-- TRANSLATE PANEL -->
+<div id="translate-panel" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(5,8,16,.97);backdrop-filter:blur(20px);padding:20px;overflow-y:auto;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <div style="font-family:'Courier New',monospace;font-size:1rem;letter-spacing:3px;color:#00d4ff;font-weight:700;">🌐 PŘEKLADAČ</div>
+    <button onclick="closeTranslate()" style="background:none;border:1px solid rgba(255,255,255,.2);color:#fff;font-size:1.1rem;width:32px;height:32px;border-radius:50%;cursor:pointer;">✕</button>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <input id="tr-input" type="text" placeholder="Napiš anglické slovo..." autocomplete="off" autocorrect="off" spellcheck="false"
+      style="flex:1;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.3);color:#e8f4f8;font-family:'Courier New',monospace;font-size:1rem;padding:10px 14px;border-radius:8px;outline:none;"
+      onkeydown="if(event.key==='Enter')translateWord()">
+    <button onclick="translateWord()" style="background:rgba(0,212,255,.15);border:1px solid rgba(0,212,255,.4);color:#00d4ff;font-family:'Courier New',monospace;font-size:.75rem;letter-spacing:2px;padding:10px 16px;border-radius:8px;cursor:pointer;">PŘELOŽIT</button>
+  </div>
+  <div id="tr-result" style="min-height:60px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px;font-family:'Courier New',monospace;">
+    <div style="font-size:.65rem;letter-spacing:2px;color:#666;margin-bottom:6px;">PŘEKLAD EN → CS</div>
+    <div id="tr-text" style="font-size:1.2rem;color:#00ff88;font-weight:700;">—</div>
+  </div>
+  <div id="tr-history" style="margin-top:16px;"></div>
 </div>
 
 <!-- OVERLAY -->
@@ -360,54 +374,61 @@
   }
   
   // ── PŘEKLADAČ SLOV ──────────────────────────────────────────
-  var _tbTimeout=null;
+  var _trHistory=[];
 
-  function showTranslateBubble(word){
-    var bub=document.getElementById('translate-bubble');
-    var wEl=document.getElementById('tb-word');
-    var tEl=document.getElementById('tb-trans');
-    wEl.textContent=word.toUpperCase();
+  function openTranslate(){
+    document.getElementById('translate-panel').style.display='block';
+    setTimeout(function(){document.getElementById('tr-input').focus();},100);
+  }
+  function closeTranslate(){
+    document.getElementById('translate-panel').style.display='none';
+  }
+  function translateWord(){
+    var word=document.getElementById('tr-input').value.trim();
+    if(!word)return;
+    var tEl=document.getElementById('tr-text');
     tEl.textContent='…';
-    // Střed obrazovky - spolehlivé na mobilu
-    bub.style.display='block';
-    bub.style.left='50%';
-    bub.style.transform='translateX(-50%)';
-    bub.style.top='80px';
-    bub.style.position='fixed';
-    clearTimeout(_tbTimeout);
-    _tbTimeout=setTimeout(function(){bub.style.display='none';},6000);
-    bub.style.pointerEvents='auto';
-    bub.onclick=function(){bub.style.display='none';};
+    tEl.style.color='#666';
     fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(word)+'&langpair=en|cs')
       .then(function(r){return r.json();})
       .then(function(d){
         var t=d&&d.responseData&&d.responseData.translatedText;
-        if(t&&t.toLowerCase()!==word.toLowerCase()){
+        if(t){
           tEl.textContent=t;
+          tEl.style.color='#00ff88';
+          addToHistory(word,t);
         } else {
-          tEl.textContent='(nenalezeno)';
+          tEl.textContent='Nenalezeno';
+          tEl.style.color='#f87171';
         }
       })
-      .catch(function(){tEl.textContent='⛔ offline?';});
+      .catch(function(){
+        tEl.textContent='⛔ Chyba připojení';
+        tEl.style.color='#f87171';
+      });
   }
-
-  function attachTranslateHook(){
-    if(!epubRendition)return;
-    // epub.js 0.3.x - event 'selected' se spustí při výběru textu
-    epubRendition.on('selected',function(cfiRange,contents){
-      try{
-        var sel=contents.window.getSelection();
-        if(!sel||sel.toString().trim().length===0)return;
-        var raw=sel.toString().trim();
-        // vezmi první slovo výběru
-        var word=raw.split(/\s+/)[0].replace(/[^a-zA-Z'-]/g,'').trim();
-        if(word.length<2)return;
-        showTranslateBubble(word);
-        // zruš výběr
-        sel.removeAllRanges();
-      }catch(e){}
+  function addToHistory(word,trans){
+    _trHistory.unshift({w:word,t:trans});
+    if(_trHistory.length>10)_trHistory.pop();
+    var el=document.getElementById('tr-history');
+    if(!el)return;
+    var html='<div style="font-size:.6rem;letter-spacing:2px;color:#444;margin-bottom:8px;">HISTORIE</div>';
+    _trHistory.forEach(function(h,idx){
+      html+='<div data-idx="'+idx+'" class="tr-hist-item" style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;">'
+        +'<span style="color:#aaa;font-size:.85rem;">'+escHtml(h.w)+'</span>'
+        +'<span style="color:#00ff88;font-size:.85rem;font-weight:700;">'+escHtml(h.t)+'</span>'
+        +'</div>';
+    });
+    el.innerHTML=html;
+    el.querySelectorAll('.tr-hist-item').forEach(function(div){
+      div.addEventListener('click',function(){
+        var idx=parseInt(div.getAttribute('data-idx'));
+        var h=_trHistory[idx];
+        if(h){document.getElementById('tr-input').value=h.w;translateWord();}
+      });
     });
   }
+  function attachTranslateHook(){}
   // ────────────────────────────────────────────────────────────
 
   function closeAllPanels(){
@@ -455,7 +476,7 @@
   // ──────────────────────────────────────────────────────────────
   // EPUB
   // ──────────────────────────────────────────────────────────────
-  function loadEpub(f,buf){
+  function loadEpub(f,buf,_cb){
     var savedBuf=buf.slice(0);
     currentFile={name:f.name,data:savedBuf};
     bookType='epub';
@@ -507,7 +528,7 @@
   // ──────────────────────────────────────────────────────────────
   // PDF
   // ──────────────────────────────────────────────────────────────
-  function loadPdf(f,buf){
+  function loadPdf(f,buf,_cb){
     var savedBuf=buf.slice(0);
     currentFile={name:f.name,data:savedBuf};
     bookType='pdf';
@@ -519,6 +540,7 @@
       pdfPages=pdf.numPages;
       currentPdfPage=1;
       renderPdfPage(1);
+      if(_cb)setTimeout(_cb,400);
       showReaderScreen();
       applySettings();
     }).catch(function(e){toast('⛔ Chyba načítání PDF: '+e.message);});
@@ -601,17 +623,38 @@
       item.querySelector('.bm-del').onclick=function(e){e.stopPropagation();bookmarks.splice(i,1);localStorage.setItem('kladyx-bm',JSON.stringify(bookmarks));renderBookmarks();};
       item.onclick=function(e){
         if(e.target.classList.contains('bm-del'))return;
-        if(bm.book!==currentFile.name){toast('⚠ Tato záložka patří jiné knize');return;}
-        if(bookType==='epub'&&bm.cfi&&epubBook){
-          epubRendition.display(bm.cfi);
-          closeBookmarks();
-          toast('📌 Přeskočeno na záložku');
-        } else if(bookType==='pdf'&&bm.page){
-          renderPdfPage(bm.page);
-          closeBookmarks();
-          toast('📌 Přeskočeno na záložku');
+        var _bm=bm;
+        function jumpToBm(){
+          if(bookType==='epub'&&_bm.cfi&&epubBook){
+            epubRendition.display(_bm.cfi);
+            closeBookmarks();
+            toast('📌 Přeskočeno na záložku');
+          } else if(bookType==='pdf'&&_bm.page){
+            renderPdfPage(_bm.page);
+            closeBookmarks();
+            toast('📌 Přeskočeno na záložku');
+          } else {
+            toast('⚠ Záložka nemá pozici');
+          }
+        }
+        if(_bm.book===currentFile.name){
+          jumpToBm();
         } else {
-          toast('⚠ Záložka nemá pozici');
+          // Kniha není otevřená — načti ji z archivu
+          toast('📂 Načítám knihu z archivu…');
+          dbGetByFilename(_bm.book,function(bk){
+            if(!bk||!bk.buffer){
+              toast('⚠ Kniha není v archivu: '+_bm.book);
+              return;
+            }
+            var fakeFile={name:bk.filename};
+            var ext=bk.type||(_bm.book.match(/\.pdf$/i)?'pdf':'epub');
+            function afterLoad(){
+              setTimeout(jumpToBm,800);
+            }
+            if(ext==='epub'){loadEpub(fakeFile,bk.buffer,afterLoad);}
+            else{loadPdf(fakeFile,bk.buffer,afterLoad);}
+          });
         }
       };
       list.appendChild(item);
@@ -992,6 +1035,15 @@
     });
   }
   
+  function dbGetByFilename(filename,cb){
+    dbReady.then(function(){
+      var tx=DB.transaction('books','readonly');
+      var store=tx.objectStore('books');
+      var req=store.get(filename);
+      req.onsuccess=function(){cb(req.result||null);};
+    });
+  }
+
   function dbDelete(filename,cb){
     dbReady.then(function(){
       var tx=DB.transaction('books','readwrite');
