@@ -392,34 +392,6 @@
       .catch(function(){tEl.textContent='⛔ chyba';});
   }
 
-  function attachTranslateToEpub(contents){
-    var doc=contents.document;
-    doc.addEventListener('click',function(e){
-      var sel=doc.getSelection();
-      var word='';
-      if(sel&&sel.toString().trim().length>0){
-        word=sel.toString().trim().split(/\s+/)[0];
-      } else {
-        var el=e.target;
-        if(el&&el.textContent){
-          // vyber slovo pod kurzorem
-          var range=doc.caretRangeFromPoint?doc.caretRangeFromPoint(e.clientX,e.clientY):null;
-          if(range){
-            range.expand('word');
-            word=range.toString().trim();
-          }
-        }
-      }
-      word=word.replace(/[^a-zA-Z''-]/g,'').trim();
-      if(word.length<2)return;
-      // Převeď souřadnice z iframe do parent okna
-      var iframe=document.querySelector('#epub-viewer iframe');
-      var rect=iframe?iframe.getBoundingClientRect():{left:0,top:0};
-      var px=rect.left+e.clientX;
-      var py=rect.top+e.clientY;
-      showTranslateBubble(word,px,py);
-    });
-  }
   // ────────────────────────────────────────────────────────────
 
   function closeAllPanels(){
@@ -489,7 +461,6 @@
       }catch(e){}
       renderToc(toc,function(item){epubRendition.display(item.href);});
       epubRendition.on('relocated',updateEpubProgress);
-      epubRendition.hooks.content.register(attachTranslateToEpub);
       epubRendition.display();
       applySettings();
     }).catch(function(e){toast('⛔ Chyba EPUB: '+e.message);console.error(e);});
@@ -498,6 +469,31 @@
     document.addEventListener('click',function(e){
       var bub=document.getElementById('translate-bubble');
       if(bub.style.display!=='none')bub.style.display='none';
+    });
+    epubRendition.on('rendered',function(section,view){
+      try{
+        var iframeDoc=view.document||view.iframe.contentDocument||view.iframe.contentWindow.document;
+        iframeDoc.addEventListener('mouseup',function(e){
+          var sel=iframeDoc.getSelection();
+          var word='';
+          if(sel&&sel.toString().trim().length>0){
+            word=sel.toString().trim().split(/\s+/)[0];
+          } else {
+            // klik bez výběru - vezmi slovo pod kurzorem
+            if(iframeDoc.caretRangeFromPoint){
+              var r=iframeDoc.caretRangeFromPoint(e.clientX,e.clientY);
+              if(r){r.expand('word');word=r.toString();}
+            }
+          }
+          word=word.replace(/[^a-zA-Z'\-]/g,'').trim();
+          if(word.length<2)return;
+          var iframe=document.querySelector('#epub-viewer iframe');
+          var rect=iframe?iframe.getBoundingClientRect():{left:0,top:0};
+          var px=rect.left+e.clientX;
+          var py=rect.top+e.clientY;
+          showTranslateBubble(word,px,py);
+        });
+      }catch(err){console.warn('translate hook:',err);}
     });
   }
   
