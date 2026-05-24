@@ -274,7 +274,7 @@
   // ──────────────────────────────────────────────────────────────
   // GLOBÁLNÍ PROMĚNNÉ
   // ──────────────────────────────────────────────────────────────
-  var currentFile={};var bookType=null;var epubBook=null;var pdfDoc=null;var currentPdfPage=1;var pdfPages=0;
+  var currentFile={};var bookType=null;var epubBook=null;var epubRendition=null;var pdfDoc=null;var currentPdfPage=1;var pdfPages=0;
   var bookmarks=JSON.parse(localStorage.getItem('kladyx-bm')||'[]');
   var settings={fs:100,lh:1.75,font:'Courier New',theme:'dark'};
   var githubBooks=[];
@@ -362,7 +362,7 @@
   function goHome(){
     if(confirm('Chceš opravdu odejít z čtečky?\n\nTvé místo je automaticky uloženo.')){
       currentFile={};bookType=null;
-      if(epubBook){epubBook.destroy();}
+      if(epubBook){epubBook.destroy();epubBook=null;epubRendition=null;}
       epubBook=null;
       if(pdfDoc){pdfDoc.destroy();}
       pdfDoc=null;
@@ -401,33 +401,41 @@
     var savedBuf=buf.slice(0);
     currentFile={name:f.name,data:savedBuf};
     bookType='epub';
-    epubBook=ePub({replacements:[]});
-    epubBook.open(buf);
-    epubBook.renderTo('epub-viewer',{method:'continuous'});
-    document.getElementById('book-title').textContent=epubBook.package.metadata.title||f.name;
+    epubBook=ePub(buf);
+    epubRendition=epubBook.renderTo('epub-viewer',{width:'100%',height:'100%',spread:'none',flow:'paginated'});
     epubBook.ready.then(function(){
-      var spine=epubBook.spine.spineItems;
+      var meta=epubBook.packaging&&epubBook.packaging.metadata;
+      var title=meta&&meta.title?meta.title:f.name;
+      document.getElementById('book-title').textContent=title;
       var toc=[];
-      spine.forEach(function(item,i){
-        toc.push({href:item.href,label:(i+1)+'. '+item.label});
-      });
-      renderToc(toc,function(item){epubBook.display(item.href);});
-      epubBook.on('relocated',updateEpubProgress);
+      try{
+        (epubBook.navigation.toc||[]).forEach(function(item,i){
+          toc.push({href:item.href,label:item.label||(i+1)+'.'});
+        });
+      }catch(e){}
+      renderToc(toc,function(item){epubRendition.display(item.href);});
+      epubRendition.on('relocated',updateEpubProgress);
+      epubRendition.display();
       applySettings();
     });
     showReaderScreen();
-    document.getElementById('prev-btn').onclick=function(){epubBook.prevPage();};
-    document.getElementById('next-btn').onclick=function(){epubBook.nextPage();};
+    document.getElementById('prev-btn').onclick=function(){epubRendition.prev();};
+    document.getElementById('next-btn').onclick=function(){epubRendition.next();};
   }
   
   function updateEpubProgress(){
-    if(!epubBook)return;
-    var prog=epubBook.rendition.currentLocation();
-    if(prog&&prog.progress){
-      var pct=Math.round(prog.progress*100);
-      document.getElementById('progress-bar').style.width=pct+'%';
-      document.getElementById('page-info').textContent=pct+'%';
-    }
+    if(!epubRendition)return;
+    try{
+      var prog=epubRendition.currentLocation();
+      if(prog&&prog.start){
+        var pct=epubBook.locations.percentageFromCfi(prog.start.cfi);
+        if(!isNaN(pct)&&pct>=0){
+          var p=Math.round(pct*100);
+          document.getElementById('progress-bar').style.width=p+'%';
+          document.getElementById('page-info').textContent=p+'%';
+        }
+      }
+    }catch(e){}
   }
   
   // ──────────────────────────────────────────────────────────────
@@ -476,16 +484,16 @@
   function prevPage(){
     if(bookType==='pdf'){
       if(currentPdfPage>1)renderPdfPage(currentPdfPage-1);
-    } else if(epubBook){
-      epubBook.prevPage();
+    } else if(epubRendition){
+      epubRendition.prev();
     }
   }
   
   function nextPage(){
     if(bookType==='pdf'){
       if(currentPdfPage<pdfPages)renderPdfPage(currentPdfPage+1);
-    } else if(epubBook){
-      epubBook.nextPage();
+    } else if(epubRendition){
+      epubRendition.next();
     }
   }
   
@@ -529,7 +537,7 @@
         if(e.target.classList.contains('bm-del'))return;
         if(bm.book!==currentFile.name){toast('⚠ Tato záložka patří jiné knize');return;}
         if(bookType==='epub'&&bm.cfi&&epubBook){
-          epubBook.display(bm.cfi);
+          epubRendition.display(bm.cfi);
           closeBookmarks();
           toast('📌 Přeskočeno na záložku');
         } else if(bookType==='pdf'&&bm.page){
@@ -548,7 +556,7 @@
     if(!currentFile||!currentFile.name){toast('⚠ Žádná kniha není otevřena');return;}
     var label,cfi=null,page=null;
     if(bookType==='epub'&&epubBook){
-      var loc=epubBook.rendition.currentLocation();
+      var loc=epubRendition.currentLocation();
       if(!loc||!loc.start){toast('⚠ Nelze zjistit pozici');return;}
       cfi=loc.start.cfi;
       var pct=loc.start.percentage?Math.round(loc.start.percentage*100):0;
@@ -864,10 +872,10 @@
     document.getElementById('fs-val').textContent=fs+'%';
     document.getElementById('lh-val').textContent=lh;
     
-    if(bookType==='epub'&&epubBook){
-      epubBook.rendition.themes.fontSize((fs/100)*16+'px');
-      epubBook.rendition.themes.lineHeight(lh);
-      epubBook.rendition.themes.font(settings.font);
+    if(bookType==='epub'&&epubRendition){
+      epubRendition.themes.fontSize((fs/100)*16+'px');
+      epubRendition.themes.lineHeight(lh);
+      epubRendition.themes.font(settings.font);
     }
     
     var bgColor,textColor;
@@ -877,9 +885,9 @@
     
     root.style.setProperty('--bg',bgColor);
     root.style.setProperty('--light',textColor);
-    if(bookType==='epub'&&epubBook){
-      epubBook.rendition.themes.backgroundColor(bgColor);
-      epubBook.rendition.themes.textColor(textColor);
+    if(bookType==='epub'&&epubRendition){
+      epubRendition.themes.backgroundColor(bgColor);
+      epubRendition.themes.textColor(textColor);
     }
   }
   
