@@ -82,7 +82,8 @@
     .app-btn:hover { border-color:rgba(255,255,255,0.2); background:rgba(255,255,255,0.05); }
     .app-btn.active { border-color:var(--ac); background:rgba(var(--ac-rgb),0.12); box-shadow:0 0 12px rgba(var(--ac-rgb),0.25); }
     @keyframes blink { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.7);} }
-    .app-dot { position:absolute; top:3px; right:3px; width:8px; height:8px; border-radius:50%; background:var(--ac); box-shadow:0 0 6px var(--ac); animation:blink 1.5s ease-in-out infinite; z-index:10; }
+    .app-dot { display:block; position:absolute; top:3px; right:3px; width:8px; height:8px; border-radius:50%; background:var(--ac); box-shadow:0 0 6px var(--ac); animation:appDotBlink 1.5s ease-in-out infinite; z-index:10; opacity:1; }
+    @keyframes appDotBlink { 0%, 100% { opacity:1; box-shadow:0 0 6px var(--ac), 0 0 12px var(--ac); } 50% { opacity:0.4; box-shadow:0 0 2px var(--ac); } }
     .bi { font-size:1.1rem; line-height:1; }
     .bl { font-size:0.52rem; letter-spacing:1px; text-transform:uppercase; color:var(--muted); }
     .app-btn.active .bl { color:var(--ac); }
