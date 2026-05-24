@@ -265,6 +265,12 @@
   <div id="arc-list"></div>
 </div>
 
+<!-- TRANSLATE BUBBLE -->
+<div id="translate-bubble" style="display:none;position:fixed;z-index:999;max-width:220px;background:rgba(10,15,30,.97);border:1px solid rgba(0,212,255,.4);border-radius:12px;padding:10px 14px;box-shadow:0 4px 24px rgba(0,0,0,.7),0 0 12px rgba(0,212,255,.15);pointer-events:none;">
+  <div id="tb-word" style="font-size:.75rem;letter-spacing:2px;color:#00d4ff;font-family:'Courier New',monospace;font-weight:700;margin-bottom:4px;"></div>
+  <div id="tb-trans" style="font-size:.9rem;color:#e8f4f8;font-family:'Courier New',monospace;"></div>
+</div>
+
 <!-- OVERLAY -->
 <div id="overlay" onclick="closeAllPanels()"></div>
 
@@ -353,6 +359,69 @@
     setTimeout(function(){el.classList.remove('show');},3000);
   }
   
+  // ── PŘEKLADAČ SLOV ──────────────────────────────────────────
+  var _tbTimeout=null;
+  function showTranslateBubble(word,x,y){
+    var bub=document.getElementById('translate-bubble');
+    var wEl=document.getElementById('tb-word');
+    var tEl=document.getElementById('tb-trans');
+    wEl.textContent=word.toUpperCase();
+    tEl.textContent='…';
+    // Pozice bubliny
+    bub.style.display='block';
+    var bw=bub.offsetWidth||220;
+    var bh=bub.offsetHeight||70;
+    var left=Math.min(x,window.innerWidth-bw-10);
+    var top=y-bh-12;
+    if(top<10)top=y+20;
+    bub.style.left=left+'px';
+    bub.style.top=top+'px';
+    clearTimeout(_tbTimeout);
+    _tbTimeout=setTimeout(function(){bub.style.display='none';},5000);
+    // API volání
+    fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(word)+'&langpair=en|cs')
+      .then(function(r){return r.json();})
+      .then(function(d){
+        var t=d&&d.responseData&&d.responseData.translatedText;
+        if(t&&t.toLowerCase()!==word.toLowerCase()){
+          tEl.textContent=t;
+        } else {
+          tEl.textContent='—';
+        }
+      })
+      .catch(function(){tEl.textContent='⛔ chyba';});
+  }
+
+  function attachTranslateToEpub(contents){
+    var doc=contents.document;
+    doc.addEventListener('click',function(e){
+      var sel=doc.getSelection();
+      var word='';
+      if(sel&&sel.toString().trim().length>0){
+        word=sel.toString().trim().split(/\s+/)[0];
+      } else {
+        var el=e.target;
+        if(el&&el.textContent){
+          // vyber slovo pod kurzorem
+          var range=doc.caretRangeFromPoint?doc.caretRangeFromPoint(e.clientX,e.clientY):null;
+          if(range){
+            range.expand('word');
+            word=range.toString().trim();
+          }
+        }
+      }
+      word=word.replace(/[^a-zA-Z''-]/g,'').trim();
+      if(word.length<2)return;
+      // Převeď souřadnice z iframe do parent okna
+      var iframe=document.querySelector('#epub-viewer iframe');
+      var rect=iframe?iframe.getBoundingClientRect():{left:0,top:0};
+      var px=rect.left+e.clientX;
+      var py=rect.top+e.clientY;
+      showTranslateBubble(word,px,py);
+    });
+  }
+  // ────────────────────────────────────────────────────────────
+
   function closeAllPanels(){
     closeSettings();closeToc();closeBookmarks();closeArchive();
   }
@@ -420,11 +489,16 @@
       }catch(e){}
       renderToc(toc,function(item){epubRendition.display(item.href);});
       epubRendition.on('relocated',updateEpubProgress);
+      epubRendition.hooks.content.register(attachTranslateToEpub);
       epubRendition.display();
       applySettings();
     }).catch(function(e){toast('⛔ Chyba EPUB: '+e.message);console.error(e);});
     document.getElementById('prev-btn').onclick=function(){epubRendition.prev();};
     document.getElementById('next-btn').onclick=function(){epubRendition.next();};
+    document.addEventListener('click',function(e){
+      var bub=document.getElementById('translate-bubble');
+      if(bub.style.display!=='none')bub.style.display='none';
+    });
   }
   
   function updateEpubProgress(){
