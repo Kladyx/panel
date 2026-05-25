@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v18.1Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v18.2Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v18.1Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v18.2Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v18.1Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v18.2Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -333,7 +333,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v18.1Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v18.2Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -717,7 +717,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v18.1Kl</div>
+  <div class="version">v18.2Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -8472,22 +8472,16 @@ if(ta)ta.onclick=function(){hideAll();TAB='archiv';ta.className='tab active';doc
 if(tg)tg.onclick=function(){hideAll();TAB='graf';tg.className='tab active';document.getElementById('p-graf').className='panel on';RG();};
 
 // ── GRAF ──────────────────────────────────────────────────────────────
-var GRAF_WEEK_OFFSET=0;
+var GRAF_PAGE=0;
+var PAGE_SIZE=4;
 var gChL=null,gChJ=null;
 
-function getWeekRange(offset){
-  var now=new Date();
-  var day=now.getDay(); // 0=Ne,1=Po...6=So
-  var diff=(day===0)?-6:(1-day); // posun na pondělí
-  var mon=new Date(now);
-  mon.setDate(now.getDate()+diff+(offset*7));
-  mon.setHours(0,0,0,0);
-  var sun=new Date(mon);
-  sun.setDate(mon.getDate()+6);
-  return{start:mon,end:sun};
+function grafWeekNav(delta){
+  GRAF_PAGE+=delta;
+  if(GRAF_PAGE<0)GRAF_PAGE=0;
+  RG();
 }
-function grafWeekNav(delta){GRAF_WEEK_OFFSET+=delta;RG();}
-function grafWeekCur(){GRAF_WEEK_OFFSET=0;RG();}
+function grafWeekCur(){GRAF_PAGE=0;RG();}
 window.grafWeekNav=grafWeekNav;
 window.grafWeekCur=grafWeekCur;
 
@@ -8500,27 +8494,37 @@ function grafColor(val,idx){
 }
 
 function RG(){
-  // Aktuální týden dle offsetu (Po–Ne)
-  var range=getWeekRange(GRAF_WEEK_OFFSET);
-  var s=range.start,e=range.end;
-  function dt2str(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
-  var startStr=dt2str(s),endStr=dt2str(e);
-
-  // Aktualizuj label týdne
-  var wlbl=document.getElementById('graf-week-lbl');
-  if(wlbl)wlbl.textContent=pad(s.getDate())+'.'+pad(s.getMonth()+1)+' – '+pad(e.getDate())+'.'+pad(e.getMonth()+1)+'.'+e.getFullYear();
-  var l1=document.getElementById('gcnt-lbl');if(l1)l1.textContent=pad(s.getDate())+'.'+pad(s.getMonth()+1)+' – '+pad(e.getDate())+'.'+pad(e.getMonth()+1);
-  var l2=document.getElementById('gcnt-lbl2');if(l2)l2.textContent=pad(s.getDate())+'.'+pad(s.getMonth()+1)+' – '+pad(e.getDate())+'.'+pad(e.getMonth()+1);
-
-  // Sbírej záznamy jen z tohoto týdne
+  // Sbírej všechny záznamy, seřaď
   var allDays=[];
   Object.keys(DAT).forEach(function(ym){
     Object.keys(DAT[ym]).forEach(function(dt){
-      if(dt>=startStr&&dt<=endStr)allDays.push({dt:dt,d:DAT[ym][dt]});
+      allDays.push({dt:dt,d:DAT[ym][dt]});
     });
   });
   allDays.sort(function(a,b){return a.dt.localeCompare(b.dt);});
-  var slice=allDays;
+
+  // Stránkování: GRAF_PAGE=0 → poslední 4, GRAF_PAGE=1 → předchozí 4 atd.
+  var total=allDays.length;
+  var endIdx=total-(GRAF_PAGE*PAGE_SIZE);
+  var startIdx=endIdx-PAGE_SIZE;
+  if(startIdx<0)startIdx=0;
+  if(endIdx<=0){GRAF_PAGE--;endIdx=total-(GRAF_PAGE*PAGE_SIZE);startIdx=endIdx-PAGE_SIZE;if(startIdx<0)startIdx=0;}
+  var slice=allDays.slice(startIdx,endIdx);
+
+  // Aktualizuj labely
+  var rangeStr=slice.length?
+    (slice[0].dt.split('-').slice(1).join('.')+' – '+slice[slice.length-1].dt.split('-').slice(1).join('.')):
+    '—';
+  var wlbl=document.getElementById('graf-week-lbl');
+  if(wlbl)wlbl.textContent=rangeStr+' ('+slice.length+' zázn.)';
+  var l1=document.getElementById('gcnt-lbl');if(l1)l1.textContent=rangeStr;
+  var l2=document.getElementById('gcnt-lbl2');if(l2)l2.textContent=rangeStr;
+
+  // Šipka ▶ — skryj pokud jsme na nejnovějších
+  var btnNext=document.querySelector('[onclick="grafWeekNav(1)"]');
+  if(btnNext)btnNext.style.opacity=GRAF_PAGE===0?'0.3':'1';
+  var btnPrev=document.querySelector('[onclick="grafWeekNav(-1)"]');
+  if(btnPrev)btnPrev.style.opacity=startIdx===0?'0.3':'1';
 
   // Indikátory — poslední hodnota pro každé měření
   var lastVals=[null,null,null,null];
