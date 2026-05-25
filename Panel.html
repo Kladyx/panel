@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v17.7Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v17.8Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -8200,17 +8200,17 @@ h1{font-family:'Orbitron',monospace;font-size:1.35rem;font-weight:900;letter-spa
       <div class="indik" id="ind-v"><div class="indik-lbl">🌙 Po večeři</div><div class="indik-val" id="iv-v">—</div><div class="indik-unit">mmol/L</div></div>
     </div>
     <div class="chart-cnt-row">
-      <button class="cnt-btn" data-cnt="14" onclick="setGrafCnt(14)">14 dní</button>
-      <button class="cnt-btn active" data-cnt="30" onclick="setGrafCnt(30)">30 dní</button>
-      <button class="cnt-btn" data-cnt="60" onclick="setGrafCnt(60)">60 dní</button>
-      <button class="cnt-btn" data-cnt="90" onclick="setGrafCnt(90)">90 dní</button>
+      <button class="cnt-btn" onclick="grafWeekNav(-1)">◀</button>
+      <span id="graf-week-lbl" style="font-size:.58rem;letter-spacing:.06em;color:#dde4ff;padding:0 8px;min-width:110px;text-align:center;display:inline-block;">Týden</span>
+      <button class="cnt-btn" onclick="grafWeekNav(1)">▶</button>
+      <button class="cnt-btn" style="margin-left:6px;" onclick="grafWeekCur()">Aktuální</button>
     </div>
     <div class="chart-box">
-      <div class="chart-title">NA LAČNO — posledních <span id="gcnt-lbl">30</span> dní</div>
+      <div class="chart-title">NA LAČNO — <span id="gcnt-lbl">týden</span></div>
       <canvas id="gc-lacno" height="90"></canvas>
     </div>
     <div class="chart-box">
-      <div class="chart-title">PO JÍDLE — průměr dne — posledních <span id="gcnt-lbl2">30</span> dní</div>
+      <div class="chart-title">PO JÍDLE — průměr dne — <span id="gcnt-lbl2">týden</span></div>
       <canvas id="gc-jidlo" height="90"></canvas>
     </div>
   </div>
@@ -8472,16 +8472,22 @@ if(ta)ta.onclick=function(){hideAll();TAB='archiv';ta.className='tab active';doc
 if(tg)tg.onclick=function(){hideAll();TAB='graf';tg.className='tab active';document.getElementById('p-graf').className='panel on';RG();};
 
 // ── GRAF ──────────────────────────────────────────────────────────────
-var GCNT=30;
+var GRAF_WEEK_OFFSET=0;
 var gChL=null,gChJ=null;
 
-function setGrafCnt(n){
-  GCNT=n;
-  document.querySelectorAll('.cnt-btn').forEach(function(b){b.className='cnt-btn'+(parseInt(b.dataset.cnt)===n?' active':'');});
-  var l1=document.getElementById('gcnt-lbl');if(l1)l1.textContent=n;
-  var l2=document.getElementById('gcnt-lbl2');if(l2)l2.textContent=n;
-  RG();
+function getWeekRange(offset){
+  var now=new Date();
+  var day=now.getDay(); // 0=Ne,1=Po...6=So
+  var diff=(day===0)?-6:(1-day); // posun na pondělí
+  var mon=new Date(now);
+  mon.setDate(now.getDate()+diff+(offset*7));
+  mon.setHours(0,0,0,0);
+  var sun=new Date(mon);
+  sun.setDate(mon.getDate()+6);
+  return{start:mon,end:sun};
 }
+function grafWeekNav(delta){GRAF_WEEK_OFFSET+=delta;RG();}
+function grafWeekCur(){GRAF_WEEK_OFFSET=0;RG();}
 
 function grafColor(val,idx){
   if(val===null||val===undefined||isNaN(val))return'rgba(74,109,144,.5)';
@@ -8492,15 +8498,27 @@ function grafColor(val,idx){
 }
 
 function RG(){
-  // Sbírej všechny dny ze všech roků+měsíců, seřaď, vezmi posledních GCNT
+  // Aktuální týden dle offsetu (Po–Ne)
+  var range=getWeekRange(GRAF_WEEK_OFFSET);
+  var s=range.start,e=range.end;
+  function dt2str(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+  var startStr=dt2str(s),endStr=dt2str(e);
+
+  // Aktualizuj label týdne
+  var wlbl=document.getElementById('graf-week-lbl');
+  if(wlbl)wlbl.textContent=pad(s.getDate())+'.'+pad(s.getMonth()+1)+' – '+pad(e.getDate())+'.'+pad(e.getMonth()+1)+'.'+e.getFullYear();
+  var l1=document.getElementById('gcnt-lbl');if(l1)l1.textContent=pad(s.getDate())+'.'+pad(s.getMonth()+1)+' – '+pad(e.getDate())+'.'+pad(e.getMonth()+1);
+  var l2=document.getElementById('gcnt-lbl2');if(l2)l2.textContent=pad(s.getDate())+'.'+pad(s.getMonth()+1)+' – '+pad(e.getDate())+'.'+pad(e.getMonth()+1);
+
+  // Sbírej záznamy jen z tohoto týdne
   var allDays=[];
   Object.keys(DAT).forEach(function(ym){
     Object.keys(DAT[ym]).forEach(function(dt){
-      allDays.push({dt:dt,d:DAT[ym][dt]});
+      if(dt>=startStr&&dt<=endStr)allDays.push({dt:dt,d:DAT[ym][dt]});
     });
   });
   allDays.sort(function(a,b){return a.dt.localeCompare(b.dt);});
-  var slice=allDays.slice(-GCNT);
+  var slice=allDays;
 
   // Indikátory — poslední hodnota pro každé měření
   var lastVals=[null,null,null,null];
@@ -8547,8 +8565,8 @@ function RG(){
           borderWidth:1.5,
           pointBackgroundColor:colors,
           pointBorderColor:colors,
-          pointRadius:GCNT<=30?4:2,
-          pointHoverRadius:GCNT<=30?6:4,
+          pointRadius:5,
+          pointHoverRadius:7,
           tension:.35,
           fill:true,
           backgroundColor:'rgba(0,245,255,.04)',
@@ -8571,7 +8589,7 @@ function RG(){
           }}
         },
         scales:{
-          x:{ticks:{color:'rgba(200,216,232,.3)',font:{size:8,family:'Share Tech Mono'},maxRotation:60,autoSkip:true,maxTicksLimit:GCNT<=30?15:GCNT<=60?10:8},grid:{color:'rgba(255,255,255,.03)'}},
+          x:{ticks:{color:'rgba(200,216,232,.3)',font:{size:8,family:'Share Tech Mono'},maxRotation:60,autoSkip:false,maxTicksLimit:7},grid:{color:'rgba(255,255,255,.03)'}},
           y:{min:yMin,max:yMax,ticks:{color:'rgba(200,216,232,.4)',font:{size:9},stepSize:1},grid:{color:'rgba(255,255,255,.04)'}}
         }
       }
