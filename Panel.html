@@ -7537,6 +7537,15 @@ let _dataInited=false;
 _gateAuth.onAuthStateChanged(user=>{
   if(user&&user.email){_hideLock();_initData();}else{_showLock();}
 });
+// Okamžitá kontrola – user už může být přihlášen (srcdoc se načte po gate přihlášení)
+try{
+  var _cu=_gateAuth.currentUser;
+  if(_cu&&_cu.email){_hideLock();_initData();}
+  // Fallback: zkus přečíst user přímo z parent gate
+  else if(parent&&parent._gateAuth&&parent._gateAuth.currentUser&&parent._gateAuth.currentUser.email){
+    _hideLock();_initData();
+  }
+}catch(e){}
 function _platbyGoogleSignIn(){
   // Uvnitř Panelu deleguj přihlášení na hlavní gate (popup z top-level okna, ne z iframe)
   try{
