@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v20.1Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v17.7Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v20.1Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v17.7Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,16 +211,11 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v20.1Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v17.7Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
       <div class="tclock-date" id="tc-date">···</div>
-    </div>
-    <div class="tdiv"></div>
-    <div id="net-info" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:80px;">
-      <div id="net-type" style="font-family:'Courier New',monospace;font-size:0.6rem;font-weight:bold;color:#00ff88;letter-spacing:2px;text-shadow:0 0 8px rgba(0,255,136,0.5);">📶 ···</div>
-      <div id="net-speed" style="font-family:'Courier New',monospace;font-size:0.6rem;color:#00d4ff;letter-spacing:1px;text-shadow:0 0 6px rgba(0,212,255,0.4);">⬇ ···</div>
     </div>
     <button id="signout-btn" onclick="googleSignOut()">⏻ ODHLÁSIT</button>
     <div class="tdiv"></div>
@@ -338,7 +333,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v20.1Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v17.7Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -722,7 +717,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v20.1Kl</div>
+  <div class="version">v17.7Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -6547,16 +6542,13 @@ header h1{font-family:'Orbitron',monospace;font-size:1.55rem;font-weight:900;let
 }
 
 @media print{
-  body:not(.gluco-printing) #gluco-print-layer{display:none!important;}
-  body.gluco-printing > *:not(#gluco-print-layer){display:none!important;}
-  body.gluco-printing #gluco-print-layer{display:block!important;position:fixed!important;top:0!important;left:0!important;width:100%!important;background:#fff!important;color:#111!important;padding:20px!important;font-family:Arial,sans-serif!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  body.gluco-printing #gluco-print-layer table{width:100%;border-collapse:collapse;}
-  body.gluco-printing #gluco-print-layer th{background:#222!important;color:#fff!important;padding:6px 10px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  body.gluco-printing #gluco-print-layer td{padding:5px 10px;border-bottom:1px solid #ccc;color:#111!important;}
+  body{background:#fff!important;color:#111!important;}
+  header,nav,.nav-tabs,.month-bar,.month-label,.panel,.ei-section,#report-preview{display:none!important;}
   #report-print-target{display:block!important;padding:16px!important;background:#fff!important;}
+  #report-preview-print .rpt-year-title{background:#111!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  #report-preview-print .rpt-month-header{background:#f0f0f0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
 }
 #report-print-target{display:none;}
-#gluco-print-layer{display:none;}
 
     /* Brand logos footer */
     .app-brand-bar {
@@ -7388,28 +7380,6 @@ header h1{font-family:'Orbitron',monospace;font-size:1.55rem;font-weight:900;let
   <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
   <div class="progress-label" id="progress-label">0 % uhrazeno</div>
 </div>
-
-<!-- PŘÍJMY -->
-<div class="summary" style="margin-top:18px;border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.04);">
-  <div class="summary-title" style="color:#00ff88;">// Příjmy – <span id="prijmy-month-label">měsíc</span></div>
-  <div class="add-form" style="display:block;margin-bottom:10px;">
-    <div class="add-row">
-      <input class="add-input" id="inp-pr-date" type="date" style="max-width:150px;"/>
-      <input class="add-input amount-input" id="inp-pr-amount" type="number" placeholder="Částka (Kč)" min="0"/>
-      <input class="add-input" id="inp-pr-note" type="text" placeholder="Popis (volitelné)" maxlength="60" style="flex:2;"/>
-      <button class="add-submit" id="btn-pr-add" style="background:rgba(0,255,136,.15);border-color:rgba(0,255,136,.5);color:#00ff88;" onclick="prijem_add()">＋ Přidat</button>
-    </div>
-  </div>
-  <div id="prijmy-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
-  <div class="summary-total" style="border-color:rgba(0,255,136,.3);">
-    <span class="total-label" style="color:#00ff88;">CELKEM PŘÍJMY</span>
-    <span class="total-amount" id="prijmy-total" style="color:#00ff88;">0 Kč</span>
-  </div>
-  <div class="summary-row" style="margin-top:8px;border-color:rgba(255,79,216,.2);">
-    <span class="sum-label">Příjmy − Výdaje</span>
-    <span class="sum-val" id="bilance-val" style="color:#ff4fd8;font-weight:bold;">— Kč</span>
-  </div>
-</div>
 <div class="ei-section">
   <div class="ei-title">// Záloha dat · Export / Import</div>
   <div class="ei-row">
@@ -7486,16 +7456,38 @@ let currentMonth=4, items=[], _platbySaving=false;
 
 // ── FIREBASE (sdílíme vstupní gate Panelu, fallback pro standalone otevření) ──
 const _fbCfg={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
-let _gateApp=null,_gateAuth=null,_db=null,_platbyRef=null;
+let _gateApp=null,_gateAuth=null,_db=null;
+try{
+  // Same-origin iframe (srcdoc) – přebíráme Firebase 'gate-app' instanci z parent Panelu
+  _gateApp = parent.firebase.app('gate-app');
+  _gateAuth = _gateApp.auth();
+  _db = _gateApp.database();
+}catch(e){
+  // Fallback: Platby otevřené standalone mimo Panel
+  if(!firebase.apps.length) firebase.initializeApp(_fbCfg);
+  _gateAuth = firebase.auth();
+  _db = firebase.database();
+}
+let _platbyRef=_db.ref('platby/'+currentYear);
 function _setSyncStatus(msg,color){const el=document.getElementById('sync-dot');if(el){el.textContent=msg;el.style.color=color||'#4a6d90';}}
 
 function _showLock(){
   document.getElementById('platby-lock').style.display='flex';
   document.getElementById('platby-main').style.display='none';
+  try{
+    const saved=localStorage.getItem('platby_pw_remember');
+    if(saved){
+      const pwField=document.getElementById('platby-pw');
+      const cb=document.getElementById('platby-remember');
+      if(pwField) pwField.value=atob(saved);
+      if(cb) cb.checked=true;
+    }
+  }catch(e){}
 }
 function _hideLock(){
   document.getElementById('platby-lock').style.display='none';
   document.getElementById('platby-main').style.display='block';
+  // Zobrazit aktuálně přihlášeného usera
   if(_gateAuth && _gateAuth.currentUser && _gateAuth.currentUser.email){
     document.getElementById('user-email').textContent='🔐 '+_gateAuth.currentUser.email;
     document.getElementById('user-logout').style.display='inline-block';
@@ -7503,43 +7495,10 @@ function _hideLock(){
 }
 
 let _dataInited=false;
-
-function _setupPlatbyAuth(auth, db) {
-  _gateAuth = auth;
-  _db = db;
-  _platbyRef = _db.ref('platby/'+currentYear);
-  // Auth listener – přebírá session ze vstupní gate Panelu (nebo standalone Firebase)
-  _gateAuth.onAuthStateChanged(user=>{
-    if(user&&user.email){_hideLock();_initData();}else{_showLock();}
-  });
-}
-
-// Přebíráme parent._gateAuth s retry – řeší timing race condition
-// (Panel načítá Firebase asynchronně; platby se může spustit dřív než je gate-app připravena)
-(function _connectAuth(attempt) {
-  try {
-    if (parent && parent !== self && parent._gateAuth) {
-      // Úspěch: parent má gate-app auth připravenou – použijeme přímou referenci
-      let pdb = null;
-      try { pdb = parent.firebase.app('gate-app').database(); } catch(e) {}
-      if (!pdb) {
-        // DB fallback – vlastní instance se stejným configem
-        try { if(!firebase.apps.length) firebase.initializeApp(_fbCfg); } catch(e2) {}
-        pdb = firebase.database();
-      }
-      _setupPlatbyAuth(parent._gateAuth, pdb);
-      return;
-    }
-  } catch(e) {}
-  // parent._gateAuth ještě není k dispozici → zkusíme znovu (max 8x po 250ms = 2s)
-  if (attempt < 8) {
-    setTimeout(()=>_connectAuth(attempt+1), 250);
-  } else {
-    // Standalone fallback (platby otevřené mimo panel, nebo panel nenačetl Firebase)
-    try { if(!firebase.apps.length) firebase.initializeApp(_fbCfg); } catch(e) {}
-    _setupPlatbyAuth(firebase.auth(), firebase.database());
-  }
-})(0);
+// Auth listener – přebírá session ze vstupní gate Panelu
+_gateAuth.onAuthStateChanged(user=>{
+  if(user&&user.email){_hideLock();_initData();}else{_showLock();}
+});
 function _platbyGoogleSignIn(){
   // Uvnitř Panelu deleguj přihlášení na hlavní gate (popup z top-level okna, ne z iframe)
   try{
@@ -7679,7 +7638,7 @@ function updateSummary(){
   document.getElementById('progress').style.width=pct+'%';
   document.getElementById('progress-label').textContent=pct+' % uhrazeno';
 }
-function switchMonth(m){currentMonth=m;items=loadMonth(m);renderMonthBar();renderCards();updateSummary();prijem_load();document.getElementById('add-form').classList.remove('open');}
+function switchMonth(m){currentMonth=m;items=loadMonth(m);renderMonthBar();renderCards();updateSummary();document.getElementById('add-form').classList.remove('open');}
 document.getElementById('add-toggle').onclick=()=>document.getElementById('add-form').classList.toggle('open');
 document.getElementById('add-submit').onclick=()=>{
   const name=document.getElementById('inp-name').value.trim();
@@ -7758,78 +7717,6 @@ document.getElementById('user-logout').onclick=()=>{
   // Standalone fallback
   _gateAuth.signOut().then(()=>location.reload());
 };
-// PRIJMY
-var prijmy=[];
-function pr_key(){return 'prijmy_'+currentYear+'_'+currentMonth;}
-var _prListener=null;
-function prijem_load(){
-  if(_prListener){try{_db.ref('prijmy/'+currentYear+'/'+currentMonth).off('value',_prListener);}catch(e){}}
-  _prListener=_db.ref('prijmy/'+currentYear+'/'+currentMonth).on('value',function(snap){
-    if(_platbySaving)return;
-    var remote=snap.val();
-    if(remote&&Array.isArray(remote)){
-      prijmy=remote;
-      localStorage.setItem(pr_key(),JSON.stringify(prijmy));
-    } else {
-      try{prijmy=JSON.parse(localStorage.getItem(pr_key()))||[];}catch(e){prijmy=[];}
-    }
-    prijem_render();
-  });
-}
-function prijem_save(){
-  localStorage.setItem(pr_key(),JSON.stringify(prijmy));
-  try{_db.ref('prijmy/'+currentYear+'/'+currentMonth).set(prijmy);}catch(e){}
-  prijem_render();
-}
-function prijem_render(){
-  var list=document.getElementById('prijmy-list');
-  var totalEl=document.getElementById('prijmy-total');
-  var bilEl=document.getElementById('bilance-val');
-  var mlEl=document.getElementById('prijmy-month-label');
-  if(mlEl)mlEl.textContent=MONTHS[currentMonth]+' '+currentYear;
-  if(!list)return;
-  list.innerHTML='';
-  var total=0;
-  for(var i=0;i<prijmy.length;i++){
-    var p=prijmy[i];
-    total+=p.amount;
-    var row=document.createElement('div');
-    row.style.cssText='display:flex;align-items:center;gap:8px;padding:6px 8px;background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.2);border-radius:4px;font-family:monospace;font-size:.72rem;';
-    row.innerHTML='<span style="color:#aaa;min-width:85px;">'+p.date+'</span>'
-      +'<span style="color:#00ff88;font-weight:bold;min-width:90px;">'+p.amount.toLocaleString('cs-CZ')+' Kc</span>'
-      +'<span style="color:#ccc;flex:1;">'+p.note+'</span>'
-      +'<button onclick="prijem_del('+i+')" style="background:none;border:1px solid rgba(255,68,102,.4);color:#ff4466;border-radius:3px;cursor:pointer;padding:2px 7px;font-size:.65rem;">X</button>';
-    list.appendChild(row);
-  }
-  if(totalEl)totalEl.textContent=total.toLocaleString('cs-CZ')+' Kc';
-  if(bilEl){
-    var vydaje=0;
-    for(var j=0;j<items.length;j++){if(items[j].paid)vydaje+=items[j].amount;}
-    var bil=total-vydaje;
-    bilEl.textContent=(bil>=0?'+':'')+bil.toLocaleString('cs-CZ')+' Kc';
-    bilEl.style.color=bil>=0?'#00ff88':'#ff4466';
-  }
-}
-function prijem_add(){
-  var date=document.getElementById('inp-pr-date').value;
-  var amount=parseInt(document.getElementById('inp-pr-amount').value,10);
-  var note=document.getElementById('inp-pr-note').value.trim();
-  if(!date){alert('Zadej datum.');return;}
-  if(!amount||amount<=0){alert('Zadej platnou castku.');return;}
-  prijmy.push({date:date,amount:amount,note:note});
-  prijem_save();
-  document.getElementById('inp-pr-date').value='';
-  document.getElementById('inp-pr-amount').value='';
-  document.getElementById('inp-pr-note').value='';
-}
-function prijem_del(i){
-  if(confirm('Smazat prijem?')){prijmy.splice(i,1);prijem_save();}
-}
-(function(){var d=document.getElementById('inp-pr-date');if(d)d.value=new Date().toISOString().split('T')[0];})();
-// Expose income functions globally (defined inside _initData closure)
-window.prijem_add = prijem_add;
-window.prijem_del = prijem_del;
-prijem_load();
 initVer();fillMonthSelects();
 } // konec _initData
 <\/script>
@@ -8209,7 +8096,7 @@ h1{font-family:'Orbitron',monospace;font-size:1.35rem;font-weight:900;letter-spa
 .indik-lbl{font-size:.44rem;letter-spacing:.08em;color:rgba(200,216,232,.35);text-transform:uppercase;margin-bottom:4px;}
 .indik-val{font-family:'Orbitron',monospace;font-size:1.25rem;font-weight:700;line-height:1;}
 .indik-unit{font-size:.42rem;color:rgba(200,216,232,.3);margin-top:2px;}
-.chart-box{background:#0e1118;border:1px solid rgba(0,245,255,.12);border-radius:8px;padding:6px 8px 6px;margin-bottom:6px;position:relative;}
+.chart-box{background:#0e1118;border:1px solid rgba(0,245,255,.12);border-radius:8px;padding:10px 8px 8px;margin-bottom:8px;position:relative;}
 .chart-title{font-size:.5rem;letter-spacing:.1em;color:rgba(200,216,232,.35);text-transform:uppercase;margin-bottom:8px;text-align:center;}
 .chart-cnt-row{display:flex;gap:6px;justify-content:center;margin-bottom:10px;}
 .cnt-btn{font-family:'Share Tech Mono',monospace;font-size:.58rem;padding:4px 12px;border-radius:4px;border:1px solid rgba(0,245,255,.3);background:rgba(0,245,255,.05);color:rgba(200,216,232,.6);cursor:pointer;}
@@ -8313,18 +8200,18 @@ h1{font-family:'Orbitron',monospace;font-size:1.35rem;font-weight:900;letter-spa
       <div class="indik" id="ind-v"><div class="indik-lbl">🌙 Po večeři</div><div class="indik-val" id="iv-v">—</div><div class="indik-unit">mmol/L</div></div>
     </div>
     <div class="chart-cnt-row">
-      <button class="cnt-btn" onclick="grafWeekNav(-1)">◀</button>
-      <span id="graf-week-lbl" style="font-size:.58rem;letter-spacing:.06em;color:#dde4ff;padding:0 8px;min-width:110px;text-align:center;display:inline-block;">Týden</span>
-      <button class="cnt-btn" onclick="grafWeekNav(1)">▶</button>
-      <button class="cnt-btn" style="margin-left:6px;" onclick="grafWeekCur()">Aktuální</button>
+      <button class="cnt-btn" data-cnt="14" onclick="setGrafCnt(14)">14 dní</button>
+      <button class="cnt-btn active" data-cnt="30" onclick="setGrafCnt(30)">30 dní</button>
+      <button class="cnt-btn" data-cnt="60" onclick="setGrafCnt(60)">60 dní</button>
+      <button class="cnt-btn" data-cnt="90" onclick="setGrafCnt(90)">90 dní</button>
     </div>
     <div class="chart-box">
-      <div class="chart-title">NA LAČNO — <span id="gcnt-lbl">týden</span></div>
-      <canvas id="gc-lacno" height="60"></canvas>
+      <div class="chart-title">NA LAČNO — posledních <span id="gcnt-lbl">30</span> dní</div>
+      <canvas id="gc-lacno" height="90"></canvas>
     </div>
     <div class="chart-box">
-      <div class="chart-title">PO JÍDLE — průměr dne — <span id="gcnt-lbl2">týden</span></div>
-      <canvas id="gc-jidlo" height="60"></canvas>
+      <div class="chart-title">PO JÍDLE — průměr dne — posledních <span id="gcnt-lbl2">30</span> dní</div>
+      <canvas id="gc-jidlo" height="90"></canvas>
     </div>
   </div>
 </div>
@@ -8585,18 +8472,16 @@ if(ta)ta.onclick=function(){hideAll();TAB='archiv';ta.className='tab active';doc
 if(tg)tg.onclick=function(){hideAll();TAB='graf';tg.className='tab active';document.getElementById('p-graf').className='panel on';RG();};
 
 // ── GRAF ──────────────────────────────────────────────────────────────
-var GRAF_PAGE=0;
-var PAGE_SIZE=4;
+var GCNT=30;
 var gChL=null,gChJ=null;
 
-function grafWeekNav(delta){
-  GRAF_PAGE+=delta;
-  if(GRAF_PAGE<0)GRAF_PAGE=0;
+function setGrafCnt(n){
+  GCNT=n;
+  document.querySelectorAll('.cnt-btn').forEach(function(b){b.className='cnt-btn'+(parseInt(b.dataset.cnt)===n?' active':'');});
+  var l1=document.getElementById('gcnt-lbl');if(l1)l1.textContent=n;
+  var l2=document.getElementById('gcnt-lbl2');if(l2)l2.textContent=n;
   RG();
 }
-function grafWeekCur(){GRAF_PAGE=0;RG();}
-window.grafWeekNav=grafWeekNav;
-window.grafWeekCur=grafWeekCur;
 
 function grafColor(val,idx){
   if(val===null||val===undefined||isNaN(val))return'rgba(74,109,144,.5)';
@@ -8607,7 +8492,7 @@ function grafColor(val,idx){
 }
 
 function RG(){
-  // Sbírej všechny záznamy, seřaď
+  // Sbírej všechny dny ze všech roků+měsíců, seřaď, vezmi posledních GCNT
   var allDays=[];
   Object.keys(DAT).forEach(function(ym){
     Object.keys(DAT[ym]).forEach(function(dt){
@@ -8615,29 +8500,7 @@ function RG(){
     });
   });
   allDays.sort(function(a,b){return a.dt.localeCompare(b.dt);});
-
-  // Stránkování: GRAF_PAGE=0 → poslední 4, GRAF_PAGE=1 → předchozí 4 atd.
-  var total=allDays.length;
-  var endIdx=total-(GRAF_PAGE*PAGE_SIZE);
-  var startIdx=endIdx-PAGE_SIZE;
-  if(startIdx<0)startIdx=0;
-  if(endIdx<=0){GRAF_PAGE--;endIdx=total-(GRAF_PAGE*PAGE_SIZE);startIdx=endIdx-PAGE_SIZE;if(startIdx<0)startIdx=0;}
-  var slice=allDays.slice(startIdx,endIdx);
-
-  // Aktualizuj labely
-  var rangeStr=slice.length?
-    (slice[0].dt.split('-').slice(1).join('.')+' – '+slice[slice.length-1].dt.split('-').slice(1).join('.')):
-    '—';
-  var wlbl=document.getElementById('graf-week-lbl');
-  if(wlbl)wlbl.textContent=rangeStr+' ('+slice.length+' zázn.)';
-  var l1=document.getElementById('gcnt-lbl');if(l1)l1.textContent=rangeStr;
-  var l2=document.getElementById('gcnt-lbl2');if(l2)l2.textContent=rangeStr;
-
-  // Šipka ▶ — skryj pokud jsme na nejnovějších
-  var btnNext=document.querySelector('[onclick="grafWeekNav(1)"]');
-  if(btnNext)btnNext.style.opacity=GRAF_PAGE===0?'0.3':'1';
-  var btnPrev=document.querySelector('[onclick="grafWeekNav(-1)"]');
-  if(btnPrev)btnPrev.style.opacity=startIdx===0?'0.3':'1';
+  var slice=allDays.slice(-GCNT);
 
   // Indikátory — poslední hodnota pro každé měření
   var lastVals=[null,null,null,null];
@@ -8684,8 +8547,8 @@ function RG(){
           borderWidth:1.5,
           pointBackgroundColor:colors,
           pointBorderColor:colors,
-          pointRadius:5,
-          pointHoverRadius:7,
+          pointRadius:GCNT<=30?4:2,
+          pointHoverRadius:GCNT<=30?6:4,
           tension:.35,
           fill:true,
           backgroundColor:'rgba(0,245,255,.04)',
@@ -8693,7 +8556,7 @@ function RG(){
         }]
       },
       options:{
-        responsive:true,maintainAspectRatio:true,aspectRatio:4,
+        responsive:true,maintainAspectRatio:false,
         animation:{duration:300},
         plugins:{
           legend:{display:false},
@@ -8708,7 +8571,7 @@ function RG(){
           }}
         },
         scales:{
-          x:{ticks:{color:'rgba(200,216,232,.3)',font:{size:8,family:'Share Tech Mono'},maxRotation:60,autoSkip:false,maxTicksLimit:7},grid:{color:'rgba(255,255,255,.03)'}},
+          x:{ticks:{color:'rgba(200,216,232,.3)',font:{size:8,family:'Share Tech Mono'},maxRotation:60,autoSkip:true,maxTicksLimit:GCNT<=30?15:GCNT<=60?10:8},grid:{color:'rgba(255,255,255,.03)'}},
           y:{min:yMin,max:yMax,ticks:{color:'rgba(200,216,232,.4)',font:{size:9},stepSize:1},grid:{color:'rgba(255,255,255,.04)'}}
         }
       }
@@ -8721,7 +8584,7 @@ function RG(){
     var old=document.getElementById(id);if(!old)return null;
     var parent=old.parentNode;
     var newCanvas=document.createElement('canvas');
-    newCanvas.id=id;newCanvas.height=60;
+    newCanvas.id=id;newCanvas.height=90;
     parent.replaceChild(newCanvas,old);
     return new Chart(newCanvas,chartCfg(labels,vals,colors,yMin,yMax,refLo,refHi));
   }
@@ -8790,7 +8653,7 @@ if(bt)bt.onclick=function(){
   var rows='';
   days.forEach(function(dt){
     var d=monthDat[dt];
-    var dtp=dt.split('-');var dp=dtp[2]+'.'+dtp[1]+'.'+dtp[0];
+    var dp=dt.split('-').slice(1).join('.');
     rows+='<tr><td>'+dp+'</td>';
     KEYS.forEach(function(k,i){
       var v=parseFloat(d[k]);
@@ -8798,48 +8661,48 @@ if(bt)bt.onclick=function(){
       if(!isNaN(v)){sums[i]+=v;cnts[i]++;}
       rows+='<td>'+vstr+'</td>';
     });
+    // Tlak
     var sys=parseFloat(d.sys);var dia=parseFloat(d.dia);var puls=parseFloat(d.puls);
+    var sysStr=!isNaN(sys)?Math.round(sys):'—';
+    var diaStr=!isNaN(dia)?Math.round(dia):'—';
+    var pulsStr=!isNaN(puls)?Math.round(puls):'—';
     if(!isNaN(sys)){sumSys+=sys;cntSys++;}
     if(!isNaN(dia)){sumDia+=dia;cntDia++;}
     if(!isNaN(puls)){sumPuls+=puls;cntPuls++;}
-    rows+='<td>'+(isNaN(sys)?'—':Math.round(sys))+'</td>';
-    rows+='<td>'+(isNaN(dia)?'—':Math.round(dia))+'</td>';
-    rows+='<td>'+(isNaN(puls)?'—':Math.round(puls))+'</td>';
+    rows+='<td>'+sysStr+'</td>';
+    rows+='<td>'+diaStr+'</td>';
+    rows+='<td>'+pulsStr+'</td>';
     rows+='</tr>';
   });
-  var avgRow='<tr style="font-weight:bold;border-top:2px solid #333;background:#f0f0f0;"><td>PRŮMĚR</td>';
+  var avgRow='<tr style="border-top:2px solid #333;font-weight:bold;background:#f5f5f5;"><td>PRŮMĚR</td>';
   KEYS.forEach(function(k,i){avgRow+='<td>'+(cnts[i]?(sums[i]/cnts[i]).toFixed(1):'—')+'</td>';});
   avgRow+='<td>'+(cntSys?Math.round(sumSys/cntSys):'—')+'</td>';
   avgRow+='<td>'+(cntDia?Math.round(sumDia/cntDia):'—')+'</td>';
   avgRow+='<td>'+(cntPuls?Math.round(sumPuls/cntPuls):'—')+'</td>';
   avgRow+='</tr>';
-  var printHTML='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Glukoza '+title+'</title>'+
-    '<style>'+
-    'body{font-family:Arial,sans-serif;font-size:13px;color:#000;margin:20px;background:#fff;}'+
+  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Glukóza + Tlak – '+title+'</title><style>'+
+    'body{font-family:Arial,sans-serif;font-size:12px;color:#111;margin:20px;}'+
     'h2{font-size:16px;margin-bottom:4px;}'+
-    '.sub{font-size:11px;color:#444;margin-bottom:14px;}'+
-    'table{width:100%;border-collapse:collapse;}'+
-    'th{background:#222;color:#fff;padding:7px 9px;text-align:left;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
-    'td{padding:6px 9px;border-bottom:1px solid #bbb;color:#000;}'+
-    '@media print{button{display:none;}}'+
+    '.sub{font-size:11px;color:#555;margin-bottom:16px;}'+
+    'table{width:100%;border-collapse:collapse;margin-bottom:16px;}'+
+    'th{background:#1a1a2e;color:#fff;padding:7px 10px;text-align:left;font-size:11px;}'+
+    'th.tlak{background:#2e1a1a;}'+
+    'td{padding:6px 10px;border-bottom:1px solid #ddd;}'+
+    'tr:last-child td{border-bottom:none;}'+
+    '.ref{font-size:10px;color:#666;margin-top:8px;}'+
+    '@media print{body{margin:10px;}button{display:none;}}'+
     '</style></head><body>'+
-    '<h2>Glukoza + Tlak — '+title+'</h2>'+
-    '<div class="sub">Zaznamu: '+days.length+' | Vytisteno: '+new Date().toLocaleDateString('cs-CZ')+'</div>'+
-    '<table><thead><tr><th>Datum</th><th>Lacno</th><th>Snidane</th><th>Obed</th><th>Vecere</th><th>SYS</th><th>DIA</th><th>Puls</th></tr></thead>'+
+    '<h2>🩸 Glukóza + 💓 Tlak – '+title+'</h2>'+
+    '<div class="sub">Celkem záznamů: '+days.length+' dní &nbsp;|&nbsp; Vytištěno: '+new Date().toLocaleDateString('cs-CZ')+'</div>'+
+    '<table>'+
+    '<thead><tr><th>Datum</th><th>Na lačno</th><th>Po snídani</th><th>Po obědě</th><th>Po večeři</th><th class="tlak">SYS (mmHg)</th><th class="tlak">DIA (mmHg)</th><th class="tlak">Puls</th></tr></thead>'+
     '<tbody>'+rows+avgRow+'</tbody></table>'+
-    '<br><button onclick="window.print()" style="padding:8px 20px;font-size:14px;">Tisknout</button>'+
+    '<div class="ref">Glukóza (mmol/L): Na lačno &lt;5,6 normální | 5,6–7,0 zvýšená | &gt;7,0 vysoká &nbsp;|&nbsp; Po jídle &lt;7,8 normální | 7,8–11,0 zvýšená | &gt;11,0 vysoká<br/>'+
+    'Tlak: SYS &lt;120 normální | 120–140 zvýšený | &gt;140 vysoký</div>'+
+    '<br/><button onclick="window.print()">Tisk</button>'+
     '</body></html>';
-  var blob=new Blob([printHTML],{type:'text/html;charset=utf-8'});
-  var url=URL.createObjectURL(blob);
-  try{
-    (window.top||window).open(url,'_blank');
-  }catch(e){
-    var a=document.createElement('a');
-    a.href=url;a.target='_blank';
-    document.body.appendChild(a);a.click();
-    setTimeout(function(){document.body.removeChild(a);},500);
-  }
-  setTimeout(function(){URL.revokeObjectURL(url);},5000);
+  var w=window.open('','_blank','width=900,height=600');
+  if(w){w.document.write(html);w.document.close();setTimeout(function(){w.print();},500);}
 };
 
 // Přidat den z přehledu
@@ -16668,29 +16531,6 @@ window.addEventListener('unhandledrejection', function(event) {
   }
   updateClock();
   setInterval(updateClock, 1000);
-})();
-
-// NETWORK INFO – WiFi typ + download speed
-(function(){
-  function updateNetInfo() {
-    var typeEl = document.getElementById("net-type");
-    var speedEl = document.getElementById("net-speed");
-    if (!typeEl || !speedEl) return;
-    var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if (conn) {
-      var type = conn.effectiveType || conn.type || "?";
-      var down = conn.downlink ? conn.downlink + " Mb/s" : "? Mb/s";
-      var icon = (conn.type === "wifi" || !conn.type) ? "📶" : "📡";
-      typeEl.textContent = icon + " " + type.toUpperCase();
-      speedEl.textContent = "⬇ " + down;
-    } else {
-      typeEl.textContent = "📶 N/A";
-      speedEl.textContent = "⬇ N/A";
-    }
-  }
-  updateNetInfo();
-  setInterval(updateNetInfo, 10000);
-  if (navigator.connection) navigator.connection.addEventListener("change", updateNetInfo);
 })();
 
 // TAPO P115 – ovládání přes Firebase command (bridge na PC)
