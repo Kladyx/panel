@@ -7409,6 +7409,14 @@ header h1{font-family:'Orbitron',monospace;font-size:1.55rem;font-weight:900;let
     <span class="sum-label">Příjmy − Výdaje</span>
     <span class="sum-val" id="bilance-val" style="color:#ff4fd8;font-weight:bold;">— Kč</span>
   </div>
+  <div style="margin-top:10px;text-align:right;">
+    <button onclick="prijem_archiv_toggle()" id="btn-prijem-archiv" style="background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.3);color:#00f5ff;border-radius:4px;padding:5px 14px;cursor:pointer;font-family:monospace;font-size:.68rem;letter-spacing:.1em;">📂 ARCHIV PŘÍJMŮ</button>
+  </div>
+</div>
+<!-- ARCHIV PŘÍJMŮ MODAL -->
+<div id="prijem-archiv-box" style="display:none;margin-top:10px;background:rgba(0,245,255,.04);border:1px solid rgba(0,245,255,.2);border-radius:6px;padding:12px;">
+  <div style="font-family:'Orbitron',monospace;font-size:.68rem;letter-spacing:.15em;color:#00f5ff;margin-bottom:10px;">// ARCHIV PŘÍJMŮ – všechny měsíce</div>
+  <div id="prijem-archiv-list"></div>
 </div>
 <div class="ei-section">
   <div class="ei-title">// Záloha dat · Export / Import</div>
@@ -7668,7 +7676,7 @@ function updateSummary(){
   document.getElementById('progress').style.width=pct+'%';
   document.getElementById('progress-label').textContent=pct+' % uhrazeno';
 }
-function switchMonth(m){currentMonth=m;items=loadMonth(m);renderMonthBar();renderCards();updateSummary();document.getElementById('add-form').classList.remove('open');}
+function switchMonth(m){currentMonth=m;items=loadMonth(m);renderMonthBar();renderCards();updateSummary();prijem_load();document.getElementById('add-form').classList.remove('open');}
 document.getElementById('add-toggle').onclick=()=>document.getElementById('add-form').classList.toggle('open');
 document.getElementById('add-submit').onclick=()=>{
   const name=document.getElementById('inp-name').value.trim();
@@ -7799,6 +7807,48 @@ function prijem_add(){
 }
 function prijem_del(i){
   if(confirm('Smazat prijem?')){prijmy.splice(i,1);prijem_save();}
+}
+function prijem_archiv_toggle(){
+  var box=document.getElementById('prijem-archiv-box');
+  if(box.style.display==='none'){prijem_archiv_render();box.style.display='block';}
+  else{box.style.display='none';}
+}
+function prijem_archiv_render(){
+  var el=document.getElementById('prijem-archiv-list');
+  if(!el)return;
+  // Sbírej všechny klíče prijmy_YYYY_M z localStorage
+  var entries=[];
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(k&&k.match(/^prijmy_\d{4}_\d{1,2}$/)){
+      var parts=k.split('_');
+      var y=parseInt(parts[1]);var m=parseInt(parts[2]);
+      var data=[];
+      try{data=JSON.parse(localStorage.getItem(k))||[];}catch(e){}
+      if(data.length>0)entries.push({year:y,month:m,data:data});
+    }
+  }
+  entries.sort(function(a,b){return b.year!==a.year?b.year-a.year:b.month-a.month;});
+  if(entries.length===0){el.innerHTML='<div style="color:#666;font-family:monospace;font-size:.72rem;padding:8px;">Žádné záznamy</div>';return;}
+  var html='';
+  for(var j=0;j<entries.length;j++){
+    var e=entries[j];
+    var total=0;for(var x=0;x<e.data.length;x++){total+=e.data[x].amount;}
+    var isActive=(e.year===currentYear&&e.month===currentMonth);
+    html+='<div style="margin-bottom:10px;border:1px solid rgba(0,255,136,'+(isActive?'.5':'.15')+');border-radius:4px;overflow:hidden;">';
+    html+='<div style="background:rgba(0,255,136,'+(isActive?'.15':'.06')+');padding:6px 10px;display:flex;justify-content:space-between;align-items:center;">';
+    html+='<span style="font-family:\'Orbitron\',monospace;font-size:.68rem;color:#00ff88;letter-spacing:.1em;">'+(isActive?'▶ ':'')+MONTHS[e.month]+' '+e.year+'</span>';
+    html+='<span style="font-family:monospace;font-size:.72rem;color:#00ff88;font-weight:bold;">'+total.toLocaleString('cs-CZ')+' Kč</span></div>';
+    for(var r=0;r<e.data.length;r++){
+      var row=e.data[r];
+      html+='<div style="display:flex;gap:8px;padding:4px 10px;font-family:monospace;font-size:.68rem;border-top:1px solid rgba(0,255,136,.08);">';
+      html+='<span style="color:#888;min-width:85px;">'+row.date+'</span>';
+      html+='<span style="color:#00ff88;min-width:90px;">'+row.amount.toLocaleString('cs-CZ')+' Kč</span>';
+      html+='<span style="color:#ccc;">'+row.note+'</span></div>';
+    }
+    html+='</div>';
+  }
+  el.innerHTML=html;
 }
 (function(){var d=document.getElementById('inp-pr-date');if(d)d.value=new Date().toISOString().split('T')[0];})();
 prijem_load();
