@@ -14669,7 +14669,12 @@ var STATIONS = [
   { id:'radio1',    name:'Radio 1',          desc:'Alternative',       icon:'📡', url:'https://icecast6.play.cz/radio1-128.mp3' },
   { id:'impuls',    name:'Rádio Impuls',     desc:'České hity',        icon:'⚡', url:'https://icecast5.play.cz/impuls128.mp3' },
   { id:'intense',    name:'Intense Radio',    desc:'Dance & House NL',  icon:'⚡', url:'https://intenseradio.live-streams.nl/live' },
-  { id:'funkstar',  name:'Funkstar Radio',   desc:'Funk & Soul CZ',    icon:'🎶', url:'https://funkstar.radioca.st/stream' }
+  { id:'funkstar',  name:'Funkstar Radio',   desc:'Funk & Soul CZ',    icon:'🎶', url:'https://funkstar.radioca.st/stream' },
+  { id:'prysm',     name:'Prysm Radio 1',    desc:'Electronic · FR',   icon:'🇫🇷', url:'https://stream.prysmradio.com/prysm-radio-1' },
+  { id:'gayfm',     name:'Gay FM',           desc:'Dance · DE',        icon:'🏳️‍🌈', url:'https://icepool.silvacast.com/GAYFM.mp3' },
+  { id:'hitsradio', name:'Hits Radio',       desc:'Zeno.fm Hits',      icon:'🔥', url:'https://stream.zeno.fm/x48wft621s8uv' },
+  { id:'afc',       name:'Amsterdam Funk',   desc:'Funk/Soul/R&B · NL',icon:'🎷', url:'https://live.afc.fm/' },
+  { id:'dancecz',   name:'Dance Radio CZ',   desc:'Dance/Trance · CZ', icon:'🎧', url:'https://ice.actve.net/dance-radio128.mp3' }
 ];
 
 // ── STATE ──
@@ -14896,6 +14901,11 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
   <div class="item checking" id="i-intense"><div class="dot checking" id="d-intense"></div><div class="name" id="n-intense">⚡ Intense Radio</div><div class="status checking" id="s-intense">Checking…</div></div>
   <div class="item checking" id="i-funkstar"><div class="dot checking" id="d-funkstar"></div><div class="name" id="n-funkstar">🎶 Funkstar Radio</div><div class="status checking" id="s-funkstar">Checking…</div></div>
   <div class="item checking" id="i-evropa2"><div class="dot checking" id="d-evropa2"></div><div class="name" id="n-evropa2">🎵 Evropa 2</div><div class="status checking" id="s-evropa2">Checking…</div></div>
+  <div class="item checking" id="i-prysm"><div class="dot checking" id="d-prysm"></div><div class="name" id="n-prysm">🇫🇷 Prysm Radio 1</div><div class="status checking" id="s-prysm">Checking…</div></div>
+  <div class="item checking" id="i-gayfm"><div class="dot checking" id="d-gayfm"></div><div class="name" id="n-gayfm">🏳️‍🌈 Gay FM</div><div class="status checking" id="s-gayfm">Checking…</div></div>
+  <div class="item checking" id="i-hitsradio"><div class="dot checking" id="d-hitsradio"></div><div class="name" id="n-hitsradio">🔥 Hits Radio</div><div class="status checking" id="s-hitsradio">Checking…</div></div>
+  <div class="item checking" id="i-afc"><div class="dot checking" id="d-afc"></div><div class="name" id="n-afc">🎷 Amsterdam Funk</div><div class="status checking" id="s-afc">Checking…</div></div>
+  <div class="item checking" id="i-dancecz"><div class="dot checking" id="d-dancecz"></div><div class="name" id="n-dancecz">🎧 Dance Radio CZ</div><div class="status checking" id="s-dancecz">Checking…</div></div>
 </div>
 
 <div class="section">
@@ -14960,6 +14970,11 @@ var CHECKS = {
   intense:   { type:'nocors', url:'https://intenseradio.live-streams.nl/live' },
   funkstar:  { type:'nocors', url:'https://funkstar.radioca.st/stream' },
   evropa2:   { type:'nocors', url:'https://icecast3.play.cz/evropa2-128.mp3' },
+  prysm:     { type:'nocors', url:'https://stream.prysmradio.com/prysm-radio-1' },
+  gayfm:     { type:'nocors', url:'https://icepool.silvacast.com/GAYFM.mp3' },
+  hitsradio: { type:'nocors', url:'https://stream.zeno.fm/x48wft621s8uv' },
+  afc:       { type:'nocors', url:'https://live.afc.fm/' },
+  dancecz:   { type:'nocors', url:'https://ice.actve.net/dance-radio128.mp3' },
   'ap-pocasi':    { type:'cors',   url:'https://api.open-meteo.com/v1/forecast?latitude=49.64&longitude=18.14&current=temperature_2m' },
   'ap-mixcloud':  { type:'nocors', url:'https://www.mixcloud.com/' },
   'ap-reader':    { type:'nocors', url:'https://kladyx.github.io/panel/reader.html' }
