@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v20.2Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v20.3Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v20.2Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v20.3Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v20.2Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v20.3Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -338,7 +338,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v20.2Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v20.3Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -722,7 +722,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v20.2Kl</div>
+  <div class="version">v20.3Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -8302,7 +8302,7 @@ h1{font-family:'Orbitron',monospace;font-size:1.35rem;font-weight:900;letter-spa
     </div>
   </div>
 </div>
-<div class="panel" id="p-prehled"><div class="print-btn"><select id="tisk-pocet" style="font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:.06em;padding:6px 10px;background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.3);color:#00c864;border-radius:5px;margin-right:8px;cursor:pointer;outline:none;"><option value="1">1 měsíc</option><option value="2">2 měsíce</option><option value="3">3 měsíce</option><option value="6">6 měsíců</option><option value="12">12 měsíců</option></select><button id="btn-tisk">🖨️ TISKNOUT</button></div><div class="prehled-add-row"><input class="prehled-add-date" type="date" id="prehled-add-date"/><button class="prehled-add-btn" id="prehled-add-btn">✓ ULOŽIT ZÁZNAM</button></div><div id="prehled-list"></div></div>
+<div class="panel" id="p-prehled"><div class="print-btn"><select id="tisk-od" style="font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:.06em;padding:6px 8px;background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.3);color:#00c864;border-radius:5px;cursor:pointer;outline:none;margin-right:4px;"><option>Od</option></select><select id="tisk-do" style="font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:.06em;padding:6px 8px;background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.3);color:#00c864;border-radius:5px;cursor:pointer;outline:none;margin-right:8px;"><option>Do</option></select><button id="btn-tisk">🖨️ TISKNOUT</button></div><div class="prehled-add-row"><input class="prehled-add-date" type="date" id="prehled-add-date"/><button class="prehled-add-btn" id="prehled-add-btn">✓ ULOŽIT ZÁZNAM</button></div><div id="prehled-list"></div></div>
 <div class="panel" id="p-archiv"><div id="arch"></div></div>
 <div class="panel" id="p-graf">
   <div class="graf-wrap">
@@ -8777,23 +8777,53 @@ if(bs)bs.onclick=function(){
   alert('✓ Uloženo!');
 };
 
+// Naplnit selecty pro rozsah měsíců
+function populateTiskSelecty(){
+  var allYM=new Set();
+  ['l','s','o','v'].forEach(function(k){
+    if(DAT[CUR]&&DAT[CUR]['2000-01']===undefined){
+      Object.keys(DAT).forEach(function(ym){
+        if(DAT[ym]&&Object.keys(DAT[ym]).length>0)allYM.add(ym);
+      });
+    }
+  });
+  var months=Array.from(allYM).sort();
+  if(!months.length)return;
+  var selOd=document.getElementById('tisk-od');
+  var selDo=document.getElementById('tisk-do');
+  var oldOd=selOd.value;var oldDo=selDo.value;
+  selOd.innerHTML='';selDo.innerHTML='';
+  months.forEach(function(ym){
+    var mo=parseInt(ym.split('-')[1])-1;
+    var yr=ym.split('-')[0];
+    var lbl=MN[mo]+' '+yr;
+    var o1=document.createElement('option');o1.value=ym;o1.textContent=lbl;selOd.appendChild(o1);
+    var o2=document.createElement('option');o2.value=ym;o2.textContent=lbl;selDo.appendChild(o2);
+  });
+  if(months.length>0){
+    if(oldOd&&selOd.querySelector('[value="'+oldOd+'"]'))selOd.value=oldOd;else selOd.value=months[0];
+    if(oldDo&&selDo.querySelector('[value="'+oldDo+'"]'))selDo.value=oldDo;else selDo.value=months[months.length-1];
+  }
+}
+populateTiskSelecty();
+
 // Tisk
 var bt=document.getElementById('btn-tisk');
 if(bt)bt.onclick=function(){
-  var selEl=document.getElementById('tisk-pocet');
-  var pocet=selEl?parseInt(selEl.value):1;
-  var parts=CUR.split('-');
-  var y0=parseInt(parts[0]);
-  var m0=parseInt(parts[1]);
+  var selOd=document.getElementById('tisk-od');
+  var selDo=document.getElementById('tisk-do');
+  var ymOd=selOd?selOd.value:CUR;
+  var ymDo=selDo?selDo.value:CUR;
+  if(!ymOd||!ymDo){alert('Vyber rozsah měsíců.');return;}
   var allMonths=[];
-  for(var i=pocet-1;i>=0;i--){
-    var total=y0*12+(m0-1)-i;
-    var yy=Math.floor(total/12);
-    var mm=total%12+1;
-    allMonths.push(yy+'-'+String(mm).padStart(2,'0'));
-  }
-  var fsize=pocet<=1?13:pocet<=3?11:pocet<=6?9:8;
-  var tpad=pocet<=1?'6px 9px':pocet<=3?'4px 7px':'3px 5px';
+  var mesi=Object.keys(DAT).filter(function(ym){
+    return ym>=ymOd&&ym<=ymDo;
+  }).sort();
+  if(!mesi.length){alert('Žádná data v tomto rozsahu.');return;}
+  var allMonths=mesi;
+  var cnt=allMonths.length;
+  var fsize=cnt<=1?13:cnt<=3?11:cnt<=6?9:8;
+  var tpad=cnt<=1?'6px 9px':cnt<=3?'4px 7px':'3px 5px';
   var blocksHTML='';
   allMonths.forEach(function(ym){
     var monthDat=DAT[ym]||{};
@@ -8856,7 +8886,7 @@ if(bt)bt.onclick=function(){
     '@media print{button{display:none;}}'+
     '</style></head><body>'+
     '<h2>Glukóza + Krevní tlak</h2>'+
-    '<div class=\"sub\">Vytištěno: '+new Date().toLocaleDateString('cs-CZ')+(pocet>1?' &nbsp;|&nbsp; '+pocet+' měsíců':'')+'</div>'+
+    '<div class=\"sub\">Vytištěno: '+new Date().toLocaleDateString('cs-CZ')+' &nbsp;|&nbsp; '+allMonths.length+' měsíců'+'</div>'+
     blocksHTML+
     '<button onclick=\"window.print()\" style=\"margin-top:12px;padding:8px 20px;font-size:13px;\">🖨 Tisknout</button>'+
     '</body></html>';
