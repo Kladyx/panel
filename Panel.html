@@ -7142,10 +7142,37 @@ function buildReport(){
 function printReport(){
   const c=document.getElementById('report-preview');
   if(!c||!c.innerHTML.trim()||c.querySelector('.empty-msg')){alert('Nejprve vygeneruj sestavu.');return;}
-  const pt=document.getElementById('report-print-target');
-  pt.innerHTML='<div id="report-preview-print">'+c.innerHTML+'</div>';
-  window.print();
-  setTimeout(()=>pt.innerHTML='',500);
+  var printHTML='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Utility Tracker — Sestava</title>'+
+    '<style>'+
+    '@page{size:A4;margin:10mm 8mm;}'+
+    'body{font-family:"Courier New",monospace;font-size:13px;color:#111;margin:0;background:#fff;}'+
+    '.rpt-header{text-align:center;border-bottom:3px double #111;padding-bottom:14px;margin-bottom:20px;}'+
+    '.rpt-header h1{font-size:1.4rem;letter-spacing:4px;margin-bottom:4px;}'+
+    '.rpt-header p{font-size:.82rem;color:#555;}'+
+    '.rpt-year-group{margin-bottom:28px;}'+
+    '.rpt-year-title{font-size:.72rem;letter-spacing:4px;text-transform:uppercase;color:#fff;background:#111;padding:6px 12px;margin-bottom:10px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
+    '.rpt-month-block{border:1px solid #ddd;border-radius:4px;margin-bottom:10px;overflow:hidden;page-break-inside:avoid;break-inside:avoid;}'+
+    '.rpt-month-header{background:#f0f0f0;padding:7px 12px;font-size:.88rem;font-weight:bold;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid #ddd;color:#222;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
+    '.rpt-month-table{width:100%;border-collapse:collapse;font-size:.84rem;}'+
+    '.rpt-month-table tr{border-bottom:1px solid #eee;}'+
+    '.rpt-month-table tr:last-child{border-bottom:none;}'+
+    '.rpt-month-table td{padding:6px 10px;}'+
+    '.rpt-icon{width:28px;font-size:1rem;}'+
+    '.rpt-label{color:#333;min-width:80px;}'+
+    '.rpt-val{font-weight:bold;color:#111;min-width:90px;}'+
+    '.rpt-diff-label{color:#999;font-size:.75rem;padding-left:16px;}'+
+    '.rpt-diff{color:#0066aa;font-weight:bold;text-align:right;}'+
+    '.rpt-diff.neg{color:#cc0000;}'+
+    '.rpt-footer{margin-top:24px;padding-top:10px;border-top:1px solid #ccc;font-size:.72rem;color:#888;display:flex;justify-content:space-between;}'+
+    '@media print{button{display:none;}}'+
+    '</style></head><body>'+
+    c.innerHTML+
+    '<button onclick="window.print()" style="margin-top:12px;padding:8px 20px;font-size:13px;">🖨 Tisknout</button>'+
+    '</body></html>';
+  var blob=new Blob([printHTML],{type:'text/html;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var win=window.open(url,'_blank');
+  if(!win){alert('Povolte vyskakovací okna pro tisk.');}
 }
 
 // ── EXPORT / IMPORT ──
