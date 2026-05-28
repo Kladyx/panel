@@ -7714,16 +7714,26 @@ function printPlatby(){
   var monthName=MONTHS[currentMonth]+' '+currentYear;
   var paid=[],unpaid=[];
   items.forEach(function(it){if(it.paid)paid.push(it);else unpaid.push(it);});
-  if(!items.length){alert('Žádné platby k tisku.');return;}
+  if(!items.length && !prijmy.length){alert('Žádné platby ani příjmy k tisku.');return;}
   var ps=0,us=0;
   paid.forEach(function(it){ps+=it.amount;});
   unpaid.forEach(function(it){us+=it.amount;});
   var tot=ps+us;
   var pct=tot?Math.round(ps/tot*100):0;
+  var prTot=0;
+  prijmy.forEach(function(p){prTot+=p.amount;});
+  var bilance=prTot-tot;
   function rows(arr,cls){
     var r='';
     arr.forEach(function(it,i){
       r+='<tr><td>'+(i+1)+'</td><td>'+it.name+(it.note?' <span style="color:#888;font-size:.85em;">– '+it.note+'</span>':'')+'</td><td>'+it.amount.toLocaleString('cs-CZ')+' Kč</td><td class="'+cls+'">'+(it.paid?'✓ Zaplaceno':'✗ Nezaplaceno')+'</td></tr>';
+    });
+    return r;
+  }
+  function rowsPrijmy(arr){
+    var r='';
+    arr.forEach(function(p,i){
+      r+='<tr><td>'+(i+1)+'</td><td>'+(p.date||'')+(p.note?' <span style="color:#888;font-size:.85em;">– '+p.note+'</span>':'')+'</td><td class="prijmy">'+p.amount.toLocaleString('cs-CZ')+' Kč</td></tr>';
     });
     return r;
   }
@@ -7732,6 +7742,7 @@ function printPlatby(){
     '@page{size:A4;margin:10mm 8mm;}'+
     'body{font-family:Arial,sans-serif;font-size:13px;color:#000;margin:0;background:#fff;}'+
     'h2{font-size:16px;margin:0 0 4px;letter-spacing:2px;}'+
+    'h3{font-size:13px;margin:16px 0 6px;letter-spacing:2px;text-transform:uppercase;color:#333;}'+
     '.sub{font-size:11px;color:#555;margin-bottom:14px;}'+
     'table{width:100%;border-collapse:collapse;margin-bottom:14px;}'+
     'th{background:#222;color:#fff;padding:6px 10px;text-align:left;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
@@ -7740,20 +7751,27 @@ function printPlatby(){
     'tr:nth-child(even) td{background:#f9f9f9;}'+
     '.paid{color:#007733;font-weight:bold;}'+
     '.unpaid{color:#cc0000;font-weight:bold;}'+
+    '.prijmy{color:#007733;font-weight:bold;}'+
     '.summary-box{background:#f0f0f0;padding:10px 14px;border-top:2px solid #222;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
     '.summary-box table{margin:0;background:transparent;}'+
     '.summary-box td{border:none;padding:3px 8px;}'+
+    '.summary-box td:first-child{text-align:left;font-weight:normal;color:#333;width:auto;}'+
     '.total td{font-weight:bold;font-size:14px;border-top:2px solid #333!important;}'+
+    '.bilance-pos td{font-weight:bold;font-size:14px;border-top:3px solid #007733!important;color:#007733;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
+    '.bilance-neg td{font-weight:bold;font-size:14px;border-top:3px solid #cc0000!important;color:#cc0000;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
     '@media print{button{display:none;}}'+
     '</style></head><body>'+
-    '<h2>PLATBY — '+monthName+'</h2>'+
+    '<h2>PLATBY &amp; PŘÍJMY — '+monthName+'</h2>'+
     '<div class="sub">Vytištěno: '+new Date().toLocaleDateString('cs-CZ')+'</div>'+
-    (unpaid.length?'<table><thead><tr><th>č.</th><th>Název</th><th>Částka</th><th>Stav</th></tr></thead><tbody>'+rows(unpaid,'unpaid')+'</tbody></table>':'')+
-    (paid.length?'<table><thead><tr><th>č.</th><th>Název</th><th>Částka</th><th>Stav</th></tr></thead><tbody>'+rows(paid,'paid')+'</tbody></table>':'')+
+    (prijmy.length?'<h3>📥 Příjmy</h3><table><thead><tr><th>č.</th><th>Popis / Datum</th><th>Částka</th></tr></thead><tbody>'+rowsPrijmy(prijmy)+'</tbody></table>':'')+
+    (unpaid.length?'<h3>✗ Nezaplacené výdaje</h3><table><thead><tr><th>č.</th><th>Název</th><th>Částka</th><th>Stav</th></tr></thead><tbody>'+rows(unpaid,'unpaid')+'</tbody></table>':'')+
+    (paid.length?'<h3>✓ Zaplacené výdaje</h3><table><thead><tr><th>č.</th><th>Název</th><th>Částka</th><th>Stav</th></tr></thead><tbody>'+rows(paid,'paid')+'</tbody></table>':'')+
     '<div class="summary-box"><table>'+
-    '<tr><td>Zaplaceno ('+paid.length+' položek)</td><td class="paid">'+ps.toLocaleString('cs-CZ')+' Kč</td></tr>'+
-    '<tr><td>Nezaplaceno ('+unpaid.length+' položek)</td><td class="unpaid">'+us.toLocaleString('cs-CZ')+' Kč</td></tr>'+
-    '<tr class="total"><td>CELKEM</td><td>'+tot.toLocaleString('cs-CZ')+' Kč &nbsp;('+pct+' % uhrazeno)</td></tr>'+
+    '<tr><td>Příjmy celkem ('+prijmy.length+' položek)</td><td class="prijmy">'+prTot.toLocaleString('cs-CZ')+' Kč</td></tr>'+
+    '<tr><td>Výdaje zaplaceno ('+paid.length+' položek)</td><td class="paid">'+ps.toLocaleString('cs-CZ')+' Kč</td></tr>'+
+    '<tr><td>Výdaje nezaplaceno ('+unpaid.length+' položek)</td><td class="unpaid">'+us.toLocaleString('cs-CZ')+' Kč</td></tr>'+
+    '<tr class="total"><td>Výdaje celkem</td><td>'+tot.toLocaleString('cs-CZ')+' Kč &nbsp;('+pct+' % uhrazeno)</td></tr>'+
+    '<tr class="'+(bilance>=0?'bilance-pos':'bilance-neg')+'"><td>BILANCE (Příjmy − Výdaje)</td><td>'+(bilance>=0?'+':'')+bilance.toLocaleString('cs-CZ')+' Kč</td></tr>'+
     '</table></div>'+
     '<button onclick="window.print()" style="margin-top:14px;padding:8px 20px;font-size:13px;">🖨 Tisknout</button>'+
     '</body></html>';
