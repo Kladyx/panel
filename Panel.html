@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v20.1Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v20.2Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v20.1Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v20.2Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v20.1Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v20.2Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -338,7 +338,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v20.1Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v20.2Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -722,7 +722,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v20.1Kl</div>
+  <div class="version">v20.2Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -8302,7 +8302,7 @@ h1{font-family:'Orbitron',monospace;font-size:1.35rem;font-weight:900;letter-spa
     </div>
   </div>
 </div>
-<div class="panel" id="p-prehled"><div class="print-btn"><button id="btn-tisk">🖨️ TISKNOUT MĚSÍC</button></div><div class="prehled-add-row"><input class="prehled-add-date" type="date" id="prehled-add-date"/><button class="prehled-add-btn" id="prehled-add-btn">✓ ULOŽIT ZÁZNAM</button></div><div id="prehled-list"></div></div>
+<div class="panel" id="p-prehled"><div class="print-btn"><select id="tisk-pocet" style="font-family:'Orbitron',monospace;font-size:.55rem;letter-spacing:.06em;padding:6px 10px;background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.3);color:#00c864;border-radius:5px;margin-right:8px;cursor:pointer;outline:none;"><option value="1">1 měsíc</option><option value="2">2 měsíce</option><option value="3">3 měsíce</option><option value="6">6 měsíců</option><option value="12">12 měsíců</option></select><button id="btn-tisk">🖨️ TISKNOUT</button></div><div class="prehled-add-row"><input class="prehled-add-date" type="date" id="prehled-add-date"/><button class="prehled-add-btn" id="prehled-add-btn">✓ ULOŽIT ZÁZNAM</button></div><div id="prehled-list"></div></div>
 <div class="panel" id="p-archiv"><div id="arch"></div></div>
 <div class="panel" id="p-graf">
   <div class="graf-wrap">
@@ -8780,54 +8780,85 @@ if(bs)bs.onclick=function(){
 // Tisk
 var bt=document.getElementById('btn-tisk');
 if(bt)bt.onclick=function(){
-  var monthDat=DAT[CUR]||{};
-  var days=Object.keys(monthDat).sort();
-  var mo2=parseInt(CUR.split('-')[1]);
-  var yr2=parseInt(CUR.split('-')[0]);
-  var title=MN[mo2-1]+' '+yr2;
-  var sums=[0,0,0,0];var cnts=[0,0,0,0];
-  var sumSys=0,cntSys=0,sumDia=0,cntDia=0,sumPuls=0,cntPuls=0;
-  var rows='';
-  days.forEach(function(dt){
-    var d=monthDat[dt];
-    var dtp=dt.split('-');var dp=dtp[2]+'.'+dtp[1]+'.'+dtp[0];
-    rows+='<tr><td>'+dp+'</td>';
-    KEYS.forEach(function(k,i){
-      var v=parseFloat(d[k]);
-      var vstr=(!isNaN(v))?v.toFixed(1):'—';
-      if(!isNaN(v)){sums[i]+=v;cnts[i]++;}
-      rows+='<td>'+vstr+'</td>';
+  var selEl=document.getElementById('tisk-pocet');
+  var pocet=selEl?parseInt(selEl.value):1;
+  var parts=CUR.split('-');
+  var y0=parseInt(parts[0]);
+  var m0=parseInt(parts[1]);
+  var allMonths=[];
+  for(var i=pocet-1;i>=0;i--){
+    var total=y0*12+(m0-1)-i;
+    var yy=Math.floor(total/12);
+    var mm=total%12+1;
+    allMonths.push(yy+'-'+String(mm).padStart(2,'0'));
+  }
+  var fsize=pocet<=1?13:pocet<=3?11:pocet<=6?9:8;
+  var tpad=pocet<=1?'6px 9px':pocet<=3?'4px 7px':'3px 5px';
+  var blocksHTML='';
+  allMonths.forEach(function(ym){
+    var monthDat=DAT[ym]||{};
+    var days=Object.keys(monthDat).sort();
+    if(!days.length)return;
+    var moParts=ym.split('-');
+    var title=MN[parseInt(moParts[1])-1]+' '+moParts[0];
+    var sums=[0,0,0,0];var cnts=[0,0,0,0];
+    var sumSys=0,cntSys=0,sumDia=0,cntDia=0,sumPuls=0,cntPuls=0;
+    var rows='';
+    var rowNum=0;
+    days.forEach(function(dt){
+      rowNum++;
+      var d=monthDat[dt];
+      var dtp=dt.split('-');var dp=dtp[2]+'.'+dtp[1]+'.'+dtp[0];
+      rows+='<tr><td>'+rowNum+'</td><td>'+dp+'</td>';
+      KEYS.forEach(function(k,i){
+        var v=parseFloat(d[k]);
+        var vstr=(!isNaN(v))?v.toFixed(1):'—';
+        if(!isNaN(v)){sums[i]+=v;cnts[i]++;}
+        rows+='<td>'+vstr+'</td>';
+      });
+      var sys=parseFloat(d.sys);var dia=parseFloat(d.dia);var puls=parseFloat(d.puls);
+      if(!isNaN(sys)){sumSys+=sys;cntSys++;}
+      if(!isNaN(dia)){sumDia+=dia;cntDia++;}
+      if(!isNaN(puls)){sumPuls+=puls;cntPuls++;}
+      rows+='<td>'+(isNaN(sys)?'—':Math.round(sys))+'</td>';
+      rows+='<td>'+(isNaN(dia)?'—':Math.round(dia))+'</td>';
+      rows+='<td>'+(isNaN(puls)?'—':Math.round(puls))+'</td>';
+      rows+='</tr>';
     });
-    var sys=parseFloat(d.sys);var dia=parseFloat(d.dia);var puls=parseFloat(d.puls);
-    if(!isNaN(sys)){sumSys+=sys;cntSys++;}
-    if(!isNaN(dia)){sumDia+=dia;cntDia++;}
-    if(!isNaN(puls)){sumPuls+=puls;cntPuls++;}
-    rows+='<td>'+(isNaN(sys)?'—':Math.round(sys))+'</td>';
-    rows+='<td>'+(isNaN(dia)?'—':Math.round(dia))+'</td>';
-    rows+='<td>'+(isNaN(puls)?'—':Math.round(puls))+'</td>';
-    rows+='</tr>';
+    var avgRow='<tr class=\"avgrow\"><td></td><td>PRŮMĚR</td>';
+    KEYS.forEach(function(k,i){avgRow+='<td>'+(cnts[i]?(sums[i]/cnts[i]).toFixed(1):'—')+'</td>';});
+    avgRow+='<td>'+(cntSys?Math.round(sumSys/cntSys):'—')+'</td>';
+    avgRow+='<td>'+(cntDia?Math.round(sumDia/cntDia):'—')+'</td>';
+    avgRow+='<td>'+(cntPuls?Math.round(sumPuls/cntPuls):'—')+'</td>';
+    avgRow+='</tr>';
+    blocksHTML+='<div class=\"mblock\">'+
+      '<div class=\"mhead\">'+title+'<span class=\"mhead-cnt\">'+days.length+' záznamů</span></div>'+
+      '<table><thead><tr><th>č.</th><th>Datum</th><th>Lačno</th><th>Snídaně</th><th>Oběd</th><th>Večeře</th><th>SYS</th><th>DIA</th><th>Puls</th></tr></thead>'+
+      '<tbody>'+rows+avgRow+'</tbody></table>'+
+      '</div>';
   });
-  var avgRow='<tr style="font-weight:bold;border-top:2px solid #333;background:#f0f0f0;"><td>PRŮMĚR</td>';
-  KEYS.forEach(function(k,i){avgRow+='<td>'+(cnts[i]?(sums[i]/cnts[i]).toFixed(1):'—')+'</td>';});
-  avgRow+='<td>'+(cntSys?Math.round(sumSys/cntSys):'—')+'</td>';
-  avgRow+='<td>'+(cntDia?Math.round(sumDia/cntDia):'—')+'</td>';
-  avgRow+='<td>'+(cntPuls?Math.round(sumPuls/cntPuls):'—')+'</td>';
-  avgRow+='</tr>';
-  var printHTML='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Glukoza '+title+'</title>'+
+  if(!blocksHTML){alert('Žádná data k tisku.');return;}
+  var printHTML='<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>Glukóza + Tlak</title>'+
     '<style>'+
-    'body{font-family:Arial,sans-serif;font-size:13px;color:#000;margin:20px;background:#fff;}'+
-    'h2{font-size:16px;margin-bottom:4px;}'+
-    '.sub{font-size:11px;color:#444;margin-bottom:14px;}'+
-    'table{width:100%;border-collapse:collapse;}'+
-    'th{background:#222;color:#fff;padding:7px 9px;text-align:left;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
-    'td{padding:6px 9px;border-bottom:1px solid #bbb;color:#000;}'+
+    '@page{size:A4;margin:10mm 8mm;}'+
+    'body{font-family:Arial,sans-serif;font-size:'+fsize+'px;color:#000;margin:0;background:#fff;}'+
+    'h2{font-size:'+(fsize+3)+'px;margin:0 0 2px;letter-spacing:1px;}'+
+    '.sub{font-size:'+(fsize-1)+'px;color:#555;margin-bottom:8px;}'+
+    '.mblock{margin-bottom:7px;page-break-inside:avoid;break-inside:avoid;}'+
+    '.mhead{font-size:'+(fsize+1)+'px;font-weight:bold;background:#222;color:#fff;padding:4px 8px;display:flex;justify-content:space-between;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
+    '.mhead-cnt{font-weight:normal;font-size:'+(fsize-1)+'px;opacity:.7;}'+
+    'table{width:100%;border-collapse:collapse;margin:0;}'+
+    'th{background:#444;color:#fff;padding:'+tpad+';text-align:left;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
+    'td{padding:'+tpad+';border-bottom:1px solid #ddd;color:#000;}'+
+    'td:first-child{text-align:center;font-weight:bold;color:#666;width:32px;}'+
+    'tr:nth-child(even) td{background:#f9f9f9;}'+
+    '.avgrow td{font-weight:bold;border-top:2px solid #333;background:#efefef!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'+
     '@media print{button{display:none;}}'+
     '</style></head><body>'+
-    '<h2>Glukoza + Tlak — '+title+'</h2>'+
-    '<div class="sub">Zaznamu: '+days.length+' | Vytisteno: '+new Date().toLocaleDateString('cs-CZ')+'</div>'+
-    '<table><thead><tr><th>Datum</th><th>Lacno</th><th>Snidane</th><th>Obed</th><th>Vecere</th><th>SYS</th><th>DIA</th><th>Puls</th></tr></thead>'+
-    '<tbody>'+rows+avgRow+'</tbody></table>'+
-    '<br><button onclick="window.print()" style="padding:8px 20px;font-size:14px;">Tisknout</button>'+
+    '<h2>Glukóza + Krevní tlak</h2>'+
+    '<div class=\"sub\">Vytištěno: '+new Date().toLocaleDateString('cs-CZ')+(pocet>1?' &nbsp;|&nbsp; '+pocet+' měsíců':'')+'</div>'+
+    blocksHTML+
+    '<button onclick=\"window.print()\" style=\"margin-top:12px;padding:8px 20px;font-size:13px;\">🖨 Tisknout</button>'+
     '</body></html>';
   var blob=new Blob([printHTML],{type:'text/html;charset=utf-8'});
   var url=URL.createObjectURL(blob);
