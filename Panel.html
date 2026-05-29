@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v21.5Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v21.6Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v21.5Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v21.6Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v21.5Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v21.6Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -338,7 +338,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v21.5Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v21.6Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -722,7 +722,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v21.5Kl</div>
+  <div class="version">v21.6Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -15165,7 +15165,7 @@ APP_HTML["radio"] = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KLADYX RADIO · Rozpoznávání hudby</title>
+<title>KLADYX RADIO · Rozpoznávání hudby v2</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
 
@@ -15463,6 +15463,23 @@ APP_HTML["radio"] = `<!DOCTYPE html>
     letter-spacing: 2px;
   }
 
+  .link-btn {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.6rem;
+    font-family: inherit;
+    letter-spacing: 1px;
+    text-decoration: none;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--cyan);
+    transition: all 0.2s;
+  }
+  .link-btn:hover { background: rgba(0,212,255,0.2); }
+  .link-btn.spotify { background: rgba(30,215,96,0.1); border-color: rgba(30,215,96,0.3); color: #1ed760; }
+  .link-btn.spotify:hover { background: rgba(30,215,96,0.2); }
+
   /* PROGRESS BAR */
   .progress-wrap {
     width: 100%;
@@ -15519,10 +15536,16 @@ APP_HTML["radio"] = `<!DOCTYPE html>
 
 <div class="result-card" id="resultCard">
   <div class="result-label">▶ TEĎ HRAJE</div>
-  <div class="result-title" id="resTitle">—</div>
-  <div class="result-artist" id="resArtist">—</div>
-  <div class="result-album" id="resAlbum"></div>
+  <div style="display:flex;gap:14px;align-items:flex-start;">
+    <img id="resCover" src="" alt="" style="display:none;width:72px;height:72px;border-radius:8px;object-fit:cover;flex-shrink:0;box-shadow:0 0 12px rgba(0,255,136,0.2);">
+    <div style="flex:1;min-width:0;">
+      <div class="result-title" id="resTitle">—</div>
+      <div class="result-artist" id="resArtist">—</div>
+      <div class="result-album" id="resAlbum"></div>
+    </div>
+  </div>
   <div class="result-meta" id="resMeta"></div>
+  <div id="resLinks" style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;"></div>
 </div>
 
 <div class="history-section">
@@ -15537,229 +15560,227 @@ APP_HTML["radio"] = `<!DOCTYPE html>
 
 <script>
 // ═══════════════════════════════════════
-// ACRCLOUD KONFIGURACE
+// AudD API — music recognition
+// Docs: https://docs.audd.io/
 // ═══════════════════════════════════════
-const ACR_HOST    = 'identify-eu-west-1.acrcloud.com';
-const ACR_KEY     = '1d74337f80329c172370edcc47c658be';
-const ACR_SECRET  = 'kKYbEF58x3bGjJ89A7Urv30mxIwE6r5sUW1oqBml';
-
-// ═══════════════════════════════════════
-const RECORD_SECONDS = 8;
+const AUDD_TOKEN  = '';          // prázdné = demo (10 rozpoznání/den). Registruj na audd.io pro více.
+const RECORD_SECS = 10;          // délka nahrávky v sekundách
 
 let mediaRecorder = null;
 let audioChunks   = [];
 let isListening   = false;
 let progressTimer = null;
-let history       = JSON.parse(localStorage.getItem('kladyx_radio_history') || '[]');
+
+// Historie — ukládáme přes parent.localStorage (iframe sandbox fix)
+function getLS() { try { return window.parent.localStorage; } catch(e) { return localStorage; } }
+let history = [];
+try { history = JSON.parse(getLS().getItem('kladyx_radio_history') || '[]'); } catch(e) {}
 
 renderHistory();
 
-function setStatus(msg, type='') {
-  const el = document.getElementById('statusText');
+// ─── UI helpers ───────────────────────────────────────
+function setStatus(msg, type) {
+  var el = document.getElementById('statusText');
   el.textContent = msg;
   el.className = 'status-text' + (type ? ' ' + type : '');
 }
 
+function resetBtn() {
+  isListening = false;
+  var btn = document.getElementById('listenBtn');
+  btn.classList.remove('listening', 'found');
+  document.getElementById('btnIcon').textContent  = '🎵';
+  document.getElementById('btnLabel').textContent = 'POSLOUCHAT';
+  document.getElementById('progressWrap').classList.remove('show');
+  clearInterval(progressTimer);
+}
+
+function startProgress() {
+  var elapsed = 0;
+  var fill = document.getElementById('progressFill');
+  var lbl  = document.getElementById('progressLabel');
+  fill.style.width = '0%';
+  progressTimer = setInterval(function() {
+    elapsed += 0.1;
+    var pct = Math.min((elapsed / RECORD_SECS) * 100, 100);
+    fill.style.width = pct + '%';
+    lbl.textContent = 'NAHRÁVÁM... ' + Math.floor(elapsed) + 's / ' + RECORD_SECS + 's';
+  }, 100);
+}
+
+// ─── Hlavní funkce ────────────────────────────────────
 async function toggleListen() {
   if (isListening) return;
   isListening = true;
 
-  const btn   = document.getElementById('listenBtn');
-  const icon  = document.getElementById('btnIcon');
-  const label = document.getElementById('btnLabel');
-
+  var btn = document.getElementById('listenBtn');
   btn.classList.add('listening');
-  icon.textContent  = '🎤';
-  label.textContent = 'NAHRÁVÁM';
+  document.getElementById('btnIcon').textContent  = '🎤';
+  document.getElementById('btnLabel').textContent = 'NAHRÁVÁM';
   setStatus('Nahrávám zvuk... přidrž mikrofon k reproduktoru', 'active');
-
   document.getElementById('progressWrap').classList.add('show');
   startProgress();
 
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder = new MediaRecorder(stream);
-    audioChunks   = [];
+    var stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
 
-    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+    // Detekuj podporovaný MIME typ
+    var mimeType = '';
+    var types = ['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/ogg','audio/mp4'];
+    for (var i = 0; i < types.length; i++) {
+      if (MediaRecorder.isTypeSupported(types[i])) { mimeType = types[i]; break; }
+    }
 
-    mediaRecorder.onstop = async () => {
-      stream.getTracks().forEach(t => t.stop());
+    var opts = mimeType ? { mimeType: mimeType } : {};
+    mediaRecorder = new MediaRecorder(stream, opts);
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = function(e) { if (e.data && e.data.size > 0) audioChunks.push(e.data); };
+
+    mediaRecorder.onstop = async function() {
+      stream.getTracks().forEach(function(t) { t.stop(); });
       clearInterval(progressTimer);
       document.getElementById('progressWrap').classList.remove('show');
 
       btn.classList.remove('listening');
-      icon.textContent  = '⏳';
-      label.textContent = 'HLEDÁM';
+      document.getElementById('btnIcon').textContent  = '⏳';
+      document.getElementById('btnLabel').textContent = 'HLEDÁM';
       setStatus('Rozpoznávám skladbu...', 'active');
 
-      const blob = new Blob(audioChunks, { type: 'audio/wav' });
-      await recognize(blob);
+      var actualMime = (mediaRecorder.mimeType || mimeType || 'audio/webm').split(';')[0];
+      var ext = actualMime.includes('ogg') ? 'ogg' : actualMime.includes('mp4') ? 'mp4' : 'webm';
+      var blob = new Blob(audioChunks, { type: actualMime || 'audio/webm' });
 
-      isListening = false;
-      btn.classList.remove('listening', 'found');
-      icon.textContent  = '🎵';
-      label.textContent = 'POSLOUCHAT';
+      await recognize(blob, ext);
+      resetBtn();
     };
 
-    mediaRecorder.start();
-    setTimeout(() => { if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); }, RECORD_SECONDS * 1000);
+    mediaRecorder.start(1000); // chunk každou sekundu
+    setTimeout(function() {
+      if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+    }, RECORD_SECS * 1000);
 
   } catch (err) {
-    clearInterval(progressTimer);
-    document.getElementById('progressWrap').classList.remove('show');
-    isListening = false;
-    btn.classList.remove('listening');
-    icon.textContent  = '🎵';
-    label.textContent = 'POSLOUCHAT';
-    setStatus('Chyba mikrofonu: ' + err.message, 'error');
-  }
-}
-
-function startProgress() {
-  let elapsed = 0;
-  const fill  = document.getElementById('progressFill');
-  const lbl   = document.getElementById('progressLabel');
-  fill.style.width = '0%';
-  progressTimer = setInterval(() => {
-    elapsed += 0.1;
-    const pct = Math.min((elapsed / RECORD_SECONDS) * 100, 100);
-    fill.style.width = pct + '%';
-    lbl.textContent  = 'NAHRÁVÁM... ' + Math.floor(elapsed) + 's / ' + RECORD_SECONDS + 's';
-  }, 100);
-}
-
-function _sha1(msg){
-  function rotl(n,s){return(n<<s)|(n>>>(32-s));}
-  var H=[0x67452301,0xEFCDAB89,0x98BADCFE,0x10325476,0xC3D2E1F0];
-  var W=[],b=[];
-  for(var i=0;i<msg.length;i++)b.push(msg.charCodeAt(i)&0xff);
-  var l=b.length*8;b.push(0x80);
-  while(b.length%64!==56)b.push(0);
-  b.push(0,0,0,0,(l>>>24)&0xff,(l>>>16)&0xff,(l>>>8)&0xff,l&0xff);
-  for(var chunk=0;chunk<b.length;chunk+=64){
-    for(var j=0;j<16;j++)W[j]=(b[chunk+j*4]<<24)|(b[chunk+j*4+1]<<16)|(b[chunk+j*4+2]<<8)|b[chunk+j*4+3];
-    for(var j=16;j<80;j++)W[j]=rotl(W[j-3]^W[j-8]^W[j-14]^W[j-16],1);
-    var a=H[0],bb=H[1],c=H[2],d=H[3],e=H[4];
-    for(var j=0;j<80;j++){
-      var f,k;
-      if(j<20){f=(bb&c)|(~bb&d);k=0x5A827999;}
-      else if(j<40){f=bb^c^d;k=0x6ED9EBA1;}
-      else if(j<60){f=(bb&c)|(bb&d)|(c&d);k=0x8F1BBCDC;}
-      else{f=bb^c^d;k=0xCA62C1D6;}
-      var t=(rotl(a,5)+f+e+k+W[j])>>>0;
-      e=d;d=c;c=rotl(bb,30);bb=a;a=t;
+    resetBtn();
+    if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+      setStatus('⛔ Přístup k mikrofonu zamítnut', 'error');
+    } else {
+      setStatus('Chyba mikrofonu: ' + err.message, 'error');
     }
-    H[0]=(H[0]+a)>>>0;H[1]=(H[1]+bb)>>>0;H[2]=(H[2]+c)>>>0;H[3]=(H[3]+d)>>>0;H[4]=(H[4]+e)>>>0;
   }
-  var raw='';for(var i=0;i<5;i++){var h=H[i];raw+=String.fromCharCode((h>>>24)&0xff,(h>>>16)&0xff,(h>>>8)&0xff,h&0xff);}
-  return raw;
-}
-function _hmacSha1(key,msg){
-  var bk=[];
-  for(var i=0;i<key.length;i++)bk.push(key.charCodeAt(i)&0xff);
-  if(bk.length>64){var h=_sha1(key);bk=[];for(var i=0;i<h.length;i++)bk.push(h.charCodeAt(i)&0xff);}
-  while(bk.length<64)bk.push(0);
-  var ipad='',opad='';
-  for(var i=0;i<64;i++){ipad+=String.fromCharCode(bk[i]^0x36);opad+=String.fromCharCode(bk[i]^0x5c);}
-  return btoa(_sha1(opad+_sha1(ipad+msg)));
 }
 
-async function recognize(blob) {
+// ─── AudD API rozpoznávání ─────────────────────────────
+async function recognize(blob, ext) {
   try {
-    const timestamp    = Math.floor(Date.now() / 1000);
-    const dataType     = 'audio';
-    const sigVersion   = '1';
-    const stringToSign = 'POST\\n/v1/identify\\n'+ACR_KEY+'\\n'+dataType+'\\n'+sigVersion+'\\n'+timestamp;
-    const sig          = _hmacSha1(ACR_SECRET, stringToSign);
+    var form = new FormData();
+    form.append('file', blob, 'audio.' + (ext || 'webm'));
+    form.append('return', 'apple_music,spotify');
+    if (AUDD_TOKEN) form.append('api_token', AUDD_TOKEN);
 
-    const form = new FormData();
-    form.append('sample',       blob, 'sample.wav');
-    form.append('access_key',   ACR_KEY);
-    form.append('data_type',    dataType);
-    form.append('signature_version', sigVersion);
-    form.append('signature',    sig);
-    form.append('sample_bytes', blob.size);
-    form.append('timestamp',    timestamp);
+    var res = await fetch('https://api.audd.io/', { method: 'POST', body: form });
 
-    const res  = await fetch(\`https://\${ACR_HOST}/v1/identify\`, { method: 'POST', body: form });
-    const data = await res.json();
+    if (!res.ok) { throw new Error('HTTP ' + res.status); }
 
-    if (data.status && data.status.code === 0 && data.metadata && data.metadata.music && data.metadata.music.length > 0) {
-      const track = data.metadata.music[0];
-      showResult(track);
-      addToHistory(track);
-    } else if (data.status && data.status.code === 1001) {
-      setStatus('Skladba nenalezena — zkus znovu', 'error');
+    var data = await res.json();
+
+    if (data.status === 'success' && data.result) {
+      showResult(data.result);
+      addToHistory(data.result);
+    } else if (data.status === 'error') {
+      var code = data.error && data.error.error_code;
+      if (code === 300 || code === 'no_result') {
+        setStatus('🔍 Skladba nenalezena — zkus znovu', 'error');
+      } else if (code === 901 || code === 'recognition_failed') {
+        setStatus('❌ Příliš krátká nahrávka — drž déle', 'error');
+      } else if (code === 500 || code === 'auth_failed') {
+        setStatus('⛔ Limit rozpoznání vyčerpán', 'error');
+      } else {
+        setStatus('Nenalezeno: ' + (data.error ? data.error.error_message : 'neznámá chyba'), 'error');
+      }
       document.getElementById('resultCard').classList.remove('show');
     } else {
-      setStatus('Nenalezeno: ' + (data.status ? data.status.msg : 'neznámá chyba'), 'error');
+      setStatus('Nenalezeno — zkus znovu', 'error');
+      document.getElementById('resultCard').classList.remove('show');
     }
   } catch (err) {
-    setStatus('Chyba připojení: ' + err.message, 'error');
+    setStatus('Chyba sítě: ' + err.message, 'error');
   }
 }
 
-function showResult(track) {
-  const title  = track.title || '—';
-  const artist = track.artists ? track.artists.map(a => a.name).join(', ') : '—';
-  const album  = track.album  ? track.album.name : '';
-  const year   = track.release_date ? track.release_date.substring(0, 4) : '';
-  const genre  = track.genres ? track.genres.map(g => g.name).join(', ') : '';
-  const score  = track.score  ? Math.round(track.score) + '% shoda' : '';
+// ─── Zobrazení výsledku ───────────────────────────────
+function showResult(r) {
+  document.getElementById('resTitle').textContent  = r.title  || '—';
+  document.getElementById('resArtist').textContent = r.artist || '—';
+  document.getElementById('resAlbum').textContent  = r.album  || '';
 
-  document.getElementById('resTitle').textContent  = title;
-  document.getElementById('resArtist').textContent = artist;
-  document.getElementById('resAlbum').textContent  = album;
+  var meta = '';
+  if (r.release_date) meta += '<span class="meta-badge">📅 ' + r.release_date.substring(0,4) + '</span>';
+  if (r.label)        meta += '<span class="meta-badge">🏷 ' + r.label + '</span>';
 
-  let meta = '';
-  if (year)   meta += \`<span class="meta-badge">📅 \${year}</span>\`;
-  if (genre)  meta += \`<span class="meta-badge">🎸 \${genre}</span>\`;
-  if (score)  meta += \`<span class="meta-badge">✓ \${score}</span>\`;
+  // Cover art z Apple Music nebo Spotify
+  var cover = '';
+  if (r.apple_music && r.apple_music.artwork && r.apple_music.artwork.url) {
+    cover = r.apple_music.artwork.url.replace('{w}','200').replace('{h}','200');
+  } else if (r.spotify && r.spotify.album && r.spotify.album.images && r.spotify.album.images.length) {
+    cover = r.spotify.album.images[0].url;
+  }
+  var coverEl = document.getElementById('resCover');
+  if (cover) { coverEl.src = cover; coverEl.style.display = 'block'; }
+  else { coverEl.style.display = 'none'; }
+
+  // Tlačítka
+  var links = '';
+  if (r.song_link) links += '<a class="link-btn" href="' + r.song_link + '" target="_blank">🔗 Otevřít</a>';
+  if (r.spotify && r.spotify.external_urls) links += '<a class="link-btn spotify" href="' + r.spotify.external_urls.spotify + '" target="_blank">🎧 Spotify</a>';
+  document.getElementById('resLinks').innerHTML = links;
   document.getElementById('resMeta').innerHTML = meta;
 
   document.getElementById('resultCard').classList.add('show');
   document.getElementById('listenBtn').classList.add('found');
-  setStatus('Skladba rozpoznána!', 'found');
+  setStatus('✅ Skladba rozpoznána!', 'found');
 }
 
-function addToHistory(track) {
-  const entry = {
-    title:  track.title || '—',
-    artist: track.artists ? track.artists.map(a => a.name).join(', ') : '—',
+// ─── Historie ─────────────────────────────────────────
+function addToHistory(r) {
+  var entry = {
+    title:  r.title  || '—',
+    artist: r.artist || '—',
     time:   new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
   };
   history.unshift(entry);
   if (history.length > 50) history = history.slice(0, 50);
-  localStorage.setItem('kladyx_radio_history', JSON.stringify(history));
+  try { getLS().setItem('kladyx_radio_history', JSON.stringify(history)); } catch(e) {}
   renderHistory();
 }
 
 function renderHistory() {
-  const list = document.getElementById('historyList');
+  var list = document.getElementById('historyList');
   if (!history.length) {
     list.innerHTML = '<div class="empty-history">— žádné záznamy —</div>';
     return;
   }
-  list.innerHTML = history.map((h, i) => \`
-    <div class="history-item">
-      <div class="history-num">\${String(i + 1).padStart(2, '0')}</div>
-      <div class="history-info">
-        <div class="history-song">\${h.title}</div>
-        <div class="history-artist">\${h.artist}</div>
-      </div>
-      <div class="history-time">\${h.time}</div>
-    </div>
-  \`).join('');
+  list.innerHTML = history.map(function(h, i) {
+    return '<div class="history-item">'
+      + '<div class="history-num">' + String(i+1).padStart(2,'0') + '</div>'
+      + '<div class="history-info">'
+      +   '<div class="history-song">' + esc(h.title) + '</div>'
+      +   '<div class="history-artist">' + esc(h.artist) + '</div>'
+      + '</div>'
+      + '<div class="history-time">' + h.time + '</div>'
+      + '</div>';
+  }).join('');
 }
 
 function clearHistory() {
   history = [];
-  localStorage.removeItem('kladyx_radio_history');
+  try { getLS().removeItem('kladyx_radio_history'); } catch(e) {}
   renderHistory();
   document.getElementById('resultCard').classList.remove('show');
   setStatus('Stiskni tlačítko a přidrž mikrofon k reproduktoru');
 }
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 <\/script>
 </body>
 </html>
