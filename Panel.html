@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v21.1Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v21.3Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v21.1Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v21.3Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v21.1Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v21.3Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -338,7 +338,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v21.1Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v21.3Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -722,7 +722,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v21.1Kl</div>
+  <div class="version">v21.3Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -14698,7 +14698,6 @@ var STATIONS = [
   { id:'intense',    name:'Intense Radio',    desc:'Dance & House NL',  icon:'⚡', url:'https://intenseradio.live-streams.nl/live' },
   { id:'funkstar',  name:'Funkstar Radio',   desc:'Funk & Soul CZ',    icon:'🎶', url:'https://funkstar.radioca.st/stream' },
   { id:'gayfm',     name:'Gay FM',           desc:'Dance · DE',        icon:'🏳️‍🌈', url:'https://icepool.silvacast.com/GAYFM.mp3' },
-  { id:'hitsradio', name:'Hits Radio',       desc:'Zeno.fm Hits',      icon:'🔥', url:'https://stream.zeno.fm/x48wft621s8uv' },
   { id:'afc',       name:'Amsterdam Funk',   desc:'Funk/Soul/R&B · NL',icon:'🎷', url:'https://live.afc.fm/' },
   { id:'dancecz',   name:'Dance Radio CZ',   desc:'Dance/Trance · CZ', icon:'🎧', url:'https://ice.actve.net/dance-radio128.mp3' }
 ];
@@ -14927,7 +14926,6 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
   <div class="item checking" id="i-intense"><div class="dot checking" id="d-intense"></div><div class="name" id="n-intense">⚡ Intense Radio</div><div class="status checking" id="s-intense">Checking…</div></div>
   <div class="item checking" id="i-funkstar"><div class="dot checking" id="d-funkstar"></div><div class="name" id="n-funkstar">🎶 Funkstar Radio</div><div class="status checking" id="s-funkstar">Checking…</div></div>
   <div class="item checking" id="i-gayfm"><div class="dot checking" id="d-gayfm"></div><div class="name" id="n-gayfm">🏳️‍🌈 Gay FM</div><div class="status checking" id="s-gayfm">Checking…</div></div>
-  <div class="item checking" id="i-hitsradio"><div class="dot checking" id="d-hitsradio"></div><div class="name" id="n-hitsradio">🔥 Hits Radio</div><div class="status checking" id="s-hitsradio">Checking…</div></div>
   <div class="item checking" id="i-afc"><div class="dot checking" id="d-afc"></div><div class="name" id="n-afc">🎷 Amsterdam Funk</div><div class="status checking" id="s-afc">Checking…</div></div>
   <div class="item checking" id="i-dancecz"><div class="dot checking" id="d-dancecz"></div><div class="name" id="n-dancecz">🎧 Dance Radio CZ</div><div class="status checking" id="s-dancecz">Checking…</div></div>
 </div>
@@ -14994,7 +14992,6 @@ var CHECKS = {
   intense:   { type:'nocors', url:'https://intenseradio.live-streams.nl/live' },
   funkstar:  { type:'nocors', url:'https://funkstar.radioca.st/stream' },
   gayfm:     { type:'nocors', url:'https://icepool.silvacast.com/GAYFM.mp3' },
-  hitsradio: { type:'nocors', url:'https://stream.zeno.fm/x48wft621s8uv' },
   afc:       { type:'nocors', url:'https://live.afc.fm/' },
   dancecz:   { type:'nocors', url:'https://ice.actve.net/dance-radio128.mp3' },
   'ap-pocasi':    { type:'cors',   url:'https://api.open-meteo.com/v1/forecast?latitude=49.64&longitude=18.14&current=temperature_2m' },
@@ -16662,6 +16659,7 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 </div>
 <script>
 var LS_KEY='kladyx_user_apps';
+function getStorage(){try{var s=window.parent.localStorage;s.getItem('__test__');return s;}catch(e){return localStorage;}}
 var AVAILABLE_ICONS=['🏠','💿','🔧','🏗','📊','💳','🍽','🩸','🎙','🌤','📝','📅','🕹','📖','📚','🇬🇧','📻','🟢','🎤','🎮','🌍','☁️','🎵','💻','⚡','🔒','🎬','🖼','🌟','🎯','💡','🔔','📱','🖥','⌚','🎧','🎸','🎹','🎺','📡','🛰','📡','🔭','🌐','🌊','🌴','🎪','🎭','🎨','🖌','📐','📏'];
 var APP_COLORS=['#aa00ff','#ff8c00','#ffe000','#00cfff','#ff3c5a','#5ce65c','#00ff88','#ff4fd8','#ff7711','#00c864','#ff4444','#38bdf8','#f5c842','#00b4ff','#00ffbb','#f97316','#a78bfa','#34d399','#0088ff','#22c55e','#ff4466','#0066ff','#00d4ff'];
 var DEFAULT=[
@@ -16682,8 +16680,8 @@ var APP_IDS={
 };
 var selectedIcon=AVAILABLE_ICONS[0];
 
-function loadCustom(){try{return JSON.parse(localStorage.getItem(LS_KEY)||'[]');}catch(e){return[];}}
-function saveCustom(arr){try{localStorage.setItem(LS_KEY,JSON.stringify(arr));}catch(e){}}
+function loadCustom(){try{return JSON.parse(getStorage().getItem(LS_KEY)||'[]');}catch(e){return[];}}
+function saveCustom(arr){try{getStorage().setItem(LS_KEY,JSON.stringify(arr));}catch(e){console.warn('saveCustom failed',e);}}
 
 function initIconPicker(){
   var grid=document.getElementById('icon-grid');
