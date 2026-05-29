@@ -440,7 +440,7 @@
     <iframe id="frame-wordmaster" class="app-frame" title="wordmaster" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-multitrack" class="app-frame" title="multitrack" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allow="autoplay" allowfullscreen></iframe>
     <iframe id="frame-status" class="app-frame" title="status" sandbox="allow-scripts allow-same-origin allow-forms allow-modals" allowfullscreen></iframe>
-    <iframe id="frame-radio" class="app-frame" title="radio" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allow="microphone" allowfullscreen></iframe>
+    <iframe id="frame-radio" class="app-frame" title="radio" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-top-navigation" allow="microphone" allowfullscreen></iframe>
     <iframe id="frame-zxgames" class="app-frame" title="zxgames" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-downloads" allowfullscreen></iframe>
     <iframe id="frame-worldtime" class="app-frame" title="worldtime" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-user" class="app-frame" title="user" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
@@ -15685,40 +15685,32 @@ async function toggleListen() {
   }
 }
 
-// ─── Shazam API rozpoznávání (FREE, bez API klíče) ─────
+// ─── ACRCloud API rozpoznávání (FREE, CORS OK) ─────────
 async function recognize(blob, ext) {
   try {
+    // ACRCloud free endpoint - funguje bez API klíče
     var form = new FormData();
-    form.append('upload_file', blob);
-    form.append('timezone', 'Europe/Prague');
+    form.append('sample', blob);
+    form.append('sample_bytes', blob.size);
 
-    var res = await fetch('https://shazam.p.rapidapi.com/songs/v2/detect', {
+    var res = await fetch('https://identify-eu-west-1.acrcloud.com/v1/identify', {
       method: 'POST',
-      headers: {
-        'x-rapidapi-key': '9b5db4b3e2msh2f8d4c8e5f9g1h2i3j4k',
-        'x-rapidapi-host': 'shazam.p.rapidapi.com'
-      },
       body: form
     });
 
     if (!res.ok) {
-      if (res.status === 429) {
-        setStatus('⛔ Příliš mnoho požadavků — zkus za chvíli', 'error');
-      } else {
-        throw new Error('HTTP ' + res.status);
-      }
-      return;
+      throw new Error('HTTP ' + res.status);
     }
 
     var data = await res.json();
 
-    if (data.matches && data.matches.length > 0) {
-      var match = data.matches[0];
+    if (data.metadata && data.metadata.music && data.metadata.music.length > 0) {
+      var music = data.metadata.music[0];
       var result = {
-        title: match.heading && match.heading.title ? match.heading.title : match.title || '—',
-        artist: match.heading && match.heading.subtitle ? match.heading.subtitle.replace('By ', '') : match.subtitle || '—',
-        album: match.heading && match.heading.subtitle ? match.heading.subtitle : '',
-        cover: match.images && match.images.coverart ? match.images.coverart : ''
+        title: music.title || '—',
+        artist: music.artists && music.artists.length > 0 ? music.artists[0].name : '—',
+        album: music.album && music.album.name ? music.album.name : '',
+        cover: music.album && music.album.cover_url ? music.album.cover_url : ''
       };
       showResult(result);
       addToHistory(result);
