@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v21.6Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v21.9Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v21.6Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v21.9Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v21.6Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v21.9Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -338,7 +338,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v21.6Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v21.9Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -722,7 +722,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v21.6Kl</div>
+  <div class="version">v21.9Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -15518,34 +15518,20 @@ APP_HTML["radio"] = `<!DOCTYPE html>
   <div class="subtitle">RADIO · MUSIC RECOGNITION</div>
 </div>
 
-<button class="listen-btn" id="listenBtn" onclick="toggleListen()">
+<button class="listen-btn" id="listenBtn" onclick="window.open('https://www.shazam.com','_blank')">
   <span class="btn-icon" id="btnIcon">🎵</span>
   <span class="btn-label" id="btnLabel">POSLOUCHAT</span>
 </button>
 
-<div class="progress-wrap" id="progressWrap">
-  <div class="progress-bar">
-    <div class="progress-fill" id="progressFill"></div>
-  </div>
-  <div class="progress-label" id="progressLabel">NAHRÁVÁM... 0s / 8s</div>
-</div>
-
 <div class="status-bar">
-  <div class="status-text" id="statusText">Stiskni tlačítko a přidrž mikrofon k reproduktoru</div>
+  <div class="status-text">Otevře Shazam · po rozpoznání vlož níže</div>
 </div>
 
-<div class="result-card" id="resultCard">
-  <div class="result-label">▶ TEĎ HRAJE</div>
-  <div style="display:flex;gap:14px;align-items:flex-start;">
-    <img id="resCover" src="" alt="" style="display:none;width:72px;height:72px;border-radius:8px;object-fit:cover;flex-shrink:0;box-shadow:0 0 12px rgba(0,255,136,0.2);">
-    <div style="flex:1;min-width:0;">
-      <div class="result-title" id="resTitle">—</div>
-      <div class="result-artist" id="resArtist">—</div>
-      <div class="result-album" id="resAlbum"></div>
-    </div>
-  </div>
-  <div class="result-meta" id="resMeta"></div>
-  <div id="resLinks" style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;"></div>
+<!-- Pole pro ruční vložení skladby -->
+<div style="width:100%;max-width:380px;margin-bottom:16px;">
+  <input id="inputSong" type="text" placeholder="Název skladby..." style="width:100%;background:#0d1225;border:1px solid rgba(0,212,255,0.3);border-radius:10px 10px 0 0;padding:11px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.8rem;letter-spacing:1px;outline:none;box-sizing:border-box;">
+  <input id="inputArtist" type="text" placeholder="Interpret..." style="width:100%;background:#0d1225;border:1px solid rgba(0,212,255,0.3);border-top:none;border-radius:0 0 10px 10px;padding:11px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.8rem;letter-spacing:1px;outline:none;box-sizing:border-box;">
+  <button onclick="saveToHistory()" style="width:100%;margin-top:8px;padding:11px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.4);border-radius:10px;color:#00d4ff;font-family:'Share Tech Mono',monospace;font-size:0.75rem;letter-spacing:2px;cursor:pointer;">＋ ULOŽIT DO HISTORIE</button>
 </div>
 
 <div class="history-section">
@@ -15562,210 +15548,57 @@ APP_HTML["radio"] = `<!DOCTYPE html>
 // ═══════════════════════════════════════
 // Shazam API — music recognition (FREE)
 // ═══════════════════════════════════════
-const RECORD_SECS = 15;          // délka nahrávky v sekundách (zvýšeno)
-
-let mediaRecorder = null;
-let audioChunks   = [];
-let isListening   = false;
-let progressTimer = null;
-
 // Historie — ukládáme přes parent.localStorage (iframe sandbox fix)
 function getLS() { try { return window.parent.localStorage; } catch(e) { return localStorage; } }
-let history = [];
+var history = [];
 try { history = JSON.parse(getLS().getItem('kladyx_radio_history') || '[]'); } catch(e) {}
 
 renderHistory();
 
-// ─── UI helpers ───────────────────────────────────────
-function setStatus(msg, type) {
-  var el = document.getElementById('statusText');
-  el.textContent = msg;
-  el.className = 'status-text' + (type ? ' ' + type : '');
-}
-
-function resetBtn() {
-  isListening = false;
-  var btn = document.getElementById('listenBtn');
-  btn.classList.remove('listening', 'found');
-  document.getElementById('btnIcon').textContent  = '🎵';
-  document.getElementById('btnLabel').textContent = 'POSLOUCHAT';
-  document.getElementById('progressWrap').classList.remove('show');
-  clearInterval(progressTimer);
-}
-
-function startProgress() {
-  var elapsed = 0;
-  var fill = document.getElementById('progressFill');
-  var lbl  = document.getElementById('progressLabel');
-  fill.style.width = '0%';
-  progressTimer = setInterval(function() {
-    elapsed += 0.1;
-    var pct = Math.min((elapsed / RECORD_SECS) * 100, 100);
-    fill.style.width = pct + '%';
-    lbl.textContent = 'NAHRÁVÁM... ' + Math.floor(elapsed) + 's / ' + RECORD_SECS + 's';
-  }, 100);
-}
-
-// ─── Hlavní funkce ────────────────────────────────────
-async function toggleListen() {
-  if (isListening) return;
-  isListening = true;
-
-  var btn = document.getElementById('listenBtn');
-  btn.classList.add('listening');
-  document.getElementById('btnIcon').textContent  = '🎤';
-  document.getElementById('btnLabel').textContent = 'NAHRÁVÁM';
-  setStatus('Nahrávám zvuk... přidrž mikrofon k reproduktoru', 'active');
-  document.getElementById('progressWrap').classList.add('show');
-  startProgress();
-
-  try {
-    // Zvýšená citlivost mikrofonu
-    var stream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        echoCancellation: false,
-        noiseSuppression: false,
-        autoGainControl: false
-      },
-      video: false
-    });
-
-    // Audio context pro gain boost
-    var audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    var source = audioContext.createMediaStreamSource(stream);
-    var gainNode = audioContext.createGain();
-    gainNode.gain.value = 2.5; // zvýšení zesílení
-    source.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    // Detekuj podporovaný MIME typ
-    var mimeType = '';
-    var types = ['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/ogg','audio/mp4'];
-    for (var i = 0; i < types.length; i++) {
-      if (MediaRecorder.isTypeSupported(types[i])) { mimeType = types[i]; break; }
-    }
-
-    var opts = mimeType ? { mimeType: mimeType } : {};
-    mediaRecorder = new MediaRecorder(stream, opts);
-    audioChunks = [];
-
-    mediaRecorder.ondataavailable = function(e) { if (e.data && e.data.size > 0) audioChunks.push(e.data); };
-
-    mediaRecorder.onstop = async function() {
-      stream.getTracks().forEach(function(t) { t.stop(); });
-      audioContext.close();
-      clearInterval(progressTimer);
-      document.getElementById('progressWrap').classList.remove('show');
-
-      btn.classList.remove('listening');
-      document.getElementById('btnIcon').textContent  = '⏳';
-      document.getElementById('btnLabel').textContent = 'HLEDÁM';
-      setStatus('Rozpoznávám skladbu...', 'active');
-
-      var actualMime = (mediaRecorder.mimeType || mimeType || 'audio/webm').split(';')[0];
-      var ext = actualMime.includes('ogg') ? 'ogg' : actualMime.includes('mp4') ? 'mp4' : 'webm';
-      var blob = new Blob(audioChunks, { type: actualMime || 'audio/webm' });
-
-      await recognize(blob, ext);
-      resetBtn();
-    };
-
-    mediaRecorder.start(1000); // chunk každou sekundu
-    setTimeout(function() {
-      if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
-    }, RECORD_SECS * 1000);
-
-  } catch (err) {
-    resetBtn();
-    if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-      setStatus('⛔ Přístup k mikrofonu zamítnut', 'error');
-    } else {
-      setStatus('Chyba mikrofonu: ' + err.message, 'error');
-    }
-  }
-}
-
-// ─── ACRCloud API rozpoznávání (FREE, CORS OK) ─────────
-async function recognize(blob, ext) {
-  try {
-    // ACRCloud free endpoint - funguje bez API klíče
-    var form = new FormData();
-    form.append('sample', blob);
-    form.append('sample_bytes', blob.size);
-
-    var res = await fetch('https://identify-eu-west-1.acrcloud.com/v1/identify', {
-      method: 'POST',
-      body: form
-    });
-
-    if (!res.ok) {
-      throw new Error('HTTP ' + res.status);
-    }
-
-    var data = await res.json();
-
-    if (data.metadata && data.metadata.music && data.metadata.music.length > 0) {
-      var music = data.metadata.music[0];
-      var result = {
-        title: music.title || '—',
-        artist: music.artists && music.artists.length > 0 ? music.artists[0].name : '—',
-        album: music.album && music.album.name ? music.album.name : '',
-        cover: music.album && music.album.cover_url ? music.album.cover_url : ''
-      };
-      showResult(result);
-      addToHistory(result);
-    } else {
-      setStatus('🔍 Skladba nenalezena — zkus znovu', 'error');
-      document.getElementById('resultCard').classList.remove('show');
-    }
-  } catch (err) {
-    setStatus('Chyba sítě: ' + err.message, 'error');
-  }
-}
-
-// ─── Zobrazení výsledku ───────────────────────────────
-function showResult(r) {
-  document.getElementById('resTitle').textContent  = r.title  || '—';
-  document.getElementById('resArtist').textContent = r.artist || '—';
-  document.getElementById('resAlbum').textContent  = r.album  || '';
-
-  var meta = '';
-  if (r.release_date) meta += '<span class="meta-badge">📅 ' + r.release_date.substring(0,4) + '</span>';
-  if (r.label)        meta += '<span class="meta-badge">🏷 ' + r.label + '</span>';
-
-  // Cover art z Shazamu
-  var coverEl = document.getElementById('resCover');
-  if (r.cover) {
-    coverEl.src = r.cover;
-    coverEl.style.display = 'block';
-  } else {
-    coverEl.style.display = 'none';
-  }
-
-  // Tlačítka
-  var links = '';
-  if (r.song_link) links += '<a class="link-btn" href="' + r.song_link + '" target="_blank">🔗 Otevřít</a>';
-  document.getElementById('resLinks').innerHTML = links;
-  document.getElementById('resMeta').innerHTML = meta;
-
-  document.getElementById('resultCard').classList.add('show');
-  document.getElementById('listenBtn').classList.add('found');
-  setStatus('✅ Skladba rozpoznána!', 'found');
-}
-
-// ─── Historie ─────────────────────────────────────────
-function addToHistory(r) {
+// ─── Uložení do historie ──────────────────────────────
+function saveToHistory() {
+  var song   = document.getElementById('inputSong').value.trim();
+  var artist = document.getElementById('inputArtist').value.trim();
+  if (!song && !artist) return;
   var entry = {
-    title:  r.title  || '—',
-    artist: r.artist || '—',
+    title:  song   || '—',
+    artist: artist || '—',
     time:   new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
   };
   history.unshift(entry);
   if (history.length > 50) history = history.slice(0, 50);
   try { getLS().setItem('kladyx_radio_history', JSON.stringify(history)); } catch(e) {}
+  document.getElementById('inputSong').value   = '';
+  document.getElementById('inputArtist').value = '';
   renderHistory();
 }
 
+// Enter v polích také uloží
+document.getElementById('inputSong').addEventListener('keydown',   function(e){ if(e.key==='Enter') saveToHistory(); });
+document.getElementById('inputArtist').addEventListener('keydown', function(e){ if(e.key==='Enter') saveToHistory(); });
+
+// ─── Kopírování do schránky kliknutím na položku ──────
+function copyItem(title, artist) {
+  var text = title + (artist && artist !== '—' ? ' - ' + artist : '');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function() { showCopyToast(text); });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    showCopyToast(text);
+  }
+}
+
+function showCopyToast(text) {
+  var t = document.getElementById('copyToast');
+  t.textContent = '📋 Zkopírováno: ' + text;
+  t.style.opacity = '1';
+  setTimeout(function(){ t.style.opacity = '0'; }, 2000);
+}
+
+// ─── Vykreslení historie ──────────────────────────────
 function renderHistory() {
   var list = document.getElementById('historyList');
   if (!history.length) {
@@ -15773,13 +15606,13 @@ function renderHistory() {
     return;
   }
   list.innerHTML = history.map(function(h, i) {
-    return '<div class="history-item">'
+    return '<div class="history-item" onclick="copyItem(\'' + esc2(h.title) + '\',\'' + esc2(h.artist) + '\')" title="Klikni pro kopírování">'
       + '<div class="history-num">' + String(i+1).padStart(2,'0') + '</div>'
       + '<div class="history-info">'
       +   '<div class="history-song">' + esc(h.title) + '</div>'
       +   '<div class="history-artist">' + esc(h.artist) + '</div>'
       + '</div>'
-      + '<div class="history-time">' + h.time + '</div>'
+      + '<div class="history-time">' + h.time + '<br><span style="font-size:0.5rem;color:#00d4ff;">📋</span></div>'
       + '</div>';
   }).join('');
 }
@@ -15788,12 +15621,15 @@ function clearHistory() {
   history = [];
   try { getLS().removeItem('kladyx_radio_history'); } catch(e) {}
   renderHistory();
-  document.getElementById('resultCard').classList.remove('show');
-  setStatus('Stiskni tlačítko a přidrž mikrofon k reproduktoru');
 }
 
-function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(s)  { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc2(s) { return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 <\/script>
+
+<!-- Toast notifikace -->
+<div id="copyToast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0d1225;border:1px solid rgba(0,212,255,0.4);color:#00d4ff;padding:10px 18px;border-radius:10px;font-size:0.65rem;letter-spacing:1px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999;white-space:nowrap;max-width:90%;text-overflow:ellipsis;overflow:hidden;"></div>
+
 </body>
 </html>
 `;
