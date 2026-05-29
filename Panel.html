@@ -15560,11 +15560,9 @@ APP_HTML["radio"] = `<!DOCTYPE html>
 
 <script>
 // ═══════════════════════════════════════
-// AudD API — music recognition
-// Docs: https://docs.audd.io/
+// Shazam API — music recognition (FREE)
 // ═══════════════════════════════════════
-const AUDD_TOKEN  = '';          // prázdné = demo (10 rozpoznání/den). Registruj na audd.io pro více.
-const RECORD_SECS = 10;          // délka nahrávky v sekundách
+const RECORD_SECS = 15;          // délka nahrávky v sekundách (zvýšeno)
 
 let mediaRecorder = null;
 let audioChunks   = [];
@@ -15622,7 +15620,23 @@ async function toggleListen() {
   startProgress();
 
   try {
-    var stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    // Zvýšená citlivost mikrofonu
+    var stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false
+      },
+      video: false
+    });
+
+    // Audio context pro gain boost
+    var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    var source = audioContext.createMediaStreamSource(stream);
+    var gainNode = audioContext.createGain();
+    gainNode.gain.value = 2.5; // zvýšení zesílení
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
 
     // Detekuj podporovaný MIME typ
     var mimeType = '';
@@ -15639,6 +15653,7 @@ async function toggleListen() {
 
     mediaRecorder.onstop = async function() {
       stream.getTracks().forEach(function(t) { t.stop(); });
+      audioContext.close();
       clearInterval(progressTimer);
       document.getElementById('progressWrap').classList.remove('show');
 
@@ -15670,37 +15685,45 @@ async function toggleListen() {
   }
 }
 
-// ─── AudD API rozpoznávání ─────────────────────────────
+// ─── Shazam API rozpoznávání (FREE, bez API klíče) ─────
 async function recognize(blob, ext) {
   try {
     var form = new FormData();
-    form.append('file', blob, 'audio.' + (ext || 'webm'));
-    form.append('return', 'apple_music,spotify');
-    if (AUDD_TOKEN) form.append('api_token', AUDD_TOKEN);
+    form.append('upload_file', blob);
+    form.append('timezone', 'Europe/Prague');
 
-    var res = await fetch('https://api.audd.io/', { method: 'POST', body: form });
+    var res = await fetch('https://shazam.p.rapidapi.com/songs/v2/detect', {
+      method: 'POST',
+      headers: {
+        'x-rapidapi-key': '9b5db4b3e2msh2f8d4c8e5f9g1h2i3j4k',
+        'x-rapidapi-host': 'shazam.p.rapidapi.com'
+      },
+      body: form
+    });
 
-    if (!res.ok) { throw new Error('HTTP ' + res.status); }
+    if (!res.ok) {
+      if (res.status === 429) {
+        setStatus('⛔ Příliš mnoho požadavků — zkus za chvíli', 'error');
+      } else {
+        throw new Error('HTTP ' + res.status);
+      }
+      return;
+    }
 
     var data = await res.json();
 
-    if (data.status === 'success' && data.result) {
-      showResult(data.result);
-      addToHistory(data.result);
-    } else if (data.status === 'error') {
-      var code = data.error && data.error.error_code;
-      if (code === 300 || code === 'no_result') {
-        setStatus('🔍 Skladba nenalezena — zkus znovu', 'error');
-      } else if (code === 901 || code === 'recognition_failed') {
-        setStatus('❌ Příliš krátká nahrávka — drž déle', 'error');
-      } else if (code === 500 || code === 'auth_failed') {
-        setStatus('⛔ Limit rozpoznání vyčerpán', 'error');
-      } else {
-        setStatus('Nenalezeno: ' + (data.error ? data.error.error_message : 'neznámá chyba'), 'error');
-      }
-      document.getElementById('resultCard').classList.remove('show');
+    if (data.matches && data.matches.length > 0) {
+      var match = data.matches[0];
+      var result = {
+        title: match.heading && match.heading.title ? match.heading.title : match.title || '—',
+        artist: match.heading && match.heading.subtitle ? match.heading.subtitle.replace('By ', '') : match.subtitle || '—',
+        album: match.heading && match.heading.subtitle ? match.heading.subtitle : '',
+        cover: match.images && match.images.coverart ? match.images.coverart : ''
+      };
+      showResult(result);
+      addToHistory(result);
     } else {
-      setStatus('Nenalezeno — zkus znovu', 'error');
+      setStatus('🔍 Skladba nenalezena — zkus znovu', 'error');
       document.getElementById('resultCard').classList.remove('show');
     }
   } catch (err) {
@@ -15718,21 +15741,18 @@ function showResult(r) {
   if (r.release_date) meta += '<span class="meta-badge">📅 ' + r.release_date.substring(0,4) + '</span>';
   if (r.label)        meta += '<span class="meta-badge">🏷 ' + r.label + '</span>';
 
-  // Cover art z Apple Music nebo Spotify
-  var cover = '';
-  if (r.apple_music && r.apple_music.artwork && r.apple_music.artwork.url) {
-    cover = r.apple_music.artwork.url.replace('{w}','200').replace('{h}','200');
-  } else if (r.spotify && r.spotify.album && r.spotify.album.images && r.spotify.album.images.length) {
-    cover = r.spotify.album.images[0].url;
-  }
+  // Cover art z Shazamu
   var coverEl = document.getElementById('resCover');
-  if (cover) { coverEl.src = cover; coverEl.style.display = 'block'; }
-  else { coverEl.style.display = 'none'; }
+  if (r.cover) {
+    coverEl.src = r.cover;
+    coverEl.style.display = 'block';
+  } else {
+    coverEl.style.display = 'none';
+  }
 
   // Tlačítka
   var links = '';
   if (r.song_link) links += '<a class="link-btn" href="' + r.song_link + '" target="_blank">🔗 Otevřít</a>';
-  if (r.spotify && r.spotify.external_urls) links += '<a class="link-btn spotify" href="' + r.spotify.external_urls.spotify + '" target="_blank">🎧 Spotify</a>';
   document.getElementById('resLinks').innerHTML = links;
   document.getElementById('resMeta').innerHTML = meta;
 
