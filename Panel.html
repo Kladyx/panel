@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v22.1Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v22.2Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v22.0Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v22.2Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v22.0Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v22.2Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -334,11 +334,16 @@
       <div class="bd"></div><div class="bi">👤</div><div class="bl">Moje Apky</div>
     </button>
 
+    <button class="app-btn" id="btn-prekladac" style="--ac:#00d4ff;--ac-rgb:0,212,255" onclick="openApp('prekladac')">
+      <div class="app-dot"></div>
+      <div class="bd"></div><div class="bi">🌐</div><div class="bl">Překladač</div>
+    </button>
+
   </div>
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v22.0Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v22.2Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -407,6 +412,7 @@
         <div class="wcard" onclick="openApp('zxgames')" onmouseover="this.style.borderColor='#0088ff';this.style.boxShadow='0 0 14px rgba(0,136,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#0066ff;box-shadow:0 0 6px #0066ff"></span><div class="wi">🕹️</div><div class="wn">ZX Games</div><div class="wd">Arcade Browser</div></div>
         <div class="wcard" onclick="openApp('worldtime')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">🌍</div><div class="wn">World Time</div><div class="wd">Hodiny & Stopky</div></div>
         <div class="wcard" onclick="openApp('user')" onmouseover="this.style.borderColor='#a78bfa';this.style.boxShadow='0 0 14px rgba(167,139,250,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#a78bfa;box-shadow:0 0 6px #a78bfa"></span><div class="wi">👤</div><div class="wn">Moje Apky</div><div class="wd">Správce aplikací</div></div>
+        <div class="wcard" onclick="openApp('prekladac')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">🌐</div><div class="wn">Překladač</div><div class="wd">CZ → EN</div></div>
 
       </div>
       <div style="margin-top:22px;display:flex;align-items:center;justify-content:center;gap:24px;padding:12px 20px;border:1px solid rgba(0,212,255,0.1);border-radius:8px;background:rgba(255,255,255,0.025);">
@@ -444,6 +450,7 @@
     <iframe id="frame-zxgames" class="app-frame" title="zxgames" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-downloads" allowfullscreen></iframe>
     <iframe id="frame-worldtime" class="app-frame" title="worldtime" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-user" class="app-frame" title="user" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
+    <iframe id="frame-prekladac" class="app-frame" title="prekladac" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
 
   </div>
 </div>
@@ -722,7 +729,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v22.0Kl</div>
+  <div class="version">v22.2Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -16664,6 +16671,132 @@ render();
 </html>
 `;
 
+
+APP_HTML["prekladac"] = `<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KLADYX TRANSLATOR</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+  :root { --cyan:#00d4ff; --green:#00ff88; --dark:#05050f; --dark2:#0a0a20; --dark3:#0d1330; --border:rgba(0,212,255,0.25); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--dark); color:#e0f0ff; font-family:'Share Tech Mono',monospace; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px 16px 40px; }
+  body::before { content:''; position:fixed; inset:0; background:radial-gradient(ellipse at 50% 0%,rgba(0,100,200,0.15) 0%,transparent 70%); pointer-events:none; }
+  header { text-align:center; margin-bottom:24px; }
+  header h1 { font-family:'Orbitron',monospace; font-size:clamp(1rem,5vw,1.6rem); font-weight:900; color:var(--cyan); text-shadow:0 0 20px rgba(0,212,255,0.6); letter-spacing:4px; text-transform:uppercase; }
+  header p { color:rgba(0,212,255,0.5); font-size:0.7rem; letter-spacing:2px; margin-top:6px; }
+  .container { width:100%; max-width:700px; display:flex; flex-direction:column; gap:16px; }
+  .panel { background:var(--dark2); border:1px solid var(--border); border-radius:8px; padding:16px; }
+  .panel-label { font-family:'Orbitron',monospace; font-size:0.6rem; color:rgba(0,212,255,0.5); letter-spacing:3px; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .panel-label::before { content:''; display:inline-block; width:6px; height:6px; background:var(--cyan); border-radius:50%; box-shadow:0 0 8px var(--cyan); }
+  textarea { width:100%; background:var(--dark3); border:1px solid var(--border); border-radius:6px; color:#e0f0ff; font-family:'Share Tech Mono',monospace; font-size:0.95rem; line-height:1.6; padding:14px; resize:vertical; min-height:120px; outline:none; transition:border-color 0.2s; }
+  textarea:focus { border-color:rgba(0,212,255,0.6); box-shadow:0 0 10px rgba(0,212,255,0.1); }
+  textarea::placeholder { color:rgba(255,255,255,0.2); }
+  .result-box { width:100%; background:var(--dark3); border:1px solid rgba(0,255,136,0.2); border-radius:6px; color:var(--green); font-family:'Share Tech Mono',monospace; font-size:0.95rem; line-height:1.6; padding:14px; min-height:120px; white-space:pre-wrap; word-break:break-word; }
+  .result-box.empty { color:rgba(255,255,255,0.2); font-style:italic; }
+  .result-box.loading { color:rgba(0,212,255,0.6); }
+  .btn-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+  button { font-family:'Orbitron',monospace; font-size:0.7rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; border:none; border-radius:6px; padding:12px 22px; cursor:pointer; transition:all 0.2s; }
+  .btn-translate { background:linear-gradient(135deg,#006080,#003d5c); color:var(--cyan); border:1px solid rgba(0,212,255,0.4); flex:1; box-shadow:0 0 15px rgba(0,212,255,0.15); }
+  .btn-translate:hover:not(:disabled) { background:linear-gradient(135deg,#008aaa,#005580); box-shadow:0 0 25px rgba(0,212,255,0.35); }
+  .btn-translate:disabled { opacity:0.5; cursor:not-allowed; }
+  .btn-copy { background:linear-gradient(135deg,#004d2a,#002d18); color:var(--green); border:1px solid rgba(0,255,136,0.3); }
+  .btn-copy:hover { box-shadow:0 0 25px rgba(0,255,136,0.3); }
+  .btn-clear { background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.4); border:1px solid rgba(255,255,255,0.1); }
+  .status-bar { display:flex; justify-content:space-between; align-items:center; font-size:0.65rem; color:rgba(255,255,255,0.3); padding:0 2px; }
+  .sdot { display:inline-block; width:6px; height:6px; border-radius:50%; margin-right:6px; background:rgba(255,255,255,0.2); }
+  .sdot.ok { background:var(--green); box-shadow:0 0 6px var(--green); }
+  .sdot.err { background:#ff4444; box-shadow:0 0 6px #ff4444; }
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--dark3); border:1px solid rgba(0,255,136,0.4); color:var(--green); font-family:'Orbitron',monospace; font-size:0.65rem; letter-spacing:2px; padding:10px 22px; border-radius:6px; opacity:0; transition:all 0.3s; pointer-events:none; }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .shortcuts { font-size:0.62rem; color:rgba(255,255,255,0.2); text-align:center; margin-top:6px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🌐 Překladač</h1>
+  <p>CZ → EN · powered by AI</p>
+</header>
+<div class="container">
+  <div class="panel">
+    <div class="panel-label">Česky — vstup</div>
+    <textarea id="input" placeholder="Napiš text česky..." rows="5"></textarea>
+    <div class="btn-row">
+      <button class="btn-translate" id="btn-tr" onclick="translate()">⚡ Přeložit</button>
+      <button class="btn-clear" onclick="clearAll()">✕ Smazat</button>
+    </div>
+    <div class="shortcuts">Ctrl+Enter = přeložit</div>
+  </div>
+  <div class="panel">
+    <div class="panel-label">English — výstup</div>
+    <div class="result-box empty" id="output">Překlad se zobrazí zde...</div>
+    <div class="btn-row">
+      <button class="btn-copy" onclick="copyResult()">📋 Kopírovat</button>
+    </div>
+  </div>
+  <div class="status-bar">
+    <span><span class="sdot" id="sdot"></span><span id="stxt">Připraveno</span></span>
+    <span>v1.0.0</span>
+  </div>
+</div>
+<div class="toast" id="toast">✓ ZKOPÍROVÁNO</div>
+<script>
+let lastResult='';
+async function translate(){
+  const inp=document.getElementById('input').value.trim();
+  if(!inp)return;
+  const btn=document.getElementById('btn-tr');
+  const out=document.getElementById('output');
+  const dot=document.getElementById('sdot');
+  const stxt=document.getElementById('stxt');
+  btn.disabled=true;
+  out.className='result-box loading';
+  out.textContent='⟳ Překládám...';
+  dot.className='sdot ok';
+  stxt.textContent='Překládám...';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:'You are a Czech to English translator. Translate the user Czech text to natural fluent English. Return ONLY the translated text, nothing else.',
+        messages:[{role:'user',content:inp}]
+      })
+    });
+    const d=await r.json();
+    const t=d.content?.[0]?.text||'';
+    if(t){lastResult=t;out.className='result-box';out.textContent=t;dot.className='sdot ok';stxt.textContent='Hotovo';}
+    else throw new Error('Prázdná odpověď');
+  }catch(e){
+    out.className='result-box';out.style.color='#ff6666';out.textContent='⚠ Chyba: '+e.message;
+    dot.className='sdot err';stxt.textContent='Chyba';
+  }
+  btn.disabled=false;
+}
+function copyResult(){
+  if(!lastResult)return;
+  navigator.clipboard.writeText(lastResult).then(()=>{
+    const t=document.getElementById('toast');t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2000);
+  });
+}
+function clearAll(){
+  document.getElementById('input').value='';
+  const o=document.getElementById('output');
+  o.className='result-box empty';o.style.color='';o.textContent='Překlad se zobrazí zde...';
+  document.getElementById('sdot').className='sdot';
+  document.getElementById('stxt').textContent='Připraveno';
+  lastResult='';
+}
+document.getElementById('input').addEventListener('keydown',function(e){if(e.ctrlKey&&e.key==='Enter')translate();});
+<\/script>
+</body>
+</html>
+`;
 
 function openApp(id) {
   try {
