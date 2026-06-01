@@ -10603,7 +10603,7 @@ APP_HTML["wordmaster"] = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WordMaster v2.1</title>
+<title>WordMaster v2.2</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--bg:#0d0d1f;--card:#15152a;--border:#222240;--cyan:#34d399;--purple:#a78bfa;--orange:#fb923c;--yellow:#facc15;--pink:#f472b6;--blue:#60a5fa;--red:#f87171;}
@@ -14308,8 +14308,17 @@ function vcDoTranslate(text,lang){
       document.getElementById('vc-status').textContent='❌ Chyba připojení.';
     });
 }
+var _cachedVoices=[];
+function _loadVoices(){
+  var v=window.speechSynthesis.getVoices();
+  if(v&&v.length)_cachedVoices=v;
+}
+if(window.speechSynthesis){
+  window.speechSynthesis.onvoiceschanged=function(){_loadVoices();};
+  _loadVoices();
+}
 function _getMaleVoice(lang){
-  var voices=window.speechSynthesis.getVoices();
+  var voices=_cachedVoices.length?_cachedVoices:window.speechSynthesis.getVoices();
   var langCode=lang==='en'?'en':'cs';
   var male=voices.filter(function(v){return v.lang.indexOf(langCode)===0&&/male|man|david|mark|daniel|george|james|matthew|thomas|richard/i.test(v.name);});
   if(male.length)return male[0];
