@@ -14330,7 +14330,7 @@ function vcSpeakText(text,lang){
   window.speechSynthesis.cancel();
   var u=new SpeechSynthesisUtterance(text);
   u.lang=lang==='en'?'en-GB':'cs-CZ';
-  u.rate=0.9;
+  u.rate=0.9;u.pitch=0.7;
   var v=_getMaleVoice(lang);if(v)u.voice=v;
   window.speechSynthesis.speak(u);
 }
@@ -14346,7 +14346,7 @@ function speak(txt){
   try{
     window.speechSynthesis.cancel();
     var u=new SpeechSynthesisUtterance(txt);
-    u.lang='en-US';u.rate=0.88;
+    u.lang='en-US';u.rate=0.88;u.pitch=0.7;
     var v=_getMaleVoice('en');if(v)u.voice=v;
     u.onstart=function(){speaking=true;renderCard();};
     u.onend=u.onerror=function(){speaking=false;renderCard();};
@@ -14596,7 +14596,7 @@ function answerTest(i){
   if(sel===q.correct){
     btns[i].classList.add('correct');
     testState.score++;
-    try{var u=new SpeechSynthesisUtterance(q.correct);u.lang='en-US';u.rate=0.9;var mv=_getMaleVoice('en');if(mv)u.voice=mv;window.speechSynthesis.speak(u);}catch(e){}
+    try{var u=new SpeechSynthesisUtterance(q.correct);u.lang='en-US';u.rate=0.9;u.pitch=0.7;var mv=_getMaleVoice('en');if(mv)u.voice=mv;window.speechSynthesis.speak(u);}catch(e){}
   }else{
     btns[i].classList.add('wrong');
     testState.wrong++;
