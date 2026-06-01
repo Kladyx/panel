@@ -6594,7 +6594,7 @@ header h1{font-family:'Orbitron',monospace;font-size:1.55rem;font-weight:900;let
 <header>
   <div class="title-top">
     <div class="title-year">UTILITY TRACKER · 2026</div>
-    <div class="ver-badge">v14.6</div>
+    <div class="ver-badge">v14.7</div>
     <span id="sync-dot" style="font-size:.58rem;color:#4a6d90;letter-spacing:.05em;margin-left:4px;">⏳</span>
   </div>
   <h1>ODEČTY</h1>
@@ -7628,7 +7628,7 @@ function _initData(){
 function sKey(m){return 'platby_'+currentYear+'_'+m;}
 function _getAllLocal(){const all={};for(let i=0;i<12;i++){try{const r=localStorage.getItem(sKey(i));if(r)all[i]=JSON.parse(r);}catch(e){}}return all;}
 function _applyAll(all){for(let i=0;i<12;i++){if(all[i]!==undefined){try{localStorage.setItem(sKey(i),JSON.stringify(all[i]));}catch(e){}}}  }
-function loadMonth(m){try{const r=localStorage.getItem(sKey(m));if(r)return JSON.parse(r);}catch(e){}if(m===4&&currentYear===2026)return DEFAULT_MAY.map((it,i)=>({id:i,name:it.name,amount:it.amount,note:it.note||'',paid:!!it.paid}));return[];}
+function loadMonth(m){try{const r=localStorage.getItem(sKey(m));if(r)return JSON.parse(r);}catch(e){}if(m===new Date().getMonth()&&currentYear===new Date().getFullYear())return DEFAULT_MAY.map((it,i)=>({id:i,name:it.name,amount:it.amount,note:it.note||'',paid:!!it.paid}));return[];}
 function saveMonth(m,data){
   localStorage.setItem(sKey(m),JSON.stringify(data));
   _platbySaving=true;
