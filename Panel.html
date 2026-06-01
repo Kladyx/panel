@@ -10603,7 +10603,7 @@ APP_HTML["wordmaster"] = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WordMaster v2.0</title>
+<title>WordMaster v2.1</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--bg:#0d0d1f;--card:#15152a;--border:#222240;--cyan:#34d399;--purple:#a78bfa;--orange:#fb923c;--yellow:#facc15;--pink:#f472b6;--blue:#60a5fa;--red:#f87171;}
@@ -14308,12 +14308,21 @@ function vcDoTranslate(text,lang){
       document.getElementById('vc-status').textContent='❌ Chyba připojení.';
     });
 }
+function _getMaleVoice(lang){
+  var voices=window.speechSynthesis.getVoices();
+  var langCode=lang==='en'?'en':'cs';
+  var male=voices.filter(function(v){return v.lang.indexOf(langCode)===0&&/male|man|david|mark|daniel|george|james|matthew|thomas|richard/i.test(v.name);});
+  if(male.length)return male[0];
+  var any=voices.filter(function(v){return v.lang.indexOf(langCode)===0;});
+  return any.length?any[0]:null;
+}
 function vcSpeakText(text,lang){
   if(!window.speechSynthesis)return;
   window.speechSynthesis.cancel();
   var u=new SpeechSynthesisUtterance(text);
   u.lang=lang==='en'?'en-GB':'cs-CZ';
   u.rate=0.9;
+  var v=_getMaleVoice(lang);if(v)u.voice=v;
   window.speechSynthesis.speak(u);
 }
 function vcSpeak(){
@@ -14329,6 +14338,7 @@ function speak(txt){
     window.speechSynthesis.cancel();
     var u=new SpeechSynthesisUtterance(txt);
     u.lang='en-US';u.rate=0.88;
+    var v=_getMaleVoice('en');if(v)u.voice=v;
     u.onstart=function(){speaking=true;renderCard();};
     u.onend=u.onerror=function(){speaking=false;renderCard();};
     window.speechSynthesis.speak(u);
