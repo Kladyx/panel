@@ -6594,7 +6594,7 @@ header h1{font-family:'Orbitron',monospace;font-size:1.55rem;font-weight:900;let
 <header>
   <div class="title-top">
     <div class="title-year">UTILITY TRACKER · 2026</div>
-    <div class="ver-badge">v14.4</div>
+    <div class="ver-badge">v14.6</div>
     <span id="sync-dot" style="font-size:.58rem;color:#4a6d90;letter-spacing:.05em;margin-left:4px;">⏳</span>
   </div>
   <h1>ODEČTY</h1>
@@ -6913,13 +6913,15 @@ function saveVal(type){
   if(!v){ flash(inp); return; }
   setVal(type,currentMonth,v);
   refresh();
-  // auto-advance if all done
+  // auto-advance if all done – only if next month is in the future
   const r=getRecords();
   if(['water','gas','electric'].every(t=>hasVal(r,t,currentMonth))){
     const [y,m]=currentMonth.split('-').map(Number);
     const nd=new Date(y,m,1);
     const nm=nd.getFullYear()+'-'+String(nd.getMonth()+1).padStart(2,'0');
-    setTimeout(()=>{ currentMonth=nm; refresh(); },800);
+    if(nm > todayYM){
+      setTimeout(()=>{ currentMonth=nm; refresh(); },800);
+    }
   }
 }
 
@@ -7546,7 +7548,7 @@ const DEFAULT_MAY=[
   {name:"TP-Link",amount:130,note:""},
   {name:"Stream Mixcloud",amount:150,note:""},
 ];
-let currentMonth=4, items=[], _platbySaving=false;
+let currentMonth=new Date().getMonth(), items=[], _platbySaving=false;
 
 // ── FIREBASE (sdílíme vstupní gate Panelu, fallback pro standalone otevření) ──
 const _fbCfg={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
