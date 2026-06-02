@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v23.8Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v23.10Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v23.8Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v23.9Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v23.8Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v23.9Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -325,6 +325,10 @@
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🕹️</div><div class="bl">ZX Games</div>
     </button>
+    <button class="app-btn" id="btn-nextsync" style="--ac:#00ffbb;--ac-rgb:0,255,187" onclick="openApp('nextsync')">
+      <span class="bi">⬆</span>
+      <span class="bl">NextSync</span>
+    </button>
     <button class="app-btn" id="btn-worldtime" style="--ac:#00d4ff;--ac-rgb:0,212,255" onclick="openApp('worldtime')">
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🌍</div><div class="bl">World Time</div>
@@ -343,7 +347,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v23.8Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v23.9Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -410,6 +414,7 @@
         <div class="wcard" onclick="openApp('status')" onmouseover="this.style.borderColor='#00ff88';this.style.boxShadow='0 0 14px rgba(0,255,136,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#22c55e;box-shadow:0 0 6px #22c55e"></span><div class="wi">🟢</div><div class="wn">Status</div><div class="wd">System Monitor</div></div>
         <div class="wcard" onclick="openApp('radio')" onmouseover="this.style.borderColor='#ff4466';this.style.boxShadow='0 0 14px rgba(255,68,102,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff4466;box-shadow:0 0 6px #ff4466"></span><div class="wi">🎤</div><div class="wn">Radio ID</div><div class="wd">Music Recognition</div></div>
         <div class="wcard" onclick="openApp('zxgames')" onmouseover="this.style.borderColor='#0088ff';this.style.boxShadow='0 0 14px rgba(0,136,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#0066ff;box-shadow:0 0 6px #0066ff"></span><div class="wi">🕹️</div><div class="wn">ZX Games</div><div class="wd">Arcade Browser</div></div>
+        <div class="wcard" onclick="openApp('nextsync')" onmouseover="this.style.borderColor='#00ffbb';this.style.boxShadow='0 0 14px rgba(0,255,187,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00ffbb;box-shadow:0 0 6px #00ffbb"></span><div class="wi">⬆</div><div class="wn">NextSync</div><div class="wd">ZX Next Upload</div></div>
         <div class="wcard" onclick="openApp('worldtime')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">🌍</div><div class="wn">World Time</div><div class="wd">Hodiny & Stopky</div></div>
         <div class="wcard" onclick="openApp('user')" onmouseover="this.style.borderColor='#a78bfa';this.style.boxShadow='0 0 14px rgba(167,139,250,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#a78bfa;box-shadow:0 0 6px #a78bfa"></span><div class="wi">👤</div><div class="wn">Moje Apky</div><div class="wd">Správce aplikací</div></div>
         <div class="wcard" onclick="openApp('prekladac')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">🌐</div><div class="wn">Překladač</div><div class="wd">CZ → EN</div></div>
@@ -451,6 +456,7 @@
     <iframe id="frame-worldtime" class="app-frame" title="worldtime" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-user" class="app-frame" title="user" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-prekladac" class="app-frame" title="prekladac" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
+    <iframe id="frame-nextsync" class="app-frame" title="nextsync" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
 
   </div>
 </div>
@@ -729,7 +735,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v23.8Kl</div>
+  <div class="version">v23.9Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -9468,19 +9474,46 @@ textarea{resize:vertical;min-height:100px;}
 input:focus,textarea:focus{border-color:#00c3ff;}
 button.hlavni{width:100%;padding:13px;background:linear-gradient(135deg,#0057e7,#0096ff);border:none;border-radius:6px;color:#fff;font-family:monospace;font-size:.9rem;font-weight:900;cursor:pointer;letter-spacing:.1em;box-shadow:0 0 14px rgba(0,140,255,.3);}
 button.hlavni:active{opacity:.8;}
-.karta{background:#0e1118;border:1px solid rgba(0,160,255,.15);border-radius:8px;padding:12px;margin-bottom:8px;}
+.karta{background:#0e1118;border:1px solid rgba(0,160,255,.15);border-radius:8px;padding:12px;margin-bottom:8px;position:relative;}
+.karta.locked{border-color:rgba(255,180,0,.25);background:#0e1008;}
 .kn{font-weight:700;color:#00c3ff;margin-bottom:4px;}
 .kt{font-size:.8rem;color:rgba(200,216,232,.8);white-space:pre-wrap;word-break:break-word;}
+.kt.hidden-text{font-size:.8rem;color:rgba(200,216,232,.25);letter-spacing:.18em;}
 .kdate{font-size:.7rem;color:#4db8ff;margin-top:5px;padding:2px 8px;background:rgba(0,120,255,.1);border:1px solid rgba(0,120,255,.2);border-radius:4px;display:inline-block;}
 .kd{font-size:.6rem;color:rgba(200,216,232,.3);margin-top:6px;}
 button.del{float:right;background:none;border:1px solid rgba(255,68,102,.3);color:#ff4466;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:.6rem;}
+button.lockbtn{background:none;border:1px solid rgba(255,180,0,.3);color:#ffb800;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:.6rem;margin-right:4px;}
+button.lockbtn:hover{background:rgba(255,180,0,.12);}
+.karta.locked .kn{color:#ffb800;}
+.lock-overlay{position:absolute;inset:0;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(10,12,16,.55);cursor:pointer;font-size:1.6rem;z-index:2;backdrop-filter:blur(3px);}
 .prazdno{text-align:center;color:rgba(200,216,232,.2);padding:30px 0;}
 .date-label{font-size:.68rem;color:#4db8ff;display:block;margin-bottom:3px;}
+/* PIN dialog */
+#pin-modal{display:none;position:fixed;inset:0;background:rgba(5,8,16,.88);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
+#pin-modal.show{display:flex;}
+#pin-modal h2{color:#ffb800;font-size:1rem;letter-spacing:.12em;text-align:center;}
+#pin-input{width:140px;font-size:1.4rem;letter-spacing:.3em;text-align:center;padding:10px;border-radius:8px;border:2px solid rgba(255,180,0,.4);background:#0e1118;color:#ffb800;font-family:monospace;outline:none;}
+#pin-input:focus{border-color:#ffb800;}
+#pin-error{color:#ff4466;font-size:.7rem;min-height:16px;text-align:center;}
+#pin-ok{padding:10px 28px;background:linear-gradient(135deg,#b8860b,#ffb800);border:none;border-radius:6px;color:#0a0c10;font-family:monospace;font-size:.85rem;font-weight:900;cursor:pointer;letter-spacing:.1em;}
+#pin-cancel{background:none;border:1px solid rgba(200,216,232,.2);color:rgba(200,216,232,.5);border-radius:6px;padding:8px 20px;font-family:monospace;font-size:.75rem;cursor:pointer;}
 </style>
 </head>
 <body>
-<div class="topbar"><span class="ver">v14.4</span><span id="sync-dot">💾 Start...</span></div>
+<div class="topbar"><span class="ver">v14.5</span><span id="sync-dot">💾 Start...</span></div>
 <h1>📝 POZNÁMKY</h1>
+
+<!-- PIN modal -->
+<div id="pin-modal">
+  <h2>🔒 ZAMČENÁ POZNÁMKA</h2>
+  <div style="font-size:.65rem;color:rgba(200,216,232,.4);letter-spacing:.05em;text-align:center;">Zadej PIN pro odemčení</div>
+  <input id="pin-input" type="password" inputmode="numeric" maxlength="8" placeholder="••••"/>
+  <div id="pin-error"></div>
+  <div style="display:flex;gap:10px;">
+    <button id="pin-ok" onclick="pinConfirm()">ODEMKNOUT</button>
+    <button id="pin-cancel" onclick="pinCancel()">Zrušit</button>
+  </div>
+</div>
 
 <div class="box">
   <input id="nazev" type="text" placeholder="Název poznámky (volitelné)..."/>
@@ -9493,6 +9526,9 @@ button.del{float:right;background:none;border:1px solid rgba(255,68,102,.3);colo
 
 <script>
 var poz=[], REF=null, SAV=false;
+var PIN_KEY='kpoz_pin';
+var _pinTarget=null, _pinMode=null; // mode: 'lock' | 'unlock'
+var _unlockedSet={};
 
 try{var raw=window.parent.localStorage.getItem('kpoz');if(!raw)raw=localStorage.getItem('kpoz');if(raw)poz=JSON.parse(raw);}catch(e){}
 
@@ -9501,6 +9537,14 @@ function SS(m,c){var e=document.getElementById('sync-dot');if(e){e.textContent=m
 function saveLocal(){
   try{window.parent.localStorage.setItem('kpoz',JSON.stringify(poz));}catch(e){}
   try{localStorage.setItem('kpoz',JSON.stringify(poz));}catch(e){}
+}
+
+function getPin(){
+  try{return window.parent.localStorage.getItem(PIN_KEY)||localStorage.getItem(PIN_KEY)||'';}catch(e){return '';}
+}
+function setPin(v){
+  try{window.parent.localStorage.setItem(PIN_KEY,v);}catch(e){}
+  try{localStorage.setItem(PIN_KEY,v);}catch(e){}
 }
 
 function uloz(){
@@ -9519,25 +9563,111 @@ function render(){
   if(!poz.length){s.innerHTML='<div class="prazdno">Zatím žádné poznámky</div>';return;}
   s.innerHTML='';
   poz.forEach(function(p,i){
-    var d=document.createElement('div');d.className='karta';
-    var dh=p.datum?'<div class="kdate">📅 '+fmt(p.datum)+'</div>':'';
-    d.innerHTML=(p.n?'<div class="kn">'+esc(p.n)+'</div>':'')+
-      '<div class="kt">'+esc(p.t)+'</div>'+dh+
+    var d=document.createElement('div');
+    var isLocked=p.locked&&!_unlockedSet[p.id];
+    d.className='karta'+(p.locked?' locked':'');
+    var dh=(!isLocked&&p.datum)?'<div class="kdate">📅 '+fmt(p.datum)+'</div>':'';
+    var textHtml=isLocked
+      ? '<div class="kt hidden-text">••••••••••••••••••••</div>'
+      : '<div class="kt">'+esc(p.t)+'</div>';
+    var lockLabel=p.locked?'🔓 odemknout':'🔒 zamknout';
+    d.innerHTML=(p.n?'<div class="kn">'+(p.locked?'🔒 ':'')+esc(p.n)+'</div>':'')+
+      textHtml+dh+
       '<div class="kd">'+new Date(p.ts).toLocaleString('cs-CZ')+
+      ' <button class="lockbtn" data-i="'+i+'">'+lockLabel+'</button>'+
       ' <button class="del" data-i="'+i+'">✕ smazat</button></div>';
+    // overlay pro zamčenou
+    if(isLocked){
+      var ov=document.createElement('div');
+      ov.className='lock-overlay';
+      ov.title='Klikni pro odemčení';
+      ov.innerHTML='🔒';
+      ov.dataset.i=i;
+      ov.onclick=function(){openPin(parseInt(this.dataset.i),'unlock');};
+      d.appendChild(ov);
+    }
     s.appendChild(d);
   });
   document.querySelectorAll('.del').forEach(function(b){
-    b.onclick=function(){poz.splice(parseInt(this.dataset.i),1);uloz();render();};
+    b.onclick=function(e){
+      e.stopPropagation();
+      var idx=parseInt(this.dataset.i);
+      if(poz[idx]&&poz[idx].locked&&!_unlockedSet[poz[idx].id]){
+        openPin(idx,'unlock_delete');return;
+      }
+      poz.splice(idx,1);uloz();render();
+    };
+  });
+  document.querySelectorAll('.lockbtn').forEach(function(b){
+    b.onclick=function(e){
+      e.stopPropagation();
+      var idx=parseInt(this.dataset.i);
+      if(!poz[idx])return;
+      if(poz[idx].locked){
+        // odemknout
+        openPin(idx,'unlock');
+      } else {
+        // zamknout – zkontroluj zda PIN existuje
+        var pin=getPin();
+        if(!pin){openPin(idx,'set_lock');}
+        else{openPin(idx,'lock');}
+      }
+    };
   });
 }
+
+/* --- PIN modal --- */
+function openPin(idx,mode){
+  _pinTarget=idx;_pinMode=mode;
+  document.getElementById('pin-input').value='';
+  document.getElementById('pin-error').textContent='';
+  var m=document.getElementById('pin-modal');
+  var h2=m.querySelector('h2');
+  if(mode==='set_lock'){h2.textContent='🔒 NASTAV PIN';}
+  else if(mode==='lock'){h2.textContent='🔒 POTVRĎ PIN';}
+  else{h2.textContent='🔒 ZAMČENÁ POZNÁMKA';}
+  m.classList.add('show');
+  setTimeout(function(){document.getElementById('pin-input').focus();},100);
+}
+function pinCancel(){
+  document.getElementById('pin-modal').classList.remove('show');
+  _pinTarget=null;_pinMode=null;
+}
+function pinConfirm(){
+  var val=document.getElementById('pin-input').value.trim();
+  if(!val){document.getElementById('pin-error').textContent='Zadej PIN!';return;}
+  var storedPin=getPin();
+  if(_pinMode==='set_lock'){
+    // nastavit PIN a zamknout
+    setPin(val);
+    poz[_pinTarget].locked=true;
+    delete _unlockedSet[poz[_pinTarget].id];
+    uloz();render();pinCancel();
+  } else if(_pinMode==='lock'){
+    if(val!==storedPin){document.getElementById('pin-error').textContent='Špatný PIN!';return;}
+    poz[_pinTarget].locked=true;
+    delete _unlockedSet[poz[_pinTarget].id];
+    uloz();render();pinCancel();
+  } else if(_pinMode==='unlock'){
+    if(val!==storedPin){document.getElementById('pin-error').textContent='Špatný PIN!';return;}
+    _unlockedSet[poz[_pinTarget].id]=true;
+    render();pinCancel();
+  } else if(_pinMode==='unlock_delete'){
+    if(val!==storedPin){document.getElementById('pin-error').textContent='Špatný PIN!';return;}
+    poz.splice(_pinTarget,1);uloz();render();pinCancel();
+  }
+}
+// Enter v PIN
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('pin-input').addEventListener('keydown',function(e){if(e.key==='Enter')pinConfirm();});
+});
 
 function pridej(){
   var n=document.getElementById('nazev').value.trim();
   var t=document.getElementById('text').value.trim();
   var d=document.getElementById('datum').value;
   if(!t&&!n){alert('Zadej název nebo text!');return;}
-  poz.unshift({id:Date.now(),n:n,t:t,datum:d,ts:Date.now()});
+  poz.unshift({id:Date.now(),n:n,t:t,datum:d,ts:Date.now(),locked:false});
   uloz();
   document.getElementById('nazev').value='';
   document.getElementById('text').value='';
@@ -15074,6 +15204,16 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
   <div class="sec-title">💾 Panel Appky — Lokální</div>
   <div class="apps-grid">
     <div class="item local"><div class="dot local"></div><div class="name">📖 Manuály</div><div class="status local">Lokální</div></div>
+    <div class="item local"><div class="dot local"></div><div class="name">⬆ NextSync</div><div class="status local">Lokální · WiFi</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">🖥️ ZX Next</div>
+  <div class="item checking" id="i-zxnext-wifi">
+    <div class="dot checking" id="d-zxnext-wifi"></div>
+    <div style="flex:1"><div class="name" id="n-zxnext-wifi">⬆ NextSync WiFi</div><div class="sub2" id="zxnext-wifi-info">192.168.0.124:2048</div></div>
+    <div class="status checking" id="s-zxnext-wifi">Checking…</div>
   </div>
 </div>
 
@@ -15112,7 +15252,8 @@ var CHECKS = {
   dancecz:   { type:'nocors', url:'https://ice.actve.net/dance-radio128.mp3' },
   'ap-pocasi':    { type:'cors',   url:'https://api.open-meteo.com/v1/forecast?latitude=49.64&longitude=18.14&current=temperature_2m' },
   'ap-mixcloud':  { type:'nocors', url:'https://www.mixcloud.com/' },
-  'ap-reader':    { type:'nocors', url:'https://kladyx.github.io/panel/reader.html' }
+  'ap-reader':    { type:'nocors', url:'https://kladyx.github.io/panel/reader.html' },
+  'zxnext-wifi':  { type:'nocors', url:'http://192.168.0.124:2048/' }
 };
 
 function setStatus(id, state, text) {
@@ -16724,7 +16865,7 @@ var DEFAULT=[
   '💿 LP Desky','☁️ Mixcloud','📊 Odečty','💳 Platby','🍽 Jídlo',
   '🩸 Glukóza','🎙 OBS Status','🌤 Počasí','📝 Poznámky','📅 Kalendář',
   '🕹 ZX Next','📖 Manuály','📚 Čtečka','🇬🇧 WordMaster','📻 Multitrack',
-  '🟢 Status','🎤 Radio ID','🎮 ZX Games','🌍 World Time','🌐 Překladač'
+  '🟢 Status','🎤 Radio ID','🎮 ZX Games','🌍 World Time','🌐 Překladač','⬆ NextSync'
 ];
 var APP_IDS={
   'HouseTime':'housetime','CD databáze':'cd','Hardware':'hardware',
@@ -16733,7 +16874,7 @@ var APP_IDS={
   'OBS Status':'obs','Počasí':'pocasi','Poznámky':'notes','Kalendář':'kalendar',
   'ZX Next':'zxnext','Manuály':'manualy','Čtečka':'reader','WordMaster':'wordmaster',
   'Multitrack':'multitrack','Status':'status','Radio ID':'radio',
-  'ZX Games':'zxgames','World Time':'worldtime','Překladač':'prekladac'
+  'ZX Games':'zxgames','World Time':'worldtime','Překladač':'prekladac','NextSync':'nextsync'
 };
 var selectedIcon=AVAILABLE_ICONS[0];
 
@@ -16807,6 +16948,277 @@ render();
 </html>
 `;
 
+
+APP_HTML["nextsync"] = `<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NextSync</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#04040e;font-family:'Share Tech Mono',monospace;min-height:100vh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#08081a}::-webkit-scrollbar-thumb{background:#00ffbb44;border-radius:2px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes borderGlow{0%,100%{box-shadow:0 0 28px #00ffbbaa,0 0 60px #00ffbb44}50%{box-shadow:0 0 40px #00ffbbcc,0 0 80px #00ffbb66}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.header{padding:18px 18px 10px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:18px;color:#fff;letter-spacing:3px;text-shadow:0 0 20px #00ffbbcc,0 0 40px #00ffbb44}
+.logo span{color:#00ffbb}
+.conn-dot{width:10px;height:10px;border-radius:50%;background:#333;transition:all .3s;flex-shrink:0}
+.conn-dot.on{background:#00ffbb;box-shadow:0 0 10px #00ffbb;animation:pulse 1.8s infinite}
+.conn-dot.off{background:#ff3333;box-shadow:0 0 8px #ff3333}
+.header-right{display:flex;align-items:center;gap:10px}
+.settings-btn{background:rgba(0,255,187,.1);border:1.5px solid rgba(0,255,187,.3);color:#00ffbb;border-radius:8px;padding:6px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;transition:all .2s}
+.settings-btn:hover{background:rgba(0,255,187,.2)}
+.content{flex:1;padding:10px 18px 24px;animation:fadeIn .3s ease both}
+.folder-card{background:rgba(255,255,255,.03);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.folder-card:hover{background:rgba(255,255,255,.06)}
+.folder-card::before{content:'';position:absolute;inset:0;border-radius:16px;padding:1.5px;background:linear-gradient(135deg,var(--c) 0%,transparent 60%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:destination-out;mask-composite:exclude;pointer-events:none}
+.folder-top{display:flex;align-items:center;gap:14px}
+.folder-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.folder-info{flex:1}
+.folder-name{font-family:'Orbitron',monospace;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px}
+.folder-desc{font-size:10px;margin-top:2px;letter-spacing:1px}
+.folder-meta{display:flex;align-items:center;gap:8px;margin-top:2px}
+.folder-count{font-size:10px;color:#556}
+.folder-arrow{font-size:20px;flex-shrink:0}
+.folder-send-btn{background:transparent;border:1.5px solid;border-radius:8px;padding:5px 12px;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s;flex-shrink:0;white-space:nowrap}
+.send-all-btn{width:100%;margin-top:8px;background:linear-gradient(135deg,#00ffbb33,#00eeff22,#00ffbb18);border:2px solid #00ffbb;border-radius:16px;padding:18px;color:#00ffbb;font-size:13px;font-family:'Orbitron',monospace;font-weight:900;letter-spacing:4px;cursor:pointer;box-shadow:0 0 28px #00ffbbaa,0 0 60px #00ffbb44;text-shadow:0 0 16px #00ffbb,0 0 32px #00ffbb88;transition:all .2s;animation:borderGlow 3s ease-in-out infinite}
+.back-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#aaa;border-radius:10px;padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;margin-bottom:18px;transition:all .2s}
+.back-btn:hover{background:rgba(255,255,255,.12);color:#fff}
+.folder-detail-header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.folder-detail-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.folder-detail-name{font-family:'Orbitron',monospace;font-weight:700;font-size:18px;color:#fff;letter-spacing:2px}
+.folder-detail-path{font-size:10px;letter-spacing:1px;margin-top:2px}
+.add-files-btn{width:100%;border:2px dashed;border-radius:13px;padding:16px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.files-list{border-radius:13px;padding:4px 14px;margin-bottom:14px}
+.file-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.file-row:last-child{border-bottom:none}
+.file-icon{width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
+.file-info{flex:1;min-width:0}
+.file-name{font-size:12px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 0 8px rgba(255,255,255,.4)}
+.file-size{font-size:10px;color:#aaa}
+.file-send-btn{border-radius:7px;padding:5px 11px;font-size:11px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;cursor:pointer;flex-shrink:0;transition:all .2s;border:1.5px solid}
+.file-remove-btn{background:transparent;border:none;color:#666;font-size:18px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0;transition:color .2s}
+.file-remove-btn:hover{color:#ff4444}
+.status-badge{font-size:10px;border:1px solid;border-radius:3px;padding:1px 6px;margin-left:8px;letter-spacing:1px}
+.empty-state{text-align:center;color:#222244;font-size:12px;padding:44px 0;letter-spacing:3px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:flex-end;z-index:100}
+.modal-box{width:100%;max-width:430px;margin:0 auto;background:#080818;border:2px solid #00ffbb55;border-radius:20px 20px 0 0;padding:26px 24px 44px;animation:fadeIn .2s ease both;box-shadow:0 -10px 50px #00ffbb44}
+.modal-title{font-family:'Orbitron',monospace;font-weight:700;font-size:12px;color:#00ffbbee;letter-spacing:4px;margin-bottom:22px;text-shadow:0 0 16px #00ffbb}
+.modal-label{font-size:9px;color:#00ffbbaa;letter-spacing:3px;text-shadow:0 0 10px #00ffbb66}
+.modal-input{width:100%;background:#0a0a1e;border:1.5px solid #00ffbb66;border-radius:9px;padding:12px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:14px;margin-top:7px;margin-bottom:18px;outline:none;box-shadow:0 0 12px #00ffbb33}
+.modal-save-btn{width:100%;background:#00ffbb33;border:2px solid #00ffbb;border-radius:12px;padding:15px;color:#00ffbb;font-size:12px;font-family:'Orbitron',monospace;font-weight:700;letter-spacing:4px;cursor:pointer;box-shadow:0 0 28px #00ffbbaa;text-shadow:0 0 16px #00ffbb}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">NEXT<span>SYNC</span></div>
+  <div class="header-right">
+    <div class="conn-dot" id="conn-dot"></div>
+    <button class="settings-btn" onclick="openSettings()">⚙ NASTAVENÍ</button>
+  </div>
+</div>
+<div class="content" id="main-content"></div>
+
+<script>
+var FOLDERS=[
+  {id:'games',   label:'GAMES',    icon:'▶', path:'/games',    color:'#00ffbb', desc:'Hry pro ZX Next'},
+  {id:'programs',label:'PROGRAMS', icon:'◈', path:'/programs', color:'#00eeff', desc:'Programy a utility'},
+  {id:'systems', label:'SYSTEMS',  icon:'⬡', path:'/system',   color:'#ff6030', desc:'Systémové soubory'},
+];
+var state={
+  ip: localStorage.getItem('nextsync_ip')||'',
+  port: localStorage.getItem('nextsync_port')||'2048',
+  view:'main', // 'main' | folderId
+  files:{games:[],programs:[],systems:[]},
+  status:{},  // key: folderId::filename -> 'sending'|'ok'|'error'
+  settingsOpen:false
+};
+
+function save(){
+  localStorage.setItem('nextsync_ip',state.ip);
+  localStorage.setItem('nextsync_port',state.port);
+}
+
+function updateConnDot(){
+  var d=document.getElementById('conn-dot');
+  if(!d)return;
+  d.className='conn-dot '+(state.ip.trim()?'on':'off');
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function statusBadgeHTML(st){
+  if(!st)return'';
+  var map={ok:{label:'Odesláno ✓',color:'#00ffbb'},error:{label:'Chyba ✗',color:'#ff3333'},sending:{label:'Odesílám…',color:'#ffee00'}};
+  var s=map[st];if(!s)return'';
+  return '<span class="status-badge" style="color:'+s.color+';border-color:'+s.color+';text-shadow:0 0 12px '+s.color+';box-shadow:0 0 10px '+s.color+'88">'+s.label+'</span>';
+}
+
+function render(){
+  updateConnDot();
+  if(state.view==='main') renderMain();
+  else renderFolder(state.view);
+}
+
+function renderMain(){
+  var totalFiles=FOLDERS.reduce(function(a,f){return a+state.files[f.id].length;},0);
+  var html='<div style="animation:fadeIn .25s ease both">';
+  FOLDERS.forEach(function(f){
+    var cnt=state.files[f.id].length;
+    var okCnt=state.files[f.id].filter(function(file){return state.status[f.id+'::'+file.name]==='ok';}).length;
+    html+='<div class="folder-card" style="--c:'+f.color+'" onclick="openFolder(\''+f.id+'\')">'
+      +'<div class="folder-top">'
+      +'<div class="folder-icon" style="background:'+f.color+'33;border:1.5px solid '+f.color+';box-shadow:0 0 18px '+f.color+'66"><span style="color:'+f.color+';text-shadow:0 0 12px '+f.color+'">'+f.icon+'</span></div>'
+      +'<div class="folder-info">'
+      +'<div class="folder-name" style="text-shadow:0 0 18px '+f.color+'cc">'+f.label+'</div>'
+      +'<div class="folder-desc" style="color:'+f.color+'aa">'+f.desc+'</div>'
+      +'<div class="folder-meta"><span class="folder-count">'+cnt+' souborů'+(cnt&&okCnt?' · '+okCnt+' odesláno':'')+'</span></div>'
+      +'</div>'
+      +(cnt>0?'<button class="folder-send-btn" style="color:'+f.color+';border-color:'+f.color+';box-shadow:0 0 14px '+f.color+'88;text-shadow:0 0 10px '+f.color+'" onclick="event.stopPropagation();sendFolder(\''+f.id+'\')">⬆ SEND</button>':'')
+      +'<div style="color:'+f.color+';font-size:22px;text-shadow:0 0 12px '+f.color+'">›</div>'
+      +'</div>'
+      +'</div>';
+  });
+  if(totalFiles>0){
+    html+='<button class="send-all-btn" onclick="sendAllFolders()">⚡ ODESLAT VŠE → ZX NEXT</button>';
+  }
+  html+='</div>';
+  document.getElementById('main-content').innerHTML=html;
+}
+
+function renderFolder(fid){
+  var f=FOLDERS.find(function(x){return x.id===fid;});
+  var files=state.files[fid];
+  var html='<div style="animation:fadeIn .25s ease both">';
+  html+='<button class="back-btn" onclick="goBack()">‹ ZPĚT</button>';
+  html+='<div class="folder-detail-header">'
+    +'<div class="folder-detail-icon" style="background:'+f.color+'33;border:2px solid '+f.color+';box-shadow:0 0 22px '+f.color+'aa"><span style="color:'+f.color+';text-shadow:0 0 14px '+f.color+'">'+f.icon+'</span></div>'
+    +'<div><div class="folder-detail-name" style="text-shadow:0 0 18px '+f.color+'cc">'+f.label+'</div>'
+    +'<div class="folder-detail-path" style="color:'+f.color+'cc">ZX Next → '+f.path+'</div></div>'
+    +'</div>';
+  html+='<button class="add-files-btn" style="background:'+f.color+'18;border-color:'+f.color+'cc;color:'+f.color+';text-shadow:0 0 14px '+f.color+';box-shadow:0 0 16px '+f.color+'44" onclick="pickFiles(\''+fid+'\')">'
+    +'<span style="font-size:20px">+</span> PŘIDAT SOUBORY'
+    +'</button>';
+  html+='<input type="file" id="fileinput-'+fid+'" multiple style="display:none" onchange="onFilesPicked(\''+fid+'\',this)"/>';
+  if(files.length===0){
+    html+='<div class="empty-state">ŽÁDNÉ SOUBORY</div>';
+  } else {
+    html+='<div class="files-list" style="background:#07071a;border:1.5px solid '+f.color+'55;box-shadow:0 0 20px '+f.color+'22">';
+    files.forEach(function(file){
+      var key=fid+'::'+file.name;
+      var st=state.status[key];
+      var btnColor=st==='ok'?'#00ffbb':f.color;
+      var btnBg=st==='ok'?'#00ffbb44':f.color+'33';
+      html+='<div class="file-row">'
+        +'<div class="file-icon" style="background:'+f.color+'33;border:1.5px solid '+f.color+';box-shadow:0 0 14px '+f.color+'88"><span style="color:'+f.color+';text-shadow:0 0 12px '+f.color+'">◼</span></div>'
+        +'<div class="file-info">'
+        +'<div class="file-name">'+esc(file.name)+'</div>'
+        +'<div class="file-size">'+(file.size/1024).toFixed(1)+' KB'+statusBadgeHTML(st)+'</div>'
+        +'</div>'
+        +'<button class="file-send-btn" style="background:'+btnBg+';border-color:'+btnColor+';color:'+btnColor+';box-shadow:0 0 16px '+btnColor+'99;text-shadow:0 0 10px '+btnColor+'" '
+        +(st==='sending'?'disabled':'')+' onclick="sendFile(\''+fid+'\',\''+esc(file.name)+'\')">'
+        +(st==='sending'?'…':st==='ok'?'✓':'SEND')
+        +'</button>'
+        +'<button class="file-remove-btn" onclick="removeFile(\''+fid+'\',\''+esc(file.name)+'\')">×</button>'
+        +'</div>';
+    });
+    html+='</div>';
+    html+='<button class="send-all-btn" style="animation:none;box-shadow:0 0 28px '+f.color+'aa,0 0 56px '+f.color+'44;border-color:'+f.color+';color:'+f.color+';text-shadow:0 0 16px '+f.color+';background:linear-gradient(135deg,'+f.color+'44,'+f.color+'22)" onclick="sendFolder(\''+fid+'\')">ODESLAT VŠE → ZX NEXT</button>';
+  }
+  html+='</div>';
+  document.getElementById('main-content').innerHTML=html;
+}
+
+function openFolder(fid){state.view=fid;render();}
+function goBack(){state.view='main';render();}
+
+function pickFiles(fid){
+  var el=document.getElementById('fileinput-'+fid);
+  if(el)el.click();
+}
+
+function onFilesPicked(fid,input){
+  var picked=Array.from(input.files||[]);
+  if(!picked.length)return;
+  picked.forEach(function(f){
+    if(!state.files[fid].find(function(x){return x.name===f.name;})){
+      state.files[fid].push(f);
+    }
+  });
+  input.value='';
+  render();
+}
+
+function removeFile(fid,fname){
+  state.files[fid]=state.files[fid].filter(function(f){return f.name!==fname;});
+  delete state.status[fid+'::'+fname];
+  render();
+}
+
+function sendFile(fid,fname){
+  var file=state.files[fid].find(function(f){return f.name===fname;});
+  if(!file)return;
+  var ip=state.ip.trim();
+  var port=state.port.trim()||'2048';
+  if(!ip){alert('Nastav IP adresu ZX Next v nastavení ⚙');return;}
+  var key=fid+'::'+fname;
+  state.status[key]='sending';
+  render();
+  var folderDef=FOLDERS.find(function(f){return f.id===fid;});
+  var formData=new FormData();
+  formData.append('file',file);
+  formData.append('path',folderDef.path);
+  fetch('http://'+ip+':'+port+'/upload',{method:'POST',body:formData})
+    .then(function(r){state.status[key]=r.ok?'ok':'error';render();})
+    .catch(function(){state.status[key]='error';render();});
+}
+
+function sendFolder(fid){
+  state.files[fid].forEach(function(f){
+    if(state.status[fid+'::'+f.name]!=='ok')sendFile(fid,f.name);
+  });
+}
+
+function sendAllFolders(){
+  FOLDERS.forEach(function(f){sendFolder(f.id);});
+}
+
+function openSettings(){
+  document.getElementById('main-content').insertAdjacentHTML('beforeend',
+    '<div class="modal-overlay" id="settings-modal" onclick="closeSettings(event)">'
+    +'<div class="modal-box" onclick="event.stopPropagation()">'
+    +'<div class="modal-title">NASTAVENÍ PŘIPOJENÍ</div>'
+    +'<div class="modal-label">IP ADRESA ZX NEXT</div>'
+    +'<input class="modal-input" id="modal-ip" type="text" placeholder="192.168.0.124" value="'+esc(state.ip)+'"/>'
+    +'<div class="modal-label">PORT (výchozí: 2048)</div>'
+    +'<input class="modal-input" id="modal-port" type="number" placeholder="2048" value="'+esc(state.port)+'"/>'
+    +'<button class="modal-save-btn" onclick="saveSettings()">ULOŽIT</button>'
+    +'</div></div>'
+  );
+}
+
+function closeSettings(e){
+  var m=document.getElementById('settings-modal');
+  if(m&&(e===undefined||e.target===m))m.remove();
+}
+
+function saveSettings(){
+  state.ip=document.getElementById('modal-ip').value.trim();
+  state.port=document.getElementById('modal-port').value.trim()||'2048';
+  save();
+  closeSettings();
+  render();
+}
+
+render();
+<\/script>
+</body>
+</html>
+`;
 
 APP_HTML["prekladac"] = `<!DOCTYPE html>
 <html lang="cs">
