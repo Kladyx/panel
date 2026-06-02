@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v23.11Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v23.12Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -17261,8 +17261,8 @@ function renderFolder(fid){
     +'<div><div class="folder-detail-name" style="text-shadow:0 0 18px '+f.color+'cc">'+f.label+'</div>'
     +'<div class="folder-detail-path" style="color:'+f.color+'cc">ZX Next → '+f.path+'</div></div>'
     +'</div>';
-  html+='<button class="add-files-btn" style="background:'+f.color+'18;border-color:'+f.color+'cc;color:'+f.color+';text-shadow:0 0 14px '+f.color+';box-shadow:0 0 16px '+f.color+'44" onclick="pickFiles(\''+fid+'\')">'
-    +'<span style="font-size:20px">+</span> PŘIDAT SOUBORY'
+  html+='<button class="add-files-btn" style="background:'+f.color+'18;border-color:'+f.color+'cc;color:'+f.color+';text-shadow:0 0 14px '+f.color+';box-shadow:0 0 16px '+f.color+'44;font-size:16px;font-weight:700;padding:24px 16px" onclick="pickFiles(\''+fid+'\')" ondrop="handleDrop(event,\''+fid+'\')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">'
+    +'<span style="font-size:32px;display:block;margin-bottom:8px">⬆</span>VYBRAT SOUBORY Z MOBILU'
     +'</button>';
   html+='<input type="file" id="fileinput-'+fid+'" multiple style="display:none" onchange="onFilesPicked(\''+fid+'\',this)"/>';
   if(files.length===0){
@@ -17317,6 +17317,33 @@ function onFilesPicked(fid,input){
 function removeFile(fid,fname){
   state.files[fid]=state.files[fid].filter(function(f){return f.name!==fname;});
   delete state.status[fid+'::'+fname];
+  render();
+}
+
+function handleDragOver(e){
+  e.preventDefault();
+  e.stopPropagation();
+  e.target.style.background='rgba(0,212,255,0.15)';
+}
+
+function handleDragLeave(e){
+  e.preventDefault();
+  e.stopPropagation();
+  e.target.style.background='';
+}
+
+function handleDrop(e,fid){
+  e.preventDefault();
+  e.stopPropagation();
+  e.target.style.background='';
+  var files=e.dataTransfer.files||[];
+  if(!files.length)return;
+  var picked=Array.from(files);
+  picked.forEach(function(f){
+    if(!state.files[fid].find(function(x){return x.name===f.name;})){
+      state.files[fid].push(f);
+    }
+  });
   render();
 }
 
