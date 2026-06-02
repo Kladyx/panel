@@ -9474,46 +9474,19 @@ textarea{resize:vertical;min-height:100px;}
 input:focus,textarea:focus{border-color:#00c3ff;}
 button.hlavni{width:100%;padding:13px;background:linear-gradient(135deg,#0057e7,#0096ff);border:none;border-radius:6px;color:#fff;font-family:monospace;font-size:.9rem;font-weight:900;cursor:pointer;letter-spacing:.1em;box-shadow:0 0 14px rgba(0,140,255,.3);}
 button.hlavni:active{opacity:.8;}
-.karta{background:#0e1118;border:1px solid rgba(0,160,255,.15);border-radius:8px;padding:12px;margin-bottom:8px;position:relative;}
-.karta.locked{border-color:rgba(255,180,0,.25);background:#0e1008;}
+.karta{background:#0e1118;border:1px solid rgba(0,160,255,.15);border-radius:8px;padding:12px;margin-bottom:8px;}
 .kn{font-weight:700;color:#00c3ff;margin-bottom:4px;}
 .kt{font-size:.8rem;color:rgba(200,216,232,.8);white-space:pre-wrap;word-break:break-word;}
-.kt.hidden-text{font-size:.8rem;color:rgba(200,216,232,.25);letter-spacing:.18em;}
 .kdate{font-size:.7rem;color:#4db8ff;margin-top:5px;padding:2px 8px;background:rgba(0,120,255,.1);border:1px solid rgba(0,120,255,.2);border-radius:4px;display:inline-block;}
 .kd{font-size:.6rem;color:rgba(200,216,232,.3);margin-top:6px;}
 button.del{float:right;background:none;border:1px solid rgba(255,68,102,.3);color:#ff4466;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:.6rem;}
-button.lockbtn{background:none;border:1px solid rgba(255,180,0,.3);color:#ffb800;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:.6rem;margin-right:4px;}
-button.lockbtn:hover{background:rgba(255,180,0,.12);}
-.karta.locked .kn{color:#ffb800;}
-.lock-overlay{position:absolute;inset:0;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(10,12,16,.55);cursor:pointer;font-size:1.6rem;z-index:2;backdrop-filter:blur(3px);}
 .prazdno{text-align:center;color:rgba(200,216,232,.2);padding:30px 0;}
 .date-label{font-size:.68rem;color:#4db8ff;display:block;margin-bottom:3px;}
-/* PIN dialog */
-#pin-modal{display:none;position:fixed;inset:0;background:rgba(5,8,16,.88);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
-#pin-modal.show{display:flex;}
-#pin-modal h2{color:#ffb800;font-size:1rem;letter-spacing:.12em;text-align:center;}
-#pin-input{width:140px;font-size:1.4rem;letter-spacing:.3em;text-align:center;padding:10px;border-radius:8px;border:2px solid rgba(255,180,0,.4);background:#0e1118;color:#ffb800;font-family:monospace;outline:none;}
-#pin-input:focus{border-color:#ffb800;}
-#pin-error{color:#ff4466;font-size:.7rem;min-height:16px;text-align:center;}
-#pin-ok{padding:10px 28px;background:linear-gradient(135deg,#b8860b,#ffb800);border:none;border-radius:6px;color:#0a0c10;font-family:monospace;font-size:.85rem;font-weight:900;cursor:pointer;letter-spacing:.1em;}
-#pin-cancel{background:none;border:1px solid rgba(200,216,232,.2);color:rgba(200,216,232,.5);border-radius:6px;padding:8px 20px;font-family:monospace;font-size:.75rem;cursor:pointer;}
 </style>
 </head>
 <body>
-<div class="topbar"><span class="ver">v14.5</span><span id="sync-dot">💾 Start...</span></div>
+<div class="topbar"><span class="ver">v14.4</span><span id="sync-dot">💾 Start...</span></div>
 <h1>📝 POZNÁMKY</h1>
-
-<!-- PIN modal -->
-<div id="pin-modal">
-  <h2>🔒 ZAMČENÁ POZNÁMKA</h2>
-  <div style="font-size:.65rem;color:rgba(200,216,232,.4);letter-spacing:.05em;text-align:center;">Zadej PIN pro odemčení</div>
-  <input id="pin-input" type="password" inputmode="numeric" maxlength="8" placeholder="••••"/>
-  <div id="pin-error"></div>
-  <div style="display:flex;gap:10px;">
-    <button id="pin-ok" onclick="pinConfirm()">ODEMKNOUT</button>
-    <button id="pin-cancel" onclick="pinCancel()">Zrušit</button>
-  </div>
-</div>
 
 <div class="box">
   <input id="nazev" type="text" placeholder="Název poznámky (volitelné)..."/>
@@ -9526,9 +9499,6 @@ button.lockbtn:hover{background:rgba(255,180,0,.12);}
 
 <script>
 var poz=[], REF=null, SAV=false;
-var PIN_KEY='kpoz_pin';
-var _pinTarget=null, _pinMode=null; // mode: 'lock' | 'unlock'
-var _unlockedSet={};
 
 try{var raw=window.parent.localStorage.getItem('kpoz');if(!raw)raw=localStorage.getItem('kpoz');if(raw)poz=JSON.parse(raw);}catch(e){}
 
@@ -9537,14 +9507,6 @@ function SS(m,c){var e=document.getElementById('sync-dot');if(e){e.textContent=m
 function saveLocal(){
   try{window.parent.localStorage.setItem('kpoz',JSON.stringify(poz));}catch(e){}
   try{localStorage.setItem('kpoz',JSON.stringify(poz));}catch(e){}
-}
-
-function getPin(){
-  try{return window.parent.localStorage.getItem(PIN_KEY)||localStorage.getItem(PIN_KEY)||'';}catch(e){return '';}
-}
-function setPin(v){
-  try{window.parent.localStorage.setItem(PIN_KEY,v);}catch(e){}
-  try{localStorage.setItem(PIN_KEY,v);}catch(e){}
 }
 
 function uloz(){
@@ -9563,111 +9525,25 @@ function render(){
   if(!poz.length){s.innerHTML='<div class="prazdno">Zatím žádné poznámky</div>';return;}
   s.innerHTML='';
   poz.forEach(function(p,i){
-    var d=document.createElement('div');
-    var isLocked=p.locked&&!_unlockedSet[p.id];
-    d.className='karta'+(p.locked?' locked':'');
-    var dh=(!isLocked&&p.datum)?'<div class="kdate">📅 '+fmt(p.datum)+'</div>':'';
-    var textHtml=isLocked
-      ? '<div class="kt hidden-text">••••••••••••••••••••</div>'
-      : '<div class="kt">'+esc(p.t)+'</div>';
-    var lockLabel=p.locked?'🔓 odemknout':'🔒 zamknout';
-    d.innerHTML=(p.n?'<div class="kn">'+(p.locked?'🔒 ':'')+esc(p.n)+'</div>':'')+
-      textHtml+dh+
+    var d=document.createElement('div');d.className='karta';
+    var dh=p.datum?'<div class="kdate">📅 '+fmt(p.datum)+'</div>':'';
+    d.innerHTML=(p.n?'<div class="kn">'+esc(p.n)+'</div>':'')+
+      '<div class="kt">'+esc(p.t)+'</div>'+dh+
       '<div class="kd">'+new Date(p.ts).toLocaleString('cs-CZ')+
-      ' <button class="lockbtn" data-i="'+i+'">'+lockLabel+'</button>'+
       ' <button class="del" data-i="'+i+'">✕ smazat</button></div>';
-    // overlay pro zamčenou
-    if(isLocked){
-      var ov=document.createElement('div');
-      ov.className='lock-overlay';
-      ov.title='Klikni pro odemčení';
-      ov.innerHTML='🔒';
-      ov.dataset.i=i;
-      ov.onclick=function(){openPin(parseInt(this.dataset.i),'unlock');};
-      d.appendChild(ov);
-    }
     s.appendChild(d);
   });
   document.querySelectorAll('.del').forEach(function(b){
-    b.onclick=function(e){
-      e.stopPropagation();
-      var idx=parseInt(this.dataset.i);
-      if(poz[idx]&&poz[idx].locked&&!_unlockedSet[poz[idx].id]){
-        openPin(idx,'unlock_delete');return;
-      }
-      poz.splice(idx,1);uloz();render();
-    };
-  });
-  document.querySelectorAll('.lockbtn').forEach(function(b){
-    b.onclick=function(e){
-      e.stopPropagation();
-      var idx=parseInt(this.dataset.i);
-      if(!poz[idx])return;
-      if(poz[idx].locked){
-        // odemknout
-        openPin(idx,'unlock');
-      } else {
-        // zamknout – zkontroluj zda PIN existuje
-        var pin=getPin();
-        if(!pin){openPin(idx,'set_lock');}
-        else{openPin(idx,'lock');}
-      }
-    };
+    b.onclick=function(){poz.splice(parseInt(this.dataset.i),1);uloz();render();};
   });
 }
-
-/* --- PIN modal --- */
-function openPin(idx,mode){
-  _pinTarget=idx;_pinMode=mode;
-  document.getElementById('pin-input').value='';
-  document.getElementById('pin-error').textContent='';
-  var m=document.getElementById('pin-modal');
-  var h2=m.querySelector('h2');
-  if(mode==='set_lock'){h2.textContent='🔒 NASTAV PIN';}
-  else if(mode==='lock'){h2.textContent='🔒 POTVRĎ PIN';}
-  else{h2.textContent='🔒 ZAMČENÁ POZNÁMKA';}
-  m.classList.add('show');
-  setTimeout(function(){document.getElementById('pin-input').focus();},100);
-}
-function pinCancel(){
-  document.getElementById('pin-modal').classList.remove('show');
-  _pinTarget=null;_pinMode=null;
-}
-function pinConfirm(){
-  var val=document.getElementById('pin-input').value.trim();
-  if(!val){document.getElementById('pin-error').textContent='Zadej PIN!';return;}
-  var storedPin=getPin();
-  if(_pinMode==='set_lock'){
-    // nastavit PIN a zamknout
-    setPin(val);
-    poz[_pinTarget].locked=true;
-    delete _unlockedSet[poz[_pinTarget].id];
-    uloz();render();pinCancel();
-  } else if(_pinMode==='lock'){
-    if(val!==storedPin){document.getElementById('pin-error').textContent='Špatný PIN!';return;}
-    poz[_pinTarget].locked=true;
-    delete _unlockedSet[poz[_pinTarget].id];
-    uloz();render();pinCancel();
-  } else if(_pinMode==='unlock'){
-    if(val!==storedPin){document.getElementById('pin-error').textContent='Špatný PIN!';return;}
-    _unlockedSet[poz[_pinTarget].id]=true;
-    render();pinCancel();
-  } else if(_pinMode==='unlock_delete'){
-    if(val!==storedPin){document.getElementById('pin-error').textContent='Špatný PIN!';return;}
-    poz.splice(_pinTarget,1);uloz();render();pinCancel();
-  }
-}
-// Enter v PIN
-document.addEventListener('DOMContentLoaded',function(){
-  document.getElementById('pin-input').addEventListener('keydown',function(e){if(e.key==='Enter')pinConfirm();});
-});
 
 function pridej(){
   var n=document.getElementById('nazev').value.trim();
   var t=document.getElementById('text').value.trim();
   var d=document.getElementById('datum').value;
   if(!t&&!n){alert('Zadej název nebo text!');return;}
-  poz.unshift({id:Date.now(),n:n,t:t,datum:d,ts:Date.now(),locked:false});
+  poz.unshift({id:Date.now(),n:n,t:t,datum:d,ts:Date.now()});
   uloz();
   document.getElementById('nazev').value='';
   document.getElementById('text').value='';
@@ -16963,16 +16839,33 @@ body{background:#04040e;font-family:'Share Tech Mono',monospace;min-height:100vh
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes borderGlow{0%,100%{box-shadow:0 0 28px #00ffbbaa,0 0 60px #00ffbb44}50%{box-shadow:0 0 40px #00ffbbcc,0 0 80px #00ffbb66}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes spin{to{transform:rotate(360deg)}}
 .header{padding:18px 18px 10px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-family:'Orbitron',monospace;font-weight:900;font-size:18px;color:#fff;letter-spacing:3px;text-shadow:0 0 20px #00ffbbcc,0 0 40px #00ffbb44}
 .logo span{color:#00ffbb}
 .conn-dot{width:10px;height:10px;border-radius:50%;background:#333;transition:all .3s;flex-shrink:0}
 .conn-dot.on{background:#00ffbb;box-shadow:0 0 10px #00ffbb;animation:pulse 1.8s infinite}
 .conn-dot.off{background:#ff3333;box-shadow:0 0 8px #ff3333}
+.conn-dot.checking{background:#ffee00;box-shadow:0 0 8px #ffee00;animation:pulse .6s infinite}
 .header-right{display:flex;align-items:center;gap:10px}
 .settings-btn{background:rgba(0,255,187,.1);border:1.5px solid rgba(0,255,187,.3);color:#00ffbb;border-radius:8px;padding:6px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;transition:all .2s}
 .settings-btn:hover{background:rgba(0,255,187,.2)}
 .content{flex:1;padding:10px 18px 24px;animation:fadeIn .3s ease both}
+/* status bar */
+.status-bar{margin-bottom:14px;border-radius:12px;padding:10px 14px;display:flex;flex-direction:column;gap:6px;background:#07071a;border:1.5px solid #00ffbb33}
+.status-row{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:1px}
+.status-label{color:#556;flex-shrink:0;width:38px}
+.status-val{color:#00ffbb;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.status-val.err{color:#ff4444}
+.status-val.warn{color:#ffee00}
+.ping-btn{background:rgba(0,255,187,.1);border:1px solid #00ffbb44;color:#00ffbb;border-radius:6px;padding:3px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;cursor:pointer;letter-spacing:1px;flex-shrink:0;transition:all .2s}
+.ping-btn:active{background:rgba(0,255,187,.25)}
+.target-toggle{display:flex;gap:8px;margin-bottom:12px}
+.tgt-btn{flex:1;padding:8px 0;border-radius:9px;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:2px;cursor:pointer;border:1.5px solid;transition:all .2s;text-align:center}
+.tgt-btn.active-next{background:#00ffbb33;border-color:#00ffbb;color:#00ffbb;box-shadow:0 0 14px #00ffbb55;text-shadow:0 0 10px #00ffbb}
+.tgt-btn.active-pc{background:#00aeff33;border-color:#00aeff;color:#00aeff;box-shadow:0 0 14px #00aeff55;text-shadow:0 0 10px #00aeff}
+.tgt-btn.inactive{background:transparent;border-color:#222244;color:#334;cursor:pointer}
+/* folder cards */
 .folder-card{background:rgba(255,255,255,.03);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
 .folder-card:hover{background:rgba(255,255,255,.06)}
 .folder-card::before{content:'';position:absolute;inset:0;border-radius:16px;padding:1.5px;background:linear-gradient(135deg,var(--c) 0%,transparent 60%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:destination-out;mask-composite:exclude;pointer-events:none}
@@ -16983,7 +16876,6 @@ body{background:#04040e;font-family:'Share Tech Mono',monospace;min-height:100vh
 .folder-desc{font-size:10px;margin-top:2px;letter-spacing:1px}
 .folder-meta{display:flex;align-items:center;gap:8px;margin-top:2px}
 .folder-count{font-size:10px;color:#556}
-.folder-arrow{font-size:20px;flex-shrink:0}
 .folder-send-btn{background:transparent;border:1.5px solid;border-radius:8px;padding:5px 12px;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s;flex-shrink:0;white-space:nowrap}
 .send-all-btn{width:100%;margin-top:8px;background:linear-gradient(135deg,#00ffbb33,#00eeff22,#00ffbb18);border:2px solid #00ffbb;border-radius:16px;padding:18px;color:#00ffbb;font-size:13px;font-family:'Orbitron',monospace;font-weight:900;letter-spacing:4px;cursor:pointer;box-shadow:0 0 28px #00ffbbaa,0 0 60px #00ffbb44;text-shadow:0 0 16px #00ffbb,0 0 32px #00ffbb88;transition:all .2s;animation:borderGlow 3s ease-in-out infinite}
 .back-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#aaa;border-radius:10px;padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;margin-bottom:18px;transition:all .2s}
@@ -17011,6 +16903,7 @@ body{background:#04040e;font-family:'Share Tech Mono',monospace;min-height:100vh
 .modal-label{font-size:9px;color:#00ffbbaa;letter-spacing:3px;text-shadow:0 0 10px #00ffbb66}
 .modal-input{width:100%;background:#0a0a1e;border:1.5px solid #00ffbb66;border-radius:9px;padding:12px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:14px;margin-top:7px;margin-bottom:18px;outline:none;box-shadow:0 0 12px #00ffbb33}
 .modal-save-btn{width:100%;background:#00ffbb33;border:2px solid #00ffbb;border-radius:12px;padding:15px;color:#00ffbb;font-size:12px;font-family:'Orbitron',monospace;font-weight:700;letter-spacing:4px;cursor:pointer;box-shadow:0 0 28px #00ffbbaa;text-shadow:0 0 16px #00ffbb}
+.modal-section{font-size:9px;color:#00aeffaa;letter-spacing:3px;margin:18px 0 4px;text-shadow:0 0 10px #00aeff66;border-top:1px solid #00aeff22;padding-top:14px}
 </style>
 </head>
 <body>
@@ -17030,23 +16923,72 @@ var FOLDERS=[
   {id:'systems', label:'SYSTEMS',  icon:'⬡', path:'/system',   color:'#ff6030', desc:'Systémové soubory'},
 ];
 var state={
-  ip: localStorage.getItem('nextsync_ip')||'',
-  port: localStorage.getItem('nextsync_port')||'2048',
-  view:'main', // 'main' | folderId
+  ip:    localStorage.getItem('nextsync_ip')||'',
+  port:  localStorage.getItem('nextsync_port')||'2048',
+  pc_ip: localStorage.getItem('nextsync_pc_ip')||'',
+  pc_port: localStorage.getItem('nextsync_pc_port')||'8765',
+  target: localStorage.getItem('nextsync_target')||'next', // 'next' | 'pc'
+  view:'main',
   files:{games:[],programs:[],systems:[]},
-  status:{},  // key: folderId::filename -> 'sending'|'ok'|'error'
-  settingsOpen:false
+  status:{},
+  conn:{next:'unknown', pc:'unknown'} // 'unknown'|'ok'|'err'|'checking'
 };
 
 function save(){
   localStorage.setItem('nextsync_ip',state.ip);
   localStorage.setItem('nextsync_port',state.port);
+  localStorage.setItem('nextsync_pc_ip',state.pc_ip);
+  localStorage.setItem('nextsync_pc_port',state.pc_port);
+  localStorage.setItem('nextsync_target',state.target);
 }
 
+/* ---- connection dot ---- */
 function updateConnDot(){
-  var d=document.getElementById('conn-dot');
-  if(!d)return;
-  d.className='conn-dot '+(state.ip.trim()?'on':'off');
+  var d=document.getElementById('conn-dot');if(!d)return;
+  var tgt=state.target==='pc'?state.conn.pc:state.conn.next;
+  var cls={ok:'on',err:'off',checking:'checking',unknown:''}[tgt]||'';
+  d.className='conn-dot '+cls;
+}
+
+/* ---- ping ---- */
+function pingTarget(tgt){
+  var ip=tgt==='pc'?state.pc_ip:state.ip;
+  var port=tgt==='pc'?state.pc_port:state.port;
+  if(!ip){state.conn[tgt==='pc'?'pc':'next']='err';updateConnDot();renderStatusBar();return;}
+  state.conn[tgt==='pc'?'pc':'next']='checking';
+  updateConnDot();renderStatusBar();
+  var url='http://'+ip+':'+port+'/ping';
+  fetch(url,{method:'GET',signal:AbortSignal.timeout(3000)})
+    .then(function(r){state.conn[tgt==='pc'?'pc':'next']=r.ok?'ok':'err';updateConnDot();renderStatusBar();})
+    .catch(function(){state.conn[tgt==='pc'?'pc':'next']='err';updateConnDot();renderStatusBar();});
+}
+
+function pingBoth(){pingTarget('next');if(state.pc_ip)pingTarget('pc');}
+
+/* ---- status bar ---- */
+function renderStatusBar(){
+  var el=document.getElementById('status-bar');if(!el)return;
+  var tgtColor=state.target==='pc'?'#00aeff':'#00ffbb';
+  var tgtLabel=state.target==='pc'?'PC SERVER':'ZX NEXT';
+  var activeIp=state.target==='pc'?state.pc_ip:state.ip;
+  var activePort=state.target==='pc'?state.pc_port:state.port;
+  var connState=state.target==='pc'?state.conn.pc:state.conn.next;
+  var connMap={ok:{t:'✅ Online',c:'#00ffbb'},err:{t:'❌ Offline',c:'#ff4444'},checking:{t:'⏳ Kontroluji…',c:'#ffee00'},unknown:{t:'— Neověřeno',c:'#334'}};
+  var cs=connMap[connState]||connMap.unknown;
+  el.innerHTML=
+    '<div class="status-row">'
+      +'<span class="status-label" style="color:'+tgtColor+'aa">CÍL</span>'
+      +'<span class="status-val" style="color:'+tgtColor+'">'+tgtLabel+'</span>'
+    +'</div>'
+    +'<div class="status-row">'
+      +'<span class="status-label">IP</span>'
+      +'<span class="status-val '+(activeIp?'':'warn')+'">'+(activeIp?activeIp+':'+activePort:'— Nastav v ⚙')+'</span>'
+      +'<button class="ping-btn" onclick="pingTarget(\''+state.target+'\')">PING</button>'
+    +'</div>'
+    +'<div class="status-row">'
+      +'<span class="status-label">STAV</span>'
+      +'<span class="status-val" style="color:'+cs.c+'">'+cs.t+'</span>'
+    +'</div>';
 }
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -17067,6 +17009,18 @@ function render(){
 function renderMain(){
   var totalFiles=FOLDERS.reduce(function(a,f){return a+state.files[f.id].length;},0);
   var html='<div style="animation:fadeIn .25s ease both">';
+
+  /* status bar */
+  html+='<div class="status-bar" id="status-bar"></div>';
+
+  /* target toggle */
+  var nc=state.target==='next'?'active-next':'inactive';
+  var pc=state.target==='pc'?'active-pc':'inactive';
+  html+='<div class="target-toggle">'
+    +'<button class="tgt-btn '+nc+'" onclick="setTarget(\'next\')">⬆ ZX NEXT</button>'
+    +'<button class="tgt-btn '+pc+'" onclick="setTarget(\'pc\')">🖥 PC SERVER</button>'
+    +'</div>';
+
   FOLDERS.forEach(function(f){
     var cnt=state.files[f.id].length;
     var okCnt=state.files[f.id].filter(function(file){return state.status[f.id+'::'+file.name]==='ok';}).length;
@@ -17159,12 +17113,20 @@ function removeFile(fid,fname){
   render();
 }
 
+function setTarget(t){
+  state.target=t;
+  save();
+  render();
+  setTimeout(function(){renderStatusBar();},50);
+}
+
 function sendFile(fid,fname){
   var file=state.files[fid].find(function(f){return f.name===fname;});
   if(!file)return;
-  var ip=state.ip.trim();
-  var port=state.port.trim()||'2048';
-  if(!ip){alert('Nastav IP adresu ZX Next v nastavení ⚙');return;}
+  var usePc=state.target==='pc';
+  var ip=(usePc?state.pc_ip:state.ip).trim();
+  var port=(usePc?state.pc_port:state.port).trim()||(usePc?'8765':'2048');
+  if(!ip){alert('Nastav IP adresu '+(usePc?'PC serveru':'ZX Next')+' v nastavení ⚙');return;}
   var key=fid+'::'+fname;
   state.status[key]='sending';
   render();
@@ -17194,8 +17156,13 @@ function openSettings(){
     +'<div class="modal-title">NASTAVENÍ PŘIPOJENÍ</div>'
     +'<div class="modal-label">IP ADRESA ZX NEXT</div>'
     +'<input class="modal-input" id="modal-ip" type="text" placeholder="192.168.0.124" value="'+esc(state.ip)+'"/>'
-    +'<div class="modal-label">PORT (výchozí: 2048)</div>'
+    +'<div class="modal-label">PORT ZX NEXT (výchozí: 2048)</div>'
     +'<input class="modal-input" id="modal-port" type="number" placeholder="2048" value="'+esc(state.port)+'"/>'
+    +'<div class="modal-section">🖥 PC SERVER (nextsync_server.py)</div>'
+    +'<div class="modal-label">IP ADRESA PC</div>'
+    +'<input class="modal-input" id="modal-pc-ip" type="text" placeholder="192.168.0.100" value="'+esc(state.pc_ip)+'"/>'
+    +'<div class="modal-label">PORT PC (výchozí: 8765)</div>'
+    +'<input class="modal-input" id="modal-pc-port" type="number" placeholder="8765" value="'+esc(state.pc_port)+'"/>'
     +'<button class="modal-save-btn" onclick="saveSettings()">ULOŽIT</button>'
     +'</div></div>'
   );
@@ -17209,12 +17176,16 @@ function closeSettings(e){
 function saveSettings(){
   state.ip=document.getElementById('modal-ip').value.trim();
   state.port=document.getElementById('modal-port').value.trim()||'2048';
+  state.pc_ip=document.getElementById('modal-pc-ip').value.trim();
+  state.pc_port=document.getElementById('modal-pc-port').value.trim()||'8765';
   save();
   closeSettings();
   render();
+  setTimeout(function(){renderStatusBar();pingBoth();},80);
 }
 
 render();
+setTimeout(function(){renderStatusBar();pingBoth();},200);
 <\/script>
 </body>
 </html>
