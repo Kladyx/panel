@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v23.10Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v23.11Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -9474,19 +9474,85 @@ textarea{resize:vertical;min-height:100px;}
 input:focus,textarea:focus{border-color:#00c3ff;}
 button.hlavni{width:100%;padding:13px;background:linear-gradient(135deg,#0057e7,#0096ff);border:none;border-radius:6px;color:#fff;font-family:monospace;font-size:.9rem;font-weight:900;cursor:pointer;letter-spacing:.1em;box-shadow:0 0 14px rgba(0,140,255,.3);}
 button.hlavni:active{opacity:.8;}
-.karta{background:#0e1118;border:1px solid rgba(0,160,255,.15);border-radius:8px;padding:12px;margin-bottom:8px;}
+.karta{background:#0e1118;border:1px solid rgba(0,160,255,.15);border-radius:8px;padding:12px;margin-bottom:8px;position:relative;}
+.karta.locked{border-color:rgba(255,180,0,.25);background:#0e1008;}
 .kn{font-weight:700;color:#00c3ff;margin-bottom:4px;}
+.kn.locked-name{color:#ffb800;}
 .kt{font-size:.8rem;color:rgba(200,216,232,.8);white-space:pre-wrap;word-break:break-word;}
+.kt.hidden-text{color:rgba(200,216,232,.2);letter-spacing:.18em;}
 .kdate{font-size:.7rem;color:#4db8ff;margin-top:5px;padding:2px 8px;background:rgba(0,120,255,.1);border:1px solid rgba(0,120,255,.2);border-radius:4px;display:inline-block;}
-.kd{font-size:.6rem;color:rgba(200,216,232,.3);margin-top:6px;}
-button.del{float:right;background:none;border:1px solid rgba(255,68,102,.3);color:#ff4466;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:.6rem;}
+.kd{font-size:.6rem;color:rgba(200,216,232,.3);margin-top:6px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;}
+.kfoto{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;}
+.kfoto img{width:72px;height:72px;object-fit:cover;border-radius:6px;border:1px solid rgba(0,160,255,.2);cursor:pointer;}
+button.del{background:none;border:1px solid rgba(255,68,102,.3);color:#ff4466;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:.6rem;}
+button.editbtn{background:none;border:1px solid rgba(0,195,255,.3);color:#00c3ff;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:.6rem;}
+button.fotobtn{background:none;border:1px solid rgba(100,220,100,.3);color:#64dc64;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:.6rem;}
+button.lockbtn{background:none;border:1px solid rgba(255,180,0,.3);color:#ffb800;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:.6rem;}
+.lock-overlay{position:absolute;inset:0;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(10,12,16,.6);cursor:pointer;font-size:1.6rem;z-index:2;backdrop-filter:blur(3px);}
 .prazdno{text-align:center;color:rgba(200,216,232,.2);padding:30px 0;}
 .date-label{font-size:.68rem;color:#4db8ff;display:block;margin-bottom:3px;}
+/* foto preview modal */
+#foto-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;align-items:center;justify-content:center;}
+#foto-modal.show{display:flex;}
+#foto-modal img{max-width:95vw;max-height:90vh;border-radius:10px;box-shadow:0 0 40px rgba(0,160,255,.4);}
+#foto-modal-close{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:1.4rem;border-radius:50%;width:38px;height:38px;cursor:pointer;}
+/* edit modal */
+#edit-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9998;align-items:flex-end;justify-content:center;}
+#edit-modal.show{display:flex;}
+.edit-box{width:100%;max-width:480px;background:#0e1118;border:2px solid rgba(0,195,255,.3);border-radius:16px 16px 0 0;padding:20px 16px 32px;animation:slideUp .2s ease;}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.edit-box h3{color:#00c3ff;font-size:.9rem;margin-bottom:12px;letter-spacing:.1em;}
+.edit-box input,.edit-box textarea{margin-bottom:8px;}
+.edit-btns{display:flex;gap:8px;margin-top:4px;}
+.edit-btns button{flex:1;padding:11px;border:none;border-radius:6px;font-family:monospace;font-size:.82rem;font-weight:700;cursor:pointer;letter-spacing:.08em;}
+.btn-uloz{background:linear-gradient(135deg,#0057e7,#0096ff);color:#fff;}
+.btn-zrus{background:rgba(200,216,232,.08);color:rgba(200,216,232,.6);border:1px solid rgba(200,216,232,.15)!important;}
+/* PIN modal */
+#pin-modal{display:none;position:fixed;inset:0;background:rgba(5,8,16,.9);z-index:10000;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
+#pin-modal.show{display:flex;}
+#pin-modal h2{color:#ffb800;font-size:1rem;letter-spacing:.12em;}
+#pin-input{width:140px;font-size:1.4rem;letter-spacing:.3em;text-align:center;padding:10px;border-radius:8px;border:2px solid rgba(255,180,0,.4);background:#0e1118;color:#ffb800;font-family:monospace;outline:none;}
+#pin-error{color:#ff4466;font-size:.7rem;min-height:16px;text-align:center;}
+#pin-ok{padding:10px 28px;background:linear-gradient(135deg,#b8860b,#ffb800);border:none;border-radius:6px;color:#0a0c10;font-family:monospace;font-size:.85rem;font-weight:900;cursor:pointer;}
+#pin-cancel{background:none;border:1px solid rgba(200,216,232,.2);color:rgba(200,216,232,.5);border-radius:6px;padding:8px 20px;font-family:monospace;font-size:.75rem;cursor:pointer;}
 </style>
 </head>
 <body>
-<div class="topbar"><span class="ver">v14.4</span><span id="sync-dot">💾 Start...</span></div>
+<div class="topbar"><span class="ver">v15.0</span><span id="sync-dot">💾 Start...</span></div>
 <h1>📝 POZNÁMKY</h1>
+
+<!-- Foto preview modal -->
+<div id="foto-modal" onclick="closeFotoModal()">
+  <button id="foto-modal-close" onclick="closeFotoModal()">✕</button>
+  <img id="foto-modal-img" src="" alt="foto"/>
+</div>
+
+<!-- Edit modal -->
+<div id="edit-modal">
+  <div class="edit-box">
+    <h3>✏️ UPRAVIT POZNÁMKU</h3>
+    <input id="edit-nazev" type="text" placeholder="Název..."/>
+    <label class="date-label">📅 Datum</label>
+    <input id="edit-datum" type="date"/>
+    <textarea id="edit-text" rows="4" placeholder="Text..."></textarea>
+    <div class="edit-btns">
+      <button class="btn-uloz" onclick="ulozEdit()">💾 ULOŽIT</button>
+      <button class="btn-zrus" onclick="zavriEdit()">✕ ZRUŠIT</button>
+    </div>
+  </div>
+</div>
+
+<!-- PIN modal -->
+<div id="pin-modal">
+  <h2>🔒 ZAMČENÁ POZNÁMKA</h2>
+  <div style="font-size:.65rem;color:rgba(200,216,232,.4);letter-spacing:.05em;">Zadej PIN</div>
+  <input id="pin-input" type="password" inputmode="numeric" maxlength="8" placeholder="••••"/>
+  <div id="pin-error"></div>
+  <div style="display:flex;gap:10px;">
+    <button id="pin-ok" onclick="pinConfirm()">OK</button>
+    <button id="pin-cancel" onclick="pinCancel()">Zrušit</button>
+  </div>
+</div>
 
 <div class="box">
   <input id="nazev" type="text" placeholder="Název poznámky (volitelné)..."/>
@@ -9499,6 +9565,10 @@ button.del{float:right;background:none;border:1px solid rgba(255,68,102,.3);colo
 
 <script>
 var poz=[], REF=null, SAV=false;
+var PIN_KEY='kpoz_pin';
+var _pinTarget=null, _pinMode=null;
+var _unlockedSet={};
+var _editIdx=null;
 
 try{var raw=window.parent.localStorage.getItem('kpoz');if(!raw)raw=localStorage.getItem('kpoz');if(raw)poz=JSON.parse(raw);}catch(e){}
 
@@ -9511,39 +9581,184 @@ function saveLocal(){
 
 function uloz(){
   saveLocal();
-  if(REF){
-    SAV=true;
-    SS('⏳ Ukládám...','#f39c12');
-    REF.set(poz)
-      .then(function(){SS('✅ Synchronizováno','#2ecc71');setTimeout(function(){SAV=false;},3000);})
-      .catch(function(e){SS('❌ Chyba sync','#e74c3c');SAV=false;});
-  }
+  if(REF){SAV=true;SS('⏳ Ukládám...','#f39c12');
+    REF.set(poz).then(function(){SS('✅ Synchronizováno','#2ecc71');setTimeout(function(){SAV=false;},3000);})
+    .catch(function(e){SS('❌ Chyba sync','#e74c3c');SAV=false;});}
 }
 
+function getPin(){try{return window.parent.localStorage.getItem(PIN_KEY)||localStorage.getItem(PIN_KEY)||'';}catch(e){return '';}}
+function setPin(v){try{window.parent.localStorage.setItem(PIN_KEY,v);}catch(e){}try{localStorage.setItem(PIN_KEY,v);}catch(e){}}
+
+/* ---- RENDER ---- */
 function render(){
   var s=document.getElementById('seznam');
   if(!poz.length){s.innerHTML='<div class="prazdno">Zatím žádné poznámky</div>';return;}
   s.innerHTML='';
   poz.forEach(function(p,i){
-    var d=document.createElement('div');d.className='karta';
-    var dh=p.datum?'<div class="kdate">📅 '+fmt(p.datum)+'</div>':'';
-    d.innerHTML=(p.n?'<div class="kn">'+esc(p.n)+'</div>':'')+
-      '<div class="kt">'+esc(p.t)+'</div>'+dh+
-      '<div class="kd">'+new Date(p.ts).toLocaleString('cs-CZ')+
-      ' <button class="del" data-i="'+i+'">✕ smazat</button></div>';
+    var d=document.createElement('div');
+    var isLocked=p.locked&&!_unlockedSet[p.id];
+    d.className='karta'+(p.locked?' locked':'');
+
+    var nazevHtml=p.n?'<div class="kn'+(p.locked?' locked-name':'')+'">'+( p.locked?'🔒 ':'')+esc(p.n)+'</div>':'';
+    var textHtml=isLocked?'<div class="kt hidden-text">••••••••••••••••••</div>':'<div class="kt">'+esc(p.t)+'</div>';
+    var dateHtml=(!isLocked&&p.datum)?'<div class="kdate">📅 '+fmt(p.datum)+'</div>':'';
+
+    // foto
+    var fotoHtml='';
+    if(!isLocked&&p.foto&&p.foto.length){
+      fotoHtml='<div class="kfoto">';
+      p.foto.forEach(function(f,fi){
+        fotoHtml+='<img src="'+f+'" data-i="'+i+'" data-fi="'+fi+'" onclick="openFoto(this.src)" title="Klikni pro zvětšení"/>';
+      });
+      fotoHtml+='</div>';
+    }
+
+    var lockLabel=p.locked?'🔓':'🔒';
+    var akce='<div class="kd">'
+      +'<span style="flex:1">'+new Date(p.ts).toLocaleString('cs-CZ')+'</span>'
+      +'<button class="editbtn" data-i="'+i+'">✏️ upravit</button>'
+      +'<button class="fotobtn" data-i="'+i+'">📷 foto</button>'
+      +'<button class="lockbtn" data-i="'+i+'">'+lockLabel+'</button>'
+      +'<button class="del" data-i="'+i+'">✕</button>'
+      +'</div>';
+
+    d.innerHTML=nazevHtml+textHtml+fotoHtml+dateHtml+akce;
+
+    // overlay pro zamčené
+    if(isLocked){
+      var ov=document.createElement('div');
+      ov.className='lock-overlay';ov.innerHTML='🔒';ov.dataset.i=i;
+      ov.onclick=function(){openPin(parseInt(this.dataset.i),'unlock');};
+      d.appendChild(ov);
+    }
     s.appendChild(d);
   });
+
+  // události tlačítek
   document.querySelectorAll('.del').forEach(function(b){
-    b.onclick=function(){poz.splice(parseInt(this.dataset.i),1);uloz();render();};
+    b.onclick=function(e){e.stopPropagation();
+      var idx=parseInt(this.dataset.i);
+      if(poz[idx]&&poz[idx].locked&&!_unlockedSet[poz[idx].id]){openPin(idx,'unlock_delete');return;}
+      if(!confirm('Smazat poznámku?'))return;
+      poz.splice(idx,1);uloz();render();};
+  });
+  document.querySelectorAll('.editbtn').forEach(function(b){
+    b.onclick=function(e){e.stopPropagation();
+      var idx=parseInt(this.dataset.i);
+      if(poz[idx]&&poz[idx].locked&&!_unlockedSet[poz[idx].id]){openPin(idx,'unlock_edit');return;}
+      otevriEdit(idx);};
+  });
+  document.querySelectorAll('.fotobtn').forEach(function(b){
+    b.onclick=function(e){e.stopPropagation();
+      var idx=parseInt(this.dataset.i);
+      if(poz[idx]&&poz[idx].locked&&!_unlockedSet[poz[idx].id]){openPin(idx,'unlock_foto');return;}
+      pickFoto(idx);};
+  });
+  document.querySelectorAll('.lockbtn').forEach(function(b){
+    b.onclick=function(e){e.stopPropagation();
+      var idx=parseInt(this.dataset.i);
+      if(!poz[idx])return;
+      if(poz[idx].locked){openPin(idx,'unlock');}
+      else{var pin=getPin();if(!pin)openPin(idx,'set_lock');else openPin(idx,'lock');}};
   });
 }
 
+/* ---- EDIT ---- */
+function otevriEdit(idx){
+  _editIdx=idx;
+  var p=poz[idx];
+  document.getElementById('edit-nazev').value=p.n||'';
+  document.getElementById('edit-datum').value=p.datum||'';
+  document.getElementById('edit-text').value=p.t||'';
+  document.getElementById('edit-modal').classList.add('show');
+}
+function zavriEdit(){document.getElementById('edit-modal').classList.remove('show');_editIdx=null;}
+function ulozEdit(){
+  if(_editIdx===null)return;
+  poz[_editIdx].n=document.getElementById('edit-nazev').value.trim();
+  poz[_editIdx].datum=document.getElementById('edit-datum').value;
+  poz[_editIdx].t=document.getElementById('edit-text').value.trim();
+  uloz();zavriEdit();render();
+}
+
+/* ---- FOTO ---- */
+function pickFoto(idx){
+  var inp=document.createElement('input');
+  inp.type='file';inp.accept='image/*';inp.multiple=true;
+  inp.onchange=function(){
+    var files=Array.from(inp.files);
+    if(!files.length)return;
+    if(!poz[idx].foto)poz[idx].foto=[];
+    var done=0;
+    files.forEach(function(f){
+      var r=new FileReader();
+      r.onload=function(ev){
+        poz[idx].foto.push(ev.target.result);
+        done++;
+        if(done===files.length){uloz();render();}
+      };
+      r.readAsDataURL(f);
+    });
+  };
+  inp.click();
+}
+function openFoto(src){
+  document.getElementById('foto-modal-img').src=src;
+  document.getElementById('foto-modal').classList.add('show');
+}
+function closeFotoModal(){document.getElementById('foto-modal').classList.remove('show');}
+
+/* ---- PIN ---- */
+function openPin(idx,mode){
+  _pinTarget=idx;_pinMode=mode;
+  document.getElementById('pin-input').value='';
+  document.getElementById('pin-error').textContent='';
+  var h2=document.querySelector('#pin-modal h2');
+  if(mode==='set_lock')h2.textContent='🔒 NASTAV PIN';
+  else if(mode==='lock')h2.textContent='🔒 POTVRĎ PIN';
+  else h2.textContent='🔒 ZADEJ PIN';
+  document.getElementById('pin-modal').classList.add('show');
+  setTimeout(function(){document.getElementById('pin-input').focus();},100);
+}
+function pinCancel(){document.getElementById('pin-modal').classList.remove('show');_pinTarget=null;_pinMode=null;}
+function pinConfirm(){
+  var val=document.getElementById('pin-input').value.trim();
+  if(!val){document.getElementById('pin-error').textContent='Zadej PIN!';return;}
+  var stored=getPin();
+  if(_pinMode==='set_lock'){
+    setPin(val);poz[_pinTarget].locked=true;delete _unlockedSet[poz[_pinTarget].id];
+    uloz();render();pinCancel();
+  } else if(_pinMode==='lock'){
+    if(val!==stored){document.getElementById('pin-error').textContent='Špatný PIN!';return;}
+    poz[_pinTarget].locked=true;delete _unlockedSet[poz[_pinTarget].id];
+    uloz();render();pinCancel();
+  } else if(_pinMode==='unlock'){
+    if(val!==stored){document.getElementById('pin-error').textContent='Špatný PIN!';return;}
+    _unlockedSet[poz[_pinTarget].id]=true;render();pinCancel();
+  } else if(_pinMode==='unlock_delete'){
+    if(val!==stored){document.getElementById('pin-error').textContent='Špatný PIN!';return;}
+    poz.splice(_pinTarget,1);uloz();render();pinCancel();
+  } else if(_pinMode==='unlock_edit'){
+    if(val!==stored){document.getElementById('pin-error').textContent='Špatný PIN!';return;}
+    _unlockedSet[poz[_pinTarget].id]=true;render();pinCancel();
+    setTimeout(function(){otevriEdit(_pinTarget);},100);
+  } else if(_pinMode==='unlock_foto'){
+    if(val!==stored){document.getElementById('pin-error').textContent='Špatný PIN!';return;}
+    _unlockedSet[poz[_pinTarget].id]=true;render();pinCancel();
+    setTimeout(function(){pickFoto(_pinTarget);},200);
+  }
+}
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('pin-input').addEventListener('keydown',function(e){if(e.key==='Enter')pinConfirm();});
+});
+
+/* ---- PŘIDAT ---- */
 function pridej(){
   var n=document.getElementById('nazev').value.trim();
   var t=document.getElementById('text').value.trim();
   var d=document.getElementById('datum').value;
   if(!t&&!n){alert('Zadej název nebo text!');return;}
-  poz.unshift({id:Date.now(),n:n,t:t,datum:d,ts:Date.now()});
+  poz.unshift({id:Date.now(),n:n,t:t,datum:d,ts:Date.now(),locked:false,foto:[]});
   uloz();
   document.getElementById('nazev').value='';
   document.getElementById('text').value='';
@@ -9554,10 +9769,8 @@ function pridej(){
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function fmt(d){try{var p=d.split('-');return p[2]+'.'+p[1]+'.'+p[0];}catch(e){return d;}}
 
-// Start – zobraz lokální data ihned
 render();SS('💾 Lokálně','#f39c12');
 
-// Firebase dynamic – stejný pattern jako gluco/jidlo
 function initFB(){
   try{
     var FC={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
@@ -9569,24 +9782,18 @@ function initFB(){
       clearTimeout(_offlineTimer);
       REF.on('value',function(snap){
         var fb=snap.val();
-        if(FL){
-          FL=false;
+        if(FL){FL=false;
           if(fb&&Array.isArray(fb))poz=fb;
           else if(fb&&typeof fb==='object')poz=Object.values(fb).sort(function(a,b){return b.ts-a.ts;});
-          saveLocal();render();SS('✅ Sync','#2ecc71');
-          return;
-        }
+          saveLocal();render();SS('✅ Sync','#2ecc71');return;}
         if(SAV)return;
-        if(fb){
-          var nb=Array.isArray(fb)?fb:Object.values(fb).sort(function(a,b){return b.ts-a.ts;});
-          if(JSON.stringify(nb)!==JSON.stringify(poz)){poz=nb;saveLocal();render();SS('🔄','#2ecc71');}
-        }
+        if(fb){var nb=Array.isArray(fb)?fb:Object.values(fb).sort(function(a,b){return b.ts-a.ts;});
+          if(JSON.stringify(nb)!==JSON.stringify(poz)){poz=nb;saveLocal();render();SS('🔄','#2ecc71');}}
       },function(e){SS('❌ '+e.code,'#e74c3c');});
     }
     REF.once('value').then(function(){startSync();}).catch(function(){
-      firebase.auth().signInAnonymously()
-        .then(function(){startSync();})
-        .catch(function(e){clearTimeout(_offlineTimer);SS('💾 Lokálně','#f39c12');});
+      firebase.auth().signInAnonymously().then(function(){startSync();})
+      .catch(function(e){clearTimeout(_offlineTimer);SS('💾 Lokálně','#f39c12');});
     });
   }catch(e){SS('💾 Lokálně','#f39c12');}
 }
