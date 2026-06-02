@@ -17779,6 +17779,465 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
   <span class="vc-num" id="vc-num">0</span>
 </div>
 
+<!-- POZNÁMKY PANEL -->
+<style>
+  #notes-panel {
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+    width: 380px;
+    background: rgba(5, 8, 16, 0.95);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    border-radius: 10px;
+    padding: 16px;
+    z-index: 99997;
+    max-height: 600px;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 212, 255, 0.15);
+    font-family: "Courier New", monospace;
+  }
+  
+  #notes-panel::-webkit-scrollbar {
+    width: 6px;
+  }
+  #notes-panel::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  #notes-panel::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.3);
+    border-radius: 3px;
+  }
+  #notes-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 212, 255, 0.6);
+  }
+
+  .notes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  }
+
+  .notes-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #00d4ff;
+    text-transform: uppercase;
+  }
+
+  .notes-close {
+    background: none;
+    border: none;
+    color: #00d4ff;
+    cursor: pointer;
+    font-size: 1.2rem;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  .notes-close:hover {
+    opacity: 1;
+  }
+
+  .note-textarea {
+    width: 100%;
+    height: 100px;
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+    padding: 10px;
+    color: #dde4ff;
+    font-family: "Courier New", monospace;
+    font-size: 0.75rem;
+    margin-bottom: 10px;
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+
+  .note-textarea:focus {
+    outline: none;
+    border-color: #00d4ff;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
+  }
+
+  .note-textarea::placeholder {
+    color: rgba(0, 212, 255, 0.4);
+  }
+
+  .notes-section {
+    margin-bottom: 12px;
+  }
+
+  .notes-label {
+    font-size: 0.65rem;
+    color: rgba(0, 212, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .photo-upload {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .photo-upload input[type="file"] {
+    display: none;
+  }
+
+  .photo-upload-label {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: rgba(0, 212, 255, 0.08);
+    border: 1px dashed rgba(0, 212, 255, 0.4);
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.7rem;
+    color: #00d4ff;
+    transition: all 0.2s;
+  }
+
+  .photo-upload-label:hover {
+    background: rgba(0, 212, 255, 0.15);
+    border-color: #00d4ff;
+  }
+
+  .photo-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .photo-item {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+  }
+
+  .photo-item img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .photo-delete {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: rgba(255, 60, 90, 0.9);
+    border: none;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .photo-item:hover .photo-delete {
+    opacity: 1;
+  }
+
+  .notes-button-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .notes-btn {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    background: rgba(0, 212, 255, 0.08);
+    color: #00d4ff;
+    font-family: "Courier New", monospace;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+
+  .notes-btn:hover {
+    background: rgba(0, 212, 255, 0.18);
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+  }
+
+  .notes-btn.delete {
+    background: rgba(255, 60, 90, 0.1);
+    border-color: rgba(255, 60, 90, 0.3);
+    color: #ff3c5a;
+  }
+
+  .notes-btn.delete:hover {
+    background: rgba(255, 60, 90, 0.2);
+    box-shadow: 0 0 8px rgba(255, 60, 90, 0.3);
+  }
+
+  .notes-counter {
+    font-size: 0.65rem;
+    color: rgba(0, 212, 255, 0.5);
+    margin-top: 8px;
+    text-align: right;
+  }
+
+  #notes-toggle-btn {
+    position: fixed;
+    bottom: 14px;
+    right: 20px;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    color: #00d4ff;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    z-index: 99997;
+    transition: all 0.3s;
+  }
+
+  #notes-toggle-btn:hover {
+    background: rgba(0, 212, 255, 0.2);
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+  }
+
+  #notes-toggle-btn.active {
+    background: rgba(0, 212, 255, 0.2);
+  }
+</style>
+
+<button id="notes-toggle-btn" title="Poznámky a fotky">📝</button>
+
+<div id="notes-panel" style="display: none;">
+  <div class="notes-header">
+    <span class="notes-title">Poznámky</span>
+    <button class="notes-close" onclick="toggleNotesPanel()">✕</button>
+  </div>
+
+  <div class="notes-section">
+    <label class="notes-label">Vaše poznámka</label>
+    <textarea 
+      id="note-textarea" 
+      class="note-textarea" 
+      placeholder="Napište poznámku, kterou chcete uložit..."
+    ></textarea>
+  </div>
+
+  <div class="notes-section">
+    <label class="notes-label">Fotografie (až 10)</label>
+    <div class="photo-upload">
+      <input 
+        type="file" 
+        id="photo-input" 
+        multiple 
+        accept="image/*"
+        onchange="handlePhotoSelect(event)"
+      />
+      <label for="photo-input" class="photo-upload-label">
+        + Klikněte pro výběr fotek
+      </label>
+    </div>
+    <div class="photo-gallery" id="photo-gallery"></div>
+  </div>
+
+  <div class="notes-counter">
+    Fotek: <span id="photo-count">0</span>/10
+  </div>
+
+  <div class="notes-button-group">
+    <button class="notes-btn" onclick="saveNote()">✓ Uložit</button>
+    <button class="notes-btn delete" onclick="clearNote()">Smazat</button>
+  </div>
+
+  <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0, 212, 255, 0.2);">
+    <div class="notes-label">Uložená poznámka</div>
+    <div id="saved-note" style="
+      background: rgba(0, 212, 255, 0.05);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 6px;
+      padding: 10px;
+      min-height: 40px;
+      font-size: 0.7rem;
+      color: #dde4ff;
+      line-height: 1.4;
+      word-break: break-word;
+    ">Zatím žádná poznámka...</div>
+  </div>
+</div>
+
+<script>
+// Globální objekt pro správu poznámek
+const NotesManager = {
+  photos: [],
+  maxPhotos: 10,
+
+  init() {
+    this.loadFromStorage();
+    this.renderPhotos();
+    this.updateSavedNote();
+  },
+
+  handlePhotoSelect(files) {
+    const newFiles = Array.from(files);
+    const totalPhotos = this.photos.length + newFiles.length;
+
+    if (totalPhotos > this.maxPhotos) {
+      alert(`Můžete nahrát maximum ${this.maxPhotos} fotek. Máte ${this.photos.length} fotek.`);
+      return;
+    }
+
+    newFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.photos.push({
+          data: e.target.result,
+          name: file.name,
+          date: new Date().toLocaleString('cs-CZ')
+        });
+        this.renderPhotos();
+        this.saveToStorage();
+      };
+      reader.readAsDataURL(file);
+    });
+  },
+
+  renderPhotos() {
+    const gallery = document.getElementById('photo-gallery');
+    gallery.innerHTML = '';
+
+    this.photos.forEach((photo, index) => {
+      const item = document.createElement('div');
+      item.className = 'photo-item';
+      item.innerHTML = `
+        <img src="${photo.data}" alt="Foto ${index + 1}" title="${photo.name}">
+        <button class="photo-delete" onclick="NotesManager.deletePhoto(${index})" title="Smazat">✕</button>
+      `;
+      gallery.appendChild(item);
+    });
+
+    document.getElementById('photo-count').textContent = this.photos.length;
+  },
+
+  deletePhoto(index) {
+    this.photos.splice(index, 1);
+    this.renderPhotos();
+    this.saveToStorage();
+  },
+
+  saveNote() {
+    const noteText = document.getElementById('note-textarea').value.trim();
+    
+    if (!noteText && this.photos.length === 0) {
+      alert('Napište poznámku nebo přidejte fotky!');
+      return;
+    }
+
+    const noteData = {
+      text: noteText,
+      photos: this.photos,
+      savedDate: new Date().toLocaleString('cs-CZ')
+    };
+
+    localStorage.setItem('kladyx_note', JSON.stringify(noteData));
+    this.updateSavedNote();
+    alert('Poznámka byla uložena!');
+  },
+
+  clearNote() {
+    if (confirm('Opravdu chcete smazat poznámku a všechny fotky?')) {
+      document.getElementById('note-textarea').value = '';
+      this.photos = [];
+      this.renderPhotos();
+      localStorage.removeItem('kladyx_note');
+      this.updateSavedNote();
+    }
+  },
+
+  updateSavedNote() {
+    const savedNoteDiv = document.getElementById('saved-note');
+    const stored = localStorage.getItem('kladyx_note');
+
+    if (!stored) {
+      savedNoteDiv.innerHTML = 'Zatím žádná poznámka...';
+      return;
+    }
+
+    const noteData = JSON.parse(stored);
+    let html = `<strong>Uloženo: ${noteData.savedDate}</strong><br><br>`;
+    html += noteData.text ? noteData.text : '<em>Jen fotky bez textu</em>';
+    
+    if (noteData.photos && noteData.photos.length > 0) {
+      html += `<br><br><strong>Fotek: ${noteData.photos.length}</strong>`;
+    }
+
+    savedNoteDiv.innerHTML = html;
+  },
+
+  saveToStorage() {
+    localStorage.setItem('kladyx_note_photos', JSON.stringify(this.photos));
+  },
+
+  loadFromStorage() {
+    const stored = localStorage.getItem('kladyx_note_photos');
+    if (stored) {
+      this.photos = JSON.parse(stored);
+    }
+  }
+};
+
+function handlePhotoSelect(event) {
+  NotesManager.handlePhotoSelect(event.target.files);
+  event.target.value = ''; // Reset input
+}
+
+function saveNote() {
+  NotesManager.saveNote();
+}
+
+function clearNote() {
+  NotesManager.clearNote();
+}
+
+function toggleNotesPanel() {
+  const panel = document.getElementById('notes-panel');
+  const btn = document.getElementById('notes-toggle-btn');
+  
+  const isHidden = panel.style.display === 'none';
+  panel.style.display = isHidden ? 'block' : 'none';
+  btn.classList.toggle('active', isHidden);
+}
+
+// Inicializace
+document.getElementById('notes-toggle-btn').addEventListener('click', toggleNotesPanel);
+document.addEventListener('DOMContentLoaded', () => {
+  NotesManager.init();
+});
+</script>
+
 <script>
 (function(){
   var key = 'kladyx_panel_visits';
