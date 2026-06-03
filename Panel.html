@@ -9491,7 +9491,7 @@ button.fotobtn{background:none;border:1px solid rgba(100,220,100,.3);color:#64dc
 button.expandbtn{background:none;border:1px solid rgba(100,180,255,.3);color:#64b4ff;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:.6rem;}
 button.lockbtn{background:none;border:1px solid rgba(255,180,0,.3);color:#ffb800;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:.6rem;}
 button.unlockbtn{background:none;border:1px solid rgba(0,200,100,.3);color:#00ff99;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:.6rem;}
-.lock-overlay{position:absolute;inset:0;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(10,12,16,.6);cursor:pointer;font-size:1.6rem;z-index:2;backdrop-filter:blur(3px);}
+.lock-overlay{position:absolute;inset:0;top:50px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(10,12,16,.6);cursor:pointer;font-size:1.6rem;z-index:2;backdrop-filter:blur(3px);}
 .prazdno{text-align:center;color:rgba(200,216,232,.2);padding:30px 0;}
 .date-label{font-size:.68rem;color:#4db8ff;display:block;margin-bottom:3px;}
 /* foto preview modal */
@@ -9652,7 +9652,7 @@ function render(){
 
     d.innerHTML=nazevHtml+labelHtml+textHtml+fotoHtml+dateHtml+akce;
 
-    // overlay pro zamčené
+    // overlay pro zamčené (MUSÍ BÝT POSLEDNÍ aby labelHtml byl vidět)
     if(isLocked){
       var ov=document.createElement('div');
       ov.className='lock-overlay';ov.innerHTML='🔒';ov.dataset.i=i;
