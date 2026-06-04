@@ -17442,7 +17442,7 @@ function sendAllFolders(){
 }
 
 function openSettings(){
-  document.getElementById('main-content').insertAdjacentHTML('beforeend',
+  document.body.insertAdjacentHTML('beforeend',
     '<div class="modal-overlay" id="settings-modal" onclick="closeSettings(event)">'
     +'<div class="modal-box" onclick="event.stopPropagation()">'
     +'<div class="modal-title">NASTAVENÍ PŘIPOJENÍ</div>'
