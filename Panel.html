@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v25.0Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v26.3Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v25.0Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v26.3Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v25.0Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v26.3Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -347,7 +347,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v25.0Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v26.3Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -735,7 +735,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v25.0Kl</div>
+  <div class="version">v26.3Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -10786,18 +10786,49 @@ h2{color:#f97316;font-size:22px;margin:0 0 14px;}
 .sw input:focus{border-color:#00d4ff;}
 .sw input::placeholder{color:#444;}
 .sw:before{content:"🔍";position:absolute;left:11px;top:50%;transform:translateY(-50%);}
-.btn-online{width:100%;margin-bottom:18px;padding:11px;background:#1a1a2e;color:#00d4ff;border:1px solid rgba(0,212,255,.35);border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:1px;}
+.btn-online{width:100%;margin-bottom:8px;padding:11px;background:#1a1a2e;color:#00d4ff;border:1px solid rgba(0,212,255,.35);border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:1px;}
+.btn-add{width:100%;margin-bottom:18px;padding:11px;background:#1a2e1a;color:#5ce65c;border:1px solid rgba(92,230,92,.35);border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:1px;}
 .brand{margin-bottom:18px;}
 .bt{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f97316;padding:5px 0;border-bottom:1px solid #1e1e2e;margin-bottom:4px;}
+.item{position:relative;}
 .item a{display:flex;align-items:center;justify-content:space-between;padding:10px 4px;color:#bbb;text-decoration:none;font-size:15px;border-bottom:1px solid #0f0f17;}
 .item a span{color:#00d4ff;font-size:13px;font-weight:700;white-space:nowrap;margin-left:10px;}
+.item .del-btn{position:absolute;right:90px;top:50%;transform:translateY(-50%);background:none;border:none;color:#ff3c5a;font-size:16px;cursor:pointer;padding:4px 8px;display:none;}
+.item:hover .del-btn{display:block;}
 .empty{color:#555;text-align:center;padding:20px;font-size:14px;}
+/* Přidat formulář */
+#add-form{display:none;background:#111118;border:1px solid rgba(92,230,92,.3);border-radius:8px;padding:14px;margin-bottom:18px;}
+#add-form .fl{margin-bottom:10px;}
+#add-form label{display:block;font-size:11px;letter-spacing:2px;color:#5a6488;text-transform:uppercase;margin-bottom:4px;}
+#add-form input{width:100%;background:#0a0a0f;border:1px solid #333;border-radius:5px;padding:9px 12px;color:#fff;font-size:14px;outline:none;box-sizing:border-box;}
+#add-form input:focus{border-color:#5ce65c;}
+.form-btns{display:flex;gap:8px;}
+.form-btns button{flex:1;padding:10px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;border:none;}
+.btn-save{background:#1a2e1a;color:#5ce65c;border:1px solid rgba(92,230,92,.4)!important;}
+.btn-cancel{background:#1a1a2e;color:#888;}
 </style>
 </head>
 <body>
 <h2>📖 Manuály</h2>
 <div class="sw"><input type="text" id="q" placeholder="Hledat značku nebo zařízení..." oninput="f()"></div>
 <button class="btn-online" onclick="online()">🌐 Hledat manuál online (Google)</button>
+<button class="btn-add" onclick="toggleForm()">➕ Přidat manuál do seznamu</button>
+
+<div id="add-form">
+  <div class="fl">
+    <label>Značka (např. Pioneer DJ)</label>
+    <input type="text" id="new-brand" placeholder="Pioneer DJ">
+  </div>
+  <div class="fl">
+    <label>Název zařízení (např. CDJ-3000)</label>
+    <input type="text" id="new-name" placeholder="CDJ-3000">
+  </div>
+  <div class="form-btns">
+    <button class="btn-save" onclick="addManual()">✓ Uložit</button>
+    <button class="btn-cancel" onclick="toggleForm()">✕ Zrušit</button>
+  </div>
+</div>
+
 <div id="out"></div>
 <script>
 function g(q){return 'https://duckduckgo.com/?q='+encodeURIComponent(q+' manual user guide');}
@@ -10834,15 +10865,76 @@ var D=[
     ["L3-3", g("Nobsound L3-3")]
   ]}
 ];
+
+var LS_KEY = "kladyx_custom_manuals";
+
+function loadCustom(){
+  try{ return JSON.parse(localStorage.getItem(LS_KEY)||"[]"); }catch(e){return [];}
+}
+function saveCustom(arr){
+  localStorage.setItem(LS_KEY, JSON.stringify(arr));
+}
+
+function mergeData(){
+  var custom = loadCustom();
+  if(!custom.length) return D;
+  // Merge custom items into existing brands or create new brand groups
+  var merged = D.map(function(g){ return {b:g.b, ms:g.ms.slice(), custom:false}; });
+  custom.forEach(function(c){
+    var found = null;
+    for(var i=0;i<merged.length;i++){
+      if(merged[i].b.toLowerCase()===c.brand.toLowerCase()){found=merged[i];break;}
+    }
+    if(found){
+      found.ms.push([c.name, g(c.brand+" "+c.name), true]);
+    } else {
+      merged.push({b:c.brand, ms:[[c.name, g(c.brand+" "+c.name), true]], isCustomBrand:true});
+    }
+  });
+  return merged;
+}
+
+function toggleForm(){
+  var form = document.getElementById("add-form");
+  form.style.display = form.style.display==="block" ? "none" : "block";
+  if(form.style.display==="block") document.getElementById("new-brand").focus();
+}
+
+function addManual(){
+  var brand = document.getElementById("new-brand").value.trim();
+  var name  = document.getElementById("new-name").value.trim();
+  if(!brand || !name){ alert("Vyplň značku i název zařízení."); return; }
+  var arr = loadCustom();
+  arr.push({brand:brand, name:name});
+  saveCustom(arr);
+  document.getElementById("new-brand").value="";
+  document.getElementById("new-name").value="";
+  document.getElementById("add-form").style.display="none";
+  f();
+}
+
+function delCustom(brand, name){
+  var arr = loadCustom().filter(function(c){
+    return !(c.brand.toLowerCase()===brand.toLowerCase() && c.name.toLowerCase()===name.toLowerCase());
+  });
+  saveCustom(arr);
+  f();
+}
+
 function f(){
   var q=document.getElementById("q").value.toLowerCase();
+  var data=mergeData();
   var h="";var n=0;
-  for(var i=0;i<D.length;i++){
-    var ms=D[i].ms.filter(function(m){return !q||m[0].toLowerCase().indexOf(q)>=0||D[i].b.toLowerCase().indexOf(q)>=0;});
+  for(var i=0;i<data.length;i++){
+    var ms=data[i].ms.filter(function(m){return !q||m[0].toLowerCase().indexOf(q)>=0||data[i].b.toLowerCase().indexOf(q)>=0;});
     if(!ms.length)continue;n++;
-    h+='<div class="brand"><div class="bt">'+D[i].b+'</div>';
-    for(var j=0;j<ms.length;j++)
-      h+='<div class="item"><a href="'+ms[j][1]+'" target="_blank">'+ms[j][0]+'<span>OTEVŘÍT →</span></a></div>';
+    var brandLabel = data[i].b + (data[i].isCustomBrand ? ' <span style="color:#5ce65c;font-size:9px;letter-spacing:1px;">VLASTNÍ</span>' : '');
+    h+='<div class="brand"><div class="bt">'+brandLabel+'</div>';
+    for(var j=0;j<ms.length;j++){
+      var isCustomItem = ms[j][2]===true;
+      var delBtn = isCustomItem ? '<button class="del-btn" onclick="delCustom(\''+data[i].b.replace(/'/g,"\\'")+"','"+ms[j][0].replace(/'/g,"\\'")+'\')">🗑</button>' : '';
+      h+='<div class="item"><a href="'+ms[j][1]+'" target="_blank">'+ms[j][0]+'<span>OTEVŘÍT →</span></a>'+delBtn+'</div>';
+    }
     h+='</div>';
   }
   if(!n&&q)h='<div class="empty">V seznamu nenalezeno.<br>Zkus tlacitko Hledat online vyse.</div>';
@@ -16961,6 +17053,16 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 .app-list li .num{font-size:0.72rem;font-weight:800;color:#a78bfa;min-width:22px;}
 .app-list li .name{flex:1;color:#e0e0f0;}
 .app-list li .del{background:none;border:none;color:#f87171;cursor:pointer;font-size:1rem;padding:2px 6px;border-radius:6px;opacity:0.6;}
+.app-icon-display{font-size:1.2rem;margin-left:4px;min-width:24px;text-align:center;}
+.edit-icon-btn{background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:#a78bfa;cursor:pointer;font-size:0.85rem;padding:3px 7px;border-radius:7px;opacity:0.7;transition:opacity 0.15s,background 0.15s;}
+.edit-icon-btn:hover{opacity:1;background:rgba(167,139,250,0.25);}
+.edit-picker-box{display:none;margin-top:12px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.3);border-radius:14px;padding:14px;}
+.edit-picker-box h2{font-size:0.72rem;font-weight:800;color:#a78bfa;letter-spacing:1px;margin-bottom:8px;}
+.edit-picker-name{color:#e0e0f0;font-weight:bold;margin-bottom:6px;font-size:0.85rem;}
+.edit-picker-actions{display:flex;gap:8px;margin-top:10px;}
+.edit-picker-actions button{padding:9px 16px;border-radius:10px;border:none;font-weight:800;font-family:inherit;cursor:pointer;font-size:0.85rem;}
+.btn-save-icon{background:linear-gradient(135deg,#a78bfa,#f472b6);color:#0d0d1f;}
+.btn-cancel-icon{background:rgba(167,139,250,0.15);color:#a78bfa;border:1px solid rgba(167,139,250,0.3)!important;}
 .app-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;flex-shrink:0;animation:dotPulse 1.4s ease-in-out infinite;vertical-align:middle;}
 .wdot{position:absolute;top:6px;right:6px;width:12px;height:12px;border-radius:50%;animation:dotPulse 1.4s ease-in-out infinite;z-index:99!important;pointer-events:none;}
 @keyframes dotPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.25;transform:scale(0.6);}}
@@ -16981,6 +17083,18 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 <body>
 <h1>👤 Moje Apky</h1>
 <ul class="app-list" id="app-list"></ul>
+<div class="edit-picker-box" id="edit-picker-box">
+  <h2>✏️ ZMĚNIT IKONU</h2>
+  <div class="edit-picker-name" id="edit-app-name"></div>
+  <div class="icon-picker" style="max-height:160px;overflow-y:auto;">
+    <p id="picker-title" style="font-size:0.82rem;color:#888;margin-bottom:8px;">Vyber novou ikonu:</p>
+    <div id="edit-icon-grid"></div>
+  </div>
+  <div class="edit-picker-actions">
+    <button class="btn-save-icon" onclick="saveEditIcon()">✅ Uložit ikonu</button>
+    <button class="btn-cancel-icon" onclick="closeEditPicker()">✕ Zrušit</button>
+  </div>
+</div>
 <div class="add-box">
   <h2>➕ PŘIDAT NOVOU APLIKACI</h2>
   <div class="add-row">
@@ -16995,8 +17109,9 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 </div>
 <script>
 var LS_KEY='kladyx_user_apps';
+var ICON_OVR_KEY='kladyx_icon_overrides';
 function getStorage(){try{var s=window.parent.localStorage;s.getItem('__test__');return s;}catch(e){return localStorage;}}
-var AVAILABLE_ICONS=['🏠','💿','🔧','🏗','📊','💳','🍽','🩸','🎙','🌤','📝','📅','🕹','📖','📚','🇬🇧','📻','🟢','🎤','🎮','🌍','☁️','🎵','💻','⚡','🔒','🎬','🖼','🌟','🎯','💡','🔔','📱','🖥','⌚','🎧','🎸','🎹','🎺','📡','🛰','📡','🔭','🌐','🌊','🌴','🎪','🎭','🎨','🖌','📐','📏'];
+var AVAILABLE_ICONS=['🏠','💿','🔧','🏗','📊','💳','🍽','🩸','🎙','🌤','📝','📅','🕹','📖','📚','🇬🇧','📻','🟢','🎤','🎮','🌍','☁️','🎵','💻','⚡','🔒','🎬','🖼','🌟','🎯','💡','🔔','📱','🖥','⌚','🎧','🎸','🎹','🎺','📡','🛰','🔭','🌐','🌊','🌴','🎪','🎭','🎨','🖌','📐','📏','🃏','🔱','⚙️','🛠','🗂','🎲','🗺','🧲','🔋','💾','🖨','📷','🎥','🎞','📼','🧪','🧬','🔬','🧭','🛸','🚀','🏆','🎖','🔑','🗝','🪄','💎','🧩','🪙','🏅'];
 var APP_COLORS=['#aa00ff','#ff8c00','#ffe000','#00cfff','#ff3c5a','#5ce65c','#00ff88','#ff4fd8','#ff7711','#00c864','#ff4444','#38bdf8','#f5c842','#00b4ff','#00ffbb','#f97316','#a78bfa','#34d399','#0088ff','#22c55e','#ff4466','#0066ff','#00d4ff'];
 var DEFAULT=[
   '🏠 HouseTime','💿 CD databáze','🔧 Hardware','🏗 Architektura',
@@ -17015,19 +17130,29 @@ var APP_IDS={
   'ZX Games':'zxgames','World Time':'worldtime','Překladač':'prekladac','NextSync':'nextsync'
 };
 var selectedIcon=AVAILABLE_ICONS[0];
+var editingAppId=null;
 
 function loadCustom(){try{return JSON.parse(getStorage().getItem(LS_KEY)||'[]');}catch(e){return[];}}
 function saveCustom(arr){try{getStorage().setItem(LS_KEY,JSON.stringify(arr));}catch(e){console.warn('saveCustom failed',e);}}
+function loadOverrides(){try{return JSON.parse(getStorage().getItem(ICON_OVR_KEY)||'{}');}catch(e){return{};}}
+function saveOverride(appId,icon){
+  var o=loadOverrides();o[appId]=icon;
+  try{getStorage().setItem(ICON_OVR_KEY,JSON.stringify(o));}catch(e){}
+}
 
-function initIconPicker(){
-  var grid=document.getElementById('icon-grid');
+function initIconPicker(forEdit){
+  var gridId=forEdit?'edit-icon-grid':'icon-grid';
+  var grid=document.getElementById(gridId);
+  if(!grid) return;
   grid.innerHTML='';
+  var ptitle=document.getElementById('picker-title');
+  if(ptitle) ptitle.textContent=forEdit?'Vyber novou ikonu:':'Vyber ikonu pro novou apku:';
   AVAILABLE_ICONS.forEach(function(icon){
     var btn=document.createElement('button');
     btn.className='icon-btn'+(icon===selectedIcon?' selected':'');
     btn.textContent=icon;
     btn.onclick=function(){
-      document.querySelectorAll('.icon-btn').forEach(function(b){b.classList.remove('selected');});
+      grid.querySelectorAll('.icon-btn').forEach(function(b){b.classList.remove('selected');});
       btn.classList.add('selected');
       selectedIcon=icon;
     };
@@ -17035,23 +17160,60 @@ function initIconPicker(){
   });
 }
 
+function openEditPicker(appId,currentIcon){
+  editingAppId=appId;
+  selectedIcon=currentIcon;
+  document.getElementById('edit-picker-box').style.display='block';
+  var appName=Object.keys(APP_IDS).find(function(k){return APP_IDS[k]===appId;})||appId;
+  document.getElementById('edit-app-name').textContent=appName;
+  initIconPicker(true);
+  document.getElementById('edit-picker-box').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function saveEditIcon(){
+  if(!editingAppId) return;
+  saveOverride(editingAppId,selectedIcon);
+  try{ window.parent.updateAppIcon(editingAppId,selectedIcon); }catch(e){ console.warn('updateAppIcon failed',e); }
+  document.getElementById('edit-picker-box').style.display='none';
+  editingAppId=null;
+  render();
+  msg('✅ Ikona uložena – zobrazuje se i v baru.',true);
+  setTimeout(function(){msg('');},2800);
+}
+
+function closeEditPicker(){
+  document.getElementById('edit-picker-box').style.display='none';
+  editingAppId=null;
+}
+
 function render(){
   var ul=document.getElementById('app-list');
   ul.innerHTML='';
   var custom=loadCustom();
   var all=DEFAULT.concat(custom.map(function(n){return n;}));
+  var overrides=loadOverrides();
   all.forEach(function(name,i){
     var isCustom=i>=DEFAULT.length;
     var li=document.createElement('li');
     var color=APP_COLORS[i%APP_COLORS.length];
-    var iconPart=name.split(' ')[0];
+    var defaultIcon=name.split(' ')[0];
     var appName=name.split(' ').slice(1).join(' ')||name;
     var appId=APP_IDS[appName]||null;
-    if(appId){li.style.cursor='pointer';li.title='Otevřít '+appName;li.onclick=function(){try{window.parent.openApp(appId);}catch(e){window.openApp&&window.openApp(appId);}};}
-    li.innerHTML='<span class="app-dot" style="background:'+color+';box-shadow:0 0 5px '+color+'80"></span>'
+    var icon=appId&&overrides[appId]?overrides[appId]:defaultIcon;
+    if(appId){
+      li.style.cursor='pointer';
+      li.title='Otevřít '+appName;
+      li.onclick=function(){try{window.parent.openApp(appId);}catch(e){window.openApp&&window.openApp(appId);}};
+    }
+    var editBtn=appId
+      ?'<button class="edit-icon-btn" title="Změnit ikonu" onclick="event.stopPropagation();openEditPicker(\''+appId+'\',\''+icon+'\')">✏️</button>'
+      :'';
+    li.innerHTML=''
+      +'<span class="app-dot" style="background:'+color+';box-shadow:0 0 5px '+color+'80"></span>'
       +'<span class="num">'+(i+1)+'.</span>'
       +'<span class="name">'+esc(appName)+'</span>'
-      +'<span style="font-size:1.1rem;margin-left:4px;">'+iconPart+'</span>'
+      +'<span class="app-icon-display">'+icon+'</span>'
+      +editBtn
       +(isCustom?'<button class="del" onclick="event.stopPropagation();del('+i+')">✕</button>':'');
     ul.appendChild(li);
   });
@@ -17079,6 +17241,8 @@ function del(idx){
 function msg(t,ok){var e=document.getElementById('status-msg');e.textContent=t;e.style.color=ok?'#34d399':'#f87171';}
 
 document.getElementById('new-name').addEventListener('keydown',function(e){if(e.key==='Enter')addApp();});
+// Volatelné z rodiče po Firebase sync
+window.renderFromParent=function(){ render(); };
 initIconPicker();
 render();
 <\/script>
@@ -17182,7 +17346,7 @@ body{background:#04040e;font-family:'Share Tech Mono',monospace;min-height:100vh
 var FOLDERS=[
   {id:'games',   label:'GAMES',    icon:'▶', path:'/games',    color:'#00ffbb', desc:'Hry pro ZX Next'},
   {id:'programs',label:'PROGRAMS', icon:'◈', path:'/programs', color:'#00eeff', desc:'Programy a utility'},
-  {id:'systems', label:'SYSTEMS',  icon:'⬡', path:'/system',   color:'#ff6030', desc:'Systémové soubory'},
+  {id:'utility', label:'UTILITY',  icon:'⬡', path:'/utility',  color:'#ff6030', desc:'Utility a nástroje'},
 ];
 var state={
   ip:    localStorage.getItem('nextsync_ip')||'',
@@ -17191,7 +17355,7 @@ var state={
   pc_port: localStorage.getItem('nextsync_pc_port')||'8765',
   target: localStorage.getItem('nextsync_target')||'next', // 'next' | 'pc'
   view:'main',
-  files:{games:[],programs:[],systems:[]},
+  files:{games:[],programs:[],utility:[]},
   status:{},
   conn:{next:'unknown', pc:'unknown'} // 'unknown'|'ok'|'err'|'checking'
 };
@@ -17422,12 +17586,15 @@ function sendFile(fid,fname){
   var folderDef=FOLDERS.find(function(f){return f.id===fid;});
   var formData=new FormData();
   formData.append('file',file);
+  formData.append('folder',fid);
   formData.append('path',folderDef.path);
-  fetch('http://'+ip+':'+port+'/upload',{method:'POST',body:formData})
+  fetch('http://'+ip+':'+port+'/upload',{method:'POST',body:formData,mode:'cors'})
     .then(function(r){state.status[key]=r.ok?'ok':'error';render();})
-    .catch(function(){state.status[key]='error';render();});
+    .catch(function(){
+      state.status[key]='error';render();
+      alert('❌ Server nedostupný ('+ip+':'+port+')\n\nZkontroluj:\n1. nextsync_server.py běží na PC\n2. IP adresa je správná\n3. PC a mobil na stejné WiFi\n4. Windows Firewall: port '+port+' povolen');
+    });
 }
-
 function sendFolder(fid){
   state.files[fid].forEach(function(f){
     if(state.status[fid+'::'+f.name]!=='ok')sendFile(fid,f.name);
@@ -17663,6 +17830,109 @@ function goHome() {
     alert("Chyba: " + err.message);
   }
 }
+// IKONY – uložené přepisy ikon (Firebase sync)
+var ICON_OVERRIDES_KEY = 'kladyx_icon_overrides';
+var _iconsRef = null;
+
+function _applyIconToDOM(appId, emoji) {
+  // top bar – .bi uvnitř btn-{appId}
+  try {
+    var btn = document.getElementById('btn-' + appId);
+    if (btn) {
+      var bi = btn.querySelector('.bi');
+      if (bi) bi.textContent = emoji;
+    }
+  } catch(e) {}
+  // widgety – .wi uvnitř wcard s onclick obsahující appId
+  try {
+    document.querySelectorAll('.wcard').forEach(function(card) {
+      var oc = card.getAttribute('onclick') || '';
+      if (oc.indexOf("'" + appId + "'") !== -1 || oc.indexOf('"' + appId + '"') !== -1) {
+        var wi = card.querySelector('.wi');
+        if (wi) wi.textContent = emoji;
+      }
+    });
+  } catch(e) {}
+}
+
+function updateAppIcon(appId, emoji) {
+  _applyIconToDOM(appId, emoji);
+  // Uložit do localStorage jako fallback
+  try {
+    var overrides = JSON.parse(localStorage.getItem(ICON_OVERRIDES_KEY) || '{}');
+    overrides[appId] = emoji;
+    localStorage.setItem(ICON_OVERRIDES_KEY, JSON.stringify(overrides));
+  } catch(e) {}
+  // Uložit do Firebase
+  try {
+    if (_iconsRef) {
+      _iconsRef.child(appId).set(emoji);
+    }
+  } catch(e) {}
+}
+
+function loadSavedIcons() {
+  // Nejdřív načíst z localStorage (okamžitě, bez čekání)
+  try {
+    var overrides = JSON.parse(localStorage.getItem(ICON_OVERRIDES_KEY) || '{}');
+    Object.keys(overrides).forEach(function(appId) {
+      _applyIconToDOM(appId, overrides[appId]);
+    });
+  } catch(e) {}
+  // Pak napojit Firebase listener (přepíše localStorage data aktuálními)
+  try {
+    _iconsRef = firebase.database().ref('kladyx_icons');
+    _iconsRef.on('value', function(snap) {
+      var data = snap.val();
+      if (!data) return;
+      // Aktualizovat localStorage
+      try { localStorage.setItem(ICON_OVERRIDES_KEY, JSON.stringify(data)); } catch(e) {}
+      // Aplikovat do DOM
+      Object.keys(data).forEach(function(appId) {
+        _applyIconToDOM(appId, data[appId]);
+      });
+      // Propagovat do otevřené MOJE APKY iframe pokud je viditelná
+      try {
+        var frame = document.getElementById('frame-user');
+        if (frame && frame.classList.contains('visible') && frame.contentWindow) {
+          frame.contentWindow.renderFromParent && frame.contentWindow.renderFromParent();
+        }
+      } catch(e) {}
+    }, function(err) {
+      console.warn('Firebase ikony listener chyba:', err);
+    });
+  } catch(e) {
+    console.warn('Firebase ikony init chyba:', e);
+  }
+}
+
+// Načíst ikony – localStorage okamžitě, Firebase až bude dostupný
+(function() {
+  // 1) Okamžitě z localStorage (funguje vždy, i offline)
+  try {
+    var overrides = JSON.parse(localStorage.getItem(ICON_OVERRIDES_KEY) || '{}');
+    Object.keys(overrides).forEach(function(appId) { _applyIconToDOM(appId, overrides[appId]); });
+  } catch(e) {}
+  // 2) Firebase – retry dokud nebude dostupný (max 20× po 500ms = 10s)
+  var _iconRetry = 0;
+  function _tryFirebaseIcons() {
+    try {
+      if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) {
+        throw new Error('not ready');
+      }
+      firebase.auth().onAuthStateChanged(function(user) {
+        loadSavedIcons();
+      });
+    } catch(e) {
+      if (_iconRetry++ < 20) {
+        setTimeout(_tryFirebaseIcons, 500);
+      }
+      // Tiché selhání – localStorage fallback už proběhl výše
+    }
+  }
+  setTimeout(_tryFirebaseIcons, 500);
+})();
+
 try {
   var last = localStorage.getItem("kladyx-panel-last");
   if (last && APP_HTML[last]) openApp(last);
