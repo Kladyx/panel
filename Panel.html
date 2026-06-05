@@ -15060,7 +15060,7 @@ var STATIONS = [
   { id:'impuls',    name:'Rádio Impuls',     desc:'České hity',        icon:'⚡', url:'https://icecast5.play.cz/impuls128.mp3' },
   { id:'intense',    name:'Intense Radio',    desc:'Dance & House NL',  icon:'⚡', url:'https://intenseradio.live-streams.nl/live' },
   { id:'funkstar',  name:'Funkstar Radio',   desc:'Funk & Soul CZ',    icon:'🎶', url:'https://funkstar.radioca.st/stream' },
-  { id:'gayfm',     name:'Gay FM',           desc:'Dance · DE',        icon:'🏳️‍🌈', url:'https://icepool.silvacast.com/GAYFM.mp3' },
+  { id:'gayfm',     name:'Gay FM',           desc:'Dance · DE',        icon:'🏳️‍🌈', url:'https://streams.silvacast.com/GAYFM.mp3' },
   { id:'orion',     name:'Hitrádio Orion',   desc:'Hity · CZ',         icon:'🌟', url:'https://ice.abradio.cz/orion128.mp3' },
   { id:'radiocas',  name:'Radio Čas',        desc:'Pop · CZ',          icon:'⏰', url:'https://icecast7.play.cz/casradio128.mp3' },
   { id:'signal',    name:'Signal Radio',     desc:'Pop/Oldies · CZ',   icon:'📶', url:'https://icecast1.play.cz/signal128.mp3' },
@@ -15346,7 +15346,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
   <div class="sec-title">🖥️ ZX Next</div>
   <div class="item checking" id="i-zxnext-wifi">
     <div class="dot checking" id="d-zxnext-wifi"></div>
-    <div style="flex:1"><div class="name" id="n-zxnext-wifi">⬆ NextSync WiFi</div><div class="sub2" id="zxnext-wifi-info">192.168.0.23:8765</div></div>
+    <div style="flex:1"><div class="name" id="n-zxnext-wifi">⬆ NextSync WiFi</div><div class="sub2" id="zxnext-wifi-info">192.168.0.124:2048</div></div>
     <div class="status checking" id="s-zxnext-wifi">Checking…</div>
   </div>
 </div>
@@ -15378,7 +15378,7 @@ var CHECKS = {
   impuls:    { type:'nocors', url:'https://icecast5.play.cz/impuls128.mp3' },
   intense:   { type:'nocors', url:'https://intenseradio.live-streams.nl/live' },
   funkstar:  { type:'nocors', url:'https://funkstar.radioca.st/stream' },
-  gayfm:     { type:'nocors', url:'https://icepool.silvacast.com/GAYFM.mp3' },
+  gayfm:     { type:'nocors', url:'https://streams.silvacast.com/GAYFM.mp3' },
   orion:     { type:'nocors', url:'https://ice.abradio.cz/orion128.mp3' },
   radiocas:  { type:'nocors', url:'https://icecast7.play.cz/casradio128.mp3' },
   signal:    { type:'nocors', url:'https://icecast1.play.cz/signal128.mp3' },
@@ -15387,7 +15387,7 @@ var CHECKS = {
   'ap-pocasi':    { type:'cors',   url:'https://api.open-meteo.com/v1/forecast?latitude=49.64&longitude=18.14&current=temperature_2m' },
   'ap-mixcloud':  { type:'nocors', url:'https://www.mixcloud.com/' },
   'ap-reader':    { type:'nocors', url:'https://kladyx.github.io/panel/reader.html' },
-  'zxnext-wifi':  { type:'cors', url:'http://192.168.0.23:8765/ping' }
+  'zxnext-wifi':  { type:'nocors', url:'http://192.168.0.124:2048/' }
 };
 
 function setStatus(id, state, text) {
