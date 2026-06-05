@@ -15346,7 +15346,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
   <div class="sec-title">🖥️ ZX Next</div>
   <div class="item checking" id="i-zxnext-wifi">
     <div class="dot checking" id="d-zxnext-wifi"></div>
-    <div style="flex:1"><div class="name" id="n-zxnext-wifi">⬆ NextSync WiFi</div><div class="sub2" id="zxnext-wifi-info">192.168.0.124:2048</div></div>
+    <div style="flex:1"><div class="name" id="n-zxnext-wifi">⬆ NextSync WiFi</div><div class="sub2" id="zxnext-wifi-info">192.168.0.23:8765</div></div>
     <div class="status checking" id="s-zxnext-wifi">Checking…</div>
   </div>
 </div>
@@ -15387,7 +15387,7 @@ var CHECKS = {
   'ap-pocasi':    { type:'cors',   url:'https://api.open-meteo.com/v1/forecast?latitude=49.64&longitude=18.14&current=temperature_2m' },
   'ap-mixcloud':  { type:'nocors', url:'https://www.mixcloud.com/' },
   'ap-reader':    { type:'nocors', url:'https://kladyx.github.io/panel/reader.html' },
-  'zxnext-wifi':  { type:'nocors', url:'http://192.168.0.124:2048/' }
+  'zxnext-wifi':  { type:'cors', url:'http://192.168.0.23:8765/ping' }
 };
 
 function setStatus(id, state, text) {
