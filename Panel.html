@@ -325,14 +325,6 @@
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🕹️</div><div class="bl">ZX Games</div>
     </button>
-    <button class="app-btn" id="btn-nextsync" style="--ac:#00ffbb;--ac-rgb:0,255,187" onclick="openApp('nextsync')">
-      <div class="app-dot"></div>
-      <div class="bd"></div><div class="bi">⬆</div><div class="bl">NextSync</div>
-    </button>
-    <button class="app-btn" style="--ac:#00ffbb;--ac-rgb:0,255,187" onclick="nsOpenSettings()">
-      <span class="bi">⚙</span>
-      <span class="bl">NS Set</span>
-    </button>
     <button class="app-btn" id="btn-worldtime" style="--ac:#00d4ff;--ac-rgb:0,212,255" onclick="openApp('worldtime')">
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🌍</div><div class="bl">World Time</div>
@@ -418,7 +410,7 @@
         <div class="wcard" onclick="openApp('status')" onmouseover="this.style.borderColor='#00ff88';this.style.boxShadow='0 0 14px rgba(0,255,136,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#22c55e;box-shadow:0 0 6px #22c55e"></span><div class="wi">🟢</div><div class="wn">Status</div><div class="wd">System Monitor</div></div>
         <div class="wcard" onclick="openApp('radio')" onmouseover="this.style.borderColor='#ff4466';this.style.boxShadow='0 0 14px rgba(255,68,102,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff4466;box-shadow:0 0 6px #ff4466"></span><div class="wi">🎤</div><div class="wn">Radio ID</div><div class="wd">Music Recognition</div></div>
         <div class="wcard" onclick="openApp('zxgames')" onmouseover="this.style.borderColor='#0088ff';this.style.boxShadow='0 0 14px rgba(0,136,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#0066ff;box-shadow:0 0 6px #0066ff"></span><div class="wi">🕹️</div><div class="wn">ZX Games</div><div class="wd">Arcade Browser</div></div>
-        <div class="wcard" onclick="openApp('nextsync')" onmouseover="this.style.borderColor='#00ffbb';this.style.boxShadow='0 0 14px rgba(0,255,187,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00ffbb;box-shadow:0 0 6px #00ffbb"></span><div class="wi">⬆</div><div class="wn">NextSync</div><div class="wd">ZX Next Upload</div></div>
+        <div class="wn">NextSync</div><div class="wd">ZX Next Upload</div></div>
         <div class="wcard" onclick="openApp('worldtime')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">🌍</div><div class="wn">World Time</div><div class="wd">Hodiny & Stopky</div></div>
         <div class="wcard" onclick="openApp('user')" onmouseover="this.style.borderColor='#a78bfa';this.style.boxShadow='0 0 14px rgba(167,139,250,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#a78bfa;box-shadow:0 0 6px #a78bfa"></span><div class="wi">👤</div><div class="wn">Moje Apky</div><div class="wd">Správce aplikací</div></div>
         <div class="wcard" onclick="openApp('prekladac')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">🌐</div><div class="wn">Překladač</div><div class="wd">CZ → EN</div></div>
@@ -460,7 +452,7 @@
     <iframe id="frame-worldtime" class="app-frame" title="worldtime" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-user" class="app-frame" title="user" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-prekladac" class="app-frame" title="prekladac" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
-    <iframe id="frame-nextsync" class="app-frame" title="nextsync" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
+
 
   </div>
 </div>
@@ -18084,48 +18076,6 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
 })();
 </script>
 
-<!-- NEXTSYNC SETTINGS MODAL - v parent panelu, mimo iframe -->
-<div id="ns-settings-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99999;align-items:flex-end;justify-content:center;" onclick="if(event.target===this)nsCloseSettings()">
-  <div style="width:100%;max-width:430px;background:#080818;border:2px solid #00ffbb55;border-radius:20px 20px 0 0;padding:26px 24px 44px;box-shadow:0 -10px 50px #00ffbb44">
-    <div style="font-family:'Orbitron',monospace;font-weight:700;font-size:12px;color:#00ffbbee;letter-spacing:4px;margin-bottom:22px;text-shadow:0 0 16px #00ffbb">NEXTSYNC · NASTAVENÍ</div>
-    <div style="font-size:9px;color:#00aeffaa;letter-spacing:3px;margin:0 0 4px;text-shadow:0 0 10px #00aeff66;border-top:1px solid #00aeff22;padding-top:14px">🖥 PC SERVER (nextsync_server.py)</div>
-    <div style="font-size:9px;color:#00ffbbaa;letter-spacing:3px;margin:14px 0 4px">IP ADRESA PC</div>
-    <input id="ns-pc-ip" type="text" placeholder="192.168.0.24" style="width:100%;background:#0a0a1e;border:1.5px solid #00ffbb66;border-radius:9px;padding:12px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:14px;margin-bottom:14px;outline:none;box-sizing:border-box"/>
-    <div style="font-size:9px;color:#00ffbbaa;letter-spacing:3px;margin-bottom:4px">PORT PC (výchozí: 8765)</div>
-    <input id="ns-pc-port" type="number" placeholder="8765" style="width:100%;background:#0a0a1e;border:1.5px solid #00ffbb66;border-radius:9px;padding:12px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:14px;margin-bottom:14px;outline:none;box-sizing:border-box"/>
-    <div style="font-size:9px;color:#00ffbbaa;letter-spacing:3px;margin-bottom:4px">IP ADRESA ZX NEXT</div>
-    <input id="ns-zx-ip" type="text" placeholder="192.168.0.124" style="width:100%;background:#0a0a1e;border:1.5px solid #00ffbb66;border-radius:9px;padding:12px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:14px;margin-bottom:20px;outline:none;box-sizing:border-box"/>
-    <button onclick="nsSaveSettings()" style="width:100%;background:#00ffbb33;border:2px solid #00ffbb;border-radius:12px;padding:15px;color:#00ffbb;font-size:12px;font-family:'Orbitron',monospace;font-weight:700;letter-spacing:4px;cursor:pointer;box-shadow:0 0 28px #00ffbbaa">ULOŽIT</button>
-  </div>
-</div>
-
-<script>
-function nsOpenSettings(){
-  document.getElementById('ns-pc-ip').value = localStorage.getItem('nextsync_pc_ip')||'192.168.0.24';
-  document.getElementById('ns-pc-port').value = localStorage.getItem('nextsync_pc_port')||'8765';
-  document.getElementById('ns-zx-ip').value = localStorage.getItem('nextsync_ip')||'';
-  var el = document.getElementById('ns-settings-overlay');
-  el.style.display='flex';
-}
-function nsCloseSettings(){
-  document.getElementById('ns-settings-overlay').style.display='none';
-}
-function nsSaveSettings(){
-  var pcIp = document.getElementById('ns-pc-ip').value.trim();
-  var pcPort = document.getElementById('ns-pc-port').value.trim()||'8765';
-  var zxIp = document.getElementById('ns-zx-ip').value.trim();
-  localStorage.setItem('nextsync_pc_ip', pcIp);
-  localStorage.setItem('nextsync_pc_port', pcPort);
-  localStorage.setItem('nextsync_ip', zxIp);
-  localStorage.setItem('nextsync_target', 'pc');
-  // Reload nextsync iframe aby načetl nové hodnoty
-  var frame = document.getElementById('frame-nextsync');
-  if(frame && frame.srcdoc){
-    frame.srcdoc = APP_HTML['nextsync'];
-  }
-  nsCloseSettings();
-}
-</script>
 
 </body>
 </html>
