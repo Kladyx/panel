@@ -326,8 +326,8 @@
       <div class="bd"></div><div class="bi">🕹️</div><div class="bl">ZX Games</div>
     </button>
     <button class="app-btn" id="btn-nextsync" style="--ac:#00ffbb;--ac-rgb:0,255,187" onclick="openApp('nextsync')">
-      <span class="bi">⬆</span>
-      <span class="bl">NextSync</span>
+      <div class="app-dot"></div>
+      <div class="bd"></div><div class="bi">⬆</div><div class="bl">NextSync</div>
     </button>
     <button class="app-btn" style="--ac:#00ffbb;--ac-rgb:0,255,187" onclick="nsOpenSettings()">
       <span class="bi">⚙</span>
@@ -17642,7 +17642,7 @@ function openApp(id) {
     if (btn) btn.classList.add("active");
     var frame = document.getElementById("frame-" + id);
     if (frame) {
-      if (!loaded[id]) {
+      if (!loaded[id] || id === 'nextsync') {
         var html = APP_HTML[id];
         // srcdoc je spolehlivější při načítání z content:// na Androidu
         try {
