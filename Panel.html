@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v27.2Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v28.0Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v27.2Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v28.0Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v27.2Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v28.0Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -325,6 +325,14 @@
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🕹️</div><div class="bl">ZX Games</div>
     </button>
+    <button class="app-btn" id="btn-nextsync" style="--ac:#00ffbb;--ac-rgb:0,255,187" onclick="openApp('nextsync')">
+      <span class="bi">⬆</span>
+      <span class="bl">NextSync</span>
+    </button>
+    <button class="app-btn" style="--ac:#00ffbb;--ac-rgb:0,255,187" onclick="nsOpenSettings()">
+      <span class="bi">⚙</span>
+      <span class="bl">NS Set</span>
+    </button>
     <button class="app-btn" id="btn-worldtime" style="--ac:#00d4ff;--ac-rgb:0,212,255" onclick="openApp('worldtime')">
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🌍</div><div class="bl">World Time</div>
@@ -343,7 +351,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v27.2Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v28.0Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -410,7 +418,7 @@
         <div class="wcard" onclick="openApp('status')" onmouseover="this.style.borderColor='#00ff88';this.style.boxShadow='0 0 14px rgba(0,255,136,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#22c55e;box-shadow:0 0 6px #22c55e"></span><div class="wi">🟢</div><div class="wn">Status</div><div class="wd">System Monitor</div></div>
         <div class="wcard" onclick="openApp('radio')" onmouseover="this.style.borderColor='#ff4466';this.style.boxShadow='0 0 14px rgba(255,68,102,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff4466;box-shadow:0 0 6px #ff4466"></span><div class="wi">🎤</div><div class="wn">Radio ID</div><div class="wd">Music Recognition</div></div>
         <div class="wcard" onclick="openApp('zxgames')" onmouseover="this.style.borderColor='#0088ff';this.style.boxShadow='0 0 14px rgba(0,136,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#0066ff;box-shadow:0 0 6px #0066ff"></span><div class="wi">🕹️</div><div class="wn">ZX Games</div><div class="wd">Arcade Browser</div></div>
-        <div class="wn">NextSync</div><div class="wd">ZX Next Upload</div></div>
+        <div class="wcard" onclick="openApp('nextsync')" onmouseover="this.style.borderColor='#00ffbb';this.style.boxShadow='0 0 14px rgba(0,255,187,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00ffbb;box-shadow:0 0 6px #00ffbb"></span><div class="wi">⬆</div><div class="wn">NextSync</div><div class="wd">ZX Next Upload</div></div>
         <div class="wcard" onclick="openApp('worldtime')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">🌍</div><div class="wn">World Time</div><div class="wd">Hodiny & Stopky</div></div>
         <div class="wcard" onclick="openApp('user')" onmouseover="this.style.borderColor='#a78bfa';this.style.boxShadow='0 0 14px rgba(167,139,250,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#a78bfa;box-shadow:0 0 6px #a78bfa"></span><div class="wi">👤</div><div class="wn">Moje Apky</div><div class="wd">Správce aplikací</div></div>
         <div class="wcard" onclick="openApp('prekladac')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">🌐</div><div class="wn">Překladač</div><div class="wd">CZ → EN</div></div>
@@ -452,7 +460,7 @@
     <iframe id="frame-worldtime" class="app-frame" title="worldtime" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-user" class="app-frame" title="user" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-prekladac" class="app-frame" title="prekladac" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
-
+    <iframe id="frame-nextsync" class="app-frame" title="nextsync" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
 
   </div>
 </div>
@@ -731,7 +739,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v27.2Kl</div>
+  <div class="version">v28.0Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -10794,6 +10802,13 @@ h2{color:#f97316;font-size:22px;margin:0 0 14px;}
 <h2>📖 Manuály</h2>
 <div class="sw"><input type="text" id="q" placeholder="Hledat značku nebo zařízení..." oninput="f()"></div>
 <button class="btn-online" onclick="online()">🌐 Hledat manuál online (Google)</button>
+<div style="background:#111118;border:1px solid #f9731644;border-radius:8px;padding:14px;margin-bottom:16px">
+  <div style="color:#f97316;font-size:11px;font-weight:700;letter-spacing:3px;margin-bottom:10px">➕ PŘIDAT MANUÁL</div>
+  <input id="add-brand" type="text" placeholder="Značka (např. Pioneer)" style="width:100%;background:#0a0a0f;border:1px solid #333;border-radius:5px;padding:8px 10px;color:#fff;font-size:13px;margin-bottom:6px;box-sizing:border-box;outline:none"/>
+  <input id="add-name" type="text" placeholder="Název zařízení (např. DDJ-1000)" style="width:100%;background:#0a0a0f;border:1px solid #333;border-radius:5px;padding:8px 10px;color:#fff;font-size:13px;margin-bottom:6px;box-sizing:border-box;outline:none"/>
+  <input id="add-url" type="text" placeholder="URL manuálu (https://...)" style="width:100%;background:#0a0a0f;border:1px solid #333;border-radius:5px;padding:8px 10px;color:#fff;font-size:13px;margin-bottom:8px;box-sizing:border-box;outline:none"/>
+  <button onclick="addManual()" style="width:100%;background:#f9731622;border:1px solid #f97316;border-radius:5px;padding:9px;color:#f97316;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px">ULOŽIT</button>
+</div>
 <div id="out"></div>
 <script>
 function g(q){return 'https://duckduckgo.com/?q='+encodeURIComponent(q+' manual user guide');}
@@ -10848,7 +10863,59 @@ function online(){
   var q=document.getElementById("q").value.trim();
   window.open("https://duckduckgo.com/?q="+encodeURIComponent((q||"manual")+" manual"),"_blank");
 }
-f();
+
+// Vlastni manualy z localStorage
+function loadCustom(){
+  try{return JSON.parse((window.parent||window).localStorage.getItem('manualy_custom')||'[]');}catch(e){return[];}
+}
+function saveCustom(arr){
+  try{(window.parent||window).localStorage.setItem('manualy_custom',JSON.stringify(arr));}catch(e){}
+}
+function addManual(){
+  var brand=document.getElementById('add-brand').value.trim();
+  var name=document.getElementById('add-name').value.trim();
+  var url=document.getElementById('add-url').value.trim();
+  if(!brand||!name||!url){alert('Vyplň všechna pole');return;}
+  if(!url.startsWith('http'))url='https://'+url;
+  var arr=loadCustom();
+  arr.push({b:brand,n:name,u:url});
+  saveCustom(arr);
+  document.getElementById('add-brand').value='';
+  document.getElementById('add-name').value='';
+  document.getElementById('add-url').value='';
+  f();
+}
+function removeCustom(i){
+  var arr=loadCustom();arr.splice(i,1);saveCustom(arr);f();
+}
+function f(){
+  var q=document.getElementById("q").value.toLowerCase();
+  var h="";var n=0;
+  // Vlastni manualy
+  var custom=loadCustom();
+  var cf=custom.filter(function(m){return !q||m.n.toLowerCase().indexOf(q)>=0||m.b.toLowerCase().indexOf(q)>=0;});
+  if(cf.length){
+    n++;
+    h+='<div class="brand"><div class="bt" style="color:#00ffbb">⭐ Vlastní manuály</div>';
+    cf.forEach(function(m,i){
+      h+='<div class="item" style="display:flex;align-items:center">'
+        +'<a href="'+m.u+'" target="_blank" style="flex:1">'+m.b+' — '+m.n+'<span>OTEVŘÍT →</span></a>'
+        +'<button onclick="removeCustom('+custom.indexOf(m)+')" style="background:none;border:none;color:#ff4444;font-size:18px;cursor:pointer;padding:0 6px">×</button>'
+        +'</div>';
+    });
+    h+='</div>';
+  }
+  for(var i=0;i<D.length;i++){
+    var ms=D[i].ms.filter(function(m){return !q||m[0].toLowerCase().indexOf(q)>=0||D[i].b.toLowerCase().indexOf(q)>=0;});
+    if(!ms.length)continue;n++;
+    h+='<div class="brand"><div class="bt">'+D[i].b+'</div>';
+    for(var j=0;j<ms.length;j++)
+      h+='<div class="item"><a href="'+ms[j][1]+'" target="_blank">'+ms[j][0]+'<span>OTEVŘÍT →</span></a></div>';
+    h+='</div>';
+  }
+  if(!n&&q)h='<div class="empty">V seznamu nenalezeno.<br>Zkus tlacitko Hledat online vyse.</div>';
+  document.getElementById("out").innerHTML=h;
+}
 <\/script>
 <style>
 @keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5);}}
@@ -15060,7 +15127,7 @@ var STATIONS = [
   { id:'impuls',    name:'Rádio Impuls',     desc:'České hity',        icon:'⚡', url:'https://icecast5.play.cz/impuls128.mp3' },
   { id:'intense',    name:'Intense Radio',    desc:'Dance & House NL',  icon:'⚡', url:'https://intenseradio.live-streams.nl/live' },
   { id:'funkstar',  name:'Funkstar Radio',   desc:'Funk & Soul CZ',    icon:'🎶', url:'https://funkstar.radioca.st/stream' },
-  { id:'gayfm',     name:'Gay FM',           desc:'Dance · DE',        icon:'🏳️‍🌈', url:'https://streams.silvacast.com/GAYFM.mp3' },
+  { id:'gayfm',     name:'Gay FM',           desc:'Dance · DE',        icon:'🏳️‍🌈', url:'https://icepool.silvacast.com/GAYFM.mp3' },
   { id:'orion',     name:'Hitrádio Orion',   desc:'Hity · CZ',         icon:'🌟', url:'https://ice.abradio.cz/orion128.mp3' },
   { id:'radiocas',  name:'Radio Čas',        desc:'Pop · CZ',          icon:'⏰', url:'https://icecast7.play.cz/casradio128.mp3' },
   { id:'signal',    name:'Signal Radio',     desc:'Pop/Oldies · CZ',   icon:'📶', url:'https://icecast1.play.cz/signal128.mp3' },
@@ -15291,7 +15358,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
   <div class="item checking" id="i-impuls"><div class="dot checking" id="d-impuls"></div><div class="name" id="n-impuls">⚡ Rádio Impuls</div><div class="status checking" id="s-impuls">Checking…</div></div>
   <div class="item checking" id="i-intense"><div class="dot checking" id="d-intense"></div><div class="name" id="n-intense">⚡ Intense Radio</div><div class="status checking" id="s-intense">Checking…</div></div>
   <div class="item checking" id="i-funkstar"><div class="dot checking" id="d-funkstar"></div><div class="name" id="n-funkstar">🎶 Funkstar Radio</div><div class="status checking" id="s-funkstar">Checking…</div></div>
-  <div class="item checking" id="i-gayfm"><div class="dot checking" id="d-gayfm"></div><div class="name" id="n-gayfm">🏳️‍🌈 Gay FM</div><div class="status checking" id="s-gayfm">Checking…</div></div>
+
   <div class="item checking" id="i-orion"><div class="dot checking" id="d-orion"></div><div class="name" id="n-orion">🌟 Hitrádio Orion</div><div class="status checking" id="s-orion">Checking…</div></div>
   <div class="item checking" id="i-radiocas"><div class="dot checking" id="d-radiocas"></div><div class="name" id="n-radiocas">⏰ Radio Čas</div><div class="status checking" id="s-radiocas">Checking…</div></div>
   <div class="item checking" id="i-signal"><div class="dot checking" id="d-signal"></div><div class="name" id="n-signal">📶 Signal Radio</div><div class="status checking" id="s-signal">Checking…</div></div>
@@ -15378,7 +15445,7 @@ var CHECKS = {
   impuls:    { type:'nocors', url:'https://icecast5.play.cz/impuls128.mp3' },
   intense:   { type:'nocors', url:'https://intenseradio.live-streams.nl/live' },
   funkstar:  { type:'nocors', url:'https://funkstar.radioca.st/stream' },
-  gayfm:     { type:'nocors', url:'https://streams.silvacast.com/GAYFM.mp3' },
+  // gayfm removed - blocks HEAD requests
   orion:     { type:'nocors', url:'https://ice.abradio.cz/orion128.mp3' },
   radiocas:  { type:'nocors', url:'https://icecast7.play.cz/casradio128.mp3' },
   signal:    { type:'nocors', url:'https://icecast1.play.cz/signal128.mp3' },
@@ -17634,7 +17701,7 @@ function openApp(id) {
     if (btn) btn.classList.add("active");
     var frame = document.getElementById("frame-" + id);
     if (frame) {
-      if (!loaded[id] || id === 'nextsync') {
+      if (!loaded[id]) {
         var html = APP_HTML[id];
         // srcdoc je spolehlivější při načítání z content:// na Androidu
         try {
@@ -18076,6 +18143,48 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
 })();
 </script>
 
+<!-- NEXTSYNC SETTINGS MODAL - v parent panelu, mimo iframe -->
+<div id="ns-settings-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99999;align-items:flex-end;justify-content:center;" onclick="if(event.target===this)nsCloseSettings()">
+  <div style="width:100%;max-width:430px;background:#080818;border:2px solid #00ffbb55;border-radius:20px 20px 0 0;padding:26px 24px 44px;box-shadow:0 -10px 50px #00ffbb44">
+    <div style="font-family:'Orbitron',monospace;font-weight:700;font-size:12px;color:#00ffbbee;letter-spacing:4px;margin-bottom:22px;text-shadow:0 0 16px #00ffbb">NEXTSYNC · NASTAVENÍ</div>
+    <div style="font-size:9px;color:#00aeffaa;letter-spacing:3px;margin:0 0 4px;text-shadow:0 0 10px #00aeff66;border-top:1px solid #00aeff22;padding-top:14px">🖥 PC SERVER (nextsync_server.py)</div>
+    <div style="font-size:9px;color:#00ffbbaa;letter-spacing:3px;margin:14px 0 4px">IP ADRESA PC</div>
+    <input id="ns-pc-ip" type="text" placeholder="192.168.0.24" style="width:100%;background:#0a0a1e;border:1.5px solid #00ffbb66;border-radius:9px;padding:12px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:14px;margin-bottom:14px;outline:none;box-sizing:border-box"/>
+    <div style="font-size:9px;color:#00ffbbaa;letter-spacing:3px;margin-bottom:4px">PORT PC (výchozí: 8765)</div>
+    <input id="ns-pc-port" type="number" placeholder="8765" style="width:100%;background:#0a0a1e;border:1.5px solid #00ffbb66;border-radius:9px;padding:12px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:14px;margin-bottom:14px;outline:none;box-sizing:border-box"/>
+    <div style="font-size:9px;color:#00ffbbaa;letter-spacing:3px;margin-bottom:4px">IP ADRESA ZX NEXT</div>
+    <input id="ns-zx-ip" type="text" placeholder="192.168.0.124" style="width:100%;background:#0a0a1e;border:1.5px solid #00ffbb66;border-radius:9px;padding:12px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:14px;margin-bottom:20px;outline:none;box-sizing:border-box"/>
+    <button onclick="nsSaveSettings()" style="width:100%;background:#00ffbb33;border:2px solid #00ffbb;border-radius:12px;padding:15px;color:#00ffbb;font-size:12px;font-family:'Orbitron',monospace;font-weight:700;letter-spacing:4px;cursor:pointer;box-shadow:0 0 28px #00ffbbaa">ULOŽIT</button>
+  </div>
+</div>
+
+<script>
+function nsOpenSettings(){
+  document.getElementById('ns-pc-ip').value = localStorage.getItem('nextsync_pc_ip')||'192.168.0.24';
+  document.getElementById('ns-pc-port').value = localStorage.getItem('nextsync_pc_port')||'8765';
+  document.getElementById('ns-zx-ip').value = localStorage.getItem('nextsync_ip')||'';
+  var el = document.getElementById('ns-settings-overlay');
+  el.style.display='flex';
+}
+function nsCloseSettings(){
+  document.getElementById('ns-settings-overlay').style.display='none';
+}
+function nsSaveSettings(){
+  var pcIp = document.getElementById('ns-pc-ip').value.trim();
+  var pcPort = document.getElementById('ns-pc-port').value.trim()||'8765';
+  var zxIp = document.getElementById('ns-zx-ip').value.trim();
+  localStorage.setItem('nextsync_pc_ip', pcIp);
+  localStorage.setItem('nextsync_pc_port', pcPort);
+  localStorage.setItem('nextsync_ip', zxIp);
+  localStorage.setItem('nextsync_target', 'pc');
+  // Reload nextsync iframe aby načetl nové hodnoty
+  var frame = document.getElementById('frame-nextsync');
+  if(frame && frame.srcdoc){
+    frame.srcdoc = APP_HTML['nextsync'];
+  }
+  nsCloseSettings();
+}
+</script>
 
 </body>
 </html>
