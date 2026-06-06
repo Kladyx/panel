@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v30.0Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v30.1Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.0Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.1Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v30.0Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v30.1Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -325,10 +325,6 @@
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🕹️</div><div class="bl">ZX Games</div>
     </button>
-    <button class="app-btn" id="btn-nextsync" style="--ac:#00ffbb;--ac-rgb:0,255,187" onclick="openApp('nextsync')">
-      <div class="app-dot"></div>
-      <div class="bd"></div><div class="bi">⬆</div><div class="bl">NextSync</div>
-    </button>
     <button class="app-btn" id="btn-worldtime" style="--ac:#00d4ff;--ac-rgb:0,212,255" onclick="openApp('worldtime')">
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🌍</div><div class="bl">World Time</div>
@@ -347,7 +343,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.0Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.1Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -414,7 +410,6 @@
         <div class="wcard" onclick="openApp('status')" onmouseover="this.style.borderColor='#00ff88';this.style.boxShadow='0 0 14px rgba(0,255,136,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#22c55e;box-shadow:0 0 6px #22c55e"></span><div class="wi">🟢</div><div class="wn">Status</div><div class="wd">System Monitor</div></div>
         <div class="wcard" onclick="openApp('radio')" onmouseover="this.style.borderColor='#ff4466';this.style.boxShadow='0 0 14px rgba(255,68,102,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff4466;box-shadow:0 0 6px #ff4466"></span><div class="wi">🎤</div><div class="wn">Radio ID</div><div class="wd">Music Recognition</div></div>
         <div class="wcard" onclick="openApp('zxgames')" onmouseover="this.style.borderColor='#0088ff';this.style.boxShadow='0 0 14px rgba(0,136,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#0066ff;box-shadow:0 0 6px #0066ff"></span><div class="wi">🕹️</div><div class="wn">ZX Games</div><div class="wd">Arcade Browser</div></div>
-        <div class="wcard" onclick="openApp('nextsync')" onmouseover="this.style.borderColor='#00ffbb';this.style.boxShadow='0 0 14px rgba(0,255,187,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00ffbb;box-shadow:0 0 6px #00ffbb"></span><div class="wi">⬆</div><div class="wn">NextSync</div><div class="wd">ZX Next Upload</div></div>
         <div class="wcard" onclick="openApp('worldtime')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">🌍</div><div class="wn">World Time</div><div class="wd">Hodiny & Stopky</div></div>
         <div class="wcard" onclick="openApp('user')" onmouseover="this.style.borderColor='#a78bfa';this.style.boxShadow='0 0 14px rgba(167,139,250,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#a78bfa;box-shadow:0 0 6px #a78bfa"></span><div class="wi">👤</div><div class="wn">Moje Apky</div><div class="wd">Správce aplikací</div></div>
         <div class="wcard" onclick="openApp('prekladac')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">🌐</div><div class="wn">Překladač</div><div class="wd">CZ → EN</div></div>
@@ -456,7 +451,6 @@
     <iframe id="frame-worldtime" class="app-frame" title="worldtime" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-user" class="app-frame" title="user" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-prekladac" class="app-frame" title="prekladac" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
-    <iframe id="frame-nextsync" class="app-frame" title="nextsync" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
 
   </div>
 </div>
@@ -735,7 +729,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v30.0Kl</div>
+  <div class="version">v30.1Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -15401,18 +15395,9 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
   <div class="sec-title">💾 Panel Appky — Lokální</div>
   <div class="apps-grid">
     <div class="item local"><div class="dot local"></div><div class="name">📖 Manuály</div><div class="status local">Lokální</div></div>
-    <div class="item local"><div class="dot local"></div><div class="name">⬆ NextSync</div><div class="status local">Lokální · WiFi</div></div>
   </div>
 </div>
 
-<div class="section">
-  <div class="sec-title">🖥️ ZX Next</div>
-  <div class="item checking" id="i-zxnext-wifi">
-    <div class="dot checking" id="d-zxnext-wifi"></div>
-    <div style="flex:1"><div class="name" id="n-zxnext-wifi">⬆ NextSync WiFi</div><div class="sub2" id="zxnext-wifi-info">192.168.0.124:2048</div></div>
-    <div class="status checking" id="s-zxnext-wifi">Checking…</div>
-  </div>
-</div>
 
 <div class="section">
   <div class="sec-title">🔧 Nástroje</div>
@@ -17062,7 +17047,7 @@ var DEFAULT=[
   '💿 LP Desky','☁️ Mixcloud','📊 Odečty','💳 Platby','🍽 Jídlo',
   '🩸 Glukóza','🎙 OBS Status','🌤 Počasí','📝 Poznámky','📅 Kalendář',
   '🕹 ZX Next','📖 Manuály','📚 Čtečka','🇬🇧 WordMaster','📻 Multitrack',
-  '🟢 Status','🎤 Radio ID','🎮 ZX Games','🌍 World Time','🌐 Překladač','⬆ NextSync'
+  '🟢 Status','🎤 Radio ID','🎮 ZX Games','🌍 World Time','🌐 Překladač'
 ];
 var APP_IDS={
   'HouseTime':'housetime','CD databáze':'cd','Hardware':'hardware',
@@ -17071,7 +17056,7 @@ var APP_IDS={
   'OBS Status':'obs','Počasí':'pocasi','Poznámky':'notes','Kalendář':'kalendar',
   'ZX Next':'zxnext','Manuály':'manualy','Čtečka':'reader','WordMaster':'wordmaster',
   'Multitrack':'multitrack','Status':'status','Radio ID':'radio',
-  'ZX Games':'zxgames','World Time':'worldtime','Překladač':'prekladac','NextSync':'nextsync'
+  'ZX Games':'zxgames','World Time':'worldtime','Překladač':'prekladac'
 };
 var selectedIcon=AVAILABLE_ICONS[0];
 
@@ -17146,429 +17131,6 @@ render();
 `;
 
 
-APP_HTML["nextsync"] = `<!DOCTYPE html>
-<html lang="cs">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>NextSync</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#04040e;font-family:'Share Tech Mono',monospace;min-height:100vh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;overflow-x:hidden}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#08081a}::-webkit-scrollbar-thumb{background:#00ffbb44;border-radius:2px}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes borderGlow{0%,100%{box-shadow:0 0 28px #00ffbbaa,0 0 60px #00ffbb44}50%{box-shadow:0 0 40px #00ffbbcc,0 0 80px #00ffbb66}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes spin{to{transform:rotate(360deg)}}
-.header{padding:18px 18px 10px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:18px;color:#fff;letter-spacing:3px;text-shadow:0 0 20px #00ffbbcc,0 0 40px #00ffbb44}
-.logo span{color:#00ffbb}
-.conn-dot{width:10px;height:10px;border-radius:50%;background:#333;transition:all .3s;flex-shrink:0}
-.conn-dot.on{background:#00ffbb;box-shadow:0 0 10px #00ffbb;animation:pulse 1.8s infinite}
-.conn-dot.off{background:#ff3333;box-shadow:0 0 8px #ff3333}
-.conn-dot.checking{background:#ffee00;box-shadow:0 0 8px #ffee00;animation:pulse .6s infinite}
-.header-right{display:flex;align-items:center;gap:10px}
-.settings-btn{background:rgba(0,255,187,.1);border:1.5px solid rgba(0,255,187,.3);color:#00ffbb;border-radius:8px;padding:6px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;transition:all .2s}
-.settings-btn:hover{background:rgba(0,255,187,.2)}
-.content{flex:1;padding:10px 18px 24px}
-/* status bar */
-.status-bar{margin-bottom:14px;border-radius:12px;padding:10px 14px;display:flex;flex-direction:column;gap:6px;background:#07071a;border:1.5px solid #00ffbb33}
-.status-row{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:1px}
-.status-label{color:#556;flex-shrink:0;width:38px}
-.status-val{color:#00ffbb;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.status-val.err{color:#ff4444}
-.status-val.warn{color:#ffee00}
-.ping-btn{background:rgba(0,255,187,.1);border:1px solid #00ffbb44;color:#00ffbb;border-radius:6px;padding:3px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;cursor:pointer;letter-spacing:1px;flex-shrink:0;transition:all .2s}
-.ping-btn:active{background:rgba(0,255,187,.25)}
-.target-toggle{display:flex;gap:8px;margin-bottom:12px}
-.tgt-btn{flex:1;padding:8px 0;border-radius:9px;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:2px;cursor:pointer;border:1.5px solid;transition:all .2s;text-align:center}
-.tgt-btn.active-next{background:#00ffbb33;border-color:#00ffbb;color:#00ffbb;box-shadow:0 0 14px #00ffbb55;text-shadow:0 0 10px #00ffbb}
-.tgt-btn.active-pc{background:#00aeff33;border-color:#00aeff;color:#00aeff;box-shadow:0 0 14px #00aeff55;text-shadow:0 0 10px #00aeff}
-.tgt-btn.inactive{background:transparent;border-color:#222244;color:#334;cursor:pointer}
-/* folder cards */
-.folder-card{background:rgba(255,255,255,.03);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.folder-card:hover{background:rgba(255,255,255,.06)}
-.folder-card::before{content:'';position:absolute;inset:0;border-radius:16px;padding:1.5px;background:linear-gradient(135deg,var(--c) 0%,transparent 60%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:destination-out;mask-composite:exclude;pointer-events:none}
-.folder-top{display:flex;align-items:center;gap:14px}
-.folder-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.folder-info{flex:1}
-.folder-name{font-family:'Orbitron',monospace;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px}
-.folder-desc{font-size:10px;margin-top:2px;letter-spacing:1px}
-.folder-meta{display:flex;align-items:center;gap:8px;margin-top:2px}
-.folder-count{font-size:10px;color:#556}
-.folder-send-btn{background:transparent;border:1.5px solid;border-radius:8px;padding:5px 12px;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s;flex-shrink:0;white-space:nowrap}
-.send-all-btn{width:100%;margin-top:8px;background:linear-gradient(135deg,#00ffbb33,#00eeff22,#00ffbb18);border:2px solid #00ffbb;border-radius:16px;padding:18px;color:#00ffbb;font-size:13px;font-family:'Orbitron',monospace;font-weight:900;letter-spacing:4px;cursor:pointer;box-shadow:0 0 28px #00ffbbaa,0 0 60px #00ffbb44;text-shadow:0 0 16px #00ffbb,0 0 32px #00ffbb88;transition:all .2s;animation:borderGlow 3s ease-in-out infinite}
-.back-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#aaa;border-radius:10px;padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;margin-bottom:18px;transition:all .2s}
-.back-btn:hover{background:rgba(255,255,255,.12);color:#fff}
-.folder-detail-header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-.folder-detail-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.folder-detail-name{font-family:'Orbitron',monospace;font-weight:700;font-size:18px;color:#fff;letter-spacing:2px}
-.folder-detail-path{font-size:10px;letter-spacing:1px;margin-top:2px}
-.add-files-btn{width:100%;border:2px dashed;border-radius:13px;padding:16px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
-.files-list{border-radius:13px;padding:4px 14px;margin-bottom:14px}
-.file-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-.file-row:last-child{border-bottom:none}
-.file-icon{width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
-.file-info{flex:1;min-width:0}
-.file-name{font-size:12px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 0 8px rgba(255,255,255,.4)}
-.file-size{font-size:10px;color:#aaa}
-.file-send-btn{border-radius:7px;padding:5px 11px;font-size:11px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;cursor:pointer;flex-shrink:0;transition:all .2s;border:1.5px solid}
-.file-remove-btn{background:transparent;border:none;color:#666;font-size:18px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0;transition:color .2s}
-.file-remove-btn:hover{color:#ff4444}
-.status-badge{font-size:10px;border:1px solid;border-radius:3px;padding:1px 6px;margin-left:8px;letter-spacing:1px}
-.empty-state{text-align:center;color:#222244;font-size:12px;padding:44px 0;letter-spacing:3px}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:flex-end;z-index:100}
-.modal-box{width:100%;max-width:430px;margin:0 auto;background:#080818;border:2px solid #00ffbb55;border-radius:20px 20px 0 0;padding:26px 24px 44px;animation:fadeIn .2s ease both;box-shadow:0 -10px 50px #00ffbb44}
-.modal-title{font-family:'Orbitron',monospace;font-weight:700;font-size:12px;color:#00ffbbee;letter-spacing:4px;margin-bottom:22px;text-shadow:0 0 16px #00ffbb}
-.modal-label{font-size:9px;color:#00ffbbaa;letter-spacing:3px;text-shadow:0 0 10px #00ffbb66}
-.modal-input{width:100%;background:#0a0a1e;border:1.5px solid #00ffbb66;border-radius:9px;padding:12px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:14px;margin-top:7px;margin-bottom:18px;outline:none;box-shadow:0 0 12px #00ffbb33}
-.modal-save-btn{width:100%;background:#00ffbb33;border:2px solid #00ffbb;border-radius:12px;padding:15px;color:#00ffbb;font-size:12px;font-family:'Orbitron',monospace;font-weight:700;letter-spacing:4px;cursor:pointer;box-shadow:0 0 28px #00ffbbaa;text-shadow:0 0 16px #00ffbb}
-.modal-section{font-size:9px;color:#00aeffaa;letter-spacing:3px;margin:18px 0 4px;text-shadow:0 0 10px #00aeff66;border-top:1px solid #00aeff22;padding-top:14px}
-</style>
-</head>
-<body>
-<div class="header">
-  <div class="logo">NEXT<span>SYNC</span></div>
-  <div class="header-right">
-    <div class="conn-dot" id="conn-dot"></div>
-    <button class="settings-btn" onclick="openSettings()">⚙ NASTAVENÍ</button>
-  </div>
-</div>
-<div class="content" id="main-content"></div>
-
-<script>
-var FOLDERS=[
-  {id:'games',   label:'GAMES',    icon:'▶', path:'/games',    color:'#00ffbb', desc:'Hry pro ZX Next'},
-  {id:'programs',label:'PROGRAMS', icon:'◈', path:'/programs', color:'#00eeff', desc:'Programy a utility'},
-  {id:'utility', label:'UTILITY',  icon:'⬡', path:'/utility',  color:'#ff6030', desc:'Utility a nástroje'},
-];
-function _ls(k){try{var v=(window.parent||window).localStorage.getItem(k);if(v!==null)return v;}catch(e){}try{return localStorage.getItem(k);}catch(e){}return null;}
-function _lsSave(k,v){try{(window.parent||window).localStorage.setItem(k,v);}catch(e){}try{localStorage.setItem(k,v);}catch(e){}}
-var state={
-  ip:    _ls('nextsync_ip')||'',
-  port:  _ls('nextsync_port')||'2048',
-  pc_ip: _ls('nextsync_pc_ip')||'192.168.0.24',
-  pc_port: _ls('nextsync_pc_port')||'8765',
-  target: _ls('nextsync_target')||'pc', // 'next' | 'pc'
-  view:'main',
-  files:{games:[],programs:[],utility:[]},
-  status:{},
-  conn:{next:'unknown', pc:'unknown'} // 'unknown'|'ok'|'err'|'checking'
-};
-
-function save(){
-  _lsSave('nextsync_ip',state.ip);
-  _lsSave('nextsync_port',state.port);
-  _lsSave('nextsync_pc_ip',state.pc_ip);
-  _lsSave('nextsync_pc_port',state.pc_port);
-  _lsSave('nextsync_target',state.target);
-}
-
-/* ---- connection dot ---- */
-function updateConnDot(){
-  var d=document.getElementById('conn-dot');if(!d)return;
-  var tgt=state.target==='pc'?state.conn.pc:state.conn.next;
-  var cls={ok:'on',err:'off',checking:'checking',unknown:''}[tgt]||'';
-  d.className='conn-dot '+cls;
-}
-
-/* ---- ping ---- */
-function pingTarget(tgt){
-  var ip=tgt==='pc'?state.pc_ip:state.ip;
-  var port=tgt==='pc'?state.pc_port:state.port;
-  if(!ip){state.conn[tgt==='pc'?'pc':'next']='err';updateConnDot();renderStatusBar();return;}
-  state.conn[tgt==='pc'?'pc':'next']='checking';
-  updateConnDot();renderStatusBar();
-  var url='http://'+ip+':'+port+'/ping';
-  fetch(url,{method:'GET',signal:AbortSignal.timeout(3000)})
-    .then(function(r){state.conn[tgt==='pc'?'pc':'next']=r.ok?'ok':'err';updateConnDot();renderStatusBar();})
-    .catch(function(){state.conn[tgt==='pc'?'pc':'next']='err';updateConnDot();renderStatusBar();});
-}
-
-function pingBoth(){pingTarget('next');if(state.pc_ip)pingTarget('pc');}
-
-/* ---- status bar ---- */
-function renderStatusBar(){
-  var el=document.getElementById('status-bar');if(!el)return;
-  var tgtColor=state.target==='pc'?'#00aeff':'#00ffbb';
-  var tgtLabel=state.target==='pc'?'PC SERVER':'ZX NEXT';
-  var activeIp=state.target==='pc'?state.pc_ip:state.ip;
-  var activePort=state.target==='pc'?state.pc_port:state.port;
-  var connState=state.target==='pc'?state.conn.pc:state.conn.next;
-  var connMap={ok:{t:'✅ Online',c:'#00ffbb'},err:{t:'❌ Offline',c:'#ff4444'},checking:{t:'⏳ Kontroluji…',c:'#ffee00'},unknown:{t:'— Neověřeno',c:'#334'}};
-  var cs=connMap[connState]||connMap.unknown;
-  el.innerHTML=
-    '<div class="status-row">'
-      +'<span class="status-label" style="color:'+tgtColor+'aa">CÍL</span>'
-      +'<span class="status-val" style="color:'+tgtColor+'">'+tgtLabel+'</span>'
-    +'</div>'
-    +'<div class="status-row">'
-      +'<span class="status-label">IP</span>'
-      +'<span class="status-val '+(activeIp?'':'warn')+'">'+(activeIp?activeIp+':'+activePort:'— Nastav v ⚙')+'</span>'
-      +'<button class="ping-btn" onclick="pingTarget(\''+state.target+'\')">PING</button>'
-    +'</div>'
-    +'<div class="status-row">'
-      +'<span class="status-label">STAV</span>'
-      +'<span class="status-val" style="color:'+cs.c+'">'+cs.t+'</span>'
-    +'</div>';
-}
-
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-function statusBadgeHTML(st){
-  if(!st)return'';
-  var map={ok:{label:'Odesláno ✓',color:'#00ffbb'},error:{label:'Chyba ✗',color:'#ff3333'},sending:{label:'Odesílám…',color:'#ffee00'}};
-  var s=map[st];if(!s)return'';
-  return '<span class="status-badge" style="color:'+s.color+';border-color:'+s.color+';text-shadow:0 0 12px '+s.color+';box-shadow:0 0 10px '+s.color+'88">'+s.label+'</span>';
-}
-
-function render(){
-  updateConnDot();
-  if(state.view==='main') renderMain();
-  else renderFolder(state.view);
-}
-
-function renderMain(){
-  var totalFiles=FOLDERS.reduce(function(a,f){return a+state.files[f.id].length;},0);
-  var html='<div style="animation:fadeIn .25s ease both">';
-
-  /* status bar */
-  html+='<div class="status-bar" id="status-bar"></div>';
-
-  /* target toggle */
-  var nc=state.target==='next'?'active-next':'inactive';
-  var pc=state.target==='pc'?'active-pc':'inactive';
-  html+='<div class="target-toggle">'
-    +'<button class="tgt-btn '+nc+'" onclick="setTarget(\'next\')">⬆ ZX NEXT</button>'
-    +'<button class="tgt-btn '+pc+'" onclick="setTarget(\'pc\')">🖥 PC SERVER</button>'
-    +'</div>';
-
-  FOLDERS.forEach(function(f){
-    var cnt=state.files[f.id].length;
-    var okCnt=state.files[f.id].filter(function(file){return state.status[f.id+'::'+file.name]==='ok';}).length;
-    html+='<div class="folder-card" style="--c:'+f.color+'" onclick="openFolder(\''+f.id+'\')">'
-      +'<div class="folder-top">'
-      +'<div class="folder-icon" style="background:'+f.color+'33;border:1.5px solid '+f.color+';box-shadow:0 0 18px '+f.color+'66"><span style="color:'+f.color+';text-shadow:0 0 12px '+f.color+'">'+f.icon+'</span></div>'
-      +'<div class="folder-info">'
-      +'<div class="folder-name" style="text-shadow:0 0 18px '+f.color+'cc">'+f.label+'</div>'
-      +'<div class="folder-desc" style="color:'+f.color+'aa">'+f.desc+'</div>'
-      +'<div class="folder-meta"><span class="folder-count">'+cnt+' souborů'+(cnt&&okCnt?' · '+okCnt+' odesláno':'')+'</span></div>'
-      +'</div>'
-      +(cnt>0?'<button class="folder-send-btn" style="color:'+f.color+';border-color:'+f.color+';box-shadow:0 0 14px '+f.color+'88;text-shadow:0 0 10px '+f.color+'" onclick="event.stopPropagation();sendFolder(\''+f.id+'\')">⬆ SEND</button>':'')
-      +'<div style="color:'+f.color+';font-size:22px;text-shadow:0 0 12px '+f.color+'">›</div>'
-      +'</div>'
-      +'</div>';
-  });
-  if(totalFiles>0){
-    html+='<button class="send-all-btn" onclick="sendAllFolders()">⚡ ODESLAT VŠE → ZX NEXT</button>';
-  }
-  html+='</div>';
-  document.getElementById('main-content').innerHTML=html;
-}
-
-function renderFolder(fid){
-  var f=FOLDERS.find(function(x){return x.id===fid;});
-  var files=state.files[fid];
-  var html='<div style="animation:fadeIn .25s ease both">';
-  html+='<button class="back-btn" onclick="goBack()">‹ ZPĚT</button>';
-  html+='<div class="folder-detail-header">'
-    +'<div class="folder-detail-icon" style="background:'+f.color+'33;border:2px solid '+f.color+';box-shadow:0 0 22px '+f.color+'aa"><span style="color:'+f.color+';text-shadow:0 0 14px '+f.color+'">'+f.icon+'</span></div>'
-    +'<div><div class="folder-detail-name" style="text-shadow:0 0 18px '+f.color+'cc">'+f.label+'</div>'
-    +'<div class="folder-detail-path" style="color:'+f.color+'cc">ZX Next → '+f.path+'</div></div>'
-    +'</div>';
-  html+='<button class="add-files-btn" style="background:'+f.color+'18;border-color:'+f.color+'cc;color:'+f.color+';text-shadow:0 0 14px '+f.color+';box-shadow:0 0 16px '+f.color+'44;font-size:16px;font-weight:700;padding:24px 16px" onclick="pickFiles(\''+fid+'\')" ondrop="handleDrop(event,\''+fid+'\')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">'
-    +'<span style="font-size:32px;display:block;margin-bottom:8px">⬆</span>VYBRAT SOUBORY Z MOBILU'
-    +'</button>';
-  html+='<input type="file" id="fileinput-'+fid+'" multiple style="display:none" onchange="onFilesPicked(\''+fid+'\',this)"/>';
-  if(files.length===0){
-    html+='<div class="empty-state">ŽÁDNÉ SOUBORY</div>';
-  } else {
-    html+='<div class="files-list" style="background:#07071a;border:1.5px solid '+f.color+'55;box-shadow:0 0 20px '+f.color+'22">';
-    files.forEach(function(file){
-      var key=fid+'::'+file.name;
-      var st=state.status[key];
-      var btnColor=st==='ok'?'#00ffbb':f.color;
-      var btnBg=st==='ok'?'#00ffbb44':f.color+'33';
-      html+='<div class="file-row">'
-        +'<div class="file-icon" style="background:'+f.color+'33;border:1.5px solid '+f.color+';box-shadow:0 0 14px '+f.color+'88"><span style="color:'+f.color+';text-shadow:0 0 12px '+f.color+'">◼</span></div>'
-        +'<div class="file-info">'
-        +'<div class="file-name">'+esc(file.name)+'</div>'
-        +'<div class="file-size">'+(file.size/1024).toFixed(1)+' KB'+statusBadgeHTML(st)+'</div>'
-        +'</div>'
-        +'<button class="file-send-btn" style="background:'+btnBg+';border-color:'+btnColor+';color:'+btnColor+';box-shadow:0 0 16px '+btnColor+'99;text-shadow:0 0 10px '+btnColor+'" '
-        +(st==='sending'?'disabled':'')+' onclick="sendFile(\''+fid+'\',\''+esc(file.name)+'\')">'
-        +(st==='sending'?'…':st==='ok'?'✓':'SEND')
-        +'</button>'
-        +'<button class="file-remove-btn" onclick="removeFile(\''+fid+'\',\''+esc(file.name)+'\')">×</button>'
-        +'</div>';
-    });
-    html+='</div>';
-    html+='<button class="send-all-btn" style="animation:none;box-shadow:0 0 28px '+f.color+'aa,0 0 56px '+f.color+'44;border-color:'+f.color+';color:'+f.color+';text-shadow:0 0 16px '+f.color+';background:linear-gradient(135deg,'+f.color+'44,'+f.color+'22)" onclick="sendFolder(\''+fid+'\')">ODESLAT VŠE → ZX NEXT</button>';
-  }
-  html+='</div>';
-  document.getElementById('main-content').innerHTML=html;
-}
-
-function openFolder(fid){state.view=fid;render();}
-function goBack(){state.view='main';render();}
-
-function pickFiles(fid){
-  var el=document.getElementById('fileinput-'+fid);
-  if(el)el.click();
-}
-
-function onFilesPicked(fid,input){
-  var picked=Array.from(input.files||[]);
-  if(!picked.length)return;
-  picked.forEach(function(f){
-    if(!state.files[fid].find(function(x){return x.name===f.name;})){
-      state.files[fid].push(f);
-    }
-  });
-  input.value='';
-  render();
-}
-
-function removeFile(fid,fname){
-  state.files[fid]=state.files[fid].filter(function(f){return f.name!==fname;});
-  delete state.status[fid+'::'+fname];
-  render();
-}
-
-function handleDragOver(e){
-  e.preventDefault();
-  e.stopPropagation();
-  e.target.style.background='rgba(0,212,255,0.15)';
-}
-
-function handleDragLeave(e){
-  e.preventDefault();
-  e.stopPropagation();
-  e.target.style.background='';
-}
-
-function handleDrop(e,fid){
-  e.preventDefault();
-  e.stopPropagation();
-  e.target.style.background='';
-  var files=e.dataTransfer.files||[];
-  if(!files.length)return;
-  var picked=Array.from(files);
-  picked.forEach(function(f){
-    if(!state.files[fid].find(function(x){return x.name===f.name;})){
-      state.files[fid].push(f);
-    }
-  });
-  render();
-}
-
-function setTarget(t){
-  state.target=t;
-  save();
-  render();
-  setTimeout(function(){renderStatusBar();},50);
-}
-
-function sendFile(fid,fname){
-  var file=state.files[fid].find(function(f){return f.name===fname;});
-  if(!file)return;
-  var usePc=state.target==='pc';
-  var ip=(usePc?state.pc_ip:state.ip).trim();
-  var port=(usePc?state.pc_port:state.port).trim()||(usePc?'8765':'2048');
-  if(!ip){alert('Nastav IP adresu '+(usePc?'PC serveru':'ZX Next')+' v nastavení ⚙');return;}
-  var key=fid+'::'+fname;
-  state.status[key]='sending';
-  render();
-  var folderDef=FOLDERS.find(function(f){return f.id===fid;});
-  var formData=new FormData();
-  formData.append('file',file);
-  formData.append('folder',fid);
-  formData.append('path',folderDef.path);
-  fetch('http://'+ip+':'+port+'/upload',{method:'POST',body:formData,mode:'cors'})
-    .then(function(r){state.status[key]=r.ok?'ok':'error';render();})
-    .catch(function(){
-      state.status[key]='error';render();
-      alert('❌ Server nedostupný ('+ip+':'+port+')\n\nZkontroluj:\n1. nextsync_server.py běží na PC\n2. IP adresa je správná\n3. PC a mobil na stejné WiFi\n4. Windows Firewall: port '+port+' povolen');
-    });
-}
-function sendFolder(fid){
-  state.files[fid].forEach(function(f){
-    if(state.status[fid+'::'+f.name]!=='ok')sendFile(fid,f.name);
-  });
-}
-
-function sendAllFolders(){
-  FOLDERS.forEach(function(f){sendFolder(f.id);});
-}
-
-function openSettings(){
-  document.body.insertAdjacentHTML('beforeend',
-    '<div class="modal-overlay" id="settings-modal" onclick="closeSettings(event)">'
-    +'<div class="modal-box" onclick="event.stopPropagation()">'
-    +'<div class="modal-title">NASTAVENÍ PŘIPOJENÍ</div>'
-    +'<div class="modal-label">IP ADRESA ZX NEXT</div>'
-    +'<input class="modal-input" id="modal-ip" type="text" placeholder="192.168.0.124" value="'+esc(state.ip)+'"/>'
-    +'<div class="modal-label">PORT ZX NEXT (výchozí: 2048)</div>'
-    +'<input class="modal-input" id="modal-port" type="number" placeholder="2048" value="'+esc(state.port)+'"/>'
-    +'<div class="modal-section">🖥 PC SERVER (nextsync_server.py)</div>'
-    +'<div class="modal-label">IP ADRESA PC</div>'
-    +'<input class="modal-input" id="modal-pc-ip" type="text" placeholder="192.168.0.100" value="'+esc(state.pc_ip)+'"/>'
-    +'<div class="modal-label">PORT PC (výchozí: 8765)</div>'
-    +'<input class="modal-input" id="modal-pc-port" type="number" placeholder="8765" value="'+esc(state.pc_port)+'"/>'
-    +'<button class="modal-save-btn" onclick="saveSettings()">ULOŽIT</button>'
-    +'</div></div>'
-  );
-}
-
-function closeSettings(e){
-  var m=document.getElementById('settings-modal');
-  if(m&&(e===undefined||e.target===m))m.remove();
-}
-
-function saveSettings(){
-  state.ip=document.getElementById('modal-ip').value.trim();
-  state.port=document.getElementById('modal-port').value.trim()||'2048';
-  state.pc_ip=document.getElementById('modal-pc-ip').value.trim();
-  state.pc_port=document.getElementById('modal-pc-port').value.trim()||'8765';
-  save();
-  closeSettings();
-  render();
-  setTimeout(function(){renderStatusBar();pingBoth();},80);
-}
-
-// Expose all functions to window for inline handlers (required in sandboxed srcdoc)
-window.openSettings=openSettings;
-window.closeSettings=closeSettings;
-window.saveSettings=saveSettings;
-window.openFolder=openFolder;
-window.goBack=goBack;
-window.pickFiles=pickFiles;
-window.onFilesPicked=onFilesPicked;
-window.removeFile=removeFile;
-window.handleDragOver=handleDragOver;
-window.handleDragLeave=handleDragLeave;
-window.handleDrop=handleDrop;
-window.setTarget=setTarget;
-window.sendFile=sendFile;
-window.sendFolder=sendFolder;
-window.sendAllFolders=sendAllFolders;
-window.pingTarget=pingTarget;
-
-// Init - window.onload funguje spolehlivě v srcdoc iframe na Android Chrome
-window.onload=function(){
-  render();
-  setTimeout(function(){renderStatusBar();pingBoth();},300);
-};
-// Záloha kdyby onload už proběhl
-if(document.readyState==='complete'){
-  render();
-  setTimeout(function(){renderStatusBar();pingBoth();},300);
-}
-<\/script>
-</body>
-</html>
-`;
 
 APP_HTML["prekladac"] = `<!DOCTYPE html>
 <html lang="cs">
@@ -18136,48 +17698,6 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
   var el = document.getElementById('vc-num');
   if (el) el.textContent = count;
 })();
-</script>
-
-<!-- NEXTSYNC SETTINGS MODAL - v parent panelu, mimo iframe -->
-<div id="ns-settings-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99999;align-items:flex-end;justify-content:center;" onclick="if(event.target===this)nsCloseSettings()">
-  <div style="width:100%;max-width:430px;background:#080818;border:2px solid #00ffbb55;border-radius:20px 20px 0 0;padding:26px 24px 44px;box-shadow:0 -10px 50px #00ffbb44">
-    <div style="font-family:'Orbitron',monospace;font-weight:700;font-size:12px;color:#00ffbbee;letter-spacing:4px;margin-bottom:22px;text-shadow:0 0 16px #00ffbb">NEXTSYNC · NASTAVENÍ</div>
-    <div style="font-size:9px;color:#00aeffaa;letter-spacing:3px;margin:0 0 4px;text-shadow:0 0 10px #00aeff66;border-top:1px solid #00aeff22;padding-top:14px">🖥 PC SERVER (nextsync_server.py)</div>
-    <div style="font-size:9px;color:#00ffbbaa;letter-spacing:3px;margin:14px 0 4px">IP ADRESA PC</div>
-    <input id="ns-pc-ip" type="text" placeholder="192.168.0.24" style="width:100%;background:#0a0a1e;border:1.5px solid #00ffbb66;border-radius:9px;padding:12px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:14px;margin-bottom:14px;outline:none;box-sizing:border-box"/>
-    <div style="font-size:9px;color:#00ffbbaa;letter-spacing:3px;margin-bottom:4px">PORT PC (výchozí: 8765)</div>
-    <input id="ns-pc-port" type="number" placeholder="8765" style="width:100%;background:#0a0a1e;border:1.5px solid #00ffbb66;border-radius:9px;padding:12px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:14px;margin-bottom:14px;outline:none;box-sizing:border-box"/>
-    <div style="font-size:9px;color:#00ffbbaa;letter-spacing:3px;margin-bottom:4px">IP ADRESA ZX NEXT</div>
-    <input id="ns-zx-ip" type="text" placeholder="192.168.0.124" style="width:100%;background:#0a0a1e;border:1.5px solid #00ffbb66;border-radius:9px;padding:12px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:14px;margin-bottom:20px;outline:none;box-sizing:border-box"/>
-    <button onclick="nsSaveSettings()" style="width:100%;background:#00ffbb33;border:2px solid #00ffbb;border-radius:12px;padding:15px;color:#00ffbb;font-size:12px;font-family:'Orbitron',monospace;font-weight:700;letter-spacing:4px;cursor:pointer;box-shadow:0 0 28px #00ffbbaa">ULOŽIT</button>
-  </div>
-</div>
-
-<script>
-function nsOpenSettings(){
-  document.getElementById('ns-pc-ip').value = localStorage.getItem('nextsync_pc_ip')||'192.168.0.24';
-  document.getElementById('ns-pc-port').value = localStorage.getItem('nextsync_pc_port')||'8765';
-  document.getElementById('ns-zx-ip').value = localStorage.getItem('nextsync_ip')||'';
-  var el = document.getElementById('ns-settings-overlay');
-  el.style.display='flex';
-}
-function nsCloseSettings(){
-  document.getElementById('ns-settings-overlay').style.display='none';
-}
-function nsSaveSettings(){
-  var pcIp = document.getElementById('ns-pc-ip').value.trim();
-  var pcPort = document.getElementById('ns-pc-port').value.trim()||'8765';
-  var zxIp = document.getElementById('ns-zx-ip').value.trim();
-  localStorage.setItem('nextsync_pc_ip', pcIp);
-  localStorage.setItem('nextsync_pc_port', pcPort);
-  localStorage.setItem('nextsync_ip', zxIp);
-  localStorage.setItem('nextsync_target', 'pc');
-  // Resetuj loaded aby se iframe znovu nacetl s novymi hodnotami
-  if(typeof loaded !== 'undefined') loaded['nextsync'] = false;
-  nsCloseSettings();
-  // Znovu otevri nextsync app se spravnymi hodnotami
-  if(typeof openApp !== 'undefined') openApp('nextsync');
-}
 </script>
 
 </body>
