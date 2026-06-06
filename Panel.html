@@ -17171,7 +17171,7 @@ body{background:#04040e;font-family:'Share Tech Mono',monospace;min-height:100vh
 .header-right{display:flex;align-items:center;gap:10px}
 .settings-btn{background:rgba(0,255,187,.1);border:1.5px solid rgba(0,255,187,.3);color:#00ffbb;border-radius:8px;padding:6px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;transition:all .2s}
 .settings-btn:hover{background:rgba(0,255,187,.2)}
-.content{flex:1;padding:10px 18px 24px;animation:fadeIn .3s ease both}
+.content{flex:1;padding:10px 18px 24px}
 /* status bar */
 .status-bar{margin-bottom:14px;border-radius:12px;padding:10px 14px;display:flex;flex-direction:column;gap:6px;background:#07071a;border:1.5px solid #00ffbb33}
 .status-row{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:1px}
@@ -17555,22 +17555,16 @@ window.sendFolder=sendFolder;
 window.sendAllFolders=sendAllFolders;
 window.pingTarget=pingTarget;
 
-// Init after DOM ready - spolehlivé pro Chrome Android srcdoc iframe
-function _init(){
+// Init - window.onload funguje spolehlivě v srcdoc iframe na Android Chrome
+window.onload=function(){
+  render();
+  setTimeout(function(){renderStatusBar();pingBoth();},300);
+};
+// Záloha kdyby onload už proběhl
+if(document.readyState==='complete'){
   render();
   setTimeout(function(){renderStatusBar();pingBoth();},300);
 }
-if(document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded',_init);
-}else{
-  // Již načteno - spustíme hned + záloha setTimeout pro jistotu
-  _init();
-}
-// Záloha pro případ že se render nespustil (srcdoc Android bug)
-setTimeout(function(){
-  var el=document.getElementById('main-content');
-  if(el&&el.innerHTML.trim()===''){_init();}
-},600);
 <\/script>
 </body>
 </html>
