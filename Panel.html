@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v30.4Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v30.5Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.4Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.5Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v30.4Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v30.5Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -343,7 +343,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.4Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.5Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -729,7 +729,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v30.4Kl</div>
+  <div class="version">v30.5Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -17024,9 +17024,6 @@ APP_HTML["user"] = `<!DOCTYPE html>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>MOJE APKY</title>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#080818;color:#e0e0f0;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding:16px;}
@@ -17097,40 +17094,36 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
   </div>
 </div>
 <script>
-var _fbCfg={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",
-  databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",
-  appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
-if(!firebase.apps.length)firebase.initializeApp(_fbCfg);
-var _db=firebase.database();
-var _refIcons=_db.ref('kladyx/user_icons');
-var _refApps=_db.ref('kladyx/user_apps');
 var _fbReady=false;
 var _icons={};
 var _customApps=[];
+var _refIcons=null;
+var _refApps=null;
 
 function syncBar(t,c){var e=document.getElementById('sync-bar');e.textContent=t;e.className='sync-bar '+(c||'');}
 
-// Načti HNED z localStorage — zobraz okamžitě
-_loadLS();
-syncBar('☁️ Sync...','saving');
-
-// Firebase na pozadí
-firebase.auth().signInAnonymously().catch(function(){syncBar('📴 Offline','err');});
-firebase.auth().onAuthStateChanged(function(u){
-  if(!u)return;
-  _fbReady=true;
-  _refIcons.once('value').then(function(s){
-    _icons=s.val()||{};
-    return _refApps.once('value');
-  }).then(function(s){
-    var v=s.val();
-    _customApps=Array.isArray(v)?v:(v?Object.values(v):[]);
-    _saveLS();
-    syncBar('☁️ Synchronizováno','ok');
-    render();
-  }).catch(function(){syncBar('📴 Offline','err');});
-});
+// Použij Firebase z parent okna
+function _initFirebase(){
+  try{
+    var fb=window.parent.firebase||window.firebase;
+    if(!fb){syncBar('📴 Offline','err');return;}
+    var db=fb.database();
+    _refIcons=db.ref('kladyx/user_icons');
+    _refApps=db.ref('kladyx/user_apps');
+    _fbReady=true;
+    syncBar('🔄 Sync...','saving');
+    _refIcons.once('value').then(function(s){
+      _icons=s.val()||{};
+      return _refApps.once('value');
+    }).then(function(s){
+      var v=s.val();
+      _customApps=Array.isArray(v)?v:(v?Object.values(v):[]);
+      _saveLS();
+      syncBar('☁️ Synchronizováno','ok');
+      render();
+    }).catch(function(){syncBar('📴 Offline','err');});
+  }catch(e){syncBar('📴 Offline','err');}
+}
 
 function _loadLS(){
   try{_icons=JSON.parse(localStorage.getItem('kx_icons')||'{}');}catch(e){_icons={};}
@@ -17235,8 +17228,10 @@ function delApp(idx){
 function msg(t,ok){var e=document.getElementById('status-msg');e.textContent=t;e.style.color=ok?'#34d399':'#f87171';}
 
 document.getElementById('new-name').addEventListener('keydown',function(e){if(e.key==='Enter')addApp();});
+_loadLS();
 initIconPicker();
 render();
+_initFirebase();
 <\/script>
 </body>
 </html>
