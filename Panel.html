@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v30.1Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v30.2Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.1Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.2Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v30.1Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v30.2Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -339,11 +339,16 @@
       <div class="bd"></div><div class="bi">🌐</div><div class="bl">Překladač</div>
     </button>
 
+    <button class="app-btn" id="btn-password" style="--ac:#c084fc;--ac-rgb:192,132,252" onclick="openApp('password')">
+      <div class="app-dot"></div>
+      <div class="bd"></div><div class="bi">🔑</div><div class="bl">Hesla</div>
+    </button>
+
   </div>
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.1Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.2Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -451,6 +456,7 @@
     <iframe id="frame-worldtime" class="app-frame" title="worldtime" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-user" class="app-frame" title="user" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-prekladac" class="app-frame" title="prekladac" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
+    <iframe id="frame-password" class="app-frame" title="password" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
 
   </div>
 </div>
@@ -729,7 +735,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v30.1Kl</div>
+  <div class="version">v30.2Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -15273,393 +15279,294 @@ APP_HTML["status"] = `<!DOCTYPE html>
 <title>Status Checker</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#0a0e1a;color:#e0e8ff;font-family:'Courier New',monospace;min-height:100vh;padding:12px}
-h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transform:uppercase;margin-bottom:4px}
-.sub{text-align:center;font-size:.6rem;color:rgba(255,255,255,.3);margin-bottom:14px;letter-spacing:2px}
+body{background:#0a0e1a;color:#e0e8ff;font-family:'Courier New',monospace;min-height:100vh;padding:14px 12px 40px}
+h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transform:uppercase;margin-bottom:3px}
+.sub{text-align:center;font-size:.6rem;color:rgba(255,255,255,.3);margin-bottom:16px;letter-spacing:2px}
 .section{margin-bottom:14px}
-.sec-title{font-size:.6rem;letter-spacing:3px;color:#00d4ff;text-transform:uppercase;margin-bottom:6px;border-bottom:1px solid rgba(0,212,255,.2);padding-bottom:3px}
-.item{display:flex;align-items:center;gap:10px;padding:7px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:8px;margin-bottom:5px;transition:all .3s}
+.sec-title{font-size:.6rem;letter-spacing:3px;color:#00d4ff;text-transform:uppercase;margin-bottom:7px;border-bottom:1px solid rgba(0,212,255,.2);padding-bottom:3px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.item{display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:8px;transition:all .3s}
 .item.ok{border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.05)}
 .item.err{border-color:rgba(255,60,60,.3);background:rgba(255,60,60,.05)}
 .item.local{border-color:rgba(0,170,255,.25);background:rgba(0,170,255,.04)}
 .item.checking{border-color:rgba(255,200,0,.2)}
-.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:#444}
-.dot.ok{background:#00ff88;box-shadow:0 0 8px #00ff88;animation:pulse-ok 1.8s ease-in-out infinite}@keyframes pulse-ok{0%,100%{background:#00ff88;box-shadow:0 0 6px #00ff88;transform:scale(1)}50%{background:#ffffff;box-shadow:0 0 20px #00ff88,0 0 40px #00ff88;transform:scale(1.35)}}
-.dot.err{background:#ff3c3c;box-shadow:0 0 8px #ff3c3c}
-.dot.local{background:#00aaff;box-shadow:0 0 8px #00aaff}
-.dot.checking{background:#ffcc00;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.name{flex:1;font-size:.75rem;color:#e0e8ff}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:#444}
+.dot.ok{background:#00ff88;box-shadow:0 0 7px #00ff88;animation:pon 2s ease-in-out infinite}
+@keyframes pon{0%,100%{box-shadow:0 0 5px #00ff88}50%{box-shadow:0 0 14px #00ff88,0 0 28px #00ff88}}
+.dot.err{background:#ff3c3c;box-shadow:0 0 7px #ff3c3c}
+.dot.local{background:#00aaff;box-shadow:0 0 7px #00aaff}
+.dot.checking{background:#ffcc00;animation:pc 1s infinite}
+@keyframes pc{0%,100%{opacity:1}50%{opacity:.3}}
+.name{flex:1;font-size:.72rem;color:#e0e8ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .name.err{color:#ff9090}
-.sub2{font-size:.6rem;color:rgba(255,255,255,.3);margin-top:1px}
-.status{font-size:.6rem;color:rgba(255,255,255,.4);white-space:nowrap}
-.status.ok{color:#00ff88}
-.status.err{color:#ff6060}
-.status.local{color:#00aaff}
-.status.checking{color:#ffcc00}
-.footer{text-align:center;margin-top:14px;padding-bottom:20px}
-.btn-refresh{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);color:#00ff88;padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'Courier New',monospace;font-size:.7rem;letter-spacing:2px;text-transform:uppercase}
-.btn-refresh:hover{background:rgba(0,255,136,.2)}
-.refresh-info{font-size:.55rem;color:rgba(255,255,255,.25);margin-top:6px;letter-spacing:1px}
-.apps-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.apps-grid .item{margin-bottom:0;flex-direction:column;align-items:flex-start;gap:4px;padding:6px 8px}
-.apps-grid .item .row1{display:flex;align-items:center;gap:6px;width:100%}
+.st{font-size:.58rem;color:rgba(255,255,255,.4);white-space:nowrap}
+.st.ok{color:#00ff88}
+.st.err{color:#ff6060}
+.st.local{color:#00aaff}
+.st.checking{color:#ffcc00}
+.footer{text-align:center;margin-top:16px}
+.btn-r{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);color:#00ff88;padding:8px 22px;border-radius:8px;cursor:pointer;font-family:'Courier New',monospace;font-size:.7rem;letter-spacing:2px;text-transform:uppercase}
+.btn-r:hover{background:rgba(0,255,136,.2)}
+.info{font-size:.55rem;color:rgba(255,255,255,.25);margin-top:6px;letter-spacing:1px}
 </style>
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND SYSTEM MONITOR · v1.1</div>
+<div class="sub">KLADYXLAND · v30.2Kl</div>
 
 <div class="section">
-  <div class="sec-title">🌐 Web & GitHub</div>
+  <div class="sec-title">🔥 Firebase (základ všech DB appek)</div>
+  <div class="item checking" id="i-firebase">
+    <div class="dot checking" id="d-firebase"></div>
+    <div style="flex:1"><div class="name" id="n-firebase">Firebase Realtime DB</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">kladyxland-default-rtdb</div></div>
+    <div class="st checking" id="s-firebase">Checking…</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">🗄️ Firebase appky — stav dle Firebase DB</div>
+  <div class="grid" id="fb-apps-grid">
+    <div class="item checking" id="i-fb-odecty"><div class="dot checking" id="d-fb-odecty"></div><div class="name">⚡💧🔥 Odečty</div><div class="st checking" id="s-fb-odecty">…</div></div>
+    <div class="item checking" id="i-fb-cd"><div class="dot checking" id="d-fb-cd"></div><div class="name">💿 CD databáze</div><div class="st checking" id="s-fb-cd">…</div></div>
+    <div class="item checking" id="i-fb-hardware"><div class="dot checking" id="d-fb-hardware"></div><div class="name">🎛️ Hardware</div><div class="st checking" id="s-fb-hardware">…</div></div>
+    <div class="item checking" id="i-fb-lp"><div class="dot checking" id="d-fb-lp"></div><div class="name">🎵 LP Desky</div><div class="st checking" id="s-fb-lp">…</div></div>
+    <div class="item checking" id="i-fb-platby"><div class="dot checking" id="d-fb-platby"></div><div class="name">💳 Platby</div><div class="st checking" id="s-fb-platby">…</div></div>
+    <div class="item checking" id="i-fb-jidlo"><div class="dot checking" id="d-fb-jidlo"></div><div class="name">🍽️ Jídlo</div><div class="st checking" id="s-fb-jidlo">…</div></div>
+    <div class="item checking" id="i-fb-gluco"><div class="dot checking" id="d-fb-gluco"></div><div class="name">🩸 Glukóza</div><div class="st checking" id="s-fb-gluco">…</div></div>
+    <div class="item checking" id="i-fb-notes"><div class="dot checking" id="d-fb-notes"></div><div class="name">📝 Poznámky</div><div class="st checking" id="s-fb-notes">…</div></div>
+    <div class="item checking" id="i-fb-kalendar"><div class="dot checking" id="d-fb-kalendar"></div><div class="name">📅 Kalendář</div><div class="st checking" id="s-fb-kalendar">…</div></div>
+    <div class="item checking" id="i-fb-obs"><div class="dot checking" id="d-fb-obs"></div><div class="name">🔴 OBS Status</div><div class="st checking" id="s-fb-obs">…</div></div>
+    <div class="item checking" id="i-fb-arch"><div class="dot checking" id="d-fb-arch"></div><div class="name">🏛️ Architektura</div><div class="st checking" id="s-fb-arch">…</div></div>
+    <div class="item checking" id="i-fb-zxnext"><div class="dot checking" id="d-fb-zxnext"></div><div class="name">💾 ZXNext</div><div class="st checking" id="s-fb-zxnext">…</div></div>
+    <div class="item checking" id="i-fb-wordmaster"><div class="dot checking" id="d-fb-wordmaster"></div><div class="name">🇬🇧 WordMaster</div><div class="st checking" id="s-fb-wordmaster">…</div></div>
+    <div class="item checking" id="i-fb-password"><div class="dot checking" id="d-fb-password"></div><div class="name">🔑 Hesla</div><div class="st checking" id="s-fb-password">…</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">🌐 Externí appky — živý test</div>
+  <div class="item checking" id="i-pocasi">
+    <div class="dot checking" id="d-pocasi"></div>
+    <div style="flex:1"><div class="name">🌤️ Počasí</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">api.open-meteo.com</div></div>
+    <div class="st checking" id="s-pocasi">Checking…</div>
+  </div>
+  <div class="item checking" id="i-mixcloud">
+    <div class="dot checking" id="d-mixcloud"></div>
+    <div style="flex:1"><div class="name">☁️ Mixcloud</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">mixcloud.com</div></div>
+    <div class="st checking" id="s-mixcloud">Checking…</div>
+  </div>
+  <div class="item checking" id="i-reader">
+    <div class="dot checking" id="d-reader"></div>
+    <div style="flex:1"><div class="name">📚 Čtečka</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">kladyx.github.io/panel</div></div>
+    <div class="st checking" id="s-reader">Checking…</div>
+  </div>
+  <div class="item checking" id="i-prekladac">
+    <div class="dot checking" id="d-prekladac"></div>
+    <div style="flex:1"><div class="name">🌐 Překladač</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">translate.googleapis.com</div></div>
+    <div class="st checking" id="s-prekladac">Checking…</div>
+  </div>
   <div class="item checking" id="i-web">
     <div class="dot checking" id="d-web"></div>
-    <div style="flex:1"><div class="name" id="n-web">KLADYXLAND Web</div><div class="sub2">kladyx.github.io/kladyxland</div></div>
-    <div class="status checking" id="s-web">Checking…</div>
+    <div style="flex:1"><div class="name">🏠 Kladyxland Web</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">kladyx.github.io/kladyxland</div></div>
+    <div class="st checking" id="s-web">Checking…</div>
   </div>
   <div class="item checking" id="i-repo">
     <div class="dot checking" id="d-repo"></div>
-    <div style="flex:1"><div class="name" id="n-repo">GitHub Repo</div><div class="sub2" id="repo-info">github.com/Kladyx/kladyxland</div></div>
-    <div class="status checking" id="s-repo">Checking…</div>
+    <div style="flex:1"><div class="name">🐙 GitHub Repo</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)" id="repo-info">github.com/Kladyx</div></div>
+    <div class="st checking" id="s-repo">Checking…</div>
   </div>
 </div>
 
 <div class="section">
-  <div class="sec-title">🔥 Firebase</div>
-  <div class="item checking" id="i-db">
-    <div class="dot checking" id="d-db"></div>
-    <div style="flex:1"><div class="name" id="n-db">Realtime Database</div><div class="sub2">kladyxland-default-rtdb</div></div>
-    <div class="status checking" id="s-db">Checking…</div>
+  <div class="sec-title">📻 Rádio stanice — živý test</div>
+  <div class="grid">
+    <div class="item checking" id="i-kiss98"><div class="dot checking" id="d-kiss98"></div><div class="name">💋 Kiss 98</div><div class="st checking" id="s-kiss98">…</div></div>
+    <div class="item checking" id="i-blanik"><div class="dot checking" id="d-blanik"></div><div class="name">🏔️ Blaník</div><div class="st checking" id="s-blanik">…</div></div>
+    <div class="item checking" id="i-krokodyl"><div class="dot checking" id="d-krokodyl"></div><div class="name">🐊 Krokodýl</div><div class="st checking" id="s-krokodyl">…</div></div>
+    <div class="item checking" id="i-rcity"><div class="dot checking" id="d-rcity"></div><div class="name">🏙️ Radio City</div><div class="st checking" id="s-rcity">…</div></div>
+    <div class="item checking" id="i-radio1"><div class="dot checking" id="d-radio1"></div><div class="name">📡 Radio 1</div><div class="st checking" id="s-radio1">…</div></div>
+    <div class="item checking" id="i-impuls"><div class="dot checking" id="d-impuls"></div><div class="name">⚡ Impuls</div><div class="st checking" id="s-impuls">…</div></div>
+    <div class="item checking" id="i-orion"><div class="dot checking" id="d-orion"></div><div class="name">🌟 Hitrádio Orion</div><div class="st checking" id="s-orion">…</div></div>
+    <div class="item checking" id="i-radiocas"><div class="dot checking" id="d-radiocas"></div><div class="name">⏰ Radio Čas</div><div class="st checking" id="s-radiocas">…</div></div>
+    <div class="item checking" id="i-signal"><div class="dot checking" id="d-signal"></div><div class="name">📶 Signal Radio</div><div class="st checking" id="s-signal">…</div></div>
+    <div class="item checking" id="i-intense"><div class="dot checking" id="d-intense"></div><div class="name">⚡ Intense</div><div class="st checking" id="s-intense">…</div></div>
+    <div class="item checking" id="i-funkstar"><div class="dot checking" id="d-funkstar"></div><div class="name">🎶 Funkstar</div><div class="st checking" id="s-funkstar">…</div></div>
+    <div class="item checking" id="i-afc"><div class="dot checking" id="d-afc"></div><div class="name">🎷 Amsterdam Funk</div><div class="st checking" id="s-afc">…</div></div>
+    <div class="item checking" id="i-dancecz"><div class="dot checking" id="d-dancecz"></div><div class="name">🎧 Dance Radio CZ</div><div class="st checking" id="s-dancecz">…</div></div>
   </div>
-  <div class="item checking" id="i-storage">
-    <div class="dot checking" id="d-storage"></div>
-    <div style="flex:1"><div class="name" id="n-storage">Firebase Storage</div><div class="sub2">kladyxland.firebasestorage.app</div></div>
-    <div class="status checking" id="s-storage">Checking…</div>
-  </div>
-</div>
-
-<div class="section">
-  <div class="sec-title">📻 Radio Stanice</div>
-  <div class="item checking" id="i-kiss98"><div class="dot checking" id="d-kiss98"></div><div class="name" id="n-kiss98">💋 Kiss 98</div><div class="status checking" id="s-kiss98">Checking…</div></div>
-  <div class="item checking" id="i-blanik"><div class="dot checking" id="d-blanik"></div><div class="name" id="n-blanik">🏔️ Rádio Blaník</div><div class="status checking" id="s-blanik">Checking…</div></div>
-  <div class="item checking" id="i-krokodyl"><div class="dot checking" id="d-krokodyl"></div><div class="name" id="n-krokodyl">🐊 Krokodýl</div><div class="status checking" id="s-krokodyl">Checking…</div></div>
-  <div class="item checking" id="i-rcity"><div class="dot checking" id="d-rcity"></div><div class="name" id="n-rcity">🏙️ Radio City</div><div class="status checking" id="s-rcity">Checking…</div></div>
-  <div class="item checking" id="i-radio1"><div class="dot checking" id="d-radio1"></div><div class="name" id="n-radio1">📡 Radio 1</div><div class="status checking" id="s-radio1">Checking…</div></div>
-  <div class="item checking" id="i-impuls"><div class="dot checking" id="d-impuls"></div><div class="name" id="n-impuls">⚡ Rádio Impuls</div><div class="status checking" id="s-impuls">Checking…</div></div>
-  <div class="item checking" id="i-intense"><div class="dot checking" id="d-intense"></div><div class="name" id="n-intense">⚡ Intense Radio</div><div class="status checking" id="s-intense">Checking…</div></div>
-  <div class="item checking" id="i-funkstar"><div class="dot checking" id="d-funkstar"></div><div class="name" id="n-funkstar">🎶 Funkstar Radio</div><div class="status checking" id="s-funkstar">Checking…</div></div>
-
-  <div class="item checking" id="i-orion"><div class="dot checking" id="d-orion"></div><div class="name" id="n-orion">🌟 Hitrádio Orion</div><div class="status checking" id="s-orion">Checking…</div></div>
-  <div class="item checking" id="i-radiocas"><div class="dot checking" id="d-radiocas"></div><div class="name" id="n-radiocas">⏰ Radio Čas</div><div class="status checking" id="s-radiocas">Checking…</div></div>
-  <div class="item checking" id="i-signal"><div class="dot checking" id="d-signal"></div><div class="name" id="n-signal">📶 Signal Radio</div><div class="status checking" id="s-signal">Checking…</div></div>
-  <div class="item checking" id="i-afc"><div class="dot checking" id="d-afc"></div><div class="name" id="n-afc">🎷 Amsterdam Funk</div><div class="status checking" id="s-afc">Checking…</div></div>
-  <div class="item checking" id="i-dancecz"><div class="dot checking" id="d-dancecz"></div><div class="name" id="n-dancecz">🎧 Dance Radio CZ</div><div class="status checking" id="s-dancecz">Checking…</div></div>
 </div>
 
 <div class="section">
   <div class="sec-title">🔌 WiFi Zásuvka</div>
   <div class="item" id="i-p115">
     <div class="dot" id="d-p115" style="background:#444"></div>
-    <div style="flex:1"><div class="name" id="n-p115">⚡ Tapo P115</div><div class="sub2">DJ Sound · PreSonus</div></div>
-    <div class="status" id="s-p115" style="color:rgba(255,255,255,.4)">Načítám…</div>
+    <div style="flex:1"><div class="name">⚡ Tapo P115</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">DJ Sound · PreSonus</div></div>
+    <div class="st" id="s-p115" style="color:rgba(255,255,255,.4)">Načítám…</div>
   </div>
 </div>
 
 <div class="section">
-  <div class="sec-title">📱 Panel Appky — External</div>
-  <div class="item checking" id="i-ap-pocasi"><div class="dot checking" id="d-ap-pocasi"></div><div style="flex:1"><div class="name" id="n-ap-pocasi">🌤️ Počasí</div><div class="sub2">Open-Meteo API</div></div><div class="status checking" id="s-ap-pocasi">Checking…</div></div>
-  <div class="item checking" id="i-ap-mixcloud"><div class="dot checking" id="d-ap-mixcloud"></div><div style="flex:1"><div class="name" id="n-ap-mixcloud">☁️ Mixcloud</div><div class="sub2">mixcloud.com</div></div><div class="status checking" id="s-ap-mixcloud">Checking…</div></div>
-  <div class="item checking" id="i-ap-reader"><div class="dot checking" id="d-ap-reader"></div><div style="flex:1"><div class="name" id="n-ap-reader">📚 Čtečka</div><div class="sub2">GitHub reader.html</div></div><div class="status checking" id="s-ap-reader">Checking…</div></div>
-</div>
-
-<div class="section">
-  <div class="sec-title">🔥 Panel Appky — Firebase</div>
-  <div class="apps-grid">
-    <div class="item ok"><div class="dot ok"></div><div class="name">💿 CD databáze</div><div class="status ok">Firebase ✓</div></div>
-    <div class="item ok"><div class="dot ok"></div><div class="name">🎛️ Hardware</div><div class="status ok">Firebase ✓</div></div>
-    <div class="item ok"><div class="dot ok"></div><div class="name">🎵 LP Desky</div><div class="status ok">Firebase ✓</div></div>
-    <div class="item ok"><div class="dot ok"></div><div class="name">⚡ Odečty</div><div class="status ok">Firebase ✓</div></div>
-    <div class="item ok"><div class="dot ok"></div><div class="name">💳 Platby</div><div class="status ok">Firebase ✓</div></div>
-    <div class="item ok"><div class="dot ok"></div><div class="name">🍽️ Jídlo</div><div class="status ok">Firebase ✓</div></div>
-    <div class="item ok"><div class="dot ok"></div><div class="name">🩸 Glukóza</div><div class="status ok">Firebase ✓</div></div>
-    <div class="item ok"><div class="dot ok"></div><div class="name">📝 Poznámky</div><div class="status ok">Firebase ✓</div></div>
-    <div class="item ok"><div class="dot ok"></div><div class="name">📅 Kalendář</div><div class="status ok">Firebase ✓</div></div>
-    <div class="item ok"><div class="dot ok"></div><div class="name">🔴 OBS Status</div><div class="status ok">Firebase ✓</div></div>
-    <div class="item ok"><div class="dot ok"></div><div class="name">🏛️ Architektura</div><div class="status ok">Firebase ✓</div></div>
-    <div class="item ok"><div class="dot ok"></div><div class="name">💾 ZXNext</div><div class="status ok">Firebase ✓</div></div>
-    <div class="item checking" id="i-wordmaster"><div class="dot checking" id="d-wordmaster"></div><div class="name">🇬🇧 WordMaster</div><div class="status checking" id="s-wordmaster">Checking…</div></div>
+  <div class="sec-title">💻 Lokální appky — vždy online</div>
+  <div class="grid">
+    <div class="item local"><div class="dot local"></div><div class="name">📖 Manuály</div><div class="st local">Lokální ✓</div></div>
+    <div class="item local"><div class="dot local"></div><div class="name">🎤 Radio ID</div><div class="st local">Lokální ✓</div></div>
+    <div class="item local"><div class="dot local"></div><div class="name">🕹️ ZX Games</div><div class="st local">Lokální ✓</div></div>
+    <div class="item local"><div class="dot local"></div><div class="name">🎵 HouseTime</div><div class="st local">Lokální ✓</div></div>
+    <div class="item local"><div class="dot local"></div><div class="name">📻 Multitrack</div><div class="st local">Lokální ✓</div></div>
+    <div class="item local"><div class="dot local"></div><div class="name">🌍 World Time</div><div class="st local">Lokální ✓</div></div>
+    <div class="item local"><div class="dot local"></div><div class="name">👤 Moje Apky</div><div class="st local">Lokální ✓</div></div>
+    <div class="item local"><div class="dot local"></div><div class="name">🟢 Status</div><div class="st local">Lokální ✓</div></div>
   </div>
 </div>
 
-<div class="section">
-  <div class="sec-title">💾 Panel Appky — Lokální</div>
-  <div class="apps-grid">
-    <div class="item local"><div class="dot local"></div><div class="name">📖 Manuály</div><div class="status local">Lokální</div></div>
-  </div>
-</div>
-
-
-<div class="section">
-  <div class="sec-title">🔧 Nástroje</div>
-  <div class="item checking" id="i-prekladac">
-    <div class="dot checking" id="d-prekladac"></div>
-    <div style="flex:1"><div class="name">Překladač CZ→EN</div><div class="sub2">translate.googleapis.com</div></div>
-    <div class="status checking" id="s-prekladac">Checking…</div>
-  </div>
-</div>
 <div class="footer">
-  <button class="btn-refresh" onclick="runAllChecks()">↻ REFRESH</button>
-  <div class="refresh-info" id="last-check">Spouštím kontrolu…</div>
+  <button class="btn-r" onclick="runAll()">↻ REFRESH</button>
+  <div class="info" id="last-check">Spouštím…</div>
 </div>
 
 <script>
-var CHECKS = {
-  web:     { type:'nocors', url:'https://kladyx.github.io/kladyxland/' },
-  repo:    { type:'github', url:'https://api.github.com/repos/Kladyx/kladyxland' },
-  db:      { type:'firebase_db', url:'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/.json?shallow=true&timeout=5s' },
-  storage: { type:'firebase_storage', url:'https://firebasestorage.googleapis.com/v0/b/kladyxland.firebasestorage.app/o?maxResults=1' },
-  kiss98:    { type:'nocors', url:'https://icecast4.play.cz/kiss128.mp3' },
-  blanik:    { type:'nocors', url:'https://ice.abradio.cz/blanikfm128.mp3' },
-  krokodyl:  { type:'nocors', url:'https://icecast4.play.cz/krokodyl128.mp3' },
-  rcity:     { type:'nocors', url:'https://ice.abradio.cz/cityfm128.mp3' },
-  radio1:    { type:'nocors', url:'https://icecast6.play.cz/radio1-128.mp3' },
-  impuls:    { type:'nocors', url:'https://icecast5.play.cz/impuls128.mp3' },
-  intense:   { type:'nocors', url:'https://intenseradio.live-streams.nl/live' },
-  funkstar:  { type:'nocors', url:'https://funkstar.radioca.st/stream' },
-  // gayfm removed - blocks HEAD requests
-  orion:     { type:'nocors', url:'https://ice.abradio.cz/orion128.mp3' },
-  radiocas:  { type:'nocors', url:'https://icecast7.play.cz/casradio128.mp3' },
-  signal:    { type:'nocors', url:'https://icecast1.play.cz/signal128.mp3' },
-  afc:       { type:'nocors', url:'https://live.afc.fm/' },
-  dancecz:   { type:'nocors', url:'https://ice.actve.net/dance-radio128.mp3' },
-  'ap-pocasi':    { type:'cors',   url:'https://api.open-meteo.com/v1/forecast?latitude=49.64&longitude=18.14&current=temperature_2m' },
-  'ap-mixcloud':  { type:'nocors', url:'https://www.mixcloud.com/' },
-  'ap-reader':    { type:'nocors', url:'https://kladyx.github.io/panel/reader.html' },
-  'zxnext-wifi':  { type:'nocors', url:'http://192.168.0.124:2048/' }
-};
-
-function setStatus(id, state, text) {
-  var dot = document.getElementById('d-' + id);
-  var stat = document.getElementById('s-' + id);
-  var item = document.getElementById('i-' + id);
-  var name = document.getElementById('n-' + id);
-  if (!dot) return;
-  dot.className = 'dot ' + state;
-  stat.className = 'status ' + state;
-  stat.textContent = text;
-  item.className = 'item ' + state;
-  if (name) name.className = state === 'err' ? 'name err' : 'name';
+// ── helpers ──
+function withTimeout(p, ms) {
+  return Promise.race([p, new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},ms);})]);
 }
 
-function withTimeout(promise, ms) {
-  return Promise.race([
-    promise,
-    new Promise(function(_, rej) { setTimeout(function(){ rej(new Error('timeout')); }, ms); })
-  ]);
+function setS(id, state, text) {
+  var d=document.getElementById('d-'+id);
+  var s=document.getElementById('s-'+id);
+  var i=document.getElementById('i-'+id);
+  if(!d||!s||!i) return;
+  d.className='dot '+state;
+  s.className='st '+state;
+  s.textContent=text;
+  i.className='item '+state;
 }
 
-function checkNoCors(id, url) {
-  return withTimeout(fetch(url, { method:'HEAD', mode:'no-cors', cache:'no-store' }), 6000)
-  .then(function() { setStatus(id, 'ok', 'Online ✓'); })
-  .catch(function() { setStatus(id, 'err', 'Offline ✗'); });
+// ── Firebase DB check → cascade to all FB apps ──
+var FB_APPS = ['odecty','cd','hardware','lp','platby','jidlo','gluco','notes','kalendar','obs','arch','zxnext','wordmaster','password'];
+
+function setFbApps(state) {
+  var txt = state==='ok' ? 'Online ✓' : 'Offline ✗';
+  FB_APPS.forEach(function(id){ setS('fb-'+id, state, txt); });
 }
 
-function checkCors(id, url) {
-  return withTimeout(fetch(url, { cache:'no-store' }), 6000)
-  .then(function(r) {
-    if (r.ok) setStatus(id, 'ok', 'Online ✓');
-    else setStatus(id, 'err', 'Chyba ' + r.status);
-  })
-  .catch(function() { setStatus(id, 'err', 'Offline ✗'); });
-}
-
-function checkGitHub(id, url) {
-  return withTimeout(fetch(url, { headers:{'Accept':'application/vnd.github.v3+json'}, cache:'no-store' }), 8000)
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    if (data && data.full_name) {
-      var pushed = data.pushed_at ? new Date(data.pushed_at).toLocaleDateString('cs-CZ') : '';
-      document.getElementById('repo-info').textContent = '⭐ ' + (data.stargazers_count||0) + ' · Push: ' + pushed;
-      setStatus(id, 'ok', 'Online ✓');
-    } else { setStatus(id, 'err', 'Chyba ✗'); }
-  })
-  .catch(function() { setStatus(id, 'err', 'Offline ✗'); });
-}
-
-function updateFirebaseApps(state) {
-  document.querySelectorAll('.apps-grid .item').forEach(function(item) {
-    var statusEl = item.querySelector('.status');
-    var dotEl = item.querySelector('.dot');
-    if (statusEl && (statusEl.textContent === 'Firebase ✓' || statusEl.textContent === 'Firebase ✗')) {
-      item.className = 'item ' + state;
-      if (dotEl) dotEl.className = 'dot ' + state;
-      statusEl.className = 'status ' + state;
-      statusEl.textContent = state === 'ok' ? 'Firebase ✓' : 'Firebase ✗';
-    }
-  });
-}
-
-function checkFirebaseDB(id, url) {
-  return withTimeout(fetch(url, { cache:'no-store' }), 8000)
-  .then(function(r) {
-    var ok = r.status===200||r.status===401||r.status===403;
-    setStatus(id, ok ? 'ok' : 'err', ok ? 'Online ✓' : 'Chyba ' + r.status);
-    updateFirebaseApps(ok ? 'ok' : 'err');
-  })
-  .catch(function() {
-    setStatus(id, 'err', 'Offline ✗');
-    updateFirebaseApps('err');
-  });
-}
-
-function checkFirebaseStorage(id, url) {
-  return withTimeout(fetch(url, { cache:'no-store' }), 8000)
-  .then(function(r) {
-    setStatus(id, (r.status===200||r.status===401||r.status===403) ? 'ok' : 'err',
-      (r.status===200||r.status===401||r.status===403) ? 'Online ✓' : 'Chyba ' + r.status);
-  })
-  .catch(function() { setStatus(id, 'err', 'Offline ✗'); });
-}
-
-function runAllChecks() {
-  Object.keys(CHECKS).forEach(function(id) { setStatus(id, 'checking', 'Checking…'); });
-  document.getElementById('last-check').textContent = 'Kontroluji…';
-  var promises = Object.keys(CHECKS).map(function(id) {
-    var c = CHECKS[id];
-    if (c.type === 'github') return checkGitHub(id, c.url);
-    if (c.type === 'firebase_db') return checkFirebaseDB(id, c.url);
-    if (c.type === 'firebase_storage') return checkFirebaseStorage(id, c.url);
-    if (c.type === 'cors') return checkCors(id, c.url);
-    return checkNoCors(id, c.url);
-  });
-  // WordMaster Firebase sync check
-  setStatus('wordmaster','checking','Checking…');
-  fetch('https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/wordmaster/data.json')
+function checkFirebase() {
+  var url = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/.json?shallow=true&timeout=5s';
+  setS('firebase','checking','Checking…');
+  FB_APPS.forEach(function(id){ setS('fb-'+id,'checking','…'); });
+  return withTimeout(fetch(url,{cache:'no-store'}),8000)
     .then(function(r){
-      if(r.ok)setStatus('wordmaster','ok','Firebase ✓');
-      else setStatus('wordmaster','err','HTTP '+r.status);
-    }).catch(function(){setStatus('wordmaster','err','Offline');});
-  Promise.all(promises).then(function() {
-    var now = new Date();
-    document.getElementById('last-check').textContent = 'Check: ' + now.toLocaleTimeString('cs-CZ') + ' · Auto: 60s';
-  });
-}
-
-runAllChecks();
-setInterval(runAllChecks, 60000);
-
-// P115 stav z Firebase REST API (funguje i v iframe bez auth)
-function p115Refresh(){
-  fetch('https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/tapoDb.json')
-  .then(function(r){return r.json();})
-  .then(function(d){
-    var dot=document.getElementById('d-p115');
-    var stat=document.getElementById('s-p115');
-    var item=document.getElementById('i-p115');
-    if(!dot)return;
-    // Zkontroluj heartbeat - pokud starší než 2 minuty = PC vypnuté
-    var age = d && d.lastSeen ? Date.now() - d.lastSeen : 999999;
-    if(age > 60000){
-      dot.className='dot';dot.style.background='#444';
-      stat.className='status';stat.style.color='rgba(255,255,255,.4)';
-      stat.textContent='PC offline';
-      item.className='item';
-      return;
-    }
-    if(d && typeof d.on!=='undefined'){
-      var on=d.on===true;
-      dot.className='dot '+(on?'ok':'err');
-      dot.style.background='';
-      stat.className='status '+(on?'ok':'err');
-      stat.style.color='';
-      stat.textContent=on?'ZAPNUTO ✓':'VYPNUTO ✗';
-      item.className='item '+(on?'ok':'err');
-    }else{
-      stat.textContent='Neznámý stav';
-    }
-  })
-  .catch(function(){
-    var stat=document.getElementById('s-p115');
-    if(stat)stat.textContent='Chyba čtení';
-  });
-}
-p115Refresh();
-setInterval(p115Refresh,15000);
-// Překladač check
-(function(){
-  var dot=document.getElementById('d-prekladac');
-  var sta=document.getElementById('s-prekladac');
-  var item=document.getElementById('i-prekladac');
-  if(!dot)return;
-  fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=cs&tl=en&dt=t&q=test')
-    .then(function(r){
-      if(r.ok){dot.className='dot ok';sta.className='status ok';sta.textContent='Dostupný ✓';item.className='item ok';}
-      else{dot.className='dot err';sta.className='status err';sta.textContent='Chyba';item.className='item err';}
+      var ok = r.status===200||r.status===401||r.status===403;
+      setS('firebase', ok?'ok':'err', ok?'Online ✓':'Chyba '+r.status);
+      setFbApps(ok?'ok':'err');
     })
-    .catch(function(){dot.className='dot err';sta.className='status err';sta.textContent='Nedostupný';item.className='item err';});
-})();
-<\/script>
+    .catch(function(){
+      setS('firebase','err','Offline ✗');
+      setFbApps('err');
+    });
+}
 
-<div class="section" style="margin-top:18px">
-  <div class="sec-title">🌐 Překladač CZ → EN</div>
-  <div style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.2);border-radius:8px;padding:10px">
-    <textarea id="tr-input" placeholder="Napiš česky..." style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(0,212,255,.2);border-radius:6px;color:#e0e8ff;font-family:'Courier New',monospace;font-size:.8rem;padding:8px;resize:vertical;min-height:70px;outline:none"></textarea>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button onclick="trTranslate()" id="tr-btn" style="flex:1;background:rgba(0,212,255,.15);border:1px solid rgba(0,212,255,.35);color:#00d4ff;font-family:'Courier New',monospace;font-size:.65rem;letter-spacing:2px;padding:8px;border-radius:6px;cursor:pointer;text-transform:uppercase">⚡ Přeložit</button>
-      <button onclick="trClear()" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);font-family:'Courier New',monospace;font-size:.65rem;padding:8px 12px;border-radius:6px;cursor:pointer">✕</button>
-    </div>
-    <div id="tr-output" style="margin-top:8px;min-height:50px;background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.15);border-radius:6px;padding:8px;color:#00ff88;font-family:'Courier New',monospace;font-size:.8rem;white-space:pre-wrap;display:none"></div>
-    <div style="display:flex;justify-content:space-between;margin-top:6px">
-      <span id="tr-status" style="font-size:.55rem;color:rgba(255,255,255,.3)">Připraveno</span>
-      <button id="tr-copy" onclick="trCopy()" style="display:none;background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.25);color:#00ff88;font-family:'Courier New',monospace;font-size:.55rem;padding:3px 10px;border-radius:4px;cursor:pointer">📋 Kopírovat</button>
-    </div>
-  </div>
-</div>
-<script>
-var trLast='';
-async function trTranslate(){
-  var inp=document.getElementById('tr-input').value.trim();
-  if(!inp)return;
-  var btn=document.getElementById('tr-btn');
-  var out=document.getElementById('tr-output');
-  var sta=document.getElementById('tr-status');
-  var cop=document.getElementById('tr-copy');
-  btn.disabled=true;sta.textContent='Překládám...';
-  out.style.display='block';out.style.color='rgba(0,212,255,.7)';out.textContent='⟳ Překládám...';
-  try{
-    var q=encodeURIComponent(inp);
-    var r=await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=cs&tl=en&dt=t&q='+q);
-    var d=await r.json();
-    var t=d[0]?d[0].map(function(x){return x[0]||'';}).join(''):'';
-    if(!t)throw new Error('Prázdná odpověď');
-    trLast=t;out.style.color='#00ff88';out.textContent=t;
-    sta.textContent='Hotovo';cop.style.display='inline-block';
-  }catch(e){
-    out.style.color='#ff6060';out.textContent='⚠ Chyba: '+e.message;sta.textContent='Chyba';
-  }
-  btn.disabled=false;
+// ── no-cors ping (radio, external pages) ──
+function checkNoCors(id, url) {
+  return withTimeout(fetch(url,{method:'HEAD',mode:'no-cors',cache:'no-store'}),7000)
+    .then(function(){ setS(id,'ok','Online ✓'); })
+    .catch(function(){ setS(id,'err','Offline ✗'); });
 }
-function trClear(){
-  document.getElementById('tr-input').value='';
-  var out=document.getElementById('tr-output');
-  out.style.display='none';out.textContent='';
-  document.getElementById('tr-status').textContent='Připraveno';
-  document.getElementById('tr-copy').style.display='none';
-  trLast='';
+
+// ── CORS fetch (APIs) ──
+function checkCors(id, url) {
+  return withTimeout(fetch(url,{cache:'no-store'}),7000)
+    .then(function(r){
+      setS(id, r.ok?'ok':'err', r.ok?'Online ✓':'Chyba '+r.status);
+    })
+    .catch(function(){ setS(id,'err','Offline ✗'); });
 }
-function trCopy(){
-  if(!trLast)return;
-  navigator.clipboard.writeText(trLast).then(function(){
-    var s=document.getElementById('tr-status');s.textContent='✓ Zkopírováno';
-    setTimeout(function(){s.textContent='Hotovo';},1500);
-  });
+
+// ── GitHub ──
+function checkGitHub() {
+  var url='https://api.github.com/repos/Kladyx/kladyxland';
+  return withTimeout(fetch(url,{headers:{'Accept':'application/vnd.github.v3+json'},cache:'no-store'}),8000)
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d&&d.full_name){
+        var pushed=d.pushed_at?new Date(d.pushed_at).toLocaleDateString('cs-CZ'):'';
+        document.getElementById('repo-info').textContent='Push: '+pushed;
+        setS('repo','ok','Online ✓');
+      } else { setS('repo','err','Chyba ✗'); }
+    })
+    .catch(function(){ setS('repo','err','Offline ✗'); });
 }
-document.addEventListener('keydown',function(e){
-  if(e.ctrlKey&&e.key==='Enter'&&document.activeElement===document.getElementById('tr-input'))trTranslate();
-});
+
+// ── Tapo P115 z Firebase ──
+function checkP115() {
+  fetch('https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/tapoDb.json')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var dot=document.getElementById('d-p115');
+      var stat=document.getElementById('s-p115');
+      var item=document.getElementById('i-p115');
+      if(!dot)return;
+      var now=Date.now();
+      var hb=(d&&d.heartbeat)?d.heartbeat:0;
+      var alive=(now-hb)<120000;
+      var on=(d&&d.deviceOn===true);
+      if(!alive){
+        dot.className='dot err'; stat.className='st err'; stat.textContent='PC vypnuto'; item.className='item err';
+      } else if(on){
+        dot.className='dot ok'; stat.className='st ok'; stat.textContent='Zapnuto ✓'; item.className='item ok';
+      } else {
+        dot.className='dot'; dot.style.background='#ff8c00'; stat.style.color='#ff8c00'; stat.textContent='Vypnuto'; item.className='item';
+      }
+    })
+    .catch(function(){
+      var dot=document.getElementById('d-p115');
+      var stat=document.getElementById('s-p115');
+      if(dot){dot.className='dot err'; stat.className='st err'; stat.textContent='Nedostupné';}
+    });
+}
+
+// ── RUN ALL ──
+function runAll() {
+  document.getElementById('last-check').textContent='Kontroluji…';
+
+  // Firebase (+ cascade FB apps)
+  checkFirebase();
+
+  // Externí appky
+  checkCors('pocasi','https://api.open-meteo.com/v1/forecast?latitude=49.64&longitude=18.14&current=temperature_2m');
+  checkNoCors('mixcloud','https://www.mixcloud.com/');
+  checkNoCors('reader','https://kladyx.github.io/panel/reader.html');
+  checkNoCors('prekladac','https://translate.googleapis.com/');
+  checkNoCors('web','https://kladyx.github.io/kladyxland/');
+  checkGitHub();
+
+  // Rádio
+  checkNoCors('kiss98','https://icecast4.play.cz/kiss128.mp3');
+  checkNoCors('blanik','https://ice.abradio.cz/blanikfm128.mp3');
+  checkNoCors('krokodyl','https://icecast4.play.cz/krokodyl128.mp3');
+  checkNoCors('rcity','https://ice.abradio.cz/cityfm128.mp3');
+  checkNoCors('radio1','https://icecast6.play.cz/radio1-128.mp3');
+  checkNoCors('impuls','https://icecast5.play.cz/impuls128.mp3');
+  checkNoCors('orion','https://ice.abradio.cz/orion128.mp3');
+  checkNoCors('radiocas','https://icecast7.play.cz/casradio128.mp3');
+  checkNoCors('signal','https://icecast1.play.cz/signal128.mp3');
+  checkNoCors('intense','https://intenseradio.live-streams.nl/live');
+  checkNoCors('funkstar','https://funkstar.radioca.st/stream');
+  checkNoCors('afc','https://live.afc.fm/');
+  checkNoCors('dancecz','https://ice.actve.net/dance-radio128.mp3');
+
+  // P115
+  checkP115();
+
+  setTimeout(function(){
+    var now=new Date();
+    document.getElementById('last-check').textContent='Check: '+now.toLocaleTimeString('cs-CZ')+' · Auto: 60s';
+  }, 9000);
+}
+
+runAll();
+setInterval(runAll, 60000);
 <\/script>
-</body></html>
-`;
+</body></html>`;
 
 
 APP_HTML["radio"] = `<!DOCTYPE html>
@@ -17131,6 +17038,357 @@ render();
 `;
 
 
+
+APP_HTML["password"] = `<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HESLA – KLADYX</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
+<style>
+:root{--bg:#0a0c10;--panel:#0e1118;--border:rgba(192,132,252,.15);--accent:#c084fc;--accent2:#a855f7;--cyan:#00f5ff;--green:#00ff88;--warn:#ff4466;--text:#c8d8e8;--muted:rgba(200,216,232,.4);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'Share Tech Mono',monospace;color:var(--text);min-height:100vh;padding:20px 14px 60px;background-image:radial-gradient(ellipse at 20% 0%,rgba(192,132,252,.05) 0%,transparent 60%),radial-gradient(ellipse at 80% 100%,rgba(168,85,247,.04) 0%,transparent 60%);}
+header{text-align:center;margin-bottom:22px;animation:fadeDown .4s ease both;}
+header h1{font-family:'Orbitron',monospace;font-size:1.45rem;font-weight:900;letter-spacing:.12em;background:linear-gradient(90deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hline{margin:7px auto 0;width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);}
+.sub{font-size:.58rem;letter-spacing:.25em;color:var(--muted);text-transform:uppercase;margin-top:5px;}
+
+/* SEARCH */
+.search-wrap{max-width:700px;margin:0 auto 16px;position:relative;}
+.search-inp{width:100%;font-family:'Share Tech Mono',monospace;font-size:.8rem;background:rgba(255,255,255,.04);border:1px solid rgba(192,132,252,.25);border-radius:7px;color:var(--text);padding:10px 14px 10px 38px;outline:none;transition:border-color .2s;}
+.search-inp:focus{border-color:var(--accent);}
+.search-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;pointer-events:none;}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:11px;max-width:700px;margin:0 auto 18px;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:15px 16px;position:relative;animation:fadeUp .3s ease both;transition:border-color .2s,box-shadow .2s;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity .2s;}
+.card:hover{border-color:rgba(192,132,252,.35);box-shadow:0 0 18px rgba(192,132,252,.07);}
+.card:hover::before{opacity:1;}
+.card-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.card-icon{font-size:1.1rem;flex-shrink:0;}
+.card-title{font-size:.8rem;font-weight:700;color:var(--text);flex:1;letter-spacing:.03em;word-break:break-all;}
+.card-actions{display:flex;gap:5px;flex-shrink:0;}
+.btn-icon{background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:5px;color:var(--muted);cursor:pointer;font-size:.75rem;padding:3px 7px;transition:all .15s;}
+.btn-icon:hover{border-color:var(--accent);color:var(--accent);}
+.btn-del:hover{border-color:var(--warn);color:var(--warn);}
+.field-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.7rem;}
+.field-label{color:var(--muted);min-width:36px;flex-shrink:0;letter-spacing:.05em;}
+.field-val{color:var(--text);flex:1;word-break:break-all;font-family:'Share Tech Mono',monospace;}
+.field-val.masked{letter-spacing:.15em;color:rgba(192,132,252,.6);}
+.btn-copy{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:.7rem;padding:1px 4px;transition:color .15s;}
+.btn-copy:hover{color:var(--green);}
+.card-note{font-size:.63rem;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.04);min-height:10px;word-break:break-word;}
+
+/* ADD FORM */
+.add-section{max-width:700px;margin:0 auto 20px;}
+.add-toggle{display:flex;align-items:center;gap:9px;font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:.13em;color:var(--accent);background:transparent;border:1px dashed rgba(192,132,252,.3);border-radius:7px;padding:11px 18px;cursor:pointer;width:100%;transition:all .2s;text-transform:uppercase;}
+.add-toggle:hover{background:rgba(192,132,252,.06);border-color:var(--accent);}
+.add-form{display:none;background:var(--panel);border:1px solid rgba(192,132,252,.2);border-radius:9px;padding:18px;margin-top:9px;gap:11px;flex-direction:column;}
+.add-form.open{display:flex;animation:fadeUp .25s ease both;}
+.add-form-title{font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;}
+.add-row{display:flex;gap:9px;flex-wrap:wrap;}
+.add-input{font-family:'Share Tech Mono',monospace;font-size:.78rem;background:rgba(255,255,255,.04);border:1px solid rgba(192,132,252,.2);border-radius:5px;color:var(--text);padding:9px 12px;outline:none;transition:border-color .2s;flex:1;min-width:120px;}
+.add-input::placeholder{color:var(--muted);}
+.add-input:focus{border-color:var(--accent);}
+.add-submit{font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;background:rgba(192,132,252,.12);border:1px solid rgba(192,132,252,.35);color:var(--accent);border-radius:5px;padding:9px 20px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.add-submit:hover{background:rgba(192,132,252,.22);}
+
+/* EDIT MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--panel);border:1px solid rgba(192,132,252,.3);border-radius:10px;padding:22px;width:90%;max-width:400px;animation:fadeUp .25s ease both;}
+.modal-title{font-family:'Orbitron',monospace;font-size:.72rem;letter-spacing:.15em;color:var(--accent);margin-bottom:16px;text-transform:uppercase;}
+.modal-field{margin-bottom:11px;}
+.modal-label{font-size:.6rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+.modal-inp{font-family:'Share Tech Mono',monospace;font-size:.78rem;background:rgba(255,255,255,.04);border:1px solid rgba(192,132,252,.2);border-radius:5px;color:var(--text);padding:9px 12px;outline:none;transition:border-color .2s;width:100%;}
+.modal-inp:focus{border-color:var(--accent);}
+.modal-actions{display:flex;gap:9px;margin-top:16px;justify-content:flex-end;}
+.btn-cancel{font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--muted);border-radius:5px;padding:8px 16px;cursor:pointer;transition:all .15s;}
+.btn-cancel:hover{border-color:var(--warn);color:var(--warn);}
+.btn-save{font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;background:rgba(192,132,252,.12);border:1px solid rgba(192,132,252,.35);color:var(--accent);border-radius:5px;padding:8px 16px;cursor:pointer;transition:all .15s;}
+.btn-save:hover{background:rgba(192,132,252,.22);}
+
+/* STATUS */
+.status-bar{max-width:700px;margin:0 auto 14px;display:flex;align-items:center;justify-content:space-between;font-size:.6rem;color:var(--muted);letter-spacing:.06em;}
+#sync-dot{font-size:.6rem;}
+.empty-msg{text-align:center;padding:32px;color:var(--muted);font-size:.72rem;letter-spacing:.06em;grid-column:1/-1;}
+
+/* TOAST */
+#pw-toast{position:fixed;bottom:22px;right:22px;background:rgba(0,10,20,.92);border:1px solid rgba(192,132,252,.4);border-radius:7px;padding:9px 18px;font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--accent);letter-spacing:.08em;pointer-events:none;opacity:0;transform:translateY(10px);transition:opacity .22s,transform .22s;z-index:9999;}
+#pw-toast.show{opacity:1;transform:none;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔑 SPRÁVCE HESEL</h1>
+  <div class="hline"></div>
+  <div class="sub">KLADYX · ENCRYPTED VAULT</div>
+</header>
+
+<div class="status-bar">
+  <span id="sync-dot">⬤ připojuji…</span>
+  <span id="pw-count"></span>
+</div>
+
+<!-- ADD TOGGLE -->
+<div class="add-section">
+  <button class="add-toggle" onclick="toggleAddForm()">＋ &nbsp;PŘIDAT NOVÉ HESLO</button>
+  <div class="add-form" id="add-form">
+    <div class="add-form-title">Nový záznam</div>
+    <div class="add-row">
+      <input class="add-input" id="inp-label" placeholder="Název / web" autocomplete="off"/>
+    </div>
+    <div class="add-row">
+      <input class="add-input" id="inp-email" placeholder="@ e-mail / login" autocomplete="off" type="email"/>
+    </div>
+    <div class="add-row">
+      <input class="add-input" id="inp-pass" placeholder="Heslo" autocomplete="new-password" type="password"/>
+      <button class="btn-icon" onclick="togglePassVis('inp-pass',this)" title="Zobrazit/skrýt">👁</button>
+    </div>
+    <div class="add-row">
+      <input class="add-input" id="inp-note" placeholder="Poznámka (volitelné)" autocomplete="off"/>
+    </div>
+    <div class="add-row">
+      <button class="add-submit" onclick="addEntry()">ULOŽIT</button>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <span class="search-ico">🔍</span>
+  <input class="search-inp" id="search-inp" placeholder="Hledat název, e-mail, poznámku…" oninput="renderCards()"/>
+</div>
+
+<!-- CARDS -->
+<div class="cards" id="cards-container">
+  <div class="empty-msg">Načítám…</div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-title">✏ Upravit záznam</div>
+    <div class="modal-field">
+      <div class="modal-label">Název / web</div>
+      <input class="modal-inp" id="edit-label" autocomplete="off"/>
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">@ e-mail / login</div>
+      <input class="modal-inp" id="edit-email" type="email" autocomplete="off"/>
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Heslo</div>
+      <div style="display:flex;gap:6px;">
+        <input class="modal-inp" id="edit-pass" type="password" autocomplete="new-password" style="flex:1;"/>
+        <button class="btn-icon" onclick="togglePassVis('edit-pass',this)" title="Zobrazit/skrýt">👁</button>
+      </div>
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Poznámka</div>
+      <input class="modal-inp" id="edit-note" autocomplete="off"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeEdit()">ZRUŠIT</button>
+      <button class="btn-save" onclick="saveEdit()">ULOŽIT</button>
+    </div>
+  </div>
+</div>
+
+<div id="pw-toast"></div>
+
+<script>
+// ── CONFIG ──
+const _fbCfg={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
+
+let _db=null, _uid=null, _ref=null, _entries={}, _editKey=null;
+
+function setSyncStatus(msg,color){const el=document.getElementById('sync-dot');if(el){el.textContent=msg;el.style.color=color||'#4a6d90';}}
+
+function _setupAuth(auth,db){
+  _db=db;
+  auth.onAuthStateChanged(user=>{
+    if(user){
+      _uid=user.uid;
+      _ref=_db.ref('passwords/'+_uid);
+      setSyncStatus('⬤ připojeno','#00ff88');
+      _ref.on('value',snap=>{
+        _entries=snap.val()||{};
+        renderCards();
+        const n=Object.keys(_entries).length;
+        document.getElementById('pw-count').textContent=n+' záznam'+(n===1?'':'ů');
+      });
+    } else {
+      setSyncStatus('⬤ nepřihlášen','#ff4466');
+      document.getElementById('cards-container').innerHTML='<div class="empty-msg">Nejste přihlášeni. Přihlaste se v panelu.</div>';
+    }
+  });
+}
+
+// přebírá parent._gateAuth s retry (stejný vzor jako Platby)
+(function _connectAuth(attempt){
+  try{
+    if(parent&&parent!==self&&parent._gateAuth){
+      let pdb=null;
+      try{pdb=parent.firebase.app('gate-app').database();}catch(e){}
+      if(!pdb){
+        try{if(!firebase.apps.length)firebase.initializeApp(_fbCfg);}catch(e2){}
+        pdb=firebase.database();
+      }
+      _setupAuth(parent._gateAuth,pdb);
+      return;
+    }
+  }catch(e){}
+  if(attempt<8){setTimeout(()=>_connectAuth(attempt+1),250);}
+  else{
+    try{if(!firebase.apps.length)firebase.initializeApp(_fbCfg);}catch(e){}
+    _setupAuth(firebase.auth(),firebase.database());
+  }
+})(0);
+
+// ── RENDER ──
+function renderCards(){
+  const q=(document.getElementById('search-inp').value||'').toLowerCase();
+  const cont=document.getElementById('cards-container');
+  const keys=Object.keys(_entries).filter(k=>{
+    if(!q)return true;
+    const e=_entries[k];
+    return (e.label||'').toLowerCase().includes(q)||(e.email||'').toLowerCase().includes(q)||(e.note||'').toLowerCase().includes(q);
+  });
+  if(!keys.length){cont.innerHTML='<div class="empty-msg">'+(q?'Nic nenalezeno…':'Žádná hesla zatím…')+'</div>';return;}
+  // sort by label
+  keys.sort((a,b)=>((_entries[a].label||'').localeCompare(_entries[b].label||'')));
+  cont.innerHTML=keys.map(k=>cardHTML(k,_entries[k])).join('');
+}
+
+function cardHTML(k,e){
+  const maskedPass='•'.repeat(Math.min((e.pass||'').length,12)||8);
+  return \`<div class="card" id="card-\${k}">
+    <div class="card-header">
+      <span class="card-icon">🔑</span>
+      <span class="card-title">\${esc(e.label||'—')}</span>
+      <div class="card-actions">
+        <button class="btn-icon" onclick="openEdit('\${k}')" title="Upravit">✏</button>
+        <button class="btn-icon btn-del" onclick="delEntry('\${k}')" title="Smazat">🗑</button>
+      </div>
+    </div>
+    <div class="field-row">
+      <span class="field-label">📧</span>
+      <span class="field-val" id="fv-email-\${k}">\${esc(e.email||'—')}</span>
+      <button class="btn-copy" onclick="copyVal('\${esc(e.email||'')}','E-mail')" title="Kopírovat">⎘</button>
+    </div>
+    <div class="field-row">
+      <span class="field-label">🔒</span>
+      <span class="field-val masked" id="fv-pass-\${k}">\${maskedPass}</span>
+      <button class="btn-copy" onclick="toggleReveal('\${k}',\${JSON.stringify(e.pass||'')})" title="Zobrazit / skrýt">👁</button>
+      <button class="btn-copy" onclick="copyVal(\${JSON.stringify(e.pass||'')},\\'Heslo\\')" title="Kopírovat">⎘</button>
+    </div>
+    \${e.note?'<div class="card-note">📝 '+esc(e.note)+'</div>':''}
+  </div>\`;
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ── REVEAL PASS ──
+const _revealed={};
+function toggleReveal(k,pass){
+  const el=document.getElementById('fv-pass-'+k);
+  if(!el)return;
+  if(_revealed[k]){el.textContent='•'.repeat(Math.min((pass||'').length,12)||8);el.classList.add('masked');_revealed[k]=false;}
+  else{el.textContent=pass||'';el.classList.remove('masked');_revealed[k]=true;}
+}
+
+// ── COPY ──
+function copyVal(val,label){
+  navigator.clipboard.writeText(val).then(()=>toast(label+' zkopírován ✓')).catch(()=>toast('Kopírování selhalo'));
+}
+
+// ── TOGGLE PASS VIS ──
+function togglePassVis(id,btn){
+  const inp=document.getElementById(id);
+  if(!inp)return;
+  inp.type=inp.type==='password'?'text':'password';
+  btn.textContent=inp.type==='password'?'👁':'🙈';
+}
+
+// ── ADD ──
+function toggleAddForm(){
+  const f=document.getElementById('add-form');
+  f.classList.toggle('open');
+}
+
+function addEntry(){
+  const label=document.getElementById('inp-label').value.trim();
+  const email=document.getElementById('inp-email').value.trim();
+  const pass=document.getElementById('inp-pass').value;
+  const note=document.getElementById('inp-note').value.trim();
+  if(!label&&!email){toast('Vyplňte aspoň název nebo e-mail');return;}
+  if(!_ref){toast('Nejste připojeni');return;}
+  const key=_ref.push().key;
+  const ts=Date.now();
+  _ref.child(key).set({label,email,pass,note,ts},err=>{
+    if(err){toast('Chyba uložení ✗');}
+    else{
+      toast('Uloženo ✓');
+      document.getElementById('inp-label').value='';
+      document.getElementById('inp-email').value='';
+      document.getElementById('inp-pass').value='';
+      document.getElementById('inp-note').value='';
+      document.getElementById('add-form').classList.remove('open');
+    }
+  });
+}
+
+// ── DELETE ──
+function delEntry(k){
+  if(!confirm('Smazat tento záznam?'))return;
+  if(!_ref)return;
+  _ref.child(k).remove(err=>{if(err)toast('Chyba mazání ✗');else toast('Smazáno ✓');});
+}
+
+// ── EDIT ──
+function openEdit(k){
+  const e=_entries[k];
+  if(!e)return;
+  _editKey=k;
+  document.getElementById('edit-label').value=e.label||'';
+  document.getElementById('edit-email').value=e.email||'';
+  document.getElementById('edit-pass').value=e.pass||'';
+  document.getElementById('edit-note').value=e.note||'';
+  document.getElementById('edit-modal').classList.add('open');
+}
+function closeEdit(){document.getElementById('edit-modal').classList.remove('open');_editKey=null;}
+function saveEdit(){
+  if(!_editKey||!_ref)return;
+  const label=document.getElementById('edit-label').value.trim();
+  const email=document.getElementById('edit-email').value.trim();
+  const pass=document.getElementById('edit-pass').value;
+  const note=document.getElementById('edit-note').value.trim();
+  const ts=(_entries[_editKey]||{}).ts||Date.now();
+  _ref.child(_editKey).set({label,email,pass,note,ts},err=>{
+    if(err){toast('Chyba uložení ✗');}else{toast('Uloženo ✓');closeEdit();}
+  });
+}
+
+// ── TOAST ──
+let _toastTimer=null;
+function toast(msg){
+  const el=document.getElementById('pw-toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(_toastTimer);_toastTimer=setTimeout(()=>el.classList.remove('show'),2500);
+}
+<\/script>
+</body>
+</html>`;
 
 APP_HTML["prekladac"] = `<!DOCTYPE html>
 <html lang="cs">
