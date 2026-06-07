@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v30.11Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v30.12Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.11Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.12Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v30.11Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v30.12Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -347,7 +347,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.11Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.12Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -735,7 +735,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v30.11Kl</div>
+  <div class="version">v30.12Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -10795,7 +10795,7 @@ h2{color:#f97316;font-size:22px;margin:0 0 14px;}
 </style>
 </head>
 <body>
-<h2>📖 Manuály</h2>
+<h2>📖 Manuály <span id="man-sync" style="font-size:11px;font-weight:400;color:#555;margin-left:8px;">⏳ Připojuji…</span></h2>
 <div class="sw"><input type="text" id="q" placeholder="Hledat značku nebo zařízení..." oninput="f()"></div>
 <button class="btn-online" onclick="online()">🌐 Hledat manuál online (Google)</button>
 <div style="background:#111118;border:1px solid #f9731644;border-radius:8px;padding:14px;margin-bottom:16px">
@@ -10894,6 +10894,7 @@ var _customArr=[];var _manRef=null;
         var val=snap.val();
         _customArr=val?Object.values(val):[];
         f();
+        var sd=document.getElementById('man-sync');if(sd){sd.textContent='🟢 Firebase';sd.style.color='#00ff88';}
       });
     }catch(e){if(attempts<10){setTimeout(tryInit,300);}}
   }
@@ -15356,7 +15357,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v30.11Kl</div>
+<div class="sub">KLADYXLAND · v30.12Kl</div>
 
 <div class="section">
   <div class="sec-title">🔥 Firebase (základ všech DB appek)</div>
@@ -15384,6 +15385,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
     <div class="item checking" id="i-fb-zxnext"><div class="dot checking" id="d-fb-zxnext"></div><div class="name">💾 ZXNext</div><div class="st checking" id="s-fb-zxnext">…</div></div>
     <div class="item checking" id="i-fb-wordmaster"><div class="dot checking" id="d-fb-wordmaster"></div><div class="name">🇬🇧 WordMaster</div><div class="st checking" id="s-fb-wordmaster">…</div></div>
     <div class="item checking" id="i-fb-password"><div class="dot checking" id="d-fb-password"></div><div class="name">🔑 Hesla</div><div class="st checking" id="s-fb-password">…</div></div>
+    <div class="item checking" id="i-fb-manualy"><div class="dot checking" id="d-fb-manualy"></div><div class="name">📖 Manuály</div><div class="st checking" id="s-fb-manualy">…</div></div>
   </div>
 </div>
 
@@ -15452,7 +15454,6 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 <div class="section">
   <div class="sec-title">💻 Lokální appky — vždy online</div>
   <div class="grid">
-    <div class="item local"><div class="dot local"></div><div class="name">📖 Manuály</div><div class="st local">Lokální ✓</div></div>
     <div class="item local"><div class="dot local"></div><div class="name">🎤 Radio ID</div><div class="st local">Lokální ✓</div></div>
     <div class="item local"><div class="dot local"></div><div class="name">🕹️ ZX Games</div><div class="st local">Lokální ✓</div></div>
     <div class="item local"><div class="dot local"></div><div class="name">🎵 HouseTime</div><div class="st local">Lokální ✓</div></div>
@@ -15486,7 +15487,7 @@ function setS(id, state, text) {
 }
 
 // ── Firebase DB check → cascade to all FB apps ──
-var FB_APPS = ['odecty','cd','hardware','lp','platby','jidlo','gluco','notes','kalendar','obs','arch','zxnext','wordmaster','password'];
+var FB_APPS = ['odecty','cd','hardware','lp','platby','jidlo','gluco','notes','kalendar','obs','arch','zxnext','wordmaster','password','manualy'];
 
 function setFbApps(state) {
   var txt = state==='ok' ? 'Online ✓' : 'Offline ✗';
