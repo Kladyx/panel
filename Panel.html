@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v30.20Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v30.21Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.20Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.21Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v30.20Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v30.21Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -351,7 +351,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.20Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.21Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -741,7 +741,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v30.20Kl</div>
+  <div class="version">v30.21Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -15363,7 +15363,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v30.20Kl</div>
+<div class="sub">KLADYXLAND · v30.21Kl</div>
 
 <div class="section">
   <div class="sec-title">🔥 Firebase (základ všech DB appek)</div>
@@ -17621,7 +17621,7 @@ body{display:flex;flex-direction:column;}
 <div class="topbar">
   <div class="topbar-title">&#x1F4E1; NEXT<span>SYNC</span></div>
   <div><span class="hb-dot" id="hb-dot"></span><span id="hb-text" style="font-size:9px;color:#888;">--</span></div>
-  <div class="ver">v30.20Kl</div>
+  <div class="ver">v30.21Kl</div>
 </div>
 <div class="tabs">
   <div class="tab active" id="tb-files">&#x1F4C1; SLOZKY</div>
@@ -17739,6 +17739,18 @@ function downloadFromPC(name){
   log('Stazeno: '+name,'ok');
 }
 
+function deletePCFile(name){
+  if(!confirm('Smazat z PC: '+name+' ?'))return;
+  log('Mazu z PC: '+name,'in');
+  fetch('http://'+cfg.pc_ip+':'+cfg.pc_port+'/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folder:curFolder,name:name})})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.ok){log('Smazano z PC: '+name,'ok');loadPCFiles(curFolder);}
+    else log('Chyba mazani','er');
+  })
+  .catch(function(){log('PC nedostupny','er');});
+}
+
 function renderFiles(){
   var m=document.getElementById('main');if(!m)return;
   var fb=Object.keys(folders).map(function(k){
@@ -17759,6 +17771,7 @@ function renderFiles(){
     return '<div class="frow"><span class="fname" style="color:#4af;">[PC] '+esc(f.name)+'</span>'
       +'<span class="fsize">'+fmt(f.size)+'</span>'
       +(isHttp?'<button class="fbtn" data-dl="'+esc(f.name)+'">DL</button>':'')
+      +(isHttp?'<button class="fbtn d" data-dpc="'+esc(f.name)+'">x</button>':'')
       +'</div>';
   }).join('');
 
@@ -17783,6 +17796,7 @@ function renderFiles(){
   m.querySelectorAll('[data-si]').forEach(function(el){el.onclick=function(){sendToNext(parseInt(el.getAttribute('data-si')));};});
   m.querySelectorAll('[data-di]').forEach(function(el){el.onclick=function(){delFile(parseInt(el.getAttribute('data-di')));};});
   m.querySelectorAll('[data-dl]').forEach(function(el){el.onclick=function(){downloadFromPC(el.getAttribute('data-dl'));};});
+  m.querySelectorAll('[data-dpc]').forEach(function(el){el.onclick=function(){deletePCFile(el.getAttribute('data-dpc'));};});
 
   // Soubory se nacitaji z Firebase real-time (kazde 3s)
 }
@@ -17869,7 +17883,7 @@ document.getElementById('file-input').addEventListener('change',function(e){
   e.target.value='';
 });
 
-getS();getF();renderFiles();log('NextSync v30.20Kl OK ('+(isHttp?'PC':'GitHub')+' mode)','ok');
+getS();getF();renderFiles();log('NextSync v30.21Kl OK ('+(isHttp?'PC':'GitHub')+' mode)','ok');
 loadHeartbeat();
 loadPCFiles(curFolder);
 setInterval(loadHeartbeat,15000);
