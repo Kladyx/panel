@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v30.15Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v30.16Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.15Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.16Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v30.15Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v30.16Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -351,7 +351,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.15Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.16Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -741,7 +741,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v30.15Kl</div>
+  <div class="version">v30.16Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -15363,7 +15363,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v30.15Kl</div>
+<div class="sub">KLADYXLAND · v30.16Kl</div>
 
 <div class="section">
   <div class="sec-title">🔥 Firebase (základ všech DB appek)</div>
@@ -17577,6 +17577,9 @@ body{display:flex;flex-direction:column;}
 .topbar-title{color:#00ffff;font-size:13px;letter-spacing:3px;flex:1;}
 .topbar-title span{color:#ffff00;}
 .ver{font-size:9px;color:#444;}
+.hb-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#444;margin-right:4px;}
+.hb-dot.on{background:#0f0;box-shadow:0 0 6px #0f0;}
+.hb-dot.off{background:#f44;box-shadow:0 0 6px #f44;}
 .tabs{display:flex;border-bottom:1px solid rgba(0,255,136,0.2);flex-shrink:0;}
 .tab{flex:1;padding:7px 4px;text-align:center;font-size:10px;cursor:pointer;color:#00aa55;border-right:1px solid rgba(0,255,136,0.15);}
 .tab:last-child{border-right:none;}
@@ -17590,9 +17593,6 @@ body{display:flex;flex-direction:column;}
 .btn{background:#001a00;border:1px solid #00ff00;color:#00ff00;font-family:inherit;font-size:10px;padding:6px 12px;border-radius:3px;cursor:pointer;}
 .btn:active{background:#00ff00;color:#000;}
 .btn.red{border-color:#f44;color:#f44;}
-.btn.red:active{background:#f44;color:#000;}
-.btn.blue{border-color:#0cf;color:#0cf;}
-.btn.blue:active{background:#0cf;color:#000;}
 .sbox{background:#000;border:1px solid rgba(0,255,136,0.15);border-radius:3px;padding:8px;font-size:10px;line-height:1.8;}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;}
 .dot.g{background:#0f0;box-shadow:0 0 6px #0f0;}
@@ -17607,28 +17607,21 @@ body{display:flex;flex-direction:column;}
 .fname{color:#0c6;font-size:10px;flex:1;word-break:break-all;}
 .fsize{color:#444;font-size:9px;white-space:nowrap;}
 .fbtn{background:none;border:1px solid rgba(0,255,136,0.2);color:#0a5;font-size:9px;padding:3px 7px;border-radius:2px;cursor:pointer;font-family:inherit;}
-.fbtn:active{color:#0f0;}
-.fbtn.d:active{color:#f44;}
 .uzone{border:2px dashed rgba(0,255,136,0.3);border-radius:4px;padding:14px;text-align:center;color:#0a5;font-size:10px;cursor:pointer;margin-bottom:8px;}
-.uzone:active{background:rgba(0,255,136,0.05);}
 .log{background:#000;border:1px solid rgba(0,255,136,0.1);border-radius:3px;padding:8px;font-size:9px;line-height:1.9;max-height:120px;overflow-y:auto;}
 .ll{display:block;}
 .ll.ok{color:#0f8;}
 .ll.er{color:#f44;}
 .ll.in{color:#0cf;}
 .empty{text-align:center;color:#0a5;font-size:10px;padding:20px;opacity:0.6;}
-.loading{text-align:center;color:#0cf;font-size:10px;padding:10px;letter-spacing:2px;}
-.pc-file{border-color:rgba(0,100,255,0.3);}
-.pc-file .fname{color:#4af;}
-.badge{font-size:8px;padding:1px 4px;border-radius:2px;margin-left:4px;}
-.badge.pc{background:rgba(0,100,255,0.2);color:#4af;border:1px solid rgba(0,100,255,0.3);}
-.badge.mob{background:rgba(0,255,100,0.1);color:#0a5;border:1px solid rgba(0,255,100,0.2);}
+.warn{background:rgba(255,200,0,0.1);border:1px solid rgba(255,200,0,0.3);color:#fc5;padding:8px;border-radius:3px;font-size:10px;line-height:1.6;}
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="topbar-title">&#x1F4E1; NEXT<span>SYNC</span></div>
-  <div class="ver">v30.15Kl</div>
+  <div><span class="hb-dot" id="hb-dot"></span><span id="hb-text" style="font-size:9px;color:#888;">--</span></div>
+  <div class="ver">v30.16Kl</div>
 </div>
 <div class="tabs">
   <div class="tab active" id="tb-files">&#x1F4C1; SLOZKY</div>
@@ -17641,16 +17634,17 @@ body{display:flex;flex-direction:column;}
 var CFG_KEY='nextsync_cfg';
 var FILES_KEY='nextsync_files';
 function getStorage(){try{var s=window.parent.localStorage;s.getItem('__test__');return s;}catch(e){return localStorage;}}
-var cfg={pc_ip:'192.168.1.100',pc_port:'8765',next_ip:'192.168.1.50',sync_folder:'C:\\nextsync'};
+var cfg={pc_ip:'192.168.0.1',pc_port:'8765',next_ip:'192.168.0.124'};
 var curFolder='games';
 var folders={
-  games:{icon:'&#x1F3AE;',label:'Games',files:[],pcfiles:[]},
-  programs:{icon:'&#x1F4BE;',label:'Programs',files:[],pcfiles:[]},
-  utility:{icon:'&#x1F527;',label:'Utility',files:[],pcfiles:[]}
+  games:{icon:'&#x1F3AE;',label:'Games',files:[],pcCount:0},
+  programs:{icon:'&#x1F4BE;',label:'Programs',files:[],pcCount:0},
+  utility:{icon:'&#x1F527;',label:'Utility',files:[],pcCount:0}
 };
 var sLog=[];
 var curTab='files';
-var pcOK=false;
+var hbStatus={online:false,ip:'?',port:8765,lastSeen:0,ageSec:0};
+var isHttp=(window.parent && window.parent.location && window.parent.location.protocol==='http:');
 
 function getS(){try{var s=getStorage().getItem(CFG_KEY);if(s)cfg=Object.assign(cfg,JSON.parse(s));}catch(e){}}
 function setS(){try{getStorage().setItem(CFG_KEY,JSON.stringify(cfg));}catch(e){}}
@@ -17658,7 +17652,7 @@ function getF(){try{var s=getStorage().getItem(FILES_KEY);if(s){var d=JSON.parse
 function setF(){try{var d={};Object.keys(folders).forEach(function(k){d[k]={files:folders[k].files||[]};});getStorage().setItem(FILES_KEY,JSON.stringify(d));}catch(e){}}
 
 function log(msg,t){
-  var now=new Date(),h=now.getHours().toString().padStart(2,'0'),mi=now.getMinutes().toString().padStart(2,'0'),s=now.getSeconds().toString().padStart(2,'0');
+  var n=new Date(),h=n.getHours().toString().padStart(2,'0'),mi=n.getMinutes().toString().padStart(2,'0'),s=n.getSeconds().toString().padStart(2,'0');
   sLog.unshift({msg:msg,t:t||'in',ts:h+':'+mi+':'+s});
   if(sLog.length>50)sLog.pop();
   if(curTab==='status')renderStatus();
@@ -17678,132 +17672,105 @@ document.getElementById('tb-files').onclick=function(){showTab('files');};
 document.getElementById('tb-status').onclick=function(){showTab('status');};
 document.getElementById('tb-settings').onclick=function(){showTab('settings');};
 
-// Nacti soubory z PC pres /list endpoint
-function loadPCFiles(folder, callback){
-  fetch('http://'+cfg.pc_ip+':'+cfg.pc_port+'/list?folder='+folder, {signal:AbortSignal.timeout(4000)})
+function loadHeartbeat(){
+  var url='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/status.json';
+  fetch(url,{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(d){
-    folders[folder].pcfiles = d.files || [];
-    log('PC '+folder+': '+folders[folder].pcfiles.length+'x', 'ok');
-    if(callback)callback();
+    if(d && d.lastSeen){
+      var ageMs=Date.now()-d.lastSeen;
+      var online=d.online && ageMs<45000;
+      hbStatus={online:online,ip:d.ip||'?',port:d.port||8765,lastSeen:d.lastSeen,ageSec:Math.floor(ageMs/1000),folders:d.folders||{}};
+      if(d.folders){
+        Object.keys(d.folders).forEach(function(k){if(folders[k])folders[k].pcCount=d.folders[k];});
+      }
+    } else {
+      hbStatus={online:false,ip:'?',port:8765,lastSeen:0,ageSec:0};
+    }
+    updateHbDot();
+    if(curTab==='status')renderStatus();
+    if(curTab==='files')renderFiles();
   })
   .catch(function(){
-    folders[folder].pcfiles = [];
-    log('PC nedostupny - zobrazuji lokalni', 'in');
-    if(callback)callback();
+    hbStatus.online=false;
+    updateHbDot();
   });
+}
+
+function updateHbDot(){
+  var d=document.getElementById('hb-dot');var t=document.getElementById('hb-text');
+  if(!d||!t)return;
+  if(hbStatus.online){
+    d.className='hb-dot on';t.textContent='PC '+hbStatus.ip;t.style.color='#0f0';
+  } else {
+    d.className='hb-dot off';t.textContent='PC offline';t.style.color='#f44';
+  }
 }
 
 function renderFiles(){
   var m=document.getElementById('main');if(!m)return;
   var fb=Object.keys(folders).map(function(k){
-    var f=folders[k];
-    var total=(f.files?f.files.length:0)+(f.pcfiles?f.pcfiles.length:0);
-    return '<div class="fitem'+(k===curFolder?' active':'')+'" data-k="'+k+'">'+f.icon+' <span class="fn">'+f.label+'</span><span class="fc">'+total+'x</span></div>';
+    var f=folders[k];var mob=f.files?f.files.length:0;
+    return '<div class="fitem'+(k===curFolder?' active':'')+'" data-k="'+k+'">'+f.icon+' <span class="fn">'+f.label+'</span><span class="fc">'+mob+'+ '+f.pcCount+'x</span></div>';
   }).join('');
 
-  // Spoj mobilni a PC soubory
   var fd=folders[curFolder].files||[];
-  var pcd=folders[curFolder].pcfiles||[];
-
   var frMob=fd.map(function(f,i){
-    return '<div class="frow"><span class="fname">'+esc(f.name)+'<span class="badge mob">MOB</span></span>'
+    return '<div class="frow"><span class="fname">'+esc(f.name)+'</span>'
       +'<span class="fsize">'+fmt(f.size)+'</span>'
-      +'<button class="fbtn" data-si="'+i+'">NEXT</button>'
-      +'<button class="fbtn d" data-di="'+i+'">x</button></div>';
+      +(isHttp?'<button class="fbtn" data-si="'+i+'">SEND</button>':'')
+      +'<button class="fbtn" data-di="'+i+'">x</button></div>';
   }).join('');
 
-  var frPC=pcd.map(function(f){
-    return '<div class="frow pc-file"><span class="fname">'+esc(f.name)+'<span class="badge pc">PC</span></span>'
-      +'<span class="fsize">'+fmt(f.size)+'</span></div>';
-  }).join('');
+  var modeInfo=isHttp
+    ?'<div class="sbox" style="color:#0f8;font-size:9px;">&#x2713; Lokalni rezim (z PC) - muzes posilat soubory</div>'
+    :'<div class="warn">Pro odesilani souboru otevri panel z PC: <b>http://'+hbStatus.ip+':'+hbStatus.port+'/</b><br>Zde vidis status a pocty pres Firebase.</div>';
 
-  var allRows=frMob+frPC;
-  if(!allRows)allRows='<div class="empty">prazdna slozka</div>';
+  m.innerHTML='<div class="section"><div class="stitle">SLOZKY (mob + PC)</div><div class="flist">'+fb+'</div></div>'
+    +'<div class="section"><div class="stitle">'+folders[curFolder].label.toUpperCase()+'</div>'
+    +modeInfo
+    +(isHttp?'<div class="uzone" id="uzone">&#x2B06; KLIKNI - pridej soubory</div>':'')
+    +'<div class="files">'+(frMob||'<div class="empty">zadne mobilni soubory</div>')+'</div>'
+    +'<div style="font-size:9px;color:#888;margin-top:8px;">PC ma <b style="color:#4af">'+folders[curFolder].pcCount+'</b> souboru</div>'
+    +'</div>';
 
-  m.innerHTML='<div class="section"><div class="stitle">SLOZKY</div><div class="flist">'+fb+'</div></div>'
-    +'<div class="section"><div class="stitle">'+folders[curFolder].label.toUpperCase()+' <span id="pc-status" style="font-size:8px;color:#0cf;font-weight:normal;"></span></div>'
-    +'<div class="uzone" id="uzone">&#x2B06; KLIKNI - pridej soubory z mobilu</div>'
-    +'<div class="files" id="file-list"><div class="loading">nacitam z PC...</div></div></div>'
-    +'<div class="section"><div class="stitle">AKCE</div><div class="row">'
-    +'<button class="btn" id="btn-refresh">&#x1F504; REFRESH</button>'
-    +'<button class="btn" id="btn-all">VSE NEXT</button>'
-    +'<button class="btn red" id="btn-clear">CLEAR MOB</button>'
-    +'</div></div>';
-
-  document.getElementById('uzone').onclick=function(){document.getElementById('file-input').click();};
-  document.getElementById('btn-refresh').onclick=function(){refreshFolder();};
-  document.getElementById('btn-all').onclick=function(){sendAll();};
-  document.getElementById('btn-clear').onclick=function(){clearF();};
-  m.querySelectorAll('.fitem').forEach(function(el){
-    el.onclick=function(){curFolder=el.getAttribute('data-k');renderFiles();};
-  });
-
-  // Nacti soubory z PC
-  loadPCFiles(curFolder, function(){
-    var fl=document.getElementById('file-list');
-    if(!fl)return;
-    var pcd2=folders[curFolder].pcfiles||[];
-    var frPC2=pcd2.map(function(f){
-      return '<div class="frow pc-file"><span class="fname">'+esc(f.name)+'<span class="badge pc">PC</span></span>'
-        +'<span class="fsize">'+fmt(f.size)+'</span></div>';
-    }).join('');
-    var frMob2=(folders[curFolder].files||[]).map(function(f,i){
-      return '<div class="frow"><span class="fname">'+esc(f.name)+'<span class="badge mob">MOB</span></span>'
-        +'<span class="fsize">'+fmt(f.size)+'</span>'
-        +'<button class="fbtn" data-si="'+i+'">NEXT</button>'
-        +'<button class="fbtn d" data-di="'+i+'">x</button></div>';
-    }).join('');
-    fl.innerHTML=frMob2+frPC2||'<div class="empty">prazdna slozka</div>';
-    var ps=document.getElementById('pc-status');
-    if(ps)ps.textContent='[PC: '+pcd2.length+'x]';
-    fl.querySelectorAll('[data-si]').forEach(function(el){
-      el.onclick=function(){sendToNext(parseInt(el.getAttribute('data-si')));};
-    });
-    fl.querySelectorAll('[data-di]').forEach(function(el){
-      el.onclick=function(){delFile(parseInt(el.getAttribute('data-di')));};
-    });
-  });
+  if(isHttp){
+    var uz=document.getElementById('uzone');
+    if(uz)uz.onclick=function(){document.getElementById('file-input').click();};
+  }
+  m.querySelectorAll('.fitem').forEach(function(el){el.onclick=function(){curFolder=el.getAttribute('data-k');renderFiles();};});
+  m.querySelectorAll('[data-si]').forEach(function(el){el.onclick=function(){sendToNext(parseInt(el.getAttribute('data-si')));};});
+  m.querySelectorAll('[data-di]').forEach(function(el){el.onclick=function(){delFile(parseInt(el.getAttribute('data-di')));};});
 }
 
-function refreshFolder(){log('Refresh...','in');renderFiles();}
 function delFile(i){folders[curFolder].files.splice(i,1);setF();log('Smazano','in');renderFiles();}
-function clearF(){if(!confirm('Smazat mobilni soubory?'))return;folders[curFolder].files=[];setF();log('Clear','in');renderFiles();}
 
 function sendToNext(i){
+  if(!isHttp){log('Otevri panel z PC','er');return;}
   var f=folders[curFolder].files[i];if(!f)return;
   log('Odesilam: '+f.name,'in');
   fetch('http://'+cfg.pc_ip+':'+cfg.pc_port+'/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folder:curFolder,name:f.name,data:f.data})})
   .then(function(r){log(r.ok?'OK: '+f.name:'Chyba '+r.status,r.ok?'ok':'er');})
   .catch(function(){log('PC nedostupny','er');});
 }
-function sendAll(){var fl=folders[curFolder].files||[];if(!fl.length){log('Zadne mob. soubory','in');return;}fl.forEach(function(f,i){sendToNext(i);});}
 
 function renderStatus(){
   var m=document.getElementById('main');if(!m)return;
   var lh=sLog.length===0?'<div class="empty">zadne zaznamy</div>'
     :sLog.map(function(l){return '<span class="ll '+l.t+'">'+l.ts+' '+esc(l.msg)+'</span>';}).join('');
-  m.innerHTML='<div class="section"><div class="stitle">PRIPOJENI</div>'
-    +'<div class="sbox"><div><span class="dot '+(pcOK?'g':'r')+'"></span>PC '+cfg.pc_ip+':'+cfg.pc_port+' - <b style="color:'+(pcOK?'#0f0':'#f44')+'">'+(pcOK?'ONLINE':'OFFLINE')+'</b></div></div>'
-    +'<div class="row" style="margin-top:8px"><button class="btn" id="btn-chk">CHECK</button>'
+  var ageInfo=hbStatus.lastSeen?'(pred '+hbStatus.ageSec+'s)':'';
+  m.innerHTML='<div class="section"><div class="stitle">PC SERVER (pres Firebase)</div>'
+    +'<div class="sbox"><div><span class="dot '+(hbStatus.online?'g':'r')+'"></span>Status: <b style="color:'+(hbStatus.online?'#0f0':'#f44')+'">'+(hbStatus.online?'ONLINE':'OFFLINE')+'</b> '+ageInfo+'</div>'
+    +'<div style="margin-top:6px">IP: <b style="color:#0ff">'+hbStatus.ip+':'+hbStatus.port+'</b></div>'
+    +'<div style="margin-top:6px">Rezim: <b style="color:#fc5">'+(isHttp?'PC (lokalne)':'GitHub (vzdalene)')+'</b></div>'
+    +'</div>'
+    +'<div class="row" style="margin-top:8px"><button class="btn" id="btn-refresh">REFRESH</button>'
     +'<button class="btn red" id="btn-clrlog">CLEAR LOG</button></div></div>'
     +'<div class="section"><div class="stitle">LOG</div><div class="log">'+lh+'</div></div>'
-    +'<div class="section"><div class="stitle">PREHLED</div><div class="sbox">'
-    +Object.keys(folders).map(function(k){
-      var f=folders[k];
-      var mob=f.files?f.files.length:0;
-      var pc=f.pcfiles?f.pcfiles.length:0;
-      return '<div>'+f.icon+' '+f.label+': <b style="color:#0f8">'+mob+'</b> mob / <b style="color:#4af">'+pc+'</b> PC</div>';
-    }).join('')+'</div></div>';
-  document.getElementById('btn-chk').onclick=function(){checkPC();};
+    +'<div class="section"><div class="stitle">PREHLED SLOZEK</div><div class="sbox">'
+    +Object.keys(folders).map(function(k){var f=folders[k];var mob=f.files?f.files.length:0;return '<div>'+f.icon+' '+f.label+': <b style="color:#0f8">'+mob+'</b> mob / <b style="color:#4af">'+f.pcCount+'</b> PC</div>';}).join('')+'</div></div>';
+  document.getElementById('btn-refresh').onclick=function(){loadHeartbeat();log('Refresh','in');};
   document.getElementById('btn-clrlog').onclick=function(){sLog=[];renderStatus();};
-}
-
-function checkPC(){
-  log('Test PC...','in');
-  fetch('http://'+cfg.pc_ip+':'+cfg.pc_port+'/ping',{signal:AbortSignal.timeout(3000)})
-  .then(function(r){pcOK=r.ok;log(r.ok?'PC online':'PC chyba',r.ok?'ok':'er');renderStatus();})
-  .catch(function(){pcOK=false;log('PC offline','er');renderStatus();});
 }
 
 function renderSettings(){
@@ -17811,30 +17778,28 @@ function renderSettings(){
   m.innerHTML='<div class="section"><div class="stitle">PC SERVER</div>'
     +'<div class="row"><div class="label">IP:</div><input class="inp" id="s1" value="'+esc(cfg.pc_ip)+'"></div>'
     +'<div class="row"><div class="label">Port:</div><input class="inp" id="s2" value="'+esc(cfg.pc_port)+'"></div>'
-    +'<div class="row"><div class="label">Slozka:</div><input class="inp" id="s3" value="'+esc(cfg.sync_folder)+'"></div>'
     +'</div><div class="section"><div class="stitle">ZX NEXT</div>'
     +'<div class="row"><div class="label">IP:</div><input class="inp" id="s4" value="'+esc(cfg.next_ip)+'"></div>'
     +'</div><div class="section"><div class="stitle">ULOZIT</div>'
-    +'<div class="row"><button class="btn" id="btn-save">ULOZIT</button>'
-    +'<button class="btn blue" id="btn-test">TEST</button></div>'
+    +'<div class="row"><button class="btn" id="btn-save">ULOZIT</button></div>'
     +'<div id="smsg" style="font-size:10px;color:#0f0;margin-top:6px;"></div>'
-    +'</div><div class="section"><div class="stitle">NAVOD</div>'
+    +'</div><div class="section"><div class="stitle">JAK TO FUNGUJE</div>'
     +'<div class="sbox" style="font-size:9px;line-height:2;color:#0a5;">'
-    +'1. Zkopiruj novy nextsync_server.py na PC<br>'
-    +'2. Spust: python nextsync_server.py<br>'
-    +'3. Nastav IP a port - uloz<br>'
-    +'4. SLOZKY = vidis soubory z PC i mobilu<br>'
-    +'5. NEXT = soubor z mobilu jde na PC<br>'
-    +'6. Na ZX Next spust .sync<br>'
+    +'<b style="color:#fc5">2 rezimy:</b><br>'
+    +'<b>Z GitHubu</b> (zde): status PC pres Firebase<br>'
+    +'<b>Z PC</b> (http://IP:8765/): plne ovladani<br><br>'
+    +'<b style="color:#fc5">Spusteni:</b><br>'
+    +'1. Zkopiruj nextsync_server.py do C:\\nextsync\\<br>'
+    +'2. Spust start_UploadServer.bat<br>'
+    +'3. Server posila heartbeat do Firebase kazdych 15s<br>'
+    +'4. Zde se ukaze zelena tecka ONLINE<br>'
     +'</div></div>';
   document.getElementById('btn-save').onclick=function(){saveSet();};
-  document.getElementById('btn-test').onclick=function(){checkPC();showTab('status');};
 }
 
 function saveSet(){
   cfg.pc_ip=document.getElementById('s1').value.trim();
   cfg.pc_port=document.getElementById('s2').value.trim();
-  cfg.sync_folder=document.getElementById('s3').value.trim();
   cfg.next_ip=document.getElementById('s4').value.trim();
   setS();
   var msg=document.getElementById('smsg');
@@ -17860,10 +17825,13 @@ document.getElementById('file-input').addEventListener('change',function(e){
   e.target.value='';
 });
 
-getS();getF();renderFiles();log('NextSync v30.15Kl OK','ok');
+getS();getF();renderFiles();log('NextSync v30.16Kl OK ('+(isHttp?'PC':'GitHub')+' mode)','ok');
+loadHeartbeat();
+setInterval(loadHeartbeat,15000);
 <\/script>
 </body>
-</html>`
+</html>`;
+
 function openApp(id) {
   try {
     document.getElementById("welcome").classList.add("hidden");
