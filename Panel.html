@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v30.14Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v30.15Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.14Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.15Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v30.14Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v30.15Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -351,7 +351,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.14Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.15Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -741,7 +741,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v30.14Kl</div>
+  <div class="version">v30.15Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -15363,7 +15363,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v30.14Kl</div>
+<div class="sub">KLADYXLAND · v30.15Kl</div>
 
 <div class="section">
   <div class="sec-title">🔥 Firebase (základ všech DB appek)</div>
@@ -17576,7 +17576,7 @@ body{display:flex;flex-direction:column;}
 .topbar{background:#000;border-bottom:2px solid #00ff00;padding:6px 10px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .topbar-title{color:#00ffff;font-size:13px;letter-spacing:3px;text-shadow:0 0 8px #00ffff;flex:1;}
 .topbar-title span{color:#ffff00;}
-.ver{font-size:9px;color:#444;letter-spacing:1px;}
+.ver{font-size:9px;color:#444;}
 .tabs{display:flex;border-bottom:1px solid rgba(0,255,136,0.2);flex-shrink:0;}
 .tab{flex:1;padding:7px 4px;text-align:center;font-size:10px;letter-spacing:1px;cursor:pointer;color:#00aa55;border-right:1px solid rgba(0,255,136,0.15);}
 .tab:last-child{border-right:none;}
@@ -17586,57 +17586,47 @@ body{display:flex;flex-direction:column;}
 .main::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.2);}
 .section{background:rgba(0,20,0,.5);border:1px solid rgba(0,255,136,0.2);border-radius:4px;padding:10px;margin-bottom:10px;}
 .section-title{color:#ffff00;font-size:10px;letter-spacing:2px;margin-bottom:8px;border-bottom:1px solid rgba(255,255,0,0.2);padding-bottom:5px;}
-.row{display:flex;gap:6px;align-items:center;margin-bottom:7px;}
-.label{color:#00cc66;font-size:9px;letter-spacing:1px;min-width:80px;}
-.inp{background:#001a00;border:1px solid rgba(0,255,136,0.3);color:#00ff88;font-family:'Share Tech Mono',monospace;font-size:11px;padding:5px 8px;border-radius:3px;flex:1;outline:none;}
+.row{display:flex;gap:6px;align-items:center;margin-bottom:7px;flex-wrap:wrap;}
+.label{color:#00cc66;font-size:9px;min-width:80px;}
+.inp{background:#001a00;border:1px solid rgba(0,255,136,0.3);color:#00ff88;font-family:'Share Tech Mono',monospace;font-size:11px;padding:5px 8px;border-radius:3px;flex:1;outline:none;min-width:0;}
 .inp:focus{border-color:#00ff88;}
-.btn{background:#001a00;border:1px solid #00ff00;color:#00ff00;font-family:'Share Tech Mono',monospace;font-size:10px;padding:6px 12px;border-radius:3px;cursor:pointer;letter-spacing:1px;white-space:nowrap;}
-.btn:hover{background:#00ff00;color:#000;}
+.btn{background:#001a00;border:1px solid #00ff00;color:#00ff00;font-family:'Share Tech Mono',monospace;font-size:10px;padding:6px 12px;border-radius:3px;cursor:pointer;letter-spacing:1px;}
+.btn:active{background:#00ff00;color:#000;}
 .btn.red{border-color:#ff3333;color:#ff3333;}
-.btn.red:hover{background:#ff3333;color:#000;}
+.btn.red:active{background:#ff3333;color:#000;}
 .btn.blue{border-color:#00ccff;color:#00ccff;}
-.btn.blue:hover{background:#00ccff;color:#000;}
-.status-box{background:#000;border:1px solid rgba(0,255,136,0.15);border-radius:3px;padding:8px;font-size:10px;line-height:1.8;min-height:40px;}
+.btn.blue:active{background:#00ccff;color:#000;}
+.status-box{background:#000;border:1px solid rgba(0,255,136,0.15);border-radius:3px;padding:8px;font-size:10px;line-height:1.8;}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;}
 .dot.green{background:#00ff00;box-shadow:0 0 6px #00ff00;}
-.dot.red{background:#ff3333;box-shadow:0 0 6px #ff3333;}
-.dot.yellow{background:#ffff00;box-shadow:0 0 6px #ffff00;}
-.dot.grey{background:#444;}
+.dot.red{background:#ff3333;}
 .folder-list{display:flex;flex-direction:column;gap:6px;}
 .folder-item{background:#001500;border:1px solid rgba(0,255,136,0.2);border-radius:3px;padding:8px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;}
-.folder-item:hover{border-color:#00ff88;background:#002000;}
-.folder-item.active{border-color:#ffff00;background:#001a00;}
+.folder-item.active{border-color:#ffff00;}
 .folder-icon{font-size:16px;}
-.folder-name{color:#00ffff;font-size:11px;letter-spacing:1px;flex:1;}
+.folder-name{color:#00ffff;font-size:11px;flex:1;}
 .folder-count{color:#444;font-size:9px;}
 .file-list{display:flex;flex-direction:column;gap:4px;margin-top:8px;}
-.file-item{background:#000;border:1px solid rgba(0,255,136,0.1);border-radius:3px;padding:6px 8px;display:flex;align-items:center;gap:8px;}
-.file-item:hover{border-color:rgba(0,255,136,0.3);}
+.file-item{background:#000;border:1px solid rgba(0,255,136,0.1);border-radius:3px;padding:6px 8px;display:flex;align-items:center;gap:6px;}
 .file-name{color:#00cc66;font-size:10px;flex:1;word-break:break-all;}
-.file-size{color:#444;font-size:9px;min-width:50px;text-align:right;}
-.file-actions{display:flex;gap:4px;}
-.file-btn{background:none;border:1px solid rgba(0,255,136,0.2);color:#00aa55;font-size:9px;padding:2px 6px;border-radius:2px;cursor:pointer;font-family:'Share Tech Mono',monospace;}
-.file-btn:hover{border-color:#00ff88;color:#00ff88;}
-.file-btn.del:hover{border-color:#ff3333;color:#ff3333;}
-.upload-zone{border:2px dashed rgba(0,255,136,0.3);border-radius:4px;padding:16px;text-align:center;color:#00aa55;font-size:10px;letter-spacing:1px;cursor:pointer;margin-bottom:8px;transition:all 0.2s;}
-.upload-zone:hover,.upload-zone.drag{border-color:#00ff88;color:#00ff88;background:rgba(0,255,136,0.05);}
-.progress-bar{width:100%;height:6px;background:#001a00;border-radius:3px;overflow:hidden;margin-top:4px;}
-.progress-fill{height:100%;background:#00ff00;border-radius:3px;transition:width 0.3s;}
-.log{background:#000;border:1px solid rgba(0,255,136,0.1);border-radius:3px;padding:8px;font-size:9px;line-height:1.9;max-height:120px;overflow-y:auto;color:#00aa55;}
-.log::-webkit-scrollbar{width:3px;}
-.log::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.2);}
+.file-size{color:#444;font-size:9px;white-space:nowrap;}
+.file-btn{background:none;border:1px solid rgba(0,255,136,0.2);color:#00aa55;font-size:9px;padding:3px 7px;border-radius:2px;cursor:pointer;font-family:'Share Tech Mono',monospace;}
+.file-btn:active{border-color:#00ff88;color:#00ff88;}
+.file-btn.del:active{border-color:#ff3333;color:#ff3333;}
+.upload-zone{border:2px dashed rgba(0,255,136,0.3);border-radius:4px;padding:14px;text-align:center;color:#00aa55;font-size:10px;cursor:pointer;margin-bottom:8px;}
+.upload-zone:active{background:rgba(0,255,136,0.05);}
+.log{background:#000;border:1px solid rgba(0,255,136,0.1);border-radius:3px;padding:8px;font-size:9px;line-height:1.9;max-height:120px;overflow-y:auto;}
 .log-line{display:block;}
 .log-line.ok{color:#00ff88;}
 .log-line.err{color:#ff4444;}
 .log-line.info{color:#00ccff;}
-.empty{text-align:center;color:#00aa55;font-size:10px;letter-spacing:2px;padding:20px;opacity:0.6;}
-input[type=file]{display:none;}
+.empty{text-align:center;color:#00aa55;font-size:10px;padding:20px;opacity:0.6;}
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="topbar-title">📡 NEXT<span>SYNC</span></div>
-  <div class="ver">v30.14Kl</div>
+  <div class="ver">v30.15Kl</div>
 </div>
 <div class="tabs">
   <div class="tab active" id="tab-files" onclick="showTab('files')">📁 SLOŽKY</div>
@@ -17644,316 +17634,172 @@ input[type=file]{display:none;}
   <div class="tab" id="tab-settings" onclick="showTab('settings')">⚙️ NASTAVENÍ</div>
 </div>
 <div class="main" id="main"></div>
-
-<input type="file" id="file-input" multiple onchange="handleFileSelect(event)">
-
+<input type="file" id="file-input" multiple style="display:none">
 <script>
-var CFG_KEY = 'nextsync_cfg';
-var cfg = {pc_ip:'192.168.1.100', pc_port:'8765', next_ip:'192.168.1.50', sync_folder:'C:\\\\nextdev\\\\sync'};
-var currentFolder = 'games';
-var folders = {
-  games:    {icon:'🎮', label:'Games',    files:[]},
-  programs: {icon:'💾', label:'Programs', files:[]},
-  utility:  {icon:'🔧', label:'Utility',  files:[]}
+var CFG_KEY='nextsync_cfg';
+var FILES_KEY='nextsync_files';
+
+function getStorage(){try{var s=window.parent.localStorage;s.getItem('__test__');return s;}catch(e){return localStorage;}}
+
+var cfg={pc_ip:'192.168.1.100',pc_port:'8765',next_ip:'192.168.1.50',sync_folder:'C:\\nextdev\\sync'};
+var currentFolder='games';
+var folders={
+  games:{icon:'🎮',label:'Games',files:[]},
+  programs:{icon:'💾',label:'Programs',files:[]},
+  utility:{icon:'🔧',label:'Utility',files:[]}
 };
-var syncLog = [];
-var currentTab = 'files';
-var pcOnline = false;
-var nextOnline = false;
+var syncLog=[];
+var currentTab='files';
+var pcOnline=false;
 
-function loadCfg(){
-  try {
-    var s = window.parent.localStorage.getItem(CFG_KEY);
-    if(s) cfg = Object.assign(cfg, JSON.parse(s));
-  } catch(e){}
-}
-function saveCfg(){
-  try { window.parent.localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); } catch(e){}
-}
-function loadFiles(){
-  try {
-    var s = window.parent.localStorage.getItem('nextsync_files');
-    if(s) folders = Object.assign(folders, JSON.parse(s));
-  } catch(e){}
-}
-function saveFiles(){
-  try { window.parent.localStorage.setItem('nextsync_files', JSON.stringify(folders)); } catch(e){}
-}
+function loadCfg(){try{var s=getStorage().getItem(CFG_KEY);if(s)cfg=Object.assign(cfg,JSON.parse(s));}catch(e){}}
+function saveCfg(){try{getStorage().setItem(CFG_KEY,JSON.stringify(cfg));}catch(e){}}
+function loadFiles(){try{var s=getStorage().getItem(FILES_KEY);if(s){var d=JSON.parse(s);Object.keys(d).forEach(function(k){if(folders[k])folders[k].files=d[k].files||[];});}}catch(e){}}
+function saveFiles(){try{var d={};Object.keys(folders).forEach(function(k){d[k]={files:folders[k].files||[]};});getStorage().setItem(FILES_KEY,JSON.stringify(d));}catch(e){}}
 
-function addLog(msg, type){
-  var now = new Date();
-  var t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
-  syncLog.unshift({msg:msg, type:type||'info', t:t});
-  if(syncLog.length > 50) syncLog.pop();
-  if(currentTab === 'status') renderStatus();
+function addLog(msg,type){
+  var now=new Date();
+  var t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+  syncLog.unshift({msg:msg,type:type||'info',t:t});
+  if(syncLog.length>50)syncLog.pop();
+  if(currentTab==='status')renderStatus();
 }
 
 function showTab(tab){
-  currentTab = tab;
+  currentTab=tab;
   ['files','status','settings'].forEach(function(t){
-    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
   });
-  if(tab==='files') renderFiles();
-  else if(tab==='status') renderStatus();
+  if(tab==='files')renderFiles();
+  else if(tab==='status')renderStatus();
   else renderSettings();
 }
 
-// ── SLOŽKY ──────────────────────────────────────────
 function renderFiles(){
-  var m = document.getElementById('main');
-  var folderBtns = Object.keys(folders).map(function(k){
-    var f = folders[k];
+  var m=document.getElementById('main');
+  if(!m)return;
+  var fBtns=Object.keys(folders).map(function(k){
+    var f=folders[k];
     return '<div class="folder-item'+(k===currentFolder?' active':'')+'" onclick="selectFolder(\''+k+'\')">'
-      +'<div class="folder-icon">'+f.icon+'</div>'
-      +'<div class="folder-name">'+f.label+'</div>'
-      +'<div class="folder-count">'+f.files.length+' souborů</div>'
+      +'<span class="folder-icon">'+f.icon+'</span>'
+      +'<span class="folder-name">'+f.label+'</span>'
+      +'<span class="folder-count">'+(f.files?f.files.length:0)+'x</span>'
       +'</div>';
   }).join('');
-
-  var fileRows = '';
-  var fdata = folders[currentFolder].files;
-  if(fdata.length === 0){
-    fileRows = '<div class="empty">— složka je prázdná —</div>';
-  } else {
-    fileRows = fdata.map(function(f,i){
+  var fdata=folders[currentFolder].files||[];
+  var fRows=fdata.length===0?'<div class="empty">— prázdná složka —</div>'
+    :fdata.map(function(f,i){
       return '<div class="file-item">'
-        +'<div class="file-name">'+esc(f.name)+'</div>'
-        +'<div class="file-size">'+formatSize(f.size)+'</div>'
-        +'<div class="file-actions">'
+        +'<span class="file-name">'+esc(f.name)+'</span>'
+        +'<span class="file-size">'+fmtSize(f.size)+'</span>'
         +'<button class="file-btn" onclick="sendToNext('+i+')">▶ NEXT</button>'
-        +'<button class="file-btn del" onclick="deleteFile('+i+')">✕</button>'
-        +'</div></div>';
+        +'<button class="file-btn del" onclick="delFile('+i+')">✕</button>'
+        +'</div>';
     }).join('');
-  }
-
-  m.innerHTML = '<div class="section">'
-    +'<div class="section-title">📁 SLOŽKY</div>'
-    +'<div class="folder-list">'+folderBtns+'</div>'
-    +'</div>'
-    +'<div class="section">'
-    +'<div class="section-title">📄 '+folders[currentFolder].label.toUpperCase()+' — SOUBORY</div>'
-    +'<div class="upload-zone" id="drop-zone" onclick="document.getElementById(\'file-input\').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">'
-    +'⬆ KLIKNI nebo PŘETÁHNI soubory sem'
-    +'</div>'
-    +'<div class="file-list">'+fileRows+'</div>'
-    +'</div>'
-    +'<div class="section">'
-    +'<div class="section-title">⚡ AKCE</div>'
+  m.innerHTML='<div class="section"><div class="section-title">📁 SLOŽKY</div>'
+    +'<div class="folder-list">'+fBtns+'</div></div>'
+    +'<div class="section"><div class="section-title">📄 '+folders[currentFolder].label.toUpperCase()+'</div>'
+    +'<div class="upload-zone" onclick="document.getElementById(\'file-input\').click()">⬆ KLIKNI — přidej soubory</div>'
+    +'<div class="file-list">'+fRows+'</div></div>'
+    +'<div class="section"><div class="section-title">⚡ AKCE</div>'
     +'<div class="row">'
-    +'<button class="btn blue" onclick="syncAllToPC()">🖥 SYNC → PC</button>'
-    +'<button class="btn" onclick="sendAllToNext()">📡 VŠE → NEXT</button>'
-    +'<button class="btn red" onclick="clearFolder()">🗑 CLEAR</button>'
+    +'<button class="btn blue" onclick="syncPC()">🖥 SYNC→PC</button>'
+    +'<button class="btn" onclick="sendAll()">📡 VŠE→NEXT</button>'
+    +'<button class="btn red" onclick="clearF()">🗑 CLEAR</button>'
     +'</div></div>';
 }
 
-function selectFolder(k){
-  currentFolder = k;
-  renderFiles();
-}
+function selectFolder(k){currentFolder=k;renderFiles();}
 
-function handleFileSelect(e){
-  var files = Array.from(e.target.files);
-  files.forEach(function(f){
-    addFileToFolder(f);
-  });
-  document.getElementById('file-input').value='';
-  renderFiles();
-  addLog('Přidáno '+files.length+' souborů do '+folders[currentFolder].label,'ok');
-}
+function delFile(i){folders[currentFolder].files.splice(i,1);saveFiles();addLog('Smazáno','info');renderFiles();}
+function clearF(){if(!confirm('Smazat vše?'))return;folders[currentFolder].files=[];saveFiles();addLog('Složka vymazána','info');renderFiles();}
 
-function addFileToFolder(f){
-  var reader = new FileReader();
-  reader.onload = function(ev){
-    folders[currentFolder].files.push({name:f.name, size:f.size, data:ev.target.result, added:Date.now()});
-    saveFiles();
-    if(currentTab==='files') renderFiles();
-  };
-  reader.readAsDataURL(f);
-}
-
-function deleteFile(i){
-  folders[currentFolder].files.splice(i,1);
-  saveFiles();
-  addLog('Soubor smazán','info');
-  renderFiles();
-}
-
-function clearFolder(){
-  if(!confirm('Smazat všechny soubory z '+folders[currentFolder].label+'?')) return;
-  folders[currentFolder].files=[];
-  saveFiles();
-  addLog('Složka '+folders[currentFolder].label+' vymazána','info');
-  renderFiles();
-}
-
-function onDragOver(e){
-  e.preventDefault();
-  document.getElementById('drop-zone').classList.add('drag');
-}
-function onDragLeave(e){
-  document.getElementById('drop-zone').classList.remove('drag');
-}
-function onDrop(e){
-  e.preventDefault();
-  document.getElementById('drop-zone').classList.remove('drag');
-  var files = Array.from(e.dataTransfer.files);
-  files.forEach(addFileToFolder);
-  addLog('Drag&drop: '+files.length+' souborů přidáno','ok');
-  setTimeout(renderFiles, 300);
-}
-
-// ── ODESLÁNÍ NA NEXT přes PC server ──────────────────
 function sendToNext(i){
-  var f = folders[currentFolder].files[i];
-  if(!f){return;}
-  addLog('Odesílám: '+f.name+' → Next...','info');
-  var url = 'http://'+cfg.pc_ip+':'+cfg.pc_port+'/upload';
-  fetch(url, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({folder:currentFolder, name:f.name, data:f.data})
-  }).then(function(r){
-    if(r.ok){addLog('✓ '+f.name+' odesláno na PC/Next','ok');}
-    else{addLog('✗ Chyba serveru: '+r.status,'err');}
-  }).catch(function(e){
-    addLog('✗ PC server nedostupný ('+cfg.pc_ip+':'+cfg.pc_port+')','err');
-  });
+  var f=folders[currentFolder].files[i];if(!f)return;
+  addLog('Odesílám: '+f.name,'info');
+  fetch('http://'+cfg.pc_ip+':'+cfg.pc_port+'/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folder:currentFolder,name:f.name,data:f.data})})
+  .then(function(r){addLog(r.ok?'✓ '+f.name+' OK':'✗ Chyba '+r.status,r.ok?'ok':'err');})
+  .catch(function(){addLog('✗ PC nedostupný','err');});
 }
+function sendAll(){var fl=folders[currentFolder].files||[];if(!fl.length){addLog('Žádné soubory','info');return;}fl.forEach(function(f,i){sendToNext(i);});}
+function syncPC(){addLog('Sync→PC...','info');fetch('http://'+cfg.pc_ip+':'+cfg.pc_port+'/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folder:currentFolder})}).then(function(r){addLog(r.ok?'✓ Sync OK':'✗ Chyba','ok');}).catch(function(){addLog('✗ PC nedostupný','err');});}
 
-function sendAllToNext(){
-  var files = folders[currentFolder].files;
-  if(files.length===0){addLog('Žádné soubory k odeslání','info');return;}
-  files.forEach(function(f,i){ sendToNext(i); });
-}
-
-function syncAllToPC(){
-  addLog('Spouštím sync na PC server...','info');
-  var url = 'http://'+cfg.pc_ip+':'+cfg.pc_port+'/sync';
-  fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({folder:currentFolder})})
-  .then(function(r){
-    if(r.ok) addLog('✓ Sync spuštěn','ok');
-    else addLog('✗ Sync chyba: '+r.status,'err');
-  }).catch(function(){addLog('✗ PC server nedostupný','err');});
-}
-
-// ── STATUS ───────────────────────────────────────────
 function renderStatus(){
-  var m = document.getElementById('main');
-  var logHtml = syncLog.length===0
-    ? '<div class="empty">— žádné záznamy —</div>'
-    : syncLog.map(function(l){
-        return '<span class="log-line '+l.type+'">'+l.t+' '+esc(l.msg)+'</span>';
-      }).join('');
-
-  m.innerHTML = '<div class="section">'
-    +'<div class="section-title">🔌 PŘIPOJENÍ</div>'
-    +'<div class="status-box">'
-    +'<div><span class="dot '+(pcOnline?'green':'red')+'"></span>PC Server ('+cfg.pc_ip+':'+cfg.pc_port+'): <span style="color:'+(pcOnline?'#00ff00':'#ff4444')+'">'+(pcOnline?'ONLINE':'OFFLINE')+'</span></div>'
-    +'<div style="margin-top:6px"><span class="dot '+(nextOnline?'green':'red')+'"></span>ZX Next ('+cfg.next_ip+'): <span style="color:'+(nextOnline?'#00ff00':'#ff4444')+'">'+(nextOnline?'ONLINE':'OFFLINE')+'</span></div>'
-    +'</div>'
-    +'<div class="row" style="margin-top:8px">'
-    +'<button class="btn" onclick="checkConnections()">🔍 CHECK</button>'
-    +'<button class="btn red" onclick="syncLog=[];renderStatus()">🗑 CLEAR LOG</button>'
-    +'</div>'
-    +'</div>'
-    +'<div class="section">'
-    +'<div class="section-title">📋 LOG</div>'
-    +'<div class="log">'+logHtml+'</div>'
-    +'</div>'
-    +'<div class="section">'
-    +'<div class="section-title">📊 PŘEHLED SLOŽEK</div>'
-    +'<div class="status-box">'
-    +Object.keys(folders).map(function(k){
-      var f=folders[k];
-      return '<div>'+f.icon+' '+f.label+': <span style="color:#00ffff">'+f.files.length+'</span> souborů</div>';
-    }).join('')
+  var m=document.getElementById('main');if(!m)return;
+  var logH=syncLog.length===0?'<div class="empty">— žádné záznamy —</div>'
+    :syncLog.map(function(l){return '<span class="log-line '+l.type+'">'+l.t+' '+esc(l.msg)+'</span>';}).join('');
+  m.innerHTML='<div class="section"><div class="section-title">🔌 PŘIPOJENÍ</div>'
+    +'<div class="status-box"><div><span class="dot '+(pcOnline?'green':'red')+'"></span>PC '+cfg.pc_ip+':'+cfg.pc_port+' — <b style="color:'+(pcOnline?'#0f0':'#f44')+'">'+(pcOnline?'ONLINE':'OFFLINE')+'</b></div></div>'
+    +'<div class="row" style="margin-top:8px"><button class="btn" onclick="checkPC()">🔍 CHECK</button>'
+    +'<button class="btn red" onclick="syncLog=[];renderStatus()">🗑 CLEAR</button></div></div>'
+    +'<div class="section"><div class="section-title">📋 LOG</div><div class="log">'+logH+'</div></div>'
+    +'<div class="section"><div class="section-title">📊 PŘEHLED</div><div class="status-box">'
+    +Object.keys(folders).map(function(k){var f=folders[k];return '<div>'+f.icon+' '+f.label+': <b style="color:#0ff">'+(f.files?f.files.length:0)+'</b> souborů</div>';}).join('')
     +'</div></div>';
 }
 
-function checkConnections(){
-  addLog('Testuji připojení...','info');
-  var url = 'http://'+cfg.pc_ip+':'+cfg.pc_port+'/ping';
-  fetch(url, {method:'GET', signal:AbortSignal.timeout(3000)})
-  .then(function(r){
-    pcOnline = r.ok;
-    addLog(r.ok ? '✓ PC server online' : '✗ PC server chyba '+r.status, r.ok?'ok':'err');
-    if(currentTab==='status') renderStatus();
-  }).catch(function(){
-    pcOnline = false;
-    addLog('✗ PC server nedostupný','err');
-    if(currentTab==='status') renderStatus();
-  });
-  var urlNext = 'http://'+cfg.next_ip+'/ping';
-  fetch(urlNext, {method:'GET', signal:AbortSignal.timeout(3000)})
-  .then(function(r){
-    nextOnline = r.ok;
-    addLog(r.ok ? '✓ ZX Next online' : '✗ ZX Next chyba', r.ok?'ok':'err');
-    if(currentTab==='status') renderStatus();
-  }).catch(function(){
-    nextOnline = false;
-    addLog('✗ ZX Next nedostupný','err');
-    if(currentTab==='status') renderStatus();
-  });
+function checkPC(){
+  addLog('Test PC...','info');
+  fetch('http://'+cfg.pc_ip+':'+cfg.pc_port+'/ping',{signal:AbortSignal.timeout(3000)})
+  .then(function(r){pcOnline=r.ok;addLog(r.ok?'✓ PC online':'✗ Chyba',r.ok?'ok':'err');renderStatus();})
+  .catch(function(){pcOnline=false;addLog('✗ PC offline','err');renderStatus();});
 }
 
-// ── NASTAVENÍ ────────────────────────────────────────
 function renderSettings(){
-  var m = document.getElementById('main');
-  m.innerHTML = '<div class="section">'
-    +'<div class="section-title">🖥 PC SERVER</div>'
-    +'<div class="row"><div class="label">IP adresa:</div><input class="inp" id="s-pc-ip" value="'+esc(cfg.pc_ip)+'" placeholder="192.168.1.100"></div>'
-    +'<div class="row"><div class="label">Port:</div><input class="inp" id="s-pc-port" value="'+esc(cfg.pc_port)+'" placeholder="8765"></div>'
-    +'<div class="row"><div class="label">Složka:</div><input class="inp" id="s-folder" value="'+esc(cfg.sync_folder)+'" placeholder="C:\\nextdev\\sync"></div>'
-    +'</div>'
-    +'<div class="section">'
-    +'<div class="section-title">📡 ZX SPECTRUM NEXT</div>'
-    +'<div class="row"><div class="label">IP adresa:</div><input class="inp" id="s-next-ip" value="'+esc(cfg.next_ip)+'" placeholder="192.168.1.50"></div>'
-    +'</div>'
-    +'<div class="section">'
-    +'<div class="section-title">💾 ULOŽIT</div>'
-    +'<div class="row">'
-    +'<button class="btn" onclick="saveSettings()">💾 ULOŽIT NASTAVENÍ</button>'
-    +'<button class="btn blue" onclick="checkConnections();showTab(\'status\')">🔍 TEST</button>'
-    +'</div>'
-    +'<div id="save-msg" style="font-size:10px;color:#00ff88;margin-top:6px;letter-spacing:1px;"></div>'
-    +'</div>'
-    +'<div class="section">'
-    +'<div class="section-title">ℹ️ NÁVOD</div>'
-    +'<div class="status-box" style="font-size:9px;line-height:2;color:#00aa55;">'
-    +'1. Spusť PC server: python nextsync_server.py<br>'
-    +'2. Nastav IP adresy výše a ulož<br>'
-    +'3. Nahraj soubory do složek (📁 SLOŽKY)<br>'
-    +'4. Klikni ▶ NEXT u souboru → soubor se přenese na PC<br>'
-    +'5. Na ZX Next spusť .sync → soubory se stáhnou<br>'
-    +'</div>'
-    +'</div>';
+  var m=document.getElementById('main');if(!m)return;
+  m.innerHTML='<div class="section"><div class="section-title">🖥 PC SERVER</div>'
+    +'<div class="row"><div class="label">IP:</div><input class="inp" id="s-pc-ip" value="'+esc(cfg.pc_ip)+'"></div>'
+    +'<div class="row"><div class="label">Port:</div><input class="inp" id="s-pc-port" value="'+esc(cfg.pc_port)+'"></div>'
+    +'<div class="row"><div class="label">Složka:</div><input class="inp" id="s-folder" value="'+esc(cfg.sync_folder)+'"></div>'
+    +'</div><div class="section"><div class="section-title">📡 ZX NEXT</div>'
+    +'<div class="row"><div class="label">IP:</div><input class="inp" id="s-next-ip" value="'+esc(cfg.next_ip)+'"></div>'
+    +'</div><div class="section"><div class="section-title">💾 ULOŽIT</div>'
+    +'<div class="row"><button class="btn" onclick="saveSettings()">💾 ULOŽIT</button>'
+    +'<button class="btn blue" onclick="checkPC();showTab(\'status\')">🔍 TEST</button></div>'
+    +'<div id="save-msg" style="font-size:10px;color:#0f0;margin-top:6px;"></div>'
+    +'</div><div class="section"><div class="section-title">ℹ️ NÁVOD</div>'
+    +'<div class="status-box" style="font-size:9px;line-height:2;color:#0a5;">'
+    +'1. Spusť python nextsync_server.py na PC<br>'
+    +'2. Nastav IP a port → ulož<br>'
+    +'3. Přidej soubory (📁 SLOŽKY → ⬆ KLIKNI)<br>'
+    +'4. ▶ NEXT → soubor jde na PC<br>'
+    +'5. Na ZX Next spusť .sync<br>'
+    +'</div></div>';
 }
 
 function saveSettings(){
-  cfg.pc_ip = document.getElementById('s-pc-ip').value.trim();
-  cfg.pc_port = document.getElementById('s-pc-port').value.trim();
-  cfg.sync_folder = document.getElementById('s-folder').value.trim();
-  cfg.next_ip = document.getElementById('s-next-ip').value.trim();
+  cfg.pc_ip=document.getElementById('s-pc-ip').value.trim();
+  cfg.pc_port=document.getElementById('s-pc-port').value.trim();
+  cfg.sync_folder=document.getElementById('s-folder').value.trim();
+  cfg.next_ip=document.getElementById('s-next-ip').value.trim();
   saveCfg();
-  var msg = document.getElementById('save-msg');
-  msg.textContent = '✓ Nastavení uloženo!';
-  setTimeout(function(){msg.textContent='';},2000);
+  var msg=document.getElementById('save-msg');
+  if(msg){msg.textContent='✓ Uloženo!';setTimeout(function(){msg.textContent='';},2000);}
   addLog('Nastavení uloženo','ok');
 }
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function formatSize(b){if(!b)return '?';if(b<1024)return b+'B';if(b<1048576)return (b/1024).toFixed(1)+'KB';return (b/1048576).toFixed(1)+'MB';}
+function fmtSize(b){if(!b)return '?';if(b<1024)return b+'B';if(b<1048576)return (b/1024).toFixed(1)+'KB';return (b/1048576).toFixed(1)+'MB';}
 
-// ── INIT ─────────────────────────────────────────────
-loadCfg();
-loadFiles();
-renderFiles();
-addLog('NextSync v30.14Kl spuštěn','ok');
+document.getElementById('file-input').addEventListener('change',function(e){
+  var files=Array.from(e.target.files);if(!files.length)return;
+  var done=0;
+  files.forEach(function(f){
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      if(!folders[currentFolder].files)folders[currentFolder].files=[];
+      folders[currentFolder].files.push({name:f.name,size:f.size,data:ev.target.result});
+      done++;if(done===files.length){saveFiles();addLog(done+' souborů přidáno','ok');renderFiles();}
+    };
+    reader.readAsDataURL(f);
+  });
+  e.target.value='';
+});
+
+loadCfg();loadFiles();renderFiles();addLog('NextSync v30.15Kl OK','ok');
 <\/script>
 </body>
-</html>
-`;
-
+</html>`;
 function openApp(id) {
   try {
     document.getElementById("welcome").classList.add("hidden");
