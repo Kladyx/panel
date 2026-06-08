@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v30.23Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v30.24Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -201,7 +201,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.23Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v30.24Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -211,7 +211,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v30.23Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v30.24Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -351,7 +351,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.23Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v30.24Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -741,7 +741,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v30.23Kl</div>
+  <div class="version">v30.24Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -15363,7 +15363,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v30.23Kl</div>
+<div class="sub">KLADYXLAND · v30.24Kl</div>
 
 <div class="section">
   <div class="sec-title">🔥 Firebase (základ všech DB appek)</div>
@@ -17615,13 +17615,21 @@ body{display:flex;flex-direction:column;}
 .ll.in{color:#0cf;}
 .empty{text-align:center;color:#0a5;font-size:10px;padding:20px;opacity:0.6;}
 .warn{background:rgba(255,200,0,0.1);border:1px solid rgba(255,200,0,0.3);color:#fc5;padding:8px;border-radius:3px;font-size:10px;line-height:1.6;}
+.prog-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.prog-box{background:#001500;border:2px solid #00ff88;border-radius:6px;padding:20px;min-width:260px;max-width:90%;box-shadow:0 0 20px rgba(0,255,136,0.4);}
+.prog-title{color:#00ffff;font-size:12px;letter-spacing:2px;text-align:center;margin-bottom:12px;}
+.prog-file{color:#0c6;font-size:10px;text-align:center;margin-bottom:10px;word-break:break-all;}
+.prog-bar{width:100%;height:14px;background:#000;border:1px solid rgba(0,255,136,0.3);border-radius:3px;overflow:hidden;position:relative;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#00ff00,#00ffff);box-shadow:0 0 10px #00ff88;transition:width 0.2s;width:0%;}
+.prog-text{text-align:center;font-size:11px;color:#00ff88;margin-top:8px;text-shadow:0 0 6px rgba(0,255,136,0.6);}
+.prog-speed{text-align:center;font-size:9px;color:#888;margin-top:4px;}
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="topbar-title">&#x1F4E1; NEXT<span>SYNC</span></div>
   <div><span class="hb-dot" id="hb-dot"></span><span id="hb-text" style="font-size:9px;color:#888;">--</span></div>
-  <div class="ver">v30.23Kl</div>
+  <div class="ver">v30.24Kl</div>
 </div>
 <div class="tabs">
   <div class="tab active" id="tb-files">&#x1F4C1; SLOZKY</div>
@@ -17739,16 +17747,78 @@ function loadPCFiles(folder,cb){
   });
 }
 
+function showProgress(title,fname){
+  var existing=document.getElementById('prog-ov');
+  if(existing)existing.remove();
+  var o=document.createElement('div');
+  o.id='prog-ov';
+  o.className='prog-overlay';
+  o.innerHTML='<div class="prog-box">'
+    +'<div class="prog-title">'+esc(title)+'</div>'
+    +'<div class="prog-file">'+esc(fname)+'</div>'
+    +'<div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>'
+    +'<div class="prog-text" id="prog-text">0%</div>'
+    +'<div class="prog-speed" id="prog-speed">--</div>'
+    +'</div>';
+  document.body.appendChild(o);
+  return {start:Date.now()};
+}
+
+function updateProgress(pct,loaded,total,startTs){
+  var f=document.getElementById('prog-fill');
+  var t=document.getElementById('prog-text');
+  var s=document.getElementById('prog-speed');
+  if(!f)return;
+  f.style.width=pct+'%';
+  if(t)t.textContent=pct+'%';
+  if(s && startTs){
+    var elapsed=(Date.now()-startTs)/1000;
+    if(elapsed>0.2){
+      var speed=loaded/elapsed;
+      s.textContent=fmt(loaded)+' / '+fmt(total)+'  @  '+fmt(speed)+'/s';
+    }
+  }
+}
+
+function hideProgress(){
+  var o=document.getElementById('prog-ov');
+  if(o)o.remove();
+}
+
 function downloadFromPC(name){
   var url=getServerUrl()+'/download?folder='+encodeURIComponent(curFolder)+'&name='+encodeURIComponent(name);
   log('Stahuji: '+name,'in');
-  var a=document.createElement('a');
-  a.href=url;
-  a.download=name.split('/').pop();
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  log('Stazeno: '+name,'ok');
+  var ctx=showProgress('STAHUJI Z PC',name);
+  var xhr=new XMLHttpRequest();
+  xhr.open('GET',url,true);
+  xhr.responseType='blob';
+  xhr.onprogress=function(e){
+    if(e.lengthComputable){
+      var pct=Math.round(e.loaded/e.total*100);
+      updateProgress(pct,e.loaded,e.total,ctx.start);
+    }
+  };
+  xhr.onload=function(){
+    if(xhr.status===200){
+      var blob=xhr.response;
+      var dlUrl=URL.createObjectURL(blob);
+      var a=document.createElement('a');
+      a.href=dlUrl;
+      a.download=name.split('/').pop();
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(dlUrl);
+      updateProgress(100,blob.size,blob.size,ctx.start);
+      log('Stazeno: '+name+' ('+fmt(blob.size)+')','ok');
+      setTimeout(hideProgress,800);
+    } else {
+      hideProgress();
+      log('DL chyba '+xhr.status,'er');
+    }
+  };
+  xhr.onerror=function(){hideProgress();log('DL sit chyba','er');};
+  xhr.send();
 }
 
 function deletePCFile(name){
@@ -17824,9 +17894,28 @@ function sendToNext(i){
   if(!isHttp){log('Otevri panel z PC','er');return;}
   var f=folders[curFolder].files[i];if(!f)return;
   log('Odesilam: '+f.name,'in');
-  fetch(getServerUrl()+'/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folder:curFolder,name:f.name,data:f.data})})
-  .then(function(r){log(r.ok?'OK: '+f.name:'Chyba '+r.status,r.ok?'ok':'er');})
-  .catch(function(){log('PC nedostupny','er');});
+  var ctx=showProgress('ODESILAM NA PC',f.name);
+  var xhr=new XMLHttpRequest();
+  xhr.open('POST',getServerUrl()+'/upload',true);
+  xhr.setRequestHeader('Content-Type','application/json');
+  xhr.upload.onprogress=function(e){
+    if(e.lengthComputable){
+      var pct=Math.round(e.loaded/e.total*100);
+      updateProgress(pct,e.loaded,e.total,ctx.start);
+    }
+  };
+  xhr.onload=function(){
+    if(xhr.status===200){
+      updateProgress(100,f.size,f.size,ctx.start);
+      log('OK: '+f.name,'ok');
+      setTimeout(hideProgress,800);
+    } else {
+      hideProgress();
+      log('Chyba '+xhr.status,'er');
+    }
+  };
+  xhr.onerror=function(){hideProgress();log('PC nedostupny','er');};
+  xhr.send(JSON.stringify({folder:curFolder,name:f.name,data:f.data}));
 }
 
 function renderStatus(){
@@ -17900,7 +17989,7 @@ document.getElementById('file-input').addEventListener('change',function(e){
   e.target.value='';
 });
 
-getS();getF();renderFiles();log('NextSync v30.23Kl OK ('+(isHttp?'PC':'GitHub')+' mode)','ok');
+getS();getF();renderFiles();log('NextSync v30.24Kl OK ('+(isHttp?'PC':'GitHub')+' mode)','ok');
 loadHeartbeat();
 loadPCFiles(curFolder);
 setInterval(loadHeartbeat,15000);
