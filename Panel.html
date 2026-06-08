@@ -17600,7 +17600,6 @@ body{display:flex;flex-direction:column;}
 .flist{display:flex;flex-direction:column;gap:6px;}
 .fitem{background:#001500;border:1px solid rgba(0,255,136,0.2);border-radius:3px;padding:8px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;}
 .fitem.active{border-color:#ffff00;}
-.fi{font-size:16px;}
 .fn{color:#00ffff;font-size:11px;flex:1;}
 .fc{color:#444;font-size:9px;}
 .files{display:flex;flex-direction:column;gap:4px;margin-top:8px;}
@@ -17611,12 +17610,19 @@ body{display:flex;flex-direction:column;}
 .fbtn:active{color:#0f0;}
 .fbtn.d:active{color:#f44;}
 .uzone{border:2px dashed rgba(0,255,136,0.3);border-radius:4px;padding:14px;text-align:center;color:#0a5;font-size:10px;cursor:pointer;margin-bottom:8px;}
+.uzone:active{background:rgba(0,255,136,0.05);}
 .log{background:#000;border:1px solid rgba(0,255,136,0.1);border-radius:3px;padding:8px;font-size:9px;line-height:1.9;max-height:120px;overflow-y:auto;}
 .ll{display:block;}
 .ll.ok{color:#0f8;}
 .ll.er{color:#f44;}
 .ll.in{color:#0cf;}
 .empty{text-align:center;color:#0a5;font-size:10px;padding:20px;opacity:0.6;}
+.loading{text-align:center;color:#0cf;font-size:10px;padding:10px;letter-spacing:2px;}
+.pc-file{border-color:rgba(0,100,255,0.3);}
+.pc-file .fname{color:#4af;}
+.badge{font-size:8px;padding:1px 4px;border-radius:2px;margin-left:4px;}
+.badge.pc{background:rgba(0,100,255,0.2);color:#4af;border:1px solid rgba(0,100,255,0.3);}
+.badge.mob{background:rgba(0,255,100,0.1);color:#0a5;border:1px solid rgba(0,255,100,0.2);}
 </style>
 </head>
 <body>
@@ -17625,9 +17631,9 @@ body{display:flex;flex-direction:column;}
   <div class="ver">v30.15Kl</div>
 </div>
 <div class="tabs">
-  <div class="tab active" id="tb-files">&#x1F4C1; SLOŽKY</div>
+  <div class="tab active" id="tb-files">&#x1F4C1; SLOZKY</div>
   <div class="tab" id="tb-status">&#x1F504; STATUS</div>
-  <div class="tab" id="tb-settings">&#x2699;&#xFE0F; NASTAVENÍ</div>
+  <div class="tab" id="tb-settings">&#x2699; NASTAVENI</div>
 </div>
 <div class="main" id="main"></div>
 <input type="file" id="file-input" multiple style="display:none">
@@ -17635,12 +17641,12 @@ body{display:flex;flex-direction:column;}
 var CFG_KEY='nextsync_cfg';
 var FILES_KEY='nextsync_files';
 function getStorage(){try{var s=window.parent.localStorage;s.getItem('__test__');return s;}catch(e){return localStorage;}}
-var cfg={pc_ip:'192.168.1.100',pc_port:'8765',next_ip:'192.168.1.50',sync_folder:'C:\\nextdev\\sync'};
+var cfg={pc_ip:'192.168.1.100',pc_port:'8765',next_ip:'192.168.1.50',sync_folder:'C:\\nextsync'};
 var curFolder='games';
 var folders={
-  games:{icon:'&#x1F3AE;',label:'Games',files:[]},
-  programs:{icon:'&#x1F4BE;',label:'Programs',files:[]},
-  utility:{icon:'&#x1F527;',label:'Utility',files:[]}
+  games:{icon:'&#x1F3AE;',label:'Games',files:[],pcfiles:[]},
+  programs:{icon:'&#x1F4BE;',label:'Programs',files:[],pcfiles:[]},
+  utility:{icon:'&#x1F527;',label:'Utility',files:[],pcfiles:[]}
 };
 var sLog=[];
 var curTab='files';
@@ -17652,8 +17658,8 @@ function getF(){try{var s=getStorage().getItem(FILES_KEY);if(s){var d=JSON.parse
 function setF(){try{var d={};Object.keys(folders).forEach(function(k){d[k]={files:folders[k].files||[]};});getStorage().setItem(FILES_KEY,JSON.stringify(d));}catch(e){}}
 
 function log(msg,t){
-  var now=new Date(),h=now.getHours().toString().padStart(2,'0'),m=now.getMinutes().toString().padStart(2,'0'),s=now.getSeconds().toString().padStart(2,'0');
-  sLog.unshift({msg:msg,t:t||'in',ts:h+':'+m+':'+s});
+  var now=new Date(),h=now.getHours().toString().padStart(2,'0'),mi=now.getMinutes().toString().padStart(2,'0'),s=now.getSeconds().toString().padStart(2,'0');
+  sLog.unshift({msg:msg,t:t||'in',ts:h+':'+mi+':'+s});
   if(sLog.length>50)sLog.pop();
   if(curTab==='status')renderStatus();
 }
@@ -17672,46 +17678,97 @@ document.getElementById('tb-files').onclick=function(){showTab('files');};
 document.getElementById('tb-status').onclick=function(){showTab('status');};
 document.getElementById('tb-settings').onclick=function(){showTab('settings');};
 
+// Nacti soubory z PC pres /list endpoint
+function loadPCFiles(folder, callback){
+  fetch('http://'+cfg.pc_ip+':'+cfg.pc_port+'/list?folder='+folder, {signal:AbortSignal.timeout(4000)})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    folders[folder].pcfiles = d.files || [];
+    log('PC '+folder+': '+folders[folder].pcfiles.length+'x', 'ok');
+    if(callback)callback();
+  })
+  .catch(function(){
+    folders[folder].pcfiles = [];
+    log('PC nedostupny - zobrazuji lokalni', 'in');
+    if(callback)callback();
+  });
+}
+
 function renderFiles(){
   var m=document.getElementById('main');if(!m)return;
   var fb=Object.keys(folders).map(function(k){
     var f=folders[k];
-    var a=k===curFolder?' active':'';
-    return '<div class="fitem'+a+'" data-k="'+k+'"><span class="fi">'+f.icon+'</span><span class="fn">'+f.label+'</span><span class="fc">'+(f.files?f.files.length:0)+'x</span></div>';
+    var total=(f.files?f.files.length:0)+(f.pcfiles?f.pcfiles.length:0);
+    return '<div class="fitem'+(k===curFolder?' active':'')+'" data-k="'+k+'">'+f.icon+' <span class="fn">'+f.label+'</span><span class="fc">'+total+'x</span></div>';
   }).join('');
+
+  // Spoj mobilni a PC soubory
   var fd=folders[curFolder].files||[];
-  var fr=fd.length===0?'<div class="empty">prazdna slozka</div>'
-    :fd.map(function(f,i){
-      return '<div class="frow"><span class="fname">'+esc(f.name)+'</span><span class="fsize">'+fmt(f.size)+'</span>'
-        +'<button class="fbtn" data-si="'+i+'">NEXT</button>'
-        +'<button class="fbtn d" data-di="'+i+'">x</button></div>';
-    }).join('');
+  var pcd=folders[curFolder].pcfiles||[];
+
+  var frMob=fd.map(function(f,i){
+    return '<div class="frow"><span class="fname">'+esc(f.name)+'<span class="badge mob">MOB</span></span>'
+      +'<span class="fsize">'+fmt(f.size)+'</span>'
+      +'<button class="fbtn" data-si="'+i+'">NEXT</button>'
+      +'<button class="fbtn d" data-di="'+i+'">x</button></div>';
+  }).join('');
+
+  var frPC=pcd.map(function(f){
+    return '<div class="frow pc-file"><span class="fname">'+esc(f.name)+'<span class="badge pc">PC</span></span>'
+      +'<span class="fsize">'+fmt(f.size)+'</span></div>';
+  }).join('');
+
+  var allRows=frMob+frPC;
+  if(!allRows)allRows='<div class="empty">prazdna slozka</div>';
+
   m.innerHTML='<div class="section"><div class="stitle">SLOZKY</div><div class="flist">'+fb+'</div></div>'
-    +'<div class="section"><div class="stitle">'+folders[curFolder].label.toUpperCase()+'</div>'
-    +'<div class="uzone" id="uzone">KLIKNI - pridej soubory</div>'
-    +'<div class="files">'+fr+'</div></div>'
+    +'<div class="section"><div class="stitle">'+folders[curFolder].label.toUpperCase()+' <span id="pc-status" style="font-size:8px;color:#0cf;font-weight:normal;"></span></div>'
+    +'<div class="uzone" id="uzone">&#x2B06; KLIKNI - pridej soubory z mobilu</div>'
+    +'<div class="files" id="file-list"><div class="loading">nacitam z PC...</div></div></div>'
     +'<div class="section"><div class="stitle">AKCE</div><div class="row">'
-    +'<button class="btn blue" id="btn-sync">SYNC PC</button>'
+    +'<button class="btn" id="btn-refresh">&#x1F504; REFRESH</button>'
     +'<button class="btn" id="btn-all">VSE NEXT</button>'
-    +'<button class="btn red" id="btn-clear">CLEAR</button>'
+    +'<button class="btn red" id="btn-clear">CLEAR MOB</button>'
     +'</div></div>';
+
   document.getElementById('uzone').onclick=function(){document.getElementById('file-input').click();};
-  document.getElementById('btn-sync').onclick=function(){syncPC();};
+  document.getElementById('btn-refresh').onclick=function(){refreshFolder();};
   document.getElementById('btn-all').onclick=function(){sendAll();};
   document.getElementById('btn-clear').onclick=function(){clearF();};
   m.querySelectorAll('.fitem').forEach(function(el){
     el.onclick=function(){curFolder=el.getAttribute('data-k');renderFiles();};
   });
-  m.querySelectorAll('[data-si]').forEach(function(el){
-    el.onclick=function(){sendToNext(parseInt(el.getAttribute('data-si')));};
-  });
-  m.querySelectorAll('[data-di]').forEach(function(el){
-    el.onclick=function(){delFile(parseInt(el.getAttribute('data-di')));};
+
+  // Nacti soubory z PC
+  loadPCFiles(curFolder, function(){
+    var fl=document.getElementById('file-list');
+    if(!fl)return;
+    var pcd2=folders[curFolder].pcfiles||[];
+    var frPC2=pcd2.map(function(f){
+      return '<div class="frow pc-file"><span class="fname">'+esc(f.name)+'<span class="badge pc">PC</span></span>'
+        +'<span class="fsize">'+fmt(f.size)+'</span></div>';
+    }).join('');
+    var frMob2=(folders[curFolder].files||[]).map(function(f,i){
+      return '<div class="frow"><span class="fname">'+esc(f.name)+'<span class="badge mob">MOB</span></span>'
+        +'<span class="fsize">'+fmt(f.size)+'</span>'
+        +'<button class="fbtn" data-si="'+i+'">NEXT</button>'
+        +'<button class="fbtn d" data-di="'+i+'">x</button></div>';
+    }).join('');
+    fl.innerHTML=frMob2+frPC2||'<div class="empty">prazdna slozka</div>';
+    var ps=document.getElementById('pc-status');
+    if(ps)ps.textContent='[PC: '+pcd2.length+'x]';
+    fl.querySelectorAll('[data-si]').forEach(function(el){
+      el.onclick=function(){sendToNext(parseInt(el.getAttribute('data-si')));};
+    });
+    fl.querySelectorAll('[data-di]').forEach(function(el){
+      el.onclick=function(){delFile(parseInt(el.getAttribute('data-di')));};
+    });
   });
 }
 
+function refreshFolder(){log('Refresh...','in');renderFiles();}
 function delFile(i){folders[curFolder].files.splice(i,1);setF();log('Smazano','in');renderFiles();}
-function clearF(){if(!confirm('Smazat vse?'))return;folders[curFolder].files=[];setF();log('Clear','in');renderFiles();}
+function clearF(){if(!confirm('Smazat mobilni soubory?'))return;folders[curFolder].files=[];setF();log('Clear','in');renderFiles();}
 
 function sendToNext(i){
   var f=folders[curFolder].files[i];if(!f)return;
@@ -17720,8 +17777,7 @@ function sendToNext(i){
   .then(function(r){log(r.ok?'OK: '+f.name:'Chyba '+r.status,r.ok?'ok':'er');})
   .catch(function(){log('PC nedostupny','er');});
 }
-function sendAll(){var fl=folders[curFolder].files||[];if(!fl.length){log('Zadne soubory','in');return;}fl.forEach(function(f,i){sendToNext(i);});}
-function syncPC(){log('Sync PC...','in');fetch('http://'+cfg.pc_ip+':'+cfg.pc_port+'/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folder:curFolder})}).then(function(r){log(r.ok?'Sync OK':'Chyba','ok');}).catch(function(){log('PC offline','er');});}
+function sendAll(){var fl=folders[curFolder].files||[];if(!fl.length){log('Zadne mob. soubory','in');return;}fl.forEach(function(f,i){sendToNext(i);});}
 
 function renderStatus(){
   var m=document.getElementById('main');if(!m)return;
@@ -17730,11 +17786,15 @@ function renderStatus(){
   m.innerHTML='<div class="section"><div class="stitle">PRIPOJENI</div>'
     +'<div class="sbox"><div><span class="dot '+(pcOK?'g':'r')+'"></span>PC '+cfg.pc_ip+':'+cfg.pc_port+' - <b style="color:'+(pcOK?'#0f0':'#f44')+'">'+(pcOK?'ONLINE':'OFFLINE')+'</b></div></div>'
     +'<div class="row" style="margin-top:8px"><button class="btn" id="btn-chk">CHECK</button>'
-    +'<button class="btn red" id="btn-clrlog">CLEAR</button></div></div>'
+    +'<button class="btn red" id="btn-clrlog">CLEAR LOG</button></div></div>'
     +'<div class="section"><div class="stitle">LOG</div><div class="log">'+lh+'</div></div>'
     +'<div class="section"><div class="stitle">PREHLED</div><div class="sbox">'
-    +Object.keys(folders).map(function(k){var f=folders[k];return '<div>'+f.icon+' '+f.label+': <b style="color:#0ff">'+(f.files?f.files.length:0)+'</b>x</div>';}).join('')
-    +'</div></div>';
+    +Object.keys(folders).map(function(k){
+      var f=folders[k];
+      var mob=f.files?f.files.length:0;
+      var pc=f.pcfiles?f.pcfiles.length:0;
+      return '<div>'+f.icon+' '+f.label+': <b style="color:#0f8">'+mob+'</b> mob / <b style="color:#4af">'+pc+'</b> PC</div>';
+    }).join('')+'</div></div>';
   document.getElementById('btn-chk').onclick=function(){checkPC();};
   document.getElementById('btn-clrlog').onclick=function(){sLog=[];renderStatus();};
 }
@@ -17760,11 +17820,12 @@ function renderSettings(){
     +'<div id="smsg" style="font-size:10px;color:#0f0;margin-top:6px;"></div>'
     +'</div><div class="section"><div class="stitle">NAVOD</div>'
     +'<div class="sbox" style="font-size:9px;line-height:2;color:#0a5;">'
-    +'1. Spust python nextsync_server.py na PC<br>'
-    +'2. Nastav IP a port - uloz<br>'
-    +'3. Pridej soubory (SLOZKY - KLIKNI)<br>'
-    +'4. NEXT = soubor jde na PC<br>'
-    +'5. Na ZX Next spust .sync<br>'
+    +'1. Zkopiruj novy nextsync_server.py na PC<br>'
+    +'2. Spust: python nextsync_server.py<br>'
+    +'3. Nastav IP a port - uloz<br>'
+    +'4. SLOZKY = vidis soubory z PC i mobilu<br>'
+    +'5. NEXT = soubor z mobilu jde na PC<br>'
+    +'6. Na ZX Next spust .sync<br>'
     +'</div></div>';
   document.getElementById('btn-save').onclick=function(){saveSet();};
   document.getElementById('btn-test').onclick=function(){checkPC();showTab('status');};
@@ -17802,8 +17863,7 @@ document.getElementById('file-input').addEventListener('change',function(e){
 getS();getF();renderFiles();log('NextSync v30.15Kl OK','ok');
 <\/script>
 </body>
-</html>`;
-
+</html>`
 function openApp(id) {
   try {
     document.getElementById("welcome").classList.add("hidden");
