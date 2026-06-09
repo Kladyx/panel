@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v3.2.10.Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v3.2.12.Kl - Kladyx 2026</title>
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -202,7 +202,7 @@
 <div id="panel-gate">
   <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v3.2.10.Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v3.2.12.Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -212,7 +212,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v3.2.10.Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v3.2.12.Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -347,12 +347,16 @@
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">📡</div><div class="bl">NextSync</div>
     </button>
+    <button class="app-btn" id="btn-cotoje" style="--ac:#00d4ff;--ac-rgb:0,212,255" onclick="openApp('cotoje')">
+      <div class="app-dot"></div>
+      <div class="bd"></div><div class="bi">📸</div><div class="bl">Co to je???</div>
+    </button>
 
   </div>
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v3.2.10.Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v3.2.12.Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -424,6 +428,7 @@
         <div class="wcard" onclick="openApp('prekladac')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">🌐</div><div class="wn">Překladač</div><div class="wd">CZ → EN</div></div>
         <div class="wcard" onclick="openApp('password')" onmouseover="this.style.borderColor='#c084fc';this.style.boxShadow='0 0 14px rgba(192,132,252,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#c084fc;box-shadow:0 0 6px #c084fc"></span><div class="wi">🔑</div><div class="wn">Hesla</div><div class="wd">Password Vault</div></div>
         <div class="wcard" onclick="openApp('nextsync')" onmouseover="this.style.borderColor='#00ff88';this.style.boxShadow='0 0 14px rgba(0,255,136,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00ff88;box-shadow:0 0 6px #00ff88"></span><div class="wi">📡</div><div class="wn">NextSync</div><div class="wd">ZX File Sync</div></div>
+        <div class="wcard" onclick="openApp('cotoje')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">📸</div><div class="wn">Co to je???</div><div class="wd">AI Rozpoznávač</div></div>
 
       </div>
       <div style="margin-top:22px;display:flex;align-items:center;justify-content:center;gap:24px;padding:12px 20px;border:1px solid rgba(0,212,255,0.1);border-radius:8px;background:rgba(255,255,255,0.025);">
@@ -464,6 +469,7 @@
     <iframe id="frame-prekladac" class="app-frame" title="prekladac" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-password" class="app-frame" title="password" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-nextsync" class="app-frame" title="nextsync" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
+    <iframe id="frame-cotoje" class="app-frame" title="cotoje" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allow="camera" allowfullscreen></iframe>
 
   </div>
 </div>
@@ -742,7 +748,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v3.2.10.Kl</div>
+  <div class="version">v3.2.12.Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -15364,7 +15370,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v3.2.10.Kl</div>
+<div class="sub">KLADYXLAND · v3.2.12.Kl</div>
 
 <div class="section">
   <div class="sec-title">🔥 Firebase (základ všech DB appek)</div>
@@ -16963,35 +16969,32 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 .app-list{list-style:none;margin-bottom:20px;}
 .app-list li{display:flex;align-items:center;gap:8px;padding:9px 12px;margin-bottom:5px;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.15);border-radius:12px;font-size:0.88rem;cursor:pointer;transition:background 0.15s;}
 .app-list li:hover{background:rgba(167,139,250,0.13);}
-.app-list li .num{font-size:0.72rem;font-weight:800;color:#a78bfa;min-width:22px;}
-.app-list li .name{flex:1;color:#e0e0f0;}
-.app-list li .icon-cell{font-size:1.2rem;min-width:28px;text-align:center;}
-.btn-edit{background:none;border:none;color:#a78bfa;cursor:pointer;font-size:0.85rem;padding:2px 5px;border-radius:6px;opacity:0.7;transition:opacity 0.15s;flex-shrink:0;}
+.num{font-size:0.72rem;font-weight:800;color:#a78bfa;min-width:22px;}
+.name{flex:1;color:#e0e0f0;}
+.icon-cell{font-size:1.2rem;min-width:28px;text-align:center;}
+.btn-edit{background:none;border:none;color:#a78bfa;cursor:pointer;font-size:0.85rem;padding:2px 5px;border-radius:6px;opacity:0.7;flex-shrink:0;}
 .btn-edit:hover{opacity:1;background:rgba(167,139,250,0.15);}
 .del{background:none;border:none;color:#f87171;cursor:pointer;font-size:0.95rem;padding:2px 6px;border-radius:6px;opacity:0.6;flex-shrink:0;}
-.del:hover{opacity:1;}
-.app-dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex-shrink:0;animation:dotPulse 1.4s ease-in-out infinite;vertical-align:middle;}
+.app-dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex-shrink:0;animation:dotPulse 1.4s ease-in-out infinite;}
 @keyframes dotPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.25;transform:scale(0.6);}}
-/* Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
-.modal{background:#0d0d22;border:1px solid rgba(167,139,250,0.3);border-radius:16px;padding:18px;width:min(90vw,440px);max-height:80vh;display:flex;flex-direction:column;gap:12px;}
+.modal{background:#0d0d22;border:1px solid rgba(167,139,250,0.3);border-radius:16px;padding:18px;width:min(90vw,440px);max-height:82vh;display:flex;flex-direction:column;gap:10px;}
 .modal h3{font-size:0.9rem;font-weight:800;color:#a78bfa;letter-spacing:1px;}
 .modal-current{display:flex;align-items:center;gap:10px;font-size:0.85rem;color:#aaa;}
-.modal-current .big-icon{font-size:2rem;}
+.big-icon{font-size:2rem;}
 .emoji-search{width:100%;padding:8px 12px;border-radius:8px;border:1.5px solid rgba(167,139,250,0.25);background:#0a0a1a;color:#e0e0f0;font-size:0.9rem;font-family:inherit;outline:none;}
 .emoji-search:focus{border-color:#a78bfa;}
-.cat-tabs{display:flex;gap:6px;flex-wrap:wrap;}
-.cat-tab{padding:4px 10px;border-radius:20px;border:1px solid rgba(167,139,250,0.2);background:rgba(167,139,250,0.05);color:#a0a0c0;font-size:0.75rem;cursor:pointer;transition:all 0.15s;}
+.cat-tabs{display:flex;gap:5px;flex-wrap:wrap;}
+.cat-tab{padding:4px 9px;border-radius:20px;border:1px solid rgba(167,139,250,0.2);background:rgba(167,139,250,0.05);color:#a0a0c0;font-size:0.72rem;cursor:pointer;}
 .cat-tab.active,.cat-tab:hover{border-color:#a78bfa;background:rgba(167,139,250,0.2);color:#fff;}
-.emoji-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:4px;overflow-y:auto;max-height:260px;padding:4px;}
-.emoji-btn{width:40px;height:40px;border:2px solid transparent;background:rgba(167,139,250,0.05);border-radius:8px;font-size:1.3rem;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;}
+.emoji-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:4px;overflow-y:auto;max-height:240px;padding:4px;}
+.emoji-btn{width:40px;height:40px;border:2px solid transparent;background:rgba(167,139,250,0.05);border-radius:8px;font-size:1.25rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .emoji-btn:hover{border-color:#a78bfa;background:rgba(167,139,250,0.2);}
-.emoji-btn.selected{border-color:#a78bfa;background:rgba(167,139,250,0.35);box-shadow:0 0 8px rgba(167,139,250,0.4);}
+.emoji-btn.selected{border-color:#a78bfa;background:rgba(167,139,250,0.35);}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;}
 .btn-save{padding:9px 20px;border-radius:10px;border:none;background:linear-gradient(135deg,#a78bfa,#f472b6);color:#0d0d1f;font-weight:800;font-family:inherit;cursor:pointer;font-size:0.88rem;}
 .btn-cancel{padding:9px 16px;border-radius:10px;border:1px solid rgba(167,139,250,0.3);background:transparent;color:#a78bfa;font-family:inherit;cursor:pointer;font-size:0.88rem;}
-/* Add box */
 .add-box{background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.25);border-radius:14px;padding:16px;}
 .add-box h2{font-size:0.72rem;font-weight:800;color:#a78bfa;letter-spacing:1px;margin-bottom:10px;}
 .add-row{display:flex;gap:8px;}
@@ -17001,7 +17004,7 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 .icon-preview-row{display:flex;align-items:center;gap:8px;margin:8px 0 4px;}
 .icon-preview-row span{font-size:1.5rem;}
 .small-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px;margin-top:6px;}
-.small-btn{width:36px;height:36px;border:2px solid rgba(167,139,250,0.25);background:rgba(167,139,250,0.07);border-radius:7px;font-size:1.1rem;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;}
+.small-btn{width:36px;height:36px;border:2px solid rgba(167,139,250,0.25);background:rgba(167,139,250,0.07);border-radius:7px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .small-btn:hover{border-color:#a78bfa;}
 .small-btn.selected{border-color:#a78bfa;background:rgba(167,139,250,0.35);}
 .sync-status{font-size:0.68rem;color:#5a6488;margin-top:4px;min-height:14px;}
@@ -17009,300 +17012,350 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 </style>
 </head>
 <body>
-<h1>👤 Moje Apky</h1>
+<h1>&#128100; Moje Apky</h1>
 <ul class="app-list" id="app-list"></ul>
 <div class="add-box">
-  <h2>➕ PŘIDAT NOVOU APLIKACI</h2>
+  <h2>&#10133; PRIDAT NOVOU APLIKACI</h2>
   <div class="add-row">
-    <input id="new-name" type="text" placeholder="Název nové aplikace..." maxlength="60"/>
-    <button id="btn-add-app">Uložit</button>
+    <input id="new-name" type="text" placeholder="Nazev nove aplikace..." maxlength="60"/>
+    <button id="btn-add-app">Ulozit</button>
   </div>
-  <div class="icon-preview-row"><span id="add-icon-preview">🏠</span><small style="color:#888;font-size:0.75rem;">Vybraná ikona</small></div>
+  <div class="icon-preview-row"><span id="add-icon-preview">&#127968;</span><small style="color:#888;font-size:0.75rem;">Vybrana ikona</small></div>
   <div class="small-grid" id="add-icon-grid"></div>
   <div class="status" id="status-msg"></div>
   <div class="sync-status" id="sync-status"></div>
 </div>
 
-<!-- EDIT ICON MODAL -->
 <div class="modal-overlay" id="edit-modal">
   <div class="modal">
-    <h3>✏️ ZMĚNIT IKONU</h3>
-    <div class="modal-current"><span class="big-icon" id="modal-current-icon">🏠</span><span id="modal-app-label" style="color:#e0e0f0;font-weight:600;"></span></div>
-    <input class="emoji-search" id="emoji-search" placeholder="🔍 Hledat emoji..." autocomplete="off"/>
+    <h3>&#9999;&#65039; ZMENIT IKONU</h3>
+    <div class="modal-current"><span class="big-icon" id="modal-current-icon">&#127968;</span><span id="modal-app-label" style="color:#e0e0f0;font-weight:600;"></span></div>
+    <input class="emoji-search" id="emoji-search" placeholder="Hledat emoji..." autocomplete="off"/>
     <div class="cat-tabs" id="cat-tabs"></div>
     <div class="emoji-grid" id="emoji-grid"></div>
     <div class="modal-actions">
-      <button class="btn-cancel" id="btn-modal-cancel">Zrušit</button>
-      <button class="btn-save" id="btn-modal-save">✅ Uložit ikonu</button>
+      <button class="btn-cancel" id="btn-modal-cancel">Zrusit</button>
+      <button class="btn-save" id="btn-modal-save">Ulozit ikonu</button>
     </div>
   </div>
 </div>
 
 <script>
-var LS_KEY='kladyx_user_apps';
-var LS_ICONS='kladyx_custom_icons';
-function getStorage(){try{var s=window.parent.localStorage;s.getItem('__test__');return s;}catch(e){return localStorage;}}
+var LS_KEY="kladyx_user_apps";
+var LS_ICONS="kladyx_custom_icons";
+function getStorage(){try{var s=window.parent.localStorage;s.getItem("__test__");return s;}catch(e){return localStorage;}}
 
-// === EMOJI DATABÁZE ===
-var EMOJI_CATS = {
-  '🏠 Domov':   ['🏠','🏡','🏢','🏣','🏤','🏥','🏦','🏧','🏨','🏩','🏪','🏫','🏬','🏭','🏯','🏰','🗼','🗽','🗾','🌃','🌆','🌇','🌉','🌁'],
-  '💿 Média':   ['💿','📀','📼','📹','📷','📸','🎥','🎞','📽','🎬','📻','🎙','🎚','🎛','📺','📡','☎','📞','📟','📠','🔊','🔉','🔈','🔇','🔔','🔕'],
-  '🎵 Hudba':   ['🎵','🎶','🎼','🎹','🎸','🎺','🎻','🥁','🪗','🎷','🎤','🎧','🪘','🪕','🎙'],
-  '💻 Tech':    ['💻','🖥','🖨','⌨','🖱','🖲','💾','💽','📱','☎','📲','📡','🔌','🔋','🪫','🔦','💡','🔭','🔬','🧬','⚙','🔧','🔩','🪛','🔨','⚒','🛠','⛏','🔑','🗝','🔒','🔓'],
-  '📊 Data':    ['📊','📈','📉','🗂','📁','📂','🗃','🗄','📋','📌','📍','📎','🖇','📏','📐','✂','🗑','📝','✏','🖊','🖋','🖌','🖍','📓','📔','📒','📃','📄','📑','🗒','📚','📖'],
-  '🎮 Hry':     ['🎮','🕹','🎲','🎯','🎳','🏆','🥇','🥈','🥉','🏅','🎖','🏵','🎗','🎫','🎟','🎪','🎭','🎨','🎠','🎡','🎢','🎪'],
-  '🌍 Příroda': ['🌍','🌎','🌏','🌐','🗺','🌱','🌿','☘','🍀','🌳','🌲','🌴','🌵','🌾','🌺','🌸','🌼','🌻','🌞','☀','🌙','⭐','🌟','💫','⚡','🔥','💧','🌊','🌈','❄','⛄','🌪','🌤','⛅','☁','🌧','⛈','🌩','🌫'],
-  '🍕 Jídlo':   ['🍕','🍔','🌮','🌯','🥙','🥗','🍜','🍝','🍛','🍣','🍱','🍘','🍙','🍚','🍛','🥘','🍲','🫕','🥣','🥫','🧆','🥚','🍳','🥞','🧇','🥓','🥩','🍗','🍖','🥜','🫘','🌽','🫑','🥦','🥬','🥒','🍅','🍆','🧅','🧄','🍎','🍊','🍋','🍇','🍓','🫐','🍒','🍑','🍍','🥭','🍌','🍉','🍈','🍏','🍐','🫒','🥝','🍅','☕','🍵','🧉','🍺','🥂','🍷','🍸','🍹'],
-  '❤ Symboly':  ['❤','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣','💕','💞','💓','💗','💖','💘','💝','💟','☮','✌','🤞','🙏','👍','👎','👊','✊','🤛','🤜','🤝','🫶','❗','❓','✅','❌','⚠','🚫','⛔','💯','🔴','🟠','🟡','🟢','🔵','🟣','⚫','⚪','🟤','🔶','🔷','🔸','🔹','🔺','🔻','💠','🔘','🔲','🔳','▪','▫','◾','◽','◼','◻','🟥','🟧','🟨','🟩','🟦','🟪','⬛','⬜','🟫'],
-  '🚗 Doprava':  ['🚗','🚕','🚙','🚌','🚎','🏎','🚓','🚑','🚒','🚐','🛻','🚚','🚛','🚜','🏍','🛵','🛺','🚲','🛴','🛹','🛼','🚏','🛣','🛤','⛽','🛞','🚦','🚥','✈','🛫','🛬','🛩','💺','🚁','🛸','🚀','🛶','⛵','🚤','🛥','🛳','⛴','🚢','⚓'],
-  '🏥 Zdraví':   ['🏥','💊','💉','🩺','🩹','🩻','🩼','🦾','🦿','🦽','🩸','🔬','🧬','🧪','🧫','🧲','🫁','🫀','🧠','🦷','👁','👂','👃','🦴','💪','🦵','🦶','🩵'],
-  '⚽ Sport':    ['⚽','🏀','🏈','⚾','🥎','🎾','🏐','🏉','🥏','🎱','🏓','🏸','🏒','🏑','🥍','🏏','🪃','🥅','⛳','🏹','🎣','🤿','🥊','🥋','🎽','🛷','🛡','🏋','🤼','🤸','🤺','🏇','⛷','🏂','🪂','🏊','🚣','🧗','🚵','🚴','🏆','🥇'],
-  '👤 Lidé':    ['👤','👥','🧑','👶','👦','👧','🧒','👩','👨','🧓','👴','👵','🧙','🧚','🧛','🧜','🧝','🧞','🧟','🧌','👮','🕵','💂','🥷','👷','🫅','🤴','👸','🧑‍⚕️','🧑‍🎓','🧑‍🍳','🧑‍🏫','🧑‍🌾','🧑‍🔧','🧑‍🏭','🧑‍💼','🧑‍🎨','🧑‍🎤','🧑‍💻','🧑‍🚀','🧑‍🚒','🧑‍⚖️'],
-  '⭐ Oblíbené': ['⭐','🌟','💫','✨','🔥','💎','🎯','🚀','📡','⚡','💡','🔮','🪄','🧿','🎪','🎭','🎨','🎬','🎤','🎧','🎵','🎶','🏆','🥇','👑','💰','💳','🛒']
+var EMOJI_CATS={
+  "Domov":["&#127968;","&#127969;","&#127970;","&#127971;","&#127972;","&#127973;","&#127974;","&#127975;","&#127977;","&#127978;","&#127979;","&#127980;","&#127981;","&#127982;","&#127983;","&#127984;","&#128506;","&#128509;"],
+  "Media":["&#128191;","&#128192;","&#128252;","&#128249;","&#128247;","&#128248;","&#128253;","&#128250;","&#128251;","&#128243;","&#128241;","&#128222;","&#128223;","&#128224;","&#128225;"],
+  "Hudba":["&#127925;","&#127926;","&#127932;","&#127929;","&#127928;","&#127930;","&#127931;","&#129345;","&#127927;","&#127908;","&#127911;"],
+  "Tech":["&#128187;","&#128421;","&#9000;","&#128400;","&#128190;","&#128189;","&#128241;","&#128273;","&#128274;","&#9881;","&#128296;","&#128295;","&#128291;","&#128290;"],
+  "Data":["&#128202;","&#128200;","&#128201;","&#128193;","&#128194;","&#128203;","&#128204;","&#128221;","&#128222;","&#9999;","&#128218;","&#128209;","&#128210;","&#128212;"],
+  "Hry":["&#127918;","&#128377;","&#127922;","&#127919;","&#127923;","&#127942;","&#129351;","&#129352;","&#129353;","&#127941;","&#127988;"],
+  "Priroda":["&#127757;","&#127758;","&#127759;","&#127760;","&#127807;","&#127808;","&#9752;","&#127809;","&#127795;","&#127796;","&#127797;","&#127800;","&#127801;","&#127804;","&#127803;","&#127775;","&#9728;","&#127760;","&#10052;","&#9924;","&#127779;","&#127784;"],
+  "Jidlo":["&#127829;","&#127828;","&#127790;","&#127791;","&#129361;","&#127859;","&#127837;","&#127838;","&#127847;","&#127843;","&#9749;","&#127861;","&#127862;","&#127863;","&#127864;"],
+  "Symboly":["&#10084;","&#128150;","&#128152;","&#128147;","&#128149;","&#128151;","&#9829;","&#128155;","&#128156;","&#128157;","&#128158;","&#128159;","&#10004;","&#10060;","&#9888;","&#128683;","&#11035;","&#128308;","&#128309;","&#128310;","&#128311;","&#128312;","&#128313;"],
+  "Doprava":["&#128663;","&#128664;","&#128665;","&#128666;","&#128667;","&#128670;","&#128671;","&#128672;","&#128673;","&#128674;","&#128680;","&#128681;","&#9992;","&#128640;","&#128676;","&#9875;","&#128674;"],
+  "Zdravi":["&#127973;","&#128138;","&#128137;","&#129690;","&#129657;","&#129659;","&#128299;","&#129756;","&#129757;","&#9877;"],
+  "Sport":["&#9917;","&#127936;","&#127944;","&#9971;","&#127949;","&#127952;","&#127955;","&#127953;","&#9971;","&#127948;","&#129340;"],
+  "Oblibene":["&#11088;","&#127775;","&#128171;","&#10024;","&#128293;","&#128142;","&#127919;","&#128640;","&#128161;","&#127754;","&#127942;","&#128081;","&#128176;","&#128179;"]
 };
 
-var ALL_EMOJIS = [];
-Object.values(EMOJI_CATS).forEach(function(arr){arr.forEach(function(e){if(ALL_EMOJIS.indexOf(e)===-1)ALL_EMOJIS.push(e);});});
+var ALL_EMOJIS=[];
+Object.keys(EMOJI_CATS).forEach(function(k){EMOJI_CATS[k].forEach(function(e){if(ALL_EMOJIS.indexOf(e)===-1)ALL_EMOJIS.push(e);});});
 
-var AVAILABLE_ICONS=['🏠','💿','🔧','🏗','📊','💳','🍽','🩸','🎙','🌤','📝','📅','🕹','📖','📚','🇬🇧','📻','🟢','🎤','🎮','🌍','☁️','🎵','💻','⚡','🔒','🎬','🖼','🌟','🎯','💡','🔔','📱','🖥','⌚','🎧','🎸','🎹','🎺','📡','🛰','🔭','🌐','🌊','🌴','🎪','🎭','🎨','🖌','📐','📏'];
-var APP_COLORS=['#aa00ff','#ff8c00','#ffe000','#00cfff','#ff3c5a','#5ce65c','#00ff88','#ff4fd8','#ff7711','#00c864','#ff4444','#38bdf8','#f5c842','#00b4ff','#00ffbb','#f97316','#a78bfa','#34d399','#0088ff','#22c55e','#ff4466','#0066ff','#00d4ff'];
+var QUICK_ICONS=["&#127968;","&#128191;","&#128296;","&#127959;","&#128202;","&#128179;","&#127965;","&#129754;","&#127900;","&#128139;","&#127900;","&#127780;","&#128221;","&#128197;","&#128377;","&#128218;","&#128218;","&#127988;","&#128251;","&#128994;","&#127908;","&#127918;","&#127757;","&#127760;","&#128225;"];
+
+var APP_COLORS=["#aa00ff","#ff8c00","#ffe000","#00cfff","#ff3c5a","#5ce65c","#00ff88","#ff4fd8","#ff7711","#00c864","#ff4444","#38bdf8","#f5c842","#00b4ff","#00ffbb","#f97316","#a78bfa","#34d399","#0088ff","#22c55e","#ff4466","#0066ff","#00d4ff"];
+
 var DEFAULT=[
-  '🏠 HouseTime','💿 CD databáze','🔧 Hardware','🏗 Architektura',
-  '💿 LP Desky','☁️ Mixcloud','📊 Odečty','💳 Platby','🍽 Jídlo',
-  '🩸 Glukóza','🎙 OBS Status','🌤 Počasí','📝 Poznámky','📅 Kalendář',
-  '🕹 ZX Next','📖 Manuály','📚 Čtečka','🇬🇧 WordMaster','📻 Multitrack',
-  '🟢 Status','🎤 Radio ID','🎮 ZX Games','🌍 World Time','🌐 Překladač',
-  '📡 NextSync'
+  "\uD83C\uDFE0 HouseTime","\uD83D\uDCBF CD datab\u00E1ze","\uD83D\uDD27 Hardware","\uD83C\uDFD7 Architektura",
+  "\uD83D\uDCBF LP Desky","\u2601\uFE0F Mixcloud","\uD83D\uDCCA Ode\u010Dty","\uD83D\uDCB3 Platby","\uD83C\uDF7D J\u00EDdlo",
+  "\uD83E\uDE78 Gluk\u00F3za","\uD83C\uDF99 OBS Status","\uD83C\uDF24 Po\u010Das\u00ED","\uD83D\uDCDD Pozn\u00E1mky","\uD83D\uDCC5 Kalend\u00E1\u0159",
+  "\uD83D\uDD79 ZX Next","\uD83D\uDCD6 Manu\u00E1ly","\uD83D\uDCDA \u010Dte\u010Dka","\uD83C\uDDEC\uD83C\uDDE7 WordMaster","\uD83D\uDCFB Multitrack",
+  "\uD83D\uDFE2 Status","\uD83C\uDFA4 Radio ID","\uD83C\uDFAE ZX Games","\uD83C\uDF0D World Time","\uD83C\uDF10 P\u0159eklada\u010D",
+  "\uD83D\uDCE1 NextSync","\uD83D\uDCF8 Co to je???"
 ];
-var APP_IDS={
-  'HouseTime':'housetime','CD databáze':'cd','Hardware':'hardware',
-  'Architektura':'architektura','LP Desky':'lp','Mixcloud':'mixcloud',
-  'Odečty':'odecty','Platby':'platby','Jídlo':'jidlo','Glukóza':'gluco',
-  'OBS Status':'obs','Počasí':'pocasi','Poznámky':'notes','Kalendář':'kalendar',
-  'ZX Next':'zxnext','Manuály':'manualy','Čtečka':'reader','WordMaster':'wordmaster',
-  'Multitrack':'multitrack','Status':'status','Radio ID':'radio',
-  'ZX Games':'zxgames','World Time':'worldtime','Překladač':'prekladac',
-  'NextSync':'nextsync'
-};
-var selectedAddIcon=AVAILABLE_ICONS[0];
 
-// === CUSTOM ICONS ===
+var APP_IDS={
+  "HouseTime":"housetime","CD datab\u00E1ze":"cd","Hardware":"hardware",
+  "Architektura":"architektura","LP Desky":"lp","Mixcloud":"mixcloud",
+  "Ode\u010Dty":"odecty","Platby":"platby","J\u00EDdlo":"jidlo","Gluk\u00F3za":"gluco",
+  "OBS Status":"obs","Po\u010Das\u00ED":"pocasi","Pozn\u00E1mky":"notes","Kalend\u00E1\u0159":"kalendar",
+  "ZX Next":"zxnext","Manu\u00E1ly":"manualy","\u010Dte\u010Dka":"reader","WordMaster":"wordmaster",
+  "Multitrack":"multitrack","Status":"status","Radio ID":"radio",
+  "ZX Games":"zxgames","World Time":"worldtime","P\u0159eklada\u010D":"prekladac",
+  "NextSync":"nextsync","Co to je???":"cotoje"
+};
+
+var selectedAddIcon=QUICK_ICONS[0];
 var _customIcons={};
+var _editAppName="";
+var _editSelectedIcon="";
+var _currentCat="";
+var _fbRef=null;
+
 function loadIcons(){try{var s=getStorage().getItem(LS_ICONS);if(s)_customIcons=JSON.parse(s);}catch(e){}}
 function saveIconsLocal(){try{getStorage().setItem(LS_ICONS,JSON.stringify(_customIcons));}catch(e){}}
 
-// Firebase icon sync
-var _fbRef=null;
 function initFirebase(){
   try{
-    var db=window.parent.firebase.app('gate-app').database();
+    var db=window.parent.firebase.app("gate-app").database();
     var uid=null;
     if(window.parent._gateAuth&&window.parent._gateAuth.currentUser){uid=window.parent._gateAuth.currentUser.uid;}
     if(!uid){setTimeout(initFirebase,1500);return;}
-    _fbRef=db.ref('kladyx/user_icons/'+uid);
-    _fbRef.once('value').then(function(snap){
-      if(snap.exists()){
-        var remote=snap.val();
-        Object.assign(_customIcons,remote);
-        saveIconsLocal();
-        render();
-        setSyncStatus('☁ Sync ✓','#34d399');
-      }
-    }).catch(function(){setSyncStatus('☁ Offline','#f87171');});
+    _fbRef=db.ref("kladyx/user_icons/"+uid);
+    _fbRef.once("value").then(function(snap){
+      if(snap.exists()){Object.assign(_customIcons,snap.val());saveIconsLocal();render();setSyncStatus("\u2601 Sync \u2713","#34d399");}
+    }).catch(function(){setSyncStatus("\u2601 Offline","#f87171");});
   }catch(e){setTimeout(initFirebase,1500);}
 }
+
 function saveIconToFirebase(appId,icon){
   if(!_fbRef)return;
-  var upd={};upd[appId]=icon;
-  _fbRef.update(upd).then(function(){setSyncStatus('☁ Uloženo ✓','#34d399');setTimeout(function(){setSyncStatus('','');},2000);}).catch(function(){setSyncStatus('☁ Chyba uložení','#f87171');});
+  var upd={};
+  upd[appId]=icon;
+  _fbRef.update(upd).then(function(){setSyncStatus("\u2601 Ulo\u017Eeno \u2713","#34d399");setTimeout(function(){setSyncStatus("","");},2000);}).catch(function(){});
 }
-function setSyncStatus(txt,color){var el=document.getElementById('sync-status');if(el){el.textContent=txt;el.style.color=color||'#5a6488';}}
 
-function loadCustom(){try{return JSON.parse(getStorage().getItem(LS_KEY)||'[]');}catch(e){return[];}}
+function setSyncStatus(txt,color){var el=document.getElementById("sync-status");if(el){el.textContent=txt;el.style.color=color||"#5a6488";}}
+function loadCustom(){try{return JSON.parse(getStorage().getItem(LS_KEY)||"[]");}catch(e){return[];}}
 function saveCustom(arr){try{getStorage().setItem(LS_KEY,JSON.stringify(arr));}catch(e){}}
 
-// === RENDER ===
-function getIcon(appName,defaultIcon){return _customIcons[appName]||defaultIcon;}
+function getIconForApp(appName,defIcon){return _customIcons[appName]||defIcon;}
+
 function render(){
-  var ul=document.getElementById('app-list');
-  ul.innerHTML='';
+  var ul=document.getElementById("app-list");
+  if(!ul)return;
+  ul.innerHTML="";
   var custom=loadCustom();
   var all=DEFAULT.concat(custom);
   all.forEach(function(name,i){
     var isCustom=i>=DEFAULT.length;
-    var li=document.createElement('li');
+    var li=document.createElement("li");
     var color=APP_COLORS[i%APP_COLORS.length];
-    var parts=name.split(' ');
-    var defaultIcon=parts[0];
-    var appName=parts.slice(1).join(' ')||name;
-    var currentIcon=getIcon(appName,defaultIcon);
+    var parts=name.split(" ");
+    var defIcon=parts[0];
+    var appName=parts.slice(1).join(" ")||name;
+    var curIcon=getIconForApp(appName,defIcon);
     var appId=APP_IDS[appName]||null;
-    // click to open
-    li.addEventListener('click',function(){
-      if(appId){try{window.parent.openApp(appId);}catch(e){}}
-    });
-    li.innerHTML='<span class="app-dot" style="background:'+color+';box-shadow:0 0 5px '+color+'80"></span>'
-      +'<span class="num">'+(i+1)+'.</span>'
-      +'<span class="name">'+esc(appName)+'</span>'
-      +'<span class="icon-cell">'+currentIcon+'</span>'
-      +'<button class="btn-edit" title="Změnit ikonu">✏️</button>'
-      +(isCustom?'<button class="del" title="Odebrat">✕</button>':'');
-    var editBtn=li.querySelector('.btn-edit');
-    editBtn.setAttribute('data-appname',appName);
-    editBtn.setAttribute('data-icon',currentIcon);
-    editBtn.addEventListener('click',function(ev){ev.stopPropagation();openEditModal(appName,currentIcon);});
+
+    var dot=document.createElement("span");
+    dot.className="app-dot";
+    dot.style.background=color;
+    dot.style.boxShadow="0 0 5px "+color+"80";
+    li.appendChild(dot);
+
+    var num=document.createElement("span");
+    num.className="num";
+    num.textContent=(i+1)+".";
+    li.appendChild(num);
+
+    var nm=document.createElement("span");
+    nm.className="name";
+    nm.textContent=appName;
+    li.appendChild(nm);
+
+    var ic=document.createElement("span");
+    ic.className="icon-cell";
+    ic.innerHTML=curIcon;
+    li.appendChild(ic);
+
+    var eb=document.createElement("button");
+    eb.className="btn-edit";
+    eb.textContent="\u270F\uFE0F";
+    eb.title="Zm\u011Bnit ikonu";
+    eb.setAttribute("data-appname",appName);
+    eb.setAttribute("data-icon",curIcon);
+    li.appendChild(eb);
+
     if(isCustom){
-      var delBtn=li.querySelector('.del');
-      delBtn.addEventListener('click',function(ev){ev.stopPropagation();delApp(i);});
+      var db2=document.createElement("button");
+      db2.className="del";
+      db2.textContent="\u2715";
+      db2.setAttribute("data-idx",i);
+      li.appendChild(db2);
     }
+
+    if(appId){
+      li.addEventListener("click",function(){
+        try{window.parent.openApp(appId);}catch(e){}
+      });
+    }
+
+    eb.addEventListener("click",function(ev){
+      ev.stopPropagation();
+      var an=eb.getAttribute("data-appname");
+      var ic2=eb.getAttribute("data-icon");
+      openEditModal(an,ic2);
+    });
+
+    if(isCustom){
+      var db3=li.querySelector(".del");
+      if(db3){
+        db3.addEventListener("click",function(ev){
+          ev.stopPropagation();
+          var idx=parseInt(db3.getAttribute("data-idx"));
+          delApp(idx);
+        });
+      }
+    }
+
     ul.appendChild(li);
   });
 }
 
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
 function delApp(idx){
   var offset=idx-DEFAULT.length;
-  var arr=loadCustom();arr.splice(offset,1);saveCustom(arr);
-  render();msg('✅ Odstraněno.',true);setTimeout(function(){msg('');},2000);
+  var arr=loadCustom();
+  arr.splice(offset,1);
+  saveCustom(arr);
+  render();
+  msg("Odstranen\u00E9.",true);
+  setTimeout(function(){msg("");},2000);
 }
-function msg(t,ok){var e=document.getElementById('status-msg');if(e){e.textContent=t;e.style.color=ok?'#34d399':'#f87171';}}
 
-// === ADD ICON PICKER ===
+function msg(t,ok){var e=document.getElementById("status-msg");if(e){e.textContent=t;e.style.color=ok?"#34d399":"#f87171";}}
+
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
 function initAddIconPicker(){
-  var grid=document.getElementById('add-icon-grid');
-  grid.innerHTML='';
-  AVAILABLE_ICONS.forEach(function(icon){
-    var btn=document.createElement('button');
-    btn.className='small-btn'+(icon===selectedAddIcon?' selected':'');
-    btn.textContent=icon;
-    btn.addEventListener('click',function(){
-      document.querySelectorAll('.small-btn').forEach(function(b){b.classList.remove('selected');});
-      btn.classList.add('selected');
+  var grid=document.getElementById("add-icon-grid");
+  if(!grid)return;
+  grid.innerHTML="";
+  QUICK_ICONS.forEach(function(icon){
+    var btn=document.createElement("button");
+    btn.className="small-btn"+(icon===selectedAddIcon?" selected":"");
+    btn.innerHTML=icon;
+    btn.addEventListener("click",function(){
+      document.querySelectorAll(".small-btn").forEach(function(b){b.classList.remove("selected");});
+      btn.classList.add("selected");
       selectedAddIcon=icon;
-      var prev=document.getElementById('add-icon-preview');
-      if(prev)prev.textContent=icon;
+      var prev=document.getElementById("add-icon-preview");
+      if(prev)prev.innerHTML=icon;
     });
     grid.appendChild(btn);
   });
 }
 
 function addApp(){
-  var val=document.getElementById('new-name').value.trim();
-  if(!val){msg('Zadej název.',false);return;}
-  var appName=selectedAddIcon+' '+val;
-  var arr=loadCustom();arr.push(appName);saveCustom(arr);
-  document.getElementById('new-name').value='';
-  selectedAddIcon=AVAILABLE_ICONS[0];
-  initAddIconPicker();
-  var prev=document.getElementById('add-icon-preview');if(prev)prev.textContent=AVAILABLE_ICONS[0];
-  render();msg('✅ Přidáno.',true);setTimeout(function(){msg('');},2500);
+  var val=document.getElementById("new-name").value.trim();
+  if(!val){msg("Zadej nazev.",false);return;}
+  var appName=selectedAddIcon+" "+val;
+  var arr=loadCustom();
+  arr.push(appName);
+  saveCustom(arr);
+  document.getElementById("new-name").value="";
+  render();
+  msg("Pridan\u00E9.",true);
+  setTimeout(function(){msg("");},2500);
 }
-
-// === EDIT MODAL ===
-var _editAppName='';
-var _editSelectedIcon='';
-var _currentCat='';
 
 function openEditModal(appName,currentIcon){
   _editAppName=appName;
   _editSelectedIcon=currentIcon;
-  _currentCat='';
-  document.getElementById('modal-app-label').textContent=appName;
-  document.getElementById('modal-current-icon').textContent=currentIcon;
-  document.getElementById('emoji-search').value='';
+  _currentCat="";
+  var lbl=document.getElementById("modal-app-label");
+  if(lbl)lbl.textContent=appName;
+  var cur=document.getElementById("modal-current-icon");
+  if(cur)cur.innerHTML=currentIcon;
+  var srch=document.getElementById("emoji-search");
+  if(srch)srch.value="";
   buildCatTabs();
   renderEmojiGrid(ALL_EMOJIS,currentIcon);
-  document.getElementById('edit-modal').classList.add('open');
+  var modal=document.getElementById("edit-modal");
+  if(modal)modal.classList.add("open");
 }
 
 function buildCatTabs(){
-  var tabs=document.getElementById('cat-tabs');
-  tabs.innerHTML='';
-  var allTab=document.createElement('button');
-  allTab.className='cat-tab active';
-  allTab.textContent='🔢 Vše';
-  allTab.addEventListener('click',function(){
-    document.querySelectorAll('.cat-tab').forEach(function(t){t.classList.remove('active');});
-    allTab.classList.add('active');
-    _currentCat='';
-    renderEmojiGrid(filterEmojis(ALL_EMOJIS),_editSelectedIcon);
+  var tabs=document.getElementById("cat-tabs");
+  if(!tabs)return;
+  tabs.innerHTML="";
+  var allTab=document.createElement("button");
+  allTab.className="cat-tab active";
+  allTab.textContent="Vse";
+  allTab.addEventListener("click",function(){
+    document.querySelectorAll(".cat-tab").forEach(function(t){t.classList.remove("active");});
+    allTab.classList.add("active");
+    _currentCat="";
+    renderEmojiGrid(ALL_EMOJIS,_editSelectedIcon);
   });
   tabs.appendChild(allTab);
   Object.keys(EMOJI_CATS).forEach(function(cat){
-    var t=document.createElement('button');
-    t.className='cat-tab';
+    var t=document.createElement("button");
+    t.className="cat-tab";
     t.textContent=cat;
-    t.addEventListener('click',function(){
-      document.querySelectorAll('.cat-tab').forEach(function(x){x.classList.remove('active');});
-      t.classList.add('active');
+    t.addEventListener("click",function(){
+      document.querySelectorAll(".cat-tab").forEach(function(x){x.classList.remove("active");});
+      t.classList.add("active");
       _currentCat=cat;
-      renderEmojiGrid(filterEmojis(EMOJI_CATS[cat]),_editSelectedIcon);
+      renderEmojiGrid(EMOJI_CATS[cat],_editSelectedIcon);
     });
     tabs.appendChild(t);
   });
 }
 
-function filterEmojis(arr){
-  var q=document.getElementById('emoji-search').value.trim().toLowerCase();
-  if(!q)return arr;
-  return arr.filter(function(e){return e.indexOf(q)!==-1;});
-}
-
 function renderEmojiGrid(emojis,selected){
-  var grid=document.getElementById('emoji-grid');
-  grid.innerHTML='';
+  var grid=document.getElementById("emoji-grid");
+  if(!grid)return;
+  grid.innerHTML="";
   emojis.forEach(function(emoji){
-    var btn=document.createElement('button');
-    btn.className='emoji-btn'+(emoji===selected?' selected':'');
-    btn.textContent=emoji;
-    btn.addEventListener('click',function(){
-      document.querySelectorAll('.emoji-btn').forEach(function(b){b.classList.remove('selected');});
-      btn.classList.add('selected');
+    var btn=document.createElement("button");
+    btn.className="emoji-btn"+(emoji===selected?" selected":"");
+    btn.innerHTML=emoji;
+    btn.addEventListener("click",function(){
+      document.querySelectorAll(".emoji-btn").forEach(function(b){b.classList.remove("selected");});
+      btn.classList.add("selected");
       _editSelectedIcon=emoji;
-      document.getElementById('modal-current-icon').textContent=emoji;
+      var cur=document.getElementById("modal-current-icon");
+      if(cur)cur.innerHTML=emoji;
     });
     grid.appendChild(btn);
   });
 }
 
-document.getElementById('emoji-search').addEventListener('input',function(){
-  var pool=_currentCat?EMOJI_CATS[_currentCat]:ALL_EMOJIS;
-  renderEmojiGrid(filterEmojis(pool),_editSelectedIcon);
-});
+var srch2=document.getElementById("emoji-search");
+if(srch2){
+  srch2.addEventListener("input",function(){
+    var pool=_currentCat?EMOJI_CATS[_currentCat]:ALL_EMOJIS;
+    renderEmojiGrid(pool,_editSelectedIcon);
+  });
+}
 
-document.getElementById('btn-modal-cancel').addEventListener('click',function(){
-  document.getElementById('edit-modal').classList.remove('open');
-});
+var cancelBtn=document.getElementById("btn-modal-cancel");
+if(cancelBtn){cancelBtn.addEventListener("click",function(){document.getElementById("edit-modal").classList.remove("open");});}
 
-document.getElementById('btn-modal-save').addEventListener('click',function(){
-  if(!_editSelectedIcon||!_editAppName)return;
-  _customIcons[_editAppName]=_editSelectedIcon;
-  saveIconsLocal();
-  saveIconToFirebase(_editAppName,_editSelectedIcon);
-  // Aktualizuj tab bar a home grid v parent panelu
-  try{
-    var appId=APP_IDS[_editAppName];
-    if(appId){
-      var btnEl=window.parent.document.querySelector('#btn-'+appId+' .bi');
-      if(btnEl)btnEl.textContent=_editSelectedIcon;
-      var wcardEl=window.parent.document.querySelector('[onclick*="openApp(\''+appId+'\')"] .wi');
-      if(wcardEl)wcardEl.textContent=_editSelectedIcon;
-    }
-  }catch(e){}
-  document.getElementById('edit-modal').classList.remove('open');
-  render();
-  setSyncStatus('✅ Ikona změněna','#34d399');
-  setTimeout(function(){setSyncStatus('','');},2000);
-});
+var saveBtn=document.getElementById("btn-modal-save");
+if(saveBtn){
+  saveBtn.addEventListener("click",function(){
+    if(!_editSelectedIcon||!_editAppName)return;
+    _customIcons[_editAppName]=_editSelectedIcon;
+    saveIconsLocal();
+    saveIconToFirebase(_editAppName,_editSelectedIcon);
+    try{
+      var appId=APP_IDS[_editAppName];
+      if(appId){
+        var btnEl=window.parent.document.querySelector("#btn-"+appId+" .bi");
+        if(btnEl)btnEl.innerHTML=_editSelectedIcon;
+        var wcEl=window.parent.document.querySelector(".wcard[onclick*="+appId+"] .wi");
+        if(wcEl)wcEl.innerHTML=_editSelectedIcon;
+      }
+    }catch(e){}
+    document.getElementById("edit-modal").classList.remove("open");
+    render();
+    setSyncStatus("Ikona zmenena","#34d399");
+    setTimeout(function(){setSyncStatus("","");},2000);
+  });
+}
 
-// Zavření kliknutím mimo modal
-document.getElementById('edit-modal').addEventListener('click',function(e){
-  if(e.target===this)this.classList.remove('open');
-});
+var overlay=document.getElementById("edit-modal");
+if(overlay){overlay.addEventListener("click",function(e){if(e.target===this)this.classList.remove("open");});}
 
-document.getElementById('new-name').addEventListener('keydown',function(e){if(e.key==='Enter')addApp();});
-document.getElementById('btn-add-app').addEventListener('click',addApp);
+var addBtn=document.getElementById("btn-add-app");
+if(addBtn){addBtn.addEventListener("click",addApp);}
+
+var nameInp=document.getElementById("new-name");
+if(nameInp){nameInp.addEventListener("keydown",function(e){if(e.key==="Enter")addApp();});}
 
 loadIcons();
 initAddIconPicker();
@@ -17851,7 +17904,7 @@ body{display:flex;flex-direction:column;}
 <div class="topbar">
   <div class="topbar-title">&#x1F4E1; NEXT<span>SYNC</span></div>
   <div><span class="hb-dot" id="hb-dot"></span><span id="hb-text" style="font-size:9px;color:#888;">--</span></div>
-  <div class="ver">v3.2.10.Kl</div>
+  <div class="ver">v3.2.12.Kl</div>
 </div>
 <div class="tabs">
   <div class="tab active" id="tb-files">&#x1F4C1; SLOZKY</div>
@@ -18211,7 +18264,7 @@ document.getElementById('file-input').addEventListener('change',function(e){
   e.target.value='';
 });
 
-getS();getF();renderFiles();log('NextSync v3.2.10.Kl OK ('+(isHttp?'PC':'GitHub')+' mode)','ok');
+getS();getF();renderFiles();log('NextSync v3.2.12.Kl OK ('+(isHttp?'PC':'GitHub')+' mode)','ok');
 loadHeartbeat();
 loadPCFiles(curFolder);
 setInterval(loadHeartbeat,15000);
@@ -18238,6 +18291,8 @@ function openApp(id) {
         try {
           if (id === 'reader') {
             frame.src = 'https://kladyx.github.io/panel/reader.html';
+          } else if (id === 'cotoje') {
+            frame.src = './cotoje.html';
           } else {
             frame.srcdoc = html;
           }
