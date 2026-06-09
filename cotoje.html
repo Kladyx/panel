@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="cs"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Co to je???</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#050a14;color:#c8e0ff;font-family:'Quicksand','Segoe UI',system-ui,sans-serif;font-weight:600;padding:14px;min-height:100vh;}
+h1{font-size:1.4rem;font-weight:700;color:#00d4ff;text-align:center;margin-bottom:4px;letter-spacing:.02em;text-shadow:0 0 10px rgba(0,212,255,0.8),0 0 20px rgba(0,212,255,0.5),0 0 30px rgba(0,180,255,0.3);}
+h1 .emoji{display:inline-block;animation:wobble 3s ease-in-out infinite;}
+@keyframes wobble{0%,100%{transform:rotate(-5deg);}50%{transform:rotate(5deg);}}
+.version-badge{text-align:center;font-size:.7rem;letter-spacing:.15em;color:#00d4ff;opacity:.75;margin-bottom:16px;text-shadow:0 0 6px rgba(0,212,255,0.6);}
+.key-box{background:#070d1a;border:1.5px solid rgba(0,212,255,0.35);border-radius:16px;padding:14px;margin-bottom:14px;box-shadow:0 0 14px rgba(0,212,255,0.12),inset 0 0 8px rgba(0,212,255,0.05);}
+.key-label{font-size:.75rem;font-weight:700;letter-spacing:.04em;color:rgba(0,212,255,.9);margin-bottom:8px;}
+.key-row{display:flex;gap:8px;}
+.key-input{flex:1;background:rgba(0,0,0,.35);border:1.5px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px 12px;color:#c8e0ff;font-family:'Quicksand',sans-serif;font-weight:600;font-size:.85rem;outline:none;transition:all .2s;}
+.key-input:focus{border-color:rgba(0,212,255,0.6);box-shadow:0 0 10px rgba(0,212,255,0.3);}
+.key-save{padding:10px 16px;background:rgba(0,212,255,0.15);border:1.5px solid rgba(0,212,255,0.5);border-radius:10px;color:#00d4ff;font-family:'Quicksand',sans-serif;font-weight:700;font-size:.8rem;cursor:pointer;text-shadow:0 0 4px rgba(0,212,255,0.6);transition:all .2s;}
+.key-save:hover{background:rgba(0,212,255,0.25);transform:translateY(-1px);}
+.key-save:active{transform:translateY(0);}
+.key-ok{font-size:.8rem;font-weight:700;color:#00ff9d;margin-top:6px;display:none;text-shadow:0 0 6px rgba(0,255,157,0.6);}
+.category-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.cat-btn{padding:8px 14px;border-radius:22px;border:1.5px solid rgba(255,255,255,.12);background:rgba(0,0,0,.2);color:rgba(200,224,255,.65);font-family:'Quicksand',sans-serif;font-weight:600;font-size:.8rem;cursor:pointer;transition:all .25s ease;display:inline-flex;align-items:center;gap:6px;}
+.cat-btn .cat-icon{font-size:1.15rem;line-height:1;display:inline-block;transition:transform .3s ease;}
+.cat-btn:hover{transform:translateY(-2px);border-color:rgba(0,212,255,0.4);}
+.cat-btn:hover .cat-icon{transform:scale(1.2) rotate(-8deg);}
+.cat-btn.active{border-color:#00d4ff;color:#00d4ff;background:rgba(0,212,255,.15);box-shadow:0 0 12px rgba(0,212,255,0.4);text-shadow:0 0 4px rgba(0,212,255,0.6);}
+.cat-btn.active .cat-icon{animation:bounce-icon 1.2s ease-in-out infinite;}
+@keyframes bounce-icon{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-3px) scale(1.15);}}
+#preview{max-width:100%;max-height:280px;border-radius:16px;display:none;margin:0 auto 14px;border:2px solid rgba(0,212,255,0.4);box-shadow:0 0 20px rgba(0,212,255,0.25);}
+.btn-row{display:flex;gap:10px;margin-bottom:10px;}
+.btn{flex:1;padding:16px 12px;border-radius:14px;border:none;font-family:'Quicksand',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.02em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .25s ease;position:relative;overflow:hidden;}
+.btn-icon{font-size:1.3rem;line-height:1;display:inline-block;}
+.btn-foto{background:linear-gradient(135deg,rgba(0,212,255,0.12),rgba(0,150,255,0.22));border:1.5px solid rgba(0,212,255,0.5);color:#00d4ff;text-shadow:0 0 6px rgba(0,212,255,0.5);box-shadow:0 2px 10px rgba(0,212,255,0.1),inset 0 1px 0 rgba(0,212,255,0.2);}
+.btn-foto:hover{background:linear-gradient(135deg,rgba(0,212,255,0.22),rgba(0,150,255,0.32));box-shadow:0 6px 20px rgba(0,212,255,0.35),inset 0 1px 0 rgba(0,212,255,0.3);transform:translateY(-2px);}
+.btn-foto:hover .btn-icon{animation:bounce-icon 0.6s ease;}
+.btn-foto:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,212,255,0.2);}
+.btn-analyze{width:100%;padding:20px;border-radius:18px;background:linear-gradient(135deg,#0088cc 0%,#00d4ff 50%,#0088cc 100%);background-size:200% 200%;border:1.5px solid rgba(0,212,255,0.8);color:#001020;font-family:'Quicksand',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:.04em;text-shadow:0 1px 2px rgba(255,255,255,0.4);box-shadow:0 0 20px rgba(0,212,255,0.5),0 4px 16px rgba(0,212,255,0.3),inset 0 1px 0 rgba(255,255,255,0.3);display:none;margin-bottom:10px;cursor:pointer;animation:pulse-glow 2.4s ease-in-out infinite,gradient-shift 3s ease infinite;transition:transform .15s ease;}
+.btn-analyze:hover:not(:disabled){transform:scale(1.03);}
+.btn-analyze:active:not(:disabled){transform:scale(0.97);}
+.btn-analyze:disabled{opacity:.5;cursor:not-allowed;animation:none;}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(0,212,255,0.5),0 4px 16px rgba(0,212,255,0.3),inset 0 1px 0 rgba(255,255,255,0.3);}50%{box-shadow:0 0 35px rgba(0,212,255,0.9),0 6px 24px rgba(0,212,255,0.5),inset 0 1px 0 rgba(255,255,255,0.4);}}
+@keyframes gradient-shift{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+.result-box{background:#070d1a;border:1.5px solid rgba(0,212,255,0.35);border-radius:16px;padding:16px;display:none;margin-top:10px;box-shadow:0 0 14px rgba(0,212,255,0.15),inset 0 0 8px rgba(0,212,255,0.05);animation:slide-in .4s ease;}
+@keyframes slide-in{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.result-title{font-size:.85rem;font-weight:700;letter-spacing:.04em;color:rgba(0,212,255,.9);margin-bottom:10px;text-shadow:0 0 4px rgba(0,212,255,0.5);}
+.result-text{font-size:.95rem;font-weight:500;line-height:1.6;color:#e0eeff;white-space:pre-wrap;}
+.loading{text-align:center;padding:24px;color:#00d4ff;font-size:.9rem;font-weight:600;display:none;text-shadow:0 0 8px rgba(0,212,255,0.6);}
+.loading .loading-icon{display:inline-block;animation:spin 1.4s linear infinite;font-size:1.3rem;margin-right:6px;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.err{color:#ff4466;font-size:.85rem;font-weight:600;text-align:center;padding:10px;display:none;text-shadow:0 0 6px rgba(255,68,102,0.5);}
+.copy-btn{margin-top:12px;width:100%;padding:10px;background:rgba(0,212,255,.08);border:1.5px solid rgba(0,212,255,.25);border-radius:10px;color:rgba(0,212,255,.85);font-family:'Quicksand',sans-serif;font-weight:600;font-size:.8rem;cursor:pointer;transition:all .2s;}
+.copy-btn:hover{background:rgba(0,212,255,.15);transform:translateY(-1px);}
+.footer{text-align:center;margin-top:28px;padding:14px 8px;font-size:.7rem;font-weight:600;color:rgba(0,212,255,.55);letter-spacing:.05em;border-top:1px solid rgba(0,212,255,.15);text-shadow:0 0 4px rgba(0,212,255,0.3);}
+.footer .heart{display:inline-block;color:#ff4d8d;animation:heartbeat 1.6s ease-in-out infinite;margin:0 2px;}
+@keyframes heartbeat{0%,100%{transform:scale(1);}50%{transform:scale(1.25);}}
+</style>
+</head>
+<body>
+<h1><span class="emoji">📸</span> Co to je???</h1>
+<div class="version-badge">◆ v1.5Kl ◆</div>
+<div class="key-box">
+  <div class="key-label">🔑 Gemini API Key</div>
+  <div class="key-row">
+    <input class="key-input" id="keyInput" type="password" placeholder="Vlož Gemini API klíč..."/>
+    <button class="key-save" onclick="saveKey()">Uložit</button>
+  </div>
+  <div class="key-ok" id="keyOk">✓ Klíč uložen</div>
+</div>
+<div class="category-row">
+  <button class="cat-btn active" data-cat="universal"><span class="cat-icon">🔍</span>Vše</button>
+  <button class="cat-btn" data-cat="medicine"><span class="cat-icon">💊</span>Léky</button>
+  <button class="cat-btn" data-cat="plant"><span class="cat-icon">🌿</span>Rostliny</button>
+  <button class="cat-btn" data-cat="hardware"><span class="cat-icon">🔧</span>Hardware</button>
+  <button class="cat-btn" data-cat="food"><span class="cat-icon">🍽️</span>Jídlo</button>
+</div>
+
+<img id="preview"/>
+
+<input type="file" id="fileInputCam" accept="image/*" capture="environment" style="display:none"/>
+<input type="file" id="fileInputGal" accept="image/*" style="display:none"/>
+<div class="btn-row">
+  <button class="btn btn-foto" onclick="document.getElementById('fileInputCam').click()"><span class="btn-icon">📷</span>Vyfotit</button>
+  <button class="btn btn-foto" onclick="document.getElementById('fileInputGal').click()"><span class="btn-icon">🖼️</span>Z galerie</button>
+</div>
+<button class="btn btn-analyze" id="btnAnalyze" onclick="analyze()">🔍&nbsp;&nbsp;ROZPOZNAT</button>
+
+<div class="loading" id="loading"><span class="loading-icon">⚙️</span>Analyzuji obrázek...</div>
+<div class="err" id="err"></div>
+<div class="result-box" id="resultBox">
+  <div class="result-title">✨ Výsledek ✨</div>
+  <div class="result-text" id="resultText"></div>
+  <button class="copy-btn" onclick="copyResult()">📋 Kopírovat</button>
+</div>
+
+<script>
+var PROMPTS={
+  universal:'Analyzuj tento obrázek detailně. Řekni mi: 1) Co přesně je na obrázku, 2) Důležité detaily a vlastnosti, 3) Případné upozornění nebo zajímavosti. Odpověz v češtině.',
+  medicine:'Toto je fotka léku nebo tablety. Identifikuj: 1) Název léku, 2) Účinnou látku, 3) Obvyklé použití, 4) Varování. Odpověz v češtině.',
+  plant:'Identifikuj tuto rostlinu nebo houbu: 1) Název česky i latinsky, 2) Jedlost nebo jedovatost - DŮLEŽITÉ, 3) Znaky, 4) Kde roste. Odpověz v češtině.',
+  hardware:'Identifikuj tento hardware: 1) Co to je, 2) Výrobce a model, 3) K čemu slouží, 4) Hodnota. Odpověz v češtině.',
+  food:'Analyzuj toto jídlo nebo etiketu: 1) Co to je, 2) Ingredience, 3) Nutriční hodnoty, 4) Alergeny. Odpověz v češtině.'
+};
+var currentBase64=null, currentMime='image/jpeg', currentCat='universal';
+
+var savedKey=localStorage.getItem('gemini_api_key')||'';
+if(savedKey){document.getElementById('keyInput').value=savedKey;document.getElementById('keyOk').style.display='block';}
+
+function saveKey(){
+  var k=document.getElementById('keyInput').value.trim();
+  if(!k)return;
+  localStorage.setItem('gemini_api_key',k);
+  document.getElementById('keyOk').style.display='block';
+}
+
+document.querySelectorAll('.cat-btn').forEach(function(btn){
+  btn.onclick=function(){
+    document.querySelectorAll('.cat-btn').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    currentCat=btn.dataset.cat;
+  };
+});
+
+// Resize obrázku na max 1280 px (delší strana) — výrazně zrychlí upload.
+// Gemini přesnost neztratí, ušetří se MB dat.
+var MAX_SIDE=1280, JPEG_Q=0.85;
+
+function resizeImage(file,cb){
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var img=new Image();
+    img.onload=function(){
+      var w=img.naturalWidth, h=img.naturalHeight;
+      if(w<=MAX_SIDE&&h<=MAX_SIDE){
+        // Už je dost malý — použij original
+        cb(ev.target.result, file.type||'image/jpeg');
+        return;
+      }
+      var scale=MAX_SIDE/Math.max(w,h);
+      var nw=Math.round(w*scale), nh=Math.round(h*scale);
+      var cv=document.createElement('canvas');
+      cv.width=nw; cv.height=nh;
+      var ctx=cv.getContext('2d');
+      ctx.drawImage(img,0,0,nw,nh);
+      var dataUrl=cv.toDataURL('image/jpeg',JPEG_Q);
+      cb(dataUrl,'image/jpeg');
+    };
+    img.onerror=function(){cb(ev.target.result, file.type||'image/jpeg');};
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleFile(e){
+  var file=e.target.files[0];
+  if(!file)return;
+  resizeImage(file,function(dataUrl,mime){
+    currentMime=mime;
+    currentBase64=dataUrl.split(',')[1];
+    var p=document.getElementById('preview');
+    p.src=dataUrl;
+    p.style.display='block';
+    document.getElementById('btnAnalyze').style.display='block';
+    document.getElementById('resultBox').style.display='none';
+    document.getElementById('err').style.display='none';
+  });
+}
+document.getElementById('fileInputCam').onchange=handleFile;
+document.getElementById('fileInputGal').onchange=handleFile;
+
+// Fallback chain: když je model přetížený (503/overloaded), zkusí další.
+var MODELS=['gemini-2.5-flash','gemini-2.5-flash-lite','gemini-2.0-flash'];
+
+function isOverload(data,httpStatus){
+  if(httpStatus===503||httpStatus===429)return true;
+  if(data&&data.error){
+    var c=data.error.code, s=(data.error.status||'')+'', m=(data.error.message||'')+'';
+    if(c===503||c===429)return true;
+    if(s==='UNAVAILABLE'||s==='RESOURCE_EXHAUSTED')return true;
+    if(/overload|high demand|currently unavailable|quota/i.test(m))return true;
+  }
+  return false;
+}
+
+function analyze(){
+  if(!currentBase64)return;
+  var key=localStorage.getItem('gemini_api_key')||'';
+  if(!key){showErr('Nejprve ulož Gemini API klíč!');return;}
+  var btn=document.getElementById('btnAnalyze');
+  btn.disabled=true;
+  document.getElementById('loading').style.display='block';
+  document.getElementById('resultBox').style.display='none';
+  document.getElementById('err').style.display='none';
+
+  var body=JSON.stringify({
+    contents:[{parts:[
+      {inline_data:{mime_type:currentMime,data:currentBase64}},
+      {text:PROMPTS[currentCat]||PROMPTS.universal}
+    ]}],
+    // Vypnout "thinking" fázi u 2.5 modelů — ušetří ~2s.
+    // Pro 2.0 model je tento parametr ignorován = bezpečné.
+    generationConfig:{thinkingConfig:{thinkingBudget:0}}
+  });
+
+  function tryModel(idx){
+    if(idx>=MODELS.length){
+      document.getElementById('loading').style.display='none';
+      btn.disabled=false;
+      showErr('Všechny modely jsou momentálně přetížené. Zkus to za chvíli znovu.');
+      return;
+    }
+    var model=MODELS[idx];
+    var loadingEl=document.getElementById('loading');
+    if(loadingEl)loadingEl.textContent='⏳ Rozpoznávám ('+model+')...';
+    var httpStatus=0;
+    fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+key,{
+      method:'POST',headers:{'Content-Type':'application/json'},body:body
+    })
+    .then(function(r){httpStatus=r.status;return r.json();})
+    .then(function(data){
+      if(data&&data.candidates&&data.candidates[0]&&data.candidates[0].content){
+        document.getElementById('loading').style.display='none';
+        btn.disabled=false;
+        var txt=data.candidates[0].content.parts[0].text;
+        if(idx>0)txt='[Použit záložní model: '+model+']\n\n'+txt;
+        document.getElementById('resultText').textContent=txt;
+        document.getElementById('resultBox').style.display='block';
+        return;
+      }
+      if(isOverload(data,httpStatus)){tryModel(idx+1);return;}
+      document.getElementById('loading').style.display='none';
+      btn.disabled=false;
+      if(data&&data.error)showErr('Chyba: '+data.error.message);
+      else showErr('Nepodařilo se získat výsledek.');
+    })
+    .catch(function(e){
+      // Síťová chyba — taky zkus další model
+      if(idx<MODELS.length-1){tryModel(idx+1);return;}
+      document.getElementById('loading').style.display='none';
+      btn.disabled=false;
+      showErr('Chyba: '+e.message);
+    });
+  }
+  tryModel(0);
+}
+function showErr(msg){var el=document.getElementById('err');el.textContent=msg;el.style.display='block';}
+function copyResult(){
+  var text=document.getElementById('resultText').textContent;
+  try{navigator.clipboard.writeText(text);}
+  catch(e){var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}
+}
+</script>
+<div class="footer">Design <span class="heart">♥</span> Michal Kovalčík 2026</div>
+</body></html>
