@@ -48,12 +48,12 @@ h1 .emoji{display:inline-block;animation:wobble 3s ease-in-out infinite;}
 .loading{text-align:center;padding:18px 14px;color:#00d4ff;font-size:.9rem;font-weight:600;display:none;text-shadow:0 0 8px rgba(0,212,255,0.6);}
 .loading .loading-icon{display:inline-block;animation:spin 1.4s linear infinite;font-size:1.3rem;margin-right:6px;}
 @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-.progress-bar{margin-top:14px;width:100%;height:6px;background:rgba(0,212,255,0.12);border-radius:3px;overflow:hidden;position:relative;box-shadow:inset 0 0 6px rgba(0,212,255,0.15);}
-.progress-fill{position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,#0088cc 0%,#00d4ff 50%,#00f0ff 100%);box-shadow:0 0 12px rgba(0,212,255,0.9);transition:width .25s ease;border-radius:3px;}
-.progress-fill.indeterminate{width:35% !important;animation:progress-slide 1.4s ease-in-out infinite;background:linear-gradient(90deg,transparent 0%,#00d4ff 50%,transparent 100%);}
+.progress-bar{margin-top:14px;width:100%;height:14px;background:#000;border:1px solid rgba(0,255,136,0.3);border-radius:3px;overflow:hidden;position:relative;}
+.progress-fill{position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,#00ff00,#00ffff);box-shadow:0 0 10px #00ff88;transition:width 0.2s;border-radius:3px;}
+.progress-fill.indeterminate{width:35% !important;animation:progress-slide 1.4s ease-in-out infinite;background:linear-gradient(90deg,transparent 0%,#00ff88 50%,#00ffff 100%);}
 @keyframes progress-slide{0%{left:-35%;}100%{left:100%;}}
-.loading-step{margin-top:8px;font-size:.75rem;color:rgba(0,212,255,.75);letter-spacing:.05em;font-weight:600;}
-.progress-pct{font-size:.95rem;color:#00d4ff;font-weight:700;text-shadow:0 0 6px rgba(0,212,255,0.6);margin-left:6px;}
+.loading-step{margin-top:10px;font-size:.85rem;color:#00ff88;letter-spacing:.05em;font-weight:700;text-shadow:0 0 6px rgba(0,255,136,0.6);text-align:center;}
+.progress-pct{font-size:.95rem;color:#00ff88;font-weight:700;text-shadow:0 0 6px rgba(0,255,136,0.6);margin-left:6px;}
 .err{color:#ff4466;font-size:.85rem;font-weight:600;text-align:center;padding:10px;display:none;text-shadow:0 0 6px rgba(255,68,102,0.5);}
 .copy-btn{margin-top:12px;width:100%;padding:10px;background:rgba(0,212,255,.08);border:1.5px solid rgba(0,212,255,.25);border-radius:10px;color:rgba(0,212,255,.85);font-family:'Quicksand',sans-serif;font-weight:600;font-size:.8rem;cursor:pointer;transition:all .2s;}
 .copy-btn:hover{background:rgba(0,212,255,.15);transform:translateY(-1px);}
@@ -64,7 +64,7 @@ h1 .emoji{display:inline-block;animation:wobble 3s ease-in-out infinite;}
 </head>
 <body>
 <h1><span class="emoji">📸</span> Co to je???</h1>
-<div class="version-badge">◆ v1.9Kl ◆</div>
+<div class="version-badge">◆ v1.10Kl ◆</div>
 <div class="key-box">
   <div class="key-label">🔑 Gemini API Key</div>
   <div class="key-row">
