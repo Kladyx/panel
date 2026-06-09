@@ -62,7 +62,7 @@ h1 .emoji{display:inline-block;animation:wobble 3s ease-in-out infinite;}
 </head>
 <body>
 <h1><span class="emoji">📸</span> Co to je???</h1>
-<div class="version-badge">◆ v1.6Kl ◆</div>
+<div class="version-badge">◆ v1.7Kl ◆</div>
 <div class="key-box">
   <div class="key-label">🔑 Gemini API Key</div>
   <div class="key-row">
@@ -77,6 +77,7 @@ h1 .emoji{display:inline-block;animation:wobble 3s ease-in-out infinite;}
   <button class="cat-btn" data-cat="plant"><span class="cat-icon">🌿</span>Rostliny</button>
   <button class="cat-btn" data-cat="hardware"><span class="cat-icon">🔧</span>Hardware</button>
   <button class="cat-btn" data-cat="food"><span class="cat-icon">🍽️</span>Jídlo</button>
+  <button class="cat-btn" data-cat="dj"><span class="cat-icon">🎧</span>DJ</button>
 </div>
 
 <img id="preview"/>
@@ -107,7 +108,8 @@ var PROMPTS={
   medicine:'Toto je fotka léku nebo tablety. Identifikuj: 1) Název léku, 2) Účinnou látku, 3) Obvyklé použití, 4) Varování. Odpověz v češtině.',
   plant:'Identifikuj tuto rostlinu nebo houbu: 1) Název česky i latinsky, 2) Jedlost nebo jedovatost - DŮLEŽITÉ, 3) Znaky, 4) Kde roste. Odpověz v češtině.',
   hardware:'Identifikuj tento hardware: 1) Co to je, 2) Výrobce a model, 3) K čemu slouží, 4) Hodnota. Odpověz v češtině.',
-  food:'Analyzuj toto jídlo nebo etiketu: 1) Co to je, 2) Ingredience, 3) Nutriční hodnoty, 4) Alergeny. Odpověz v češtině.'
+  food:'Analyzuj toto jídlo nebo etiketu: 1) Co to je, 2) Ingredience, 3) Nutriční hodnoty, 4) Alergeny. Odpověz v češtině.',
+  dj:'Identifikuj tento DJ produkt nebo zvukovou techniku. Řekni mi: 1) Co to přesně je (kontrolér, mixer, gramofon, CDJ, monitory, sluchátka, vinyl deska atd.), 2) Výrobce a přesný model, 3) Přibližný rok výroby a generace, 4) Hlavní specifikace (kanály, BPM rozsah, vstupy/výstupy, jacks), 5) Cena nový/použitý na trhu (CZ/EU), 6) Jestli je to vintage/sběratelský kus, 7) Pro koho se hodí (začátečník/pokročilý/profi). Odpověz v češtině a buď konkrétní.'
 };
 var currentBase64=null, currentMime='image/jpeg', currentCat='universal';
 
