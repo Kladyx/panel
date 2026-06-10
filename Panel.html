@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v3.3.2.Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v3.3.3.Kl - Kladyx 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
@@ -225,7 +225,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v3.3.2.Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v3.3.3.Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -235,7 +235,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v3.3.2.Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v3.3.3.Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -384,7 +384,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v3.3.2.Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v3.3.3.Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -776,7 +776,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v3.3.2.Kl</div>
+  <div class="version">v3.3.3.Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -7764,7 +7764,7 @@ function renderCards(){
     card.className='card '+(it.paid?'paid':'unpaid');
     card.style.animationDelay=(idx*.03)+'s';
     const dateStr=it.date?(new Date(it.date).toLocaleDateString('cs-CZ')):'';
-    const dateHtml=dateStr?\`<div class="card-date" style="font-size:.58rem;color:#00f5ff;letter-spacing:.05em;margin-top:2px;opacity:.75;">📅 \${dateStr}</div>\`:'';
+    const dateHtml=it.paid?\`<div class="card-date" title="Klikni pro úpravu data" style="font-size:.62rem;color:#00f5ff;letter-spacing:.05em;margin-top:4px;opacity:.85;cursor:pointer;">📅 \${dateStr||'(nastav datum)'} ✎</div>\`:'';
     card.innerHTML=\`<div class="card-top"><span class="card-num">\${String(idx+1).padStart(2,'0')}.</span><span class="card-name">\${esc(it.name)}</span><span class="card-amount" title="Klikni pro změnu částky" style="cursor:pointer;">\${it.amount.toLocaleString('cs-CZ')} Kč ✎</span><button class="delete-btn" title="Smazat">✕</button></div>\${dateHtml}\${it.note?\`<div class="card-note">\${esc(it.note)}</div>\`:'<div class="card-note"></div>'}<div class="card-bottom"><div class="status-dot"></div><button class="toggle-btn \${it.paid?'paid-btn':'unpaid-btn'}">\${it.paid?'✓ Zaplaceno':'✗ Nezaplaceno'}</button></div>\`;
     card.querySelector('.card-amount').onclick=function(){
       if(this.querySelector('.amount-edit-wrap'))return;
@@ -7776,7 +7776,30 @@ function renderCards(){
       inp.addEventListener('keydown',e=>{if(e.key==='Enter')save();if(e.key==='Escape')renderCards();});
       inp.addEventListener('click',e=>e.stopPropagation());
     };
-    card.querySelector('.toggle-btn').onclick=()=>{items[idx].paid=!items[idx].paid;saveMonth(currentMonth,items);renderCards();updateSummary();};
+    // Klik na datum (📅) - umožní editovat datum přes date picker
+    const dateEl=card.querySelector('.card-date');
+    if(dateEl){
+      dateEl.onclick=function(e){
+        e.stopPropagation();
+        if(this.querySelector('.date-edit-wrap'))return;
+        const cur=items[idx].date||new Date().toISOString().slice(0,10);
+        this.innerHTML=\`<span class="date-edit-wrap" style="display:inline-flex;gap:6px;align-items:center;"><input class="date-inp" type="date" value="\${cur}" style="font-size:.7rem;padding:3px 6px;background:rgba(0,245,255,.1);border:1px solid rgba(0,245,255,.4);color:#00f5ff;border-radius:4px;color-scheme:dark;"/><button class="date-ok" style="font-size:.55rem;padding:3px 8px;border:1px solid rgba(0,245,255,.4);background:rgba(0,245,255,.15);color:#00f5ff;border-radius:4px;cursor:pointer;">✓ OK</button></span>\`;
+        const dInp=this.querySelector('.date-inp');dInp.focus();
+        const dSave=()=>{const v=dInp.value;if(v){items[idx].date=v;saveMonth(currentMonth,items);}renderCards();updateSummary();};
+        this.querySelector('.date-ok').onclick=ev=>{ev.stopPropagation();dSave();};
+        dInp.addEventListener('keydown',ev=>{if(ev.key==='Enter')dSave();if(ev.key==='Escape')renderCards();});
+        dInp.addEventListener('click',ev=>ev.stopPropagation());
+      };
+    }
+    // Toggle Zaplaceno/Nezaplaceno - při Zaplaceno auto-vyplň dnešní datum (pokud chybí)
+    card.querySelector('.toggle-btn').onclick=()=>{
+      items[idx].paid=!items[idx].paid;
+      // Když se mění na Zaplaceno a datum chybí, nastav dnešek
+      if(items[idx].paid && !items[idx].date){
+        items[idx].date=new Date().toISOString().slice(0,10);
+      }
+      saveMonth(currentMonth,items);renderCards();updateSummary();
+    };
     card.querySelector('.delete-btn').onclick=()=>{
       const note=card.querySelector('.card-note');
       note.innerHTML=\`Smazat? &nbsp;<button class="ei-btn" style="font-size:.55rem;padding:3px 8px;border-color:rgba(255,68,102,.4);color:var(--warn);" id="cfdel-\${idx}">ANO</button> &nbsp;<button class="ei-btn" style="font-size:.55rem;padding:3px 8px;border-color:rgba(255,255,255,.12);color:var(--muted);" id="cndel-\${idx}">NE</button>\`;
@@ -15406,7 +15429,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v3.3.2.Kl</div>
+<div class="sub">KLADYXLAND · v3.3.3.Kl</div>
 
 <div class="section">
   <div class="sec-title">🔥 Firebase (základ všech DB appek)</div>
@@ -17946,7 +17969,7 @@ body{display:flex;flex-direction:column;}
 <div class="topbar">
   <div class="topbar-title">&#x1F4E1; NEXT<span>SYNC</span></div>
   <div><span class="hb-dot" id="hb-dot"></span><span id="hb-text" style="font-size:9px;color:#888;">--</span></div>
-  <div class="ver">v3.3.2.Kl</div>
+  <div class="ver">v3.3.3.Kl</div>
 </div>
 <div class="tabs">
   <div class="tab active" id="tb-files">&#x1F4C1; SLOZKY</div>
@@ -18306,7 +18329,7 @@ document.getElementById('file-input').addEventListener('change',function(e){
   e.target.value='';
 });
 
-getS();getF();renderFiles();log('NextSync v3.3.2.Kl OK ('+(isHttp?'PC':'GitHub')+' mode)','ok');
+getS();getF();renderFiles();log('NextSync v3.3.3.Kl OK ('+(isHttp?'PC':'GitHub')+' mode)','ok');
 loadHeartbeat();
 loadPCFiles(curFolder);
 setInterval(loadHeartbeat,15000);
@@ -18768,7 +18791,7 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
 })();
 </script>
 
-<!-- BACKGROUND MUSIC v3.3.2.Kl - panel-bg.mp3 -->
+<!-- BACKGROUND MUSIC v3.3.3.Kl - panel-bg.mp3 -->
 <audio id="bg-music" src="panel-bg.mp3" loop preload="auto"></audio>
 <script>
 (function(){
