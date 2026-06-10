@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050810">
-  <title>KLADYX PANEL v3.3.1.Kl - Kladyx 2026</title>
+  <title>KLADYX PANEL v3.3.2.Kl - Kladyx 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
   <style>
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
@@ -16,15 +19,32 @@
     }
     #panel-gate.hidden { opacity: 0; pointer-events: none; }
     .gate-logo { font-size: 2.2rem; font-weight: 900; letter-spacing: 8px; color: #00d4ff; text-shadow: 0 0 30px #00d4ff; }
+    .gate-logo-neon {
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: clamp(20px, 4.5vw, 40px);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 0 16px;
+      background: linear-gradient(90deg, #ff0080, #ff8c00, #ffd700, #00ff7f, #00ffff, #4169ff, #9400d3, #ff0080);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gateLogoRainbow 4s linear infinite;
+      filter: drop-shadow(0 0 8px rgba(255,100,200,0.6)) drop-shadow(0 0 16px rgba(100,200,255,0.4));
+    }
+    @keyframes gateLogoRainbow {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
     .gate-sub { font-size: 0.6rem; letter-spacing: 4px; color: #5a6488; text-transform: uppercase; margin-top: -18px; }
     .gate-btn { display: flex; align-items: center; gap: 12px; padding: 14px 28px; border: 1px solid rgba(0,212,255,0.3); background: rgba(0,212,255,0.06); color: #dde4ff; font-family: "Courier New", monospace; font-size: 0.85rem; letter-spacing: 2px; cursor: pointer; border-radius: 6px; }
     .gate-btn:hover { background: rgba(0,212,255,0.14); }
     .gate-status { font-size: 0.6rem; letter-spacing: 2px; color: #5a6488; min-height: 16px; }
     .gate-err { color: #ff3c5a; }
     #signout-btn { display: none; font-family: "Courier New", monospace; font-size: 0.55rem; letter-spacing: 1px; padding: 3px 10px; border: 1px solid rgba(0,255,120,0.3); background: transparent; color: #00ff78; cursor: pointer; border-radius: 3px; margin-left: 8px; }
-    #bgmusic-btn { display: none; font-family: "Courier New", monospace; font-size: 0.55rem; letter-spacing: 1px; padding: 3px 10px; border: 1px solid rgba(0,212,255,0.4); background: transparent; color: #00d4ff; cursor: pointer; border-radius: 3px; margin-left: 6px; text-shadow: 0 0 6px rgba(0,212,255,0.4); }
-    #bgmusic-btn:hover { background: rgba(0,212,255,0.15); }
-    #bgmusic-btn.muted { color: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.2); text-shadow: none; }
     
     /* Star particles - starfield like website */
     @keyframes starPulse {
@@ -203,9 +223,9 @@
 <body>
 
 <div id="panel-gate">
-  <div class="gate-logo"><span style="color:#00d4ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 20px #ff6b35;">land</span></div>
+  <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v3.3.1.Kl · KLADYX</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v3.3.2.Kl · KLADYX</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -215,7 +235,7 @@
 <div id="main-stars"></div>
 <div class="layout">
   <div class="topbar">
-    <div class="tlogo">▬ KLADYX PANEL<span>v3.3.1.Kl</span></div>
+    <div class="tlogo">▬ KLADYX PANEL<span>v3.3.2.Kl</span></div>
     <div class="tdiv"></div>
     <div class="tclock">
       <div class="tclock-time" id="tc-time">00:00:00</div>
@@ -227,12 +247,15 @@
       <div id="net-speed" style="font-family:'Courier New',monospace;font-size:0.6rem;color:#00d4ff;letter-spacing:1px;text-shadow:0 0 6px rgba(0,212,255,0.4);">⬇ ···</div>
     </div>
     <button id="signout-btn" onclick="googleSignOut()">⏻ ODHLÁSIT</button>
-    <button id="bgmusic-btn" onclick="toggleBgMusic()" title="Hudební podkres">🔊 HUDBA</button>
-    <audio id="bgmusic-audio" src="https://kladyx.github.io/panel/panel-bg.mp3" loop preload="auto"></audio>
     <div class="tdiv"></div>
     <button class="tapo-btn unknown" id="tapo-btn" onclick="tapoToggle()" title="Tapo P110 – WiFi zásuvka">
       <div class="tapo-icon">🔌</div>
       <div class="tapo-label" id="tapo-label">···</div>
+    </button>
+    <div class="tdiv"></div>
+    <button class="music-btn" id="music-btn" onclick="musicToggle()" title="Hudba na pozadí" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:54px;height:42px;padding:4px 8px;background:rgba(255,79,216,0.08);border:1px solid rgba(255,79,216,0.3);border-radius:5px;cursor:pointer;font-family:'Courier New',monospace;flex-shrink:0;">
+      <div class="music-icon" id="music-icon" style="font-size:1rem;line-height:1;">🔊</div>
+      <div class="music-label" id="music-label" style="font-size:0.55rem;color:#ff4fd8;letter-spacing:1px;text-shadow:0 0 6px rgba(255,79,216,0.5);font-weight:bold;">HUDBA</div>
     </button>
     <div class="tdiv"></div>
     <button class="app-btn" id="btn-home" style="--ac:#00d4ff;--ac-rgb:0,212,255" onclick="goHome()">
@@ -361,7 +384,7 @@
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
       <div class="wlogo"><span style="color:#00f5ff;">KLADYX</span><span style="color:#ff6b35;text-shadow:0 0 18px #ff6b35;font-size:1.3rem;">land</span></div>
-      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v3.3.1.Kl</span> · VYBERTE APLIKACI</div>
+      <div class="wsub">CONTROL PANEL · <span style="color:#00ff88;font-weight:bold;">v3.3.2.Kl</span> · VYBERTE APLIKACI</div>
       <div id="open-counter" style="font-size:0.55rem;letter-spacing:2px;color:#00aaff;margin-top:4px;text-shadow:0 0 8px rgba(0,170,255,0.5);">OTEVŘENO: <span id="open-count">0</span>×</div>
       <script>
         (function(){
@@ -464,7 +487,7 @@
     <iframe id="frame-manualy" class="app-frame" title="manualy" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
     <iframe id="frame-zxnext" class="app-frame" title="zxnext" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"  allowfullscreen></iframe>
     <iframe id="frame-reader" class="app-frame" title="reader" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-downloads allow-top-navigation-by-user-activation" allowfullscreen></iframe>
-    <iframe id="frame-wordmaster" class="app-frame" title="wordmaster" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
+    <iframe id="frame-wordmaster" class="app-frame" title="wordmaster" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allow="microphone *" allowfullscreen></iframe>
     <iframe id="frame-multitrack" class="app-frame" title="multitrack" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allow="autoplay" allowfullscreen></iframe>
     <iframe id="frame-status" class="app-frame" title="status" sandbox="allow-scripts allow-same-origin allow-forms allow-modals" allowfullscreen></iframe>
     <iframe id="frame-radio" class="app-frame" title="radio" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-top-navigation" allow="microphone" allowfullscreen></iframe>
@@ -753,7 +776,7 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
 
   <div class="logo">▬ NOW PLAYING ▬</div>
   <div class="station-name" id="stationLabel">HOUSETIME.FM</div>
-  <div class="version">v3.3.1.Kl</div>
+  <div class="version">v3.3.2.Kl</div>
 
   <div class="station-tabs">
     <button class="station-tab active" onclick="switchStation('housetime', this)">HouseTime</button>
@@ -7456,6 +7479,9 @@ header h1{font-family:'Orbitron',monospace;font-size:1.55rem;font-weight:900;let
   <div class="add-form" id="add-form">
     <div class="add-form-title">// Nová položka</div>
     <div class="add-row">
+      <input class="add-input" id="inp-date" type="date" title="Datum platby" style="max-width:180px;"/>
+    </div>
+    <div class="add-row">
       <input class="add-input" id="inp-name" type="text" placeholder="Název platby" maxlength="40"/>
       <input class="add-input amount-input" id="inp-amount" type="number" placeholder="Částka (Kč)" min="0"/>
     </div>
@@ -7680,6 +7706,7 @@ function _startPlatbyListener(){
       }
       items=loadMonth(currentMonth);
       renderMonthBar();renderCards();updateSummary();fillMonthSelects();
+      var _ipd=document.getElementById('inp-date'); if(_ipd && !_ipd.value) _ipd.value=new Date().toISOString().slice(0,10);
       _setSyncStatus('✅ Synchronizováno','#2ecc71');
       return;
     }
@@ -7736,7 +7763,9 @@ function renderCards(){
     const card=document.createElement('div');
     card.className='card '+(it.paid?'paid':'unpaid');
     card.style.animationDelay=(idx*.03)+'s';
-    card.innerHTML=\`<div class="card-top"><span class="card-num">\${String(idx+1).padStart(2,'0')}.</span><span class="card-name">\${esc(it.name)}</span><span class="card-amount" title="Klikni pro změnu částky" style="cursor:pointer;">\${it.amount.toLocaleString('cs-CZ')} Kč ✎</span><button class="delete-btn" title="Smazat">✕</button></div>\${it.note?\`<div class="card-note">\${esc(it.note)}</div>\`:'<div class="card-note"></div>'}<div class="card-bottom"><div class="status-dot"></div><button class="toggle-btn \${it.paid?'paid-btn':'unpaid-btn'}">\${it.paid?'✓ Zaplaceno':'✗ Nezaplaceno'}</button></div>\`;
+    const dateStr=it.date?(new Date(it.date).toLocaleDateString('cs-CZ')):'';
+    const dateHtml=dateStr?\`<div class="card-date" style="font-size:.58rem;color:#00f5ff;letter-spacing:.05em;margin-top:2px;opacity:.75;">📅 \${dateStr}</div>\`:'';
+    card.innerHTML=\`<div class="card-top"><span class="card-num">\${String(idx+1).padStart(2,'0')}.</span><span class="card-name">\${esc(it.name)}</span><span class="card-amount" title="Klikni pro změnu částky" style="cursor:pointer;">\${it.amount.toLocaleString('cs-CZ')} Kč ✎</span><button class="delete-btn" title="Smazat">✕</button></div>\${dateHtml}\${it.note?\`<div class="card-note">\${esc(it.note)}</div>\`:'<div class="card-note"></div>'}<div class="card-bottom"><div class="status-dot"></div><button class="toggle-btn \${it.paid?'paid-btn':'unpaid-btn'}">\${it.paid?'✓ Zaplaceno':'✗ Nezaplaceno'}</button></div>\`;
     card.querySelector('.card-amount').onclick=function(){
       if(this.querySelector('.amount-edit-wrap'))return;
       const cur=items[idx].amount;
@@ -7854,13 +7883,15 @@ document.getElementById('add-submit').onclick=()=>{
   const name=document.getElementById('inp-name').value.trim();
   const amount=parseInt(document.getElementById('inp-amount').value,10);
   const note=document.getElementById('inp-note').value.trim();
+  const date=document.getElementById('inp-date').value;
   if(!name){alert('Zadej název platby.');return;}
   if(!amount||amount<0){alert('Zadej platnou částku.');return;}
-  items.push({id:Date.now(),name,amount,note,paid:false});
+  items.push({id:Date.now(),name,amount,note,date,paid:false});
   saveMonth(currentMonth,items);renderCards();updateSummary();
   document.getElementById('inp-name').value='';
   document.getElementById('inp-amount').value='';
   document.getElementById('inp-note').value='';
+  document.getElementById('inp-date').value=new Date().toISOString().slice(0,10);
   document.getElementById('add-form').classList.remove('open');
 };
 document.getElementById('inp-note').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('add-submit').click();});
@@ -15375,7 +15406,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v3.3.1.Kl</div>
+<div class="sub">KLADYXLAND · v3.3.2.Kl</div>
 
 <div class="section">
   <div class="sec-title">🔥 Firebase (základ všech DB appek)</div>
@@ -17915,7 +17946,7 @@ body{display:flex;flex-direction:column;}
 <div class="topbar">
   <div class="topbar-title">&#x1F4E1; NEXT<span>SYNC</span></div>
   <div><span class="hb-dot" id="hb-dot"></span><span id="hb-text" style="font-size:9px;color:#888;">--</span></div>
-  <div class="ver">v3.3.1.Kl</div>
+  <div class="ver">v3.3.2.Kl</div>
 </div>
 <div class="tabs">
   <div class="tab active" id="tb-files">&#x1F4C1; SLOZKY</div>
@@ -18275,7 +18306,7 @@ document.getElementById('file-input').addEventListener('change',function(e){
   e.target.value='';
 });
 
-getS();getF();renderFiles();log('NextSync v3.3.1.Kl OK ('+(isHttp?'PC':'GitHub')+' mode)','ok');
+getS();getF();renderFiles();log('NextSync v3.3.2.Kl OK ('+(isHttp?'PC':'GitHub')+' mode)','ok');
 loadHeartbeat();
 loadPCFiles(curFolder);
 setInterval(loadHeartbeat,15000);
@@ -18617,49 +18648,6 @@ function unlockPanel(user) {
   var gate=document.getElementById('panel-gate');
   gate.classList.add('hidden'); setTimeout(function(){gate.style.display='none';},400);
   var sb=document.getElementById('signout-btn'); if(sb)sb.style.display='inline-block';
-  var bm=document.getElementById('bgmusic-btn'); if(bm)bm.style.display='inline-block';
-  // Spustit hudební podkres pokud uživatel nemá vypnuto
-  startBgMusic();
-}
-
-// === HUDEBNÍ PODKRES ===
-function startBgMusic(){
-  var audio=document.getElementById('bgmusic-audio');
-  var btn=document.getElementById('bgmusic-btn');
-  if(!audio)return;
-  var enabled=localStorage.getItem('bgmusic_enabled');
-  if(enabled==='false'){
-    // Uživatel hudbu dříve vypnul - nestartujeme automaticky
-    if(btn){btn.textContent='🔇 HUDBA';btn.classList.add('muted');}
-    return;
-  }
-  audio.volume=0.35; // ne moc nahlas, jen podkres
-  var p=audio.play();
-  if(p&&p.catch){
-    p.catch(function(){
-      // Autoplay zablokován - tlačítko zobrazí muted, uživatel klikne ručně
-      if(btn){btn.textContent='🔇 HUDBA';btn.classList.add('muted');}
-    });
-  }
-  if(btn&&!btn.classList.contains('muted')){btn.textContent='🔊 HUDBA';}
-}
-
-function toggleBgMusic(){
-  var audio=document.getElementById('bgmusic-audio');
-  var btn=document.getElementById('bgmusic-btn');
-  if(!audio||!btn)return;
-  if(audio.paused){
-    audio.volume=0.35;
-    audio.play();
-    btn.textContent='🔊 HUDBA';
-    btn.classList.remove('muted');
-    localStorage.setItem('bgmusic_enabled','true');
-  } else {
-    audio.pause();
-    btn.textContent='🔇 HUDBA';
-    btn.classList.add('muted');
-    localStorage.setItem('bgmusic_enabled','false');
-  }
 }
 function lockPanel() {
   try{localStorage.removeItem('kladyx_rp');sessionStorage.removeItem('kladyx_rp');}catch(e){}
@@ -18777,6 +18765,84 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
   localStorage.setItem(key, count);
   var el = document.getElementById('vc-num');
   if (el) el.textContent = count;
+})();
+</script>
+
+<!-- BACKGROUND MUSIC v3.3.2.Kl - panel-bg.mp3 -->
+<audio id="bg-music" src="panel-bg.mp3" loop preload="auto"></audio>
+<script>
+(function(){
+  var audio = document.getElementById('bg-music');
+  if(!audio) return;
+  var btn = document.getElementById('music-btn');
+  var icon = document.getElementById('music-icon');
+  var label = document.getElementById('music-label');
+  var KEY = 'kladyx_bg_music_on';
+  // Default: zapnuto (pokud uživatel neuložil preference, hraje)
+  var saved = localStorage.getItem(KEY);
+  var wantOn = (saved === null) ? true : (saved === '1');
+  audio.volume = 0.35; // rozumná hlasitost na pozadí
+
+  function updateUI(playing){
+    if(!icon || !label || !btn) return;
+    if(playing){
+      icon.textContent = '🔊';
+      label.textContent = 'HUDBA';
+      btn.style.background = 'rgba(255,79,216,0.15)';
+      btn.style.borderColor = 'rgba(255,79,216,0.5)';
+    } else {
+      icon.textContent = '🔇';
+      label.textContent = 'TICHO';
+      btn.style.background = 'rgba(120,120,140,0.08)';
+      btn.style.borderColor = 'rgba(120,120,140,0.3)';
+    }
+  }
+
+  function tryPlay(){
+    if(!wantOn) { audio.pause(); updateUI(false); return; }
+    var p = audio.play();
+    if(p && p.catch){
+      p.then(function(){ updateUI(true); })
+       .catch(function(err){
+         // Browser autoplay policy: musí být user interakce
+         updateUI(false);
+         console.log('BG music auto-play blocked - waiting for user interaction');
+       });
+    } else {
+      updateUI(true);
+    }
+  }
+
+  window.musicToggle = function(){
+    if(audio.paused){
+      wantOn = true;
+      localStorage.setItem(KEY, '1');
+      audio.play().then(function(){ updateUI(true); })
+                  .catch(function(err){ updateUI(false); alert('Hudba se nepodařila spustit: ' + err.message); });
+    } else {
+      wantOn = false;
+      localStorage.setItem(KEY, '0');
+      audio.pause();
+      updateUI(false);
+    }
+  };
+
+  // Pokus o auto-play hned po loadu (může být zablokovaný)
+  tryPlay();
+
+  // Pokud auto-play zablokovaný, spustí se při první klikové interakci
+  function firstClick(){
+    if(wantOn && audio.paused){
+      audio.play().then(function(){ updateUI(true); }).catch(function(){});
+    }
+    document.removeEventListener('click', firstClick, true);
+    document.removeEventListener('touchstart', firstClick, true);
+  }
+  document.addEventListener('click', firstClick, true);
+  document.addEventListener('touchstart', firstClick, true);
+
+  // Inicializace UI při startu
+  updateUI(!audio.paused && wantOn);
 })();
 </script>
 
