@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KladyxAmp v1.3Kl</title>
+<title>KladyxAmp v1.4Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -276,8 +276,11 @@
     font-family: 'Consolas', monospace;
   }
   .playlist {
-    max-height: 160px;
+    max-height: 220px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
     background: rgba(0,0,0,0.3);
     border-radius: 8px;
     padding: 4px;
@@ -357,7 +360,7 @@
 
 <div class="app">
   <div class="logo">KLADYXAMP</div>
-  <div class="version">v 1.3 Kl</div>
+  <div class="version">v 1.4 Kl</div>
 
   <div class="topbar">
     <div class="clock" id="clock">--:--:--</div>
