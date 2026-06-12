@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KladyxAmp v1.2Kl</title>
+<title>KladyxAmp v1.3Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -238,6 +238,12 @@
   .btn:active {
     transform: scale(0.95);
   }
+  .btn.active {
+    background: linear-gradient(135deg, rgba(255,0,255,0.3), rgba(0,255,255,0.3));
+    border-color: #ff00ff;
+    color: #fff;
+    box-shadow: 0 0 12px rgba(255,0,255,0.5);
+  }
   .btn-play {
     width: 64px; height: 64px;
     background: linear-gradient(135deg, #ff00ff, #00ffff);
@@ -351,7 +357,7 @@
 
 <div class="app">
   <div class="logo">KLADYXAMP</div>
-  <div class="version">v 1.2 Kl</div>
+  <div class="version">v 1.3 Kl</div>
 
   <div class="topbar">
     <div class="clock" id="clock">--:--:--</div>
@@ -384,9 +390,11 @@
   </div>
 
   <div class="controls">
+    <button class="btn" id="btnShuffle" title="Náhodně">🔀</button>
     <button class="btn" id="btnPrev" title="Předchozí">⏮</button>
     <button class="btn btn-play" id="btnPlay" title="Hraj/Pauza">▶</button>
     <button class="btn" id="btnNext" title="Další">⏭</button>
+    <button class="btn" id="btnRepeat" title="Opakovat">🔁</button>
   </div>
 
   <div class="playlist-wrap">
@@ -401,6 +409,7 @@
 </div>
 
 <audio id="audio"></audio>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -425,6 +434,8 @@ const storage = getStorage(app);
 let tracks = [];        // { name, url, title, artist, art }
 let currentIdx = -1;
 let isPlaying = false;
+let shuffleOn = false;
+let repeatOn = false;
 let audioCtx = null;
 let analyser = null;
 let dataArray = null;
@@ -467,7 +478,7 @@ async function loadTracks() {
     const listRef = sref(storage, 'kladyxamp');
     const result = await listAll(listRef);
     const audioItems = result.items.filter(it =>
-      /\.(mp3|wav|ogg|m4a)$/i.test(it.name)
+      /\.(mp3|wav|ogg|m4a|mp4|flac|aac|opus|weba|webm)$/i.test(it.name)
     );
 
     if (audioItems.length === 0) {
@@ -680,7 +691,7 @@ function playTrack(idx) {
   document.getElementById('trackTitle').textContent = t.title;
   document.getElementById('trackArtist').textContent = t.artist;
 
-  // Album art
+  // Album art - nejdřív zkus externí obrázek, pak embedded ID3
   const img = document.getElementById('albumArt');
   const placeholder = document.getElementById('albumPlaceholder');
   if (t.art) {
@@ -688,11 +699,57 @@ function playTrack(idx) {
     img.style.display = 'block';
     placeholder.style.display = 'none';
   } else {
+    // Skry obrázek, ukaž placeholder, mezitím zkus načíst ID3
     img.style.display = 'none';
     placeholder.style.display = 'flex';
+    loadEmbeddedArt(t, idx);
   }
 
   renderPlaylist();
+}
+
+// === Načtení embedded album art a metadat z ID3 tagu ===
+function loadEmbeddedArt(track, idx) {
+  if (typeof jsmediatags === 'undefined') return;
+  // Cache - pokud jsme to už načítali, použij
+  if (track._artLoaded) return;
+  track._artLoaded = true;
+
+  jsmediatags.read(track.url, {
+    onSuccess: function(tag) {
+      const tags = tag.tags;
+      // Vytáhni title/artist z ID3 pokud jsou
+      if (tags.title && currentIdx === idx) {
+        track.title = tags.title;
+        document.getElementById('trackTitle').textContent = tags.title;
+      }
+      if (tags.artist && currentIdx === idx) {
+        track.artist = tags.artist;
+        document.getElementById('trackArtist').textContent = tags.artist;
+      }
+      // Embedded album art
+      if (tags.picture) {
+        const pic = tags.picture;
+        let base64 = '';
+        for (let i = 0; i < pic.data.length; i++) {
+          base64 += String.fromCharCode(pic.data[i]);
+        }
+        const dataUrl = `data:${pic.format};base64,${btoa(base64)}`;
+        track.art = dataUrl;
+        if (currentIdx === idx) {
+          const img = document.getElementById('albumArt');
+          const placeholder = document.getElementById('albumPlaceholder');
+          img.src = dataUrl;
+          img.style.display = 'block';
+          placeholder.style.display = 'none';
+        }
+      }
+      renderPlaylist();
+    },
+    onError: function(e) {
+      console.warn('ID3 read fail:', track.name, e.type || e);
+    }
+  });
 }
 
 function togglePlay() {
@@ -713,12 +770,33 @@ function togglePlay() {
 
 function nextTrack() {
   if (tracks.length === 0) return;
-  playTrack((currentIdx + 1) % tracks.length);
+  if (shuffleOn) {
+    // Náhodný index různý od aktuálního
+    let next;
+    if (tracks.length === 1) next = 0;
+    else {
+      do { next = Math.floor(Math.random() * tracks.length); }
+      while (next === currentIdx);
+    }
+    playTrack(next);
+  } else {
+    playTrack((currentIdx + 1) % tracks.length);
+  }
 }
 
 function prevTrack() {
   if (tracks.length === 0) return;
-  playTrack((currentIdx - 1 + tracks.length) % tracks.length);
+  if (shuffleOn) {
+    let prev;
+    if (tracks.length === 1) prev = 0;
+    else {
+      do { prev = Math.floor(Math.random() * tracks.length); }
+      while (prev === currentIdx);
+    }
+    playTrack(prev);
+  } else {
+    playTrack((currentIdx - 1 + tracks.length) % tracks.length);
+  }
 }
 
 function updateUI() {
@@ -751,7 +829,13 @@ audio.addEventListener('timeupdate', () => {
 });
 
 audio.addEventListener('ended', () => {
-  nextTrack();
+  if (repeatOn) {
+    // Opakuj aktuální skladbu
+    audio.currentTime = 0;
+    audio.play();
+  } else {
+    nextTrack();
+  }
 });
 
 document.getElementById('progressBar').addEventListener('click', (e) => {
@@ -765,6 +849,14 @@ document.getElementById('progressBar').addEventListener('click', (e) => {
 document.getElementById('btnPlay').onclick = togglePlay;
 document.getElementById('btnNext').onclick = nextTrack;
 document.getElementById('btnPrev').onclick = prevTrack;
+document.getElementById('btnShuffle').onclick = () => {
+  shuffleOn = !shuffleOn;
+  document.getElementById('btnShuffle').classList.toggle('active', shuffleOn);
+};
+document.getElementById('btnRepeat').onclick = () => {
+  repeatOn = !repeatOn;
+  document.getElementById('btnRepeat').classList.toggle('active', repeatOn);
+};
 
 // === Klávesnice ===
 document.addEventListener('keydown', (e) => {
