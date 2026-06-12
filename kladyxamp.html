@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KladyxAmp v1.5Kl</title>
+<title>KladyxAmp v1.3Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -409,7 +409,7 @@
 </div>
 
 <audio id="audio"></audio>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/4.0.1/jsmediatags.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -695,17 +695,13 @@ function playTrack(idx) {
   const img = document.getElementById('albumArt');
   const placeholder = document.getElementById('albumPlaceholder');
   if (t.art) {
-    console.log('Using external art for:', t.title);
     img.src = t.art;
     img.style.display = 'block';
     placeholder.style.display = 'none';
   } else {
     // Skry obrázek, ukaž placeholder, mezitím zkus načíst ID3
-    console.log('No external art, trying ID3 for:', t.title);
     img.style.display = 'none';
     placeholder.style.display = 'flex';
-    // IMPORTANT: Reset cache flag aby se ID3 vždy zkusil znovu načíst
-    t._artLoaded = false;
     loadEmbeddedArt(t, idx);
   }
 
@@ -714,21 +710,14 @@ function playTrack(idx) {
 
 // === Načtení embedded album art a metadat z ID3 tagu ===
 function loadEmbeddedArt(track, idx) {
-  if (typeof jsmediatags === 'undefined') {
-    console.error('jsmediatags not loaded - check script tag');
-    return;
-  }
+  if (typeof jsmediatags === 'undefined') return;
   // Cache - pokud jsme to už načítali, použij
   if (track._artLoaded) return;
   track._artLoaded = true;
 
-  console.log('[ID3] Loading from:', track.name, 'Type:', track.name.split('.').pop().toUpperCase());
-  
   jsmediatags.read(track.url, {
     onSuccess: function(tag) {
       const tags = tag.tags;
-      console.log('[ID3] Tags found:', Object.keys(tags), 'Raw tags:', tags);
-      
       // Vytáhni title/artist z ID3 pokud jsou
       if (tags.title && currentIdx === idx) {
         track.title = tags.title;
@@ -738,40 +727,27 @@ function loadEmbeddedArt(track, idx) {
         track.artist = tags.artist;
         document.getElementById('trackArtist').textContent = tags.artist;
       }
-      
-      // Embedded album art - zkus picture nebo coverfrontu
-      let pictureData = tags.picture || tags.coverfrontu || tags.APIC || null;
-      
-      if (pictureData) {
-        const pic = pictureData;
-        console.log('[ID3] Picture found, format:', pic.format, 'size:', pic.data.length, 'bytes');
+      // Embedded album art
+      if (tags.picture) {
+        const pic = tags.picture;
         let base64 = '';
         for (let i = 0; i < pic.data.length; i++) {
           base64 += String.fromCharCode(pic.data[i]);
         }
         const dataUrl = `data:${pic.format};base64,${btoa(base64)}`;
         track.art = dataUrl;
-        
         if (currentIdx === idx) {
           const img = document.getElementById('albumArt');
           const placeholder = document.getElementById('albumPlaceholder');
-          img.onload = () => console.log('[ID3] ✓ Image loaded successfully');
-          img.onerror = (err) => console.error('[ID3] ✗ Image load error:', err);
           img.src = dataUrl;
           img.style.display = 'block';
           placeholder.style.display = 'none';
-          console.log('[ID3] Art set for current track');
         }
-      } else {
-        console.warn('[ID3] ✗ No artwork found in file metadata - check if file has cover art tag');
-        console.warn('[ID3] Available tags:', Object.keys(tags).join(', '));
       }
       renderPlaylist();
     },
     onError: function(e) {
-      console.error('[ID3] ✗ Read error:', track.name);
-      console.error('[ID3] Error type:', e.type, 'Info:', e.info);
-      console.error('[ID3] Full error:', e);
+      console.warn('ID3 read fail:', track.name, e.type || e);
     }
   });
 }
