@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KladyxAmp v1.1Kl</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: #000;
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+    color: #fff;
+    overflow: hidden;
+    user-select: none;
+  }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at top, #1a0a3a 0%, #050010 60%, #000 100%);
+    position: relative;
+  }
+
+  /* Animované pozadí - hvězdy */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .star {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 4px #fff;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0.2; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* Hlavní container */
+  .app {
+    width: 100%;
+    max-width: 480px;
+    background: linear-gradient(180deg, rgba(30,15,60,0.95), rgba(10,5,30,0.95));
+    border: 1px solid;
+    border-image: linear-gradient(135deg, #ff00ff, #00ffff, #ffff00, #ff00ff) 1;
+    border-radius: 20px;
+    padding: 24px;
+    position: relative;
+    z-index: 1;
+    box-shadow:
+      0 0 40px rgba(255,0,255,0.3),
+      0 0 80px rgba(0,255,255,0.2),
+      inset 0 0 30px rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+  }
+
+  /* Logo s duhovým gradientem */
+  .logo {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(90deg, #ff00ff, #ff8800, #ffff00, #00ff00, #00ffff, #4488ff, #ff00ff);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: rainbow 4s linear infinite;
+    margin-bottom: 4px;
+    text-shadow: 0 0 30px rgba(255,255,255,0.3);
+  }
+  @keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  .version {
+    text-align: center;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 3px;
+    margin-bottom: 18px;
+  }
+
+  /* Hodiny + status */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    font-size: 0.75rem;
+  }
+  .clock {
+    color: #00ff88;
+    font-family: 'Consolas', monospace;
+    text-shadow: 0 0 8px rgba(0,255,136,0.5);
+    letter-spacing: 1px;
+  }
+  .status {
+    color: rgba(255,255,255,0.6);
+    font-family: 'Consolas', monospace;
+  }
+  .status.playing { color: #ff00ff; }
+
+  /* Album art */
+  .album-wrap {
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: 280px;
+    margin: 0 auto 16px;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1a0a3a, #3a0a6a);
+  }
+  .album-art {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.4s;
+  }
+  .album-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    color: rgba(255,255,255,0.2);
+    background: linear-gradient(135deg, #1a0a3a, #3a0a6a);
+  }
+  .album-glow {
+    position: absolute;
+    inset: -2px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ff00ff, #00ffff);
+    z-index: -1;
+    filter: blur(8px);
+    opacity: 0.6;
+  }
+
+  /* Track info */
+  .track-info {
+    text-align: center;
+    margin-bottom: 12px;
+    min-height: 50px;
+  }
+  .track-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .track-artist {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* Spectrum analyzer canvas */
+  .spectrum-wrap {
+    height: 60px;
+    margin-bottom: 12px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Progress bar */
+  .progress-wrap {
+    margin-bottom: 16px;
+  }
+  .progress-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff00ff, #ffff00, #00ffff);
+    transition: width 0.1s linear;
+    border-radius: 3px;
+  }
+  .progress-times {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+    font-family: 'Consolas', monospace;
+  }
+
+  /* Tlačítka */
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .btn {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    backdrop-filter: blur(5px);
+  }
+  .btn:hover {
+    background: rgba(255,255,255,0.15);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255,0,255,0.5);
+  }
+  .btn:active {
+    transform: scale(0.95);
+  }
+  .btn-play {
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, #ff00ff, #00ffff);
+    border: none;
+    font-size: 1.5rem;
+    box-shadow: 0 0 20px rgba(255,0,255,0.6);
+  }
+  .btn-play:hover {
+    background: linear-gradient(135deg, #ff44ff, #44ffff);
+    box-shadow: 0 0 30px rgba(255,0,255,0.8);
+  }
+
+  /* Playlist sekce */
+  .playlist-wrap {
+    margin-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 12px;
+  }
+  .playlist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1px;
+  }
+  .playlist-count {
+    color: #00ffff;
+    font-family: 'Consolas', monospace;
+  }
+  .playlist {
+    max-height: 160px;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 4px;
+  }
+  .playlist::-webkit-scrollbar { width: 6px; }
+  .playlist::-webkit-scrollbar-track { background: transparent; }
+  .playlist::-webkit-scrollbar-thumb { background: rgba(255,0,255,0.3); border-radius: 3px; }
+  .pl-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 0.8rem;
+  }
+  .pl-item:hover {
+    background: rgba(255,255,255,0.08);
+  }
+  .pl-item.active {
+    background: linear-gradient(90deg, rgba(255,0,255,0.2), rgba(0,255,255,0.15));
+    color: #fff;
+  }
+  .pl-item.active .pl-num { color: #ff00ff; }
+  .pl-num {
+    width: 22px;
+    color: rgba(255,255,255,0.4);
+    font-family: 'Consolas', monospace;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+  .pl-title {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pl-empty {
+    text-align: center;
+    color: rgba(255,255,255,0.4);
+    padding: 20px;
+    font-size: 0.8rem;
+  }
+
+  /* Loading */
+  .loading {
+    text-align: center;
+    color: rgba(255,255,255,0.6);
+    padding: 30px;
+    font-size: 0.9rem;
+  }
+  .loading::after {
+    content: '...';
+    animation: dots 1.5s steps(4) infinite;
+  }
+  @keyframes dots {
+    0% { content: '.'; }
+    33% { content: '..'; }
+    66% { content: '...'; }
+  }
+
+  /* Volume - jen aktivní stav */
+  .vol-indicator {
+    position: absolute;
+    bottom: 12px;
+    right: 16px;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.4);
+    font-family: 'Consolas', monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="app">
+  <div class="logo">KLADYXAMP</div>
+  <div class="version">v 1.2 Kl</div>
+
+  <div class="topbar">
+    <div class="clock" id="clock">--:--:--</div>
+    <div class="status" id="status">▼ Načítám...</div>
+  </div>
+
+  <div class="album-wrap">
+    <div class="album-glow"></div>
+    <div class="album-placeholder" id="albumPlaceholder">🎵</div>
+    <img class="album-art" id="albumArt" style="display:none;" alt=""/>
+  </div>
+
+  <div class="track-info">
+    <div class="track-title" id="trackTitle">Vyber song z playlistu</div>
+    <div class="track-artist" id="trackArtist">—</div>
+  </div>
+
+  <div class="spectrum-wrap">
+    <canvas id="spectrum"></canvas>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-times">
+      <span id="curTime">0:00</span>
+      <span id="totalTime">0:00</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="btnPrev" title="Předchozí">⏮</button>
+    <button class="btn btn-play" id="btnPlay" title="Hraj/Pauza">▶</button>
+    <button class="btn" id="btnNext" title="Další">⏭</button>
+  </div>
+
+  <div class="playlist-wrap">
+    <div class="playlist-header">
+      <span>PLAYLIST</span>
+      <span class="playlist-count" id="playlistCount">0 songů</span>
+    </div>
+    <div class="playlist" id="playlist">
+      <div class="loading">Načítám písně z Firebase</div>
+    </div>
+  </div>
+</div>
+
+<audio id="audio" crossorigin="anonymous"></audio>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getStorage, ref as sref, listAll, getDownloadURL, getMetadata }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+// === Firebase config (stejný jako Panel) ===
+const firebaseConfig = {
+  apiKey: "AIzaSyDqLqLwYOPfRA0bLqOOyOA2g79NWQQwm60",
+  authDomain: "kladyxland.firebaseapp.com",
+  databaseURL: "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "kladyxland",
+  storageBucket: "kladyxland.firebasestorage.app",
+  messagingSenderId: "888367307538",
+  appId: "1:888367307538:web:abc"
+};
+
+// ⚠️ DŮLEŽITÉ: Sem třeba jednoduše doplnit appId úplně. Zkontroluj v Firebase Console
+
+const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
+
+// === Globální stav ===
+let tracks = [];        // { name, url, title, artist, art }
+let currentIdx = -1;
+let isPlaying = false;
+let audioCtx = null;
+let analyser = null;
+let dataArray = null;
+let sourceNode = null;
+let canvasRect = null;
+
+const audio = document.getElementById('audio');
+const canvas = document.getElementById('spectrum');
+const ctx = canvas.getContext('2d');
+
+// === Hvězdy v pozadí ===
+function makeStars() {
+  const c = document.getElementById('stars');
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.animationDelay = (Math.random() * 3) + 's';
+    s.style.animationDuration = (2 + Math.random() * 3) + 's';
+    c.appendChild(s);
+  }
+}
+makeStars();
+
+// === Hodiny ===
+function updateClock() {
+  const d = new Date();
+  const h = String(d.getHours()).padStart(2,'0');
+  const m = String(d.getMinutes()).padStart(2,'0');
+  const s = String(d.getSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// === Načti písně z Firebase Storage /kladyxamp/ ===
+async function loadTracks() {
+  try {
+    console.log('🔍 Načítám z Storage bucket:', firebaseConfig.storageBucket);
+    const listRef = sref(storage, 'kladyxamp');
+    const result = await listAll(listRef);
+    console.log('✅ Storage listAll OK. Souborů:', result.items.length);
+    
+    const audioItems = result.items.filter(it =>
+      /\.(mp3|wav|ogg|m4a|mp4)$/i.test(it.name)
+    );
+    console.log('🎵 Audio souborů:', audioItems.length, audioItems.map(i => i.name));
+
+    if (audioItems.length === 0) {
+      document.getElementById('playlist').innerHTML =
+        '<div class="pl-empty">📁 Nahraj MP3 do Firebase Storage<br/>do složky <b>kladyxamp/</b></div>';
+      document.getElementById('status').textContent = '○ Prázdno';
+      return;
+    }
+
+    document.getElementById('status').textContent = `▼ Načítám ${audioItems.length} songů`;
+
+    // Načti URL pro všechny + zkus najít obrázky (stejný název .jpg/.png)
+    const imgItems = result.items.filter(it =>
+      /\.(jpg|jpeg|png|webp)$/i.test(it.name)
+    );
+    const imgMap = {};
+    for (const img of imgItems) {
+      const base = img.name.replace(/\.[^.]+$/, '');
+      try {
+        imgMap[base] = await getDownloadURL(img);
+      } catch (e) {}
+    }
+
+    for (const item of audioItems) {
+      try {
+        const url = await getDownloadURL(item);
+        console.log('📥 Stahuji URL:', item.name);
+        const base = item.name.replace(/\.[^.]+$/, '');
+        // Parse "Interpret - Název.mp3" formátu
+        let title = base, artist = '—';
+        const m = base.match(/^(.+?)\s*-\s*(.+)$/);
+        if (m) { artist = m[1].trim(); title = m[2].trim(); }
+        tracks.push({
+          name: item.name, url, title, artist,
+          art: imgMap[base] || null
+        });
+      } catch (e) {
+        console.warn('❌ Chyba URL pro:', item.name, e.code, e.message);
+      }
+    }
+
+    renderPlaylist();
+    document.getElementById('status').textContent = `● Připraveno`;
+    document.getElementById('playlistCount').textContent = `${tracks.length} songů`;
+  } catch (e) {
+    console.error('❌ Load error (Storage CORS/Security Rules):', e.code, e.message);
+    document.getElementById('playlist').innerHTML =
+      `<div class="pl-empty">❌ Chyba: ${e.code || 'permission-denied'}<br/><small>Zkontroluj Console (F12)</small></div>`;
+    document.getElementById('status').textContent = '✕ Chyba Storage';
+  }
+}
+
+function renderPlaylist() {
+  const pl = document.getElementById('playlist');
+  pl.innerHTML = '';
+  tracks.forEach((t, i) => {
+    const item = document.createElement('div');
+    item.className = 'pl-item' + (i === currentIdx ? ' active' : '');
+    item.innerHTML = `
+      <span class="pl-num">${String(i+1).padStart(2,'0')}</span>
+      <span class="pl-title">${escapeHtml(t.artist === '—' ? t.title : t.artist + ' — ' + t.title)}</span>
+    `;
+    item.onclick = () => playTrack(i);
+    pl.appendChild(item);
+  });
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[c]);
+}
+
+// === Web Audio setup (jen poprvé) ===
+function setupAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 64;  // 32 frekvenčních pásem
+  analyser.smoothingTimeConstant = 0.75;
+  dataArray = new Uint8Array(analyser.frequencyBinCount);
+  sourceNode = audioCtx.createMediaElementSource(audio);
+  sourceNode.connect(analyser);
+  analyser.connect(audioCtx.destination);
+}
+
+// === Spectrum analyzer kreslení ===
+function drawSpectrum() {
+  if (!canvasRect) {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = canvas.clientWidth * dpr;
+    canvas.height = canvas.clientHeight * dpr;
+    ctx.scale(dpr, dpr);
+    canvasRect = { w: canvas.clientWidth, h: canvas.clientHeight };
+  }
+
+  ctx.clearRect(0, 0, canvasRect.w, canvasRect.h);
+
+  if (!analyser) {
+    requestAnimationFrame(drawSpectrum);
+    return;
+  }
+
+  analyser.getByteFrequencyData(dataArray);
+
+  // 16 pruhů - vezmi prvních 16 pásem (basy + středy, nejlepší vizuál)
+  const bars = 16;
+  const barWidth = canvasRect.w / bars;
+  const gap = 2;
+
+  for (let i = 0; i < bars; i++) {
+    const v = dataArray[i] / 255;  // 0-1
+    const h = v * canvasRect.h;
+
+    // Duhový gradient podle indexu
+    const hue = (i / bars) * 280;  // 0-280 stupňů (od purpurové)
+    const grad = ctx.createLinearGradient(0, canvasRect.h - h, 0, canvasRect.h);
+    grad.addColorStop(0, `hsl(${hue}, 100%, 65%)`);
+    grad.addColorStop(0.5, `hsl(${hue}, 100%, 50%)`);
+    grad.addColorStop(1, `hsl(${hue}, 100%, 35%)`);
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(
+      i * barWidth + gap/2,
+      canvasRect.h - h,
+      barWidth - gap,
+      h
+    );
+
+    // Peak svítí
+    if (v > 0.05) {
+      ctx.fillStyle = `hsla(${hue}, 100%, 80%, 0.8)`;
+      ctx.fillRect(i * barWidth + gap/2, canvasRect.h - h, barWidth - gap, 2);
+    }
+  }
+
+  requestAnimationFrame(drawSpectrum);
+}
+drawSpectrum();
+
+// === Přehrávání ===
+function playTrack(idx) {
+  if (idx < 0 || idx >= tracks.length) return;
+  currentIdx = idx;
+  const t = tracks[idx];
+
+  setupAudio();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+
+  audio.src = t.url;
+  audio.play().then(() => {
+    isPlaying = true;
+    updateUI();
+  }).catch(e => console.error('Play error:', e));
+
+  document.getElementById('trackTitle').textContent = t.title;
+  document.getElementById('trackArtist').textContent = t.artist;
+
+  // Album art
+  const img = document.getElementById('albumArt');
+  const placeholder = document.getElementById('albumPlaceholder');
+  if (t.art) {
+    img.src = t.art;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    img.style.display = 'none';
+    placeholder.style.display = 'flex';
+  }
+
+  renderPlaylist();
+}
+
+function togglePlay() {
+  if (currentIdx < 0 && tracks.length > 0) {
+    playTrack(0);
+    return;
+  }
+  if (isPlaying) {
+    audio.pause();
+    isPlaying = false;
+  } else {
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    audio.play();
+    isPlaying = true;
+  }
+  updateUI();
+}
+
+function nextTrack() {
+  if (tracks.length === 0) return;
+  playTrack((currentIdx + 1) % tracks.length);
+}
+
+function prevTrack() {
+  if (tracks.length === 0) return;
+  playTrack((currentIdx - 1 + tracks.length) % tracks.length);
+}
+
+function updateUI() {
+  const btn = document.getElementById('btnPlay');
+  btn.textContent = isPlaying ? '⏸' : '▶';
+  const status = document.getElementById('status');
+  if (isPlaying) {
+    status.textContent = '● Hraje';
+    status.classList.add('playing');
+  } else {
+    status.textContent = '○ Pauza';
+    status.classList.remove('playing');
+  }
+}
+
+// === Progress bar ===
+function formatTime(s) {
+  if (!isFinite(s)) return '0:00';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${String(sec).padStart(2,'0')}`;
+}
+
+audio.addEventListener('timeupdate', () => {
+  if (!audio.duration) return;
+  const pct = (audio.currentTime / audio.duration) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('curTime').textContent = formatTime(audio.currentTime);
+  document.getElementById('totalTime').textContent = formatTime(audio.duration);
+});
+
+audio.addEventListener('ended', () => {
+  nextTrack();
+});
+
+document.getElementById('progressBar').addEventListener('click', (e) => {
+  if (!audio.duration) return;
+  const r = e.currentTarget.getBoundingClientRect();
+  const pct = (e.clientX - r.left) / r.width;
+  audio.currentTime = pct * audio.duration;
+});
+
+// === Tlačítka ===
+document.getElementById('btnPlay').onclick = togglePlay;
+document.getElementById('btnNext').onclick = nextTrack;
+document.getElementById('btnPrev').onclick = prevTrack;
+
+// === Klávesnice ===
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+  else if (e.code === 'ArrowRight') nextTrack();
+  else if (e.code === 'ArrowLeft') prevTrack();
+});
+
+// === Resize canvas ===
+window.addEventListener('resize', () => { canvasRect = null; });
+
+// === Start ===
+loadTracks();
+</script>
+
+</body>
+</html>
