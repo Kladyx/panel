@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KladyxAmp v1.1Kl</title>
+<title>KladyxAmp v1.2Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -351,7 +351,7 @@
 
 <div class="app">
   <div class="logo">KLADYXAMP</div>
-  <div class="version">v 1.3 Kl</div>
+  <div class="version">v 1.2 Kl</div>
 
   <div class="topbar">
     <div class="clock" id="clock">--:--:--</div>
@@ -400,7 +400,7 @@
   </div>
 </div>
 
-<audio id="audio" crossorigin="anonymous"></audio>
+<audio id="audio"></audio>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -417,8 +417,6 @@ const firebaseConfig = {
   messagingSenderId: "888367307538",
   appId: "1:888367307538:web:abc"
 };
-
-// ⚠️ DŮLEŽITÉ: Sem třeba jednoduše doplnit appId úplně. Zkontroluj v Firebase Console
 
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
@@ -466,15 +464,11 @@ updateClock();
 // === Načti písně z Firebase Storage /kladyxamp/ ===
 async function loadTracks() {
   try {
-    console.log('🔍 Načítám z Storage bucket:', firebaseConfig.storageBucket);
     const listRef = sref(storage, 'kladyxamp');
     const result = await listAll(listRef);
-    console.log('✅ Storage listAll OK. Souborů:', result.items.length);
-    
     const audioItems = result.items.filter(it =>
-      /\.(mp3|mp4|m4a|wav|flac)$/i.test(it.name)
+      /\.(mp3|wav|ogg|m4a)$/i.test(it.name)
     );
-    console.log('🎵 Audio souborů:', audioItems.length, audioItems.map(i => i.name));
 
     if (audioItems.length === 0) {
       document.getElementById('playlist').innerHTML =
@@ -500,7 +494,6 @@ async function loadTracks() {
     for (const item of audioItems) {
       try {
         const url = await getDownloadURL(item);
-        console.log('📥 Stahuji URL:', item.name);
         const base = item.name.replace(/\.[^.]+$/, '');
         // Parse "Interpret - Název.mp3" formátu
         let title = base, artist = '—';
@@ -511,7 +504,7 @@ async function loadTracks() {
           art: imgMap[base] || null
         });
       } catch (e) {
-        console.warn('❌ Chyba URL pro:', item.name, e.code, e.message);
+        console.warn('Skip:', item.name, e);
       }
     }
 
@@ -519,10 +512,10 @@ async function loadTracks() {
     document.getElementById('status').textContent = `● Připraveno`;
     document.getElementById('playlistCount').textContent = `${tracks.length} songů`;
   } catch (e) {
-    console.error('❌ Load error (Storage CORS/Security Rules):', e.code, e.message);
+    console.error('Load error:', e);
     document.getElementById('playlist').innerHTML =
-      `<div class="pl-empty">❌ Chyba: ${e.code || 'permission-denied'}<br/><small>Zkontroluj Console (F12)</small></div>`;
-    document.getElementById('status').textContent = '✕ Chyba Storage';
+      `<div class="pl-empty">❌ Chyba načítání<br/>${e.code || e.message}</div>`;
+    document.getElementById('status').textContent = '✕ Chyba';
   }
 }
 
@@ -550,17 +543,27 @@ function escapeHtml(s) {
 // === Web Audio setup (jen poprvé) ===
 function setupAudio() {
   if (audioCtx) return;
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 64;  // 32 frekvenčních pásem
-  analyser.smoothingTimeConstant = 0.75;
-  dataArray = new Uint8Array(analyser.frequencyBinCount);
-  sourceNode = audioCtx.createMediaElementSource(audio);
-  sourceNode.connect(analyser);
-  analyser.connect(audioCtx.destination);
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 64;
+    analyser.smoothingTimeConstant = 0.75;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    // Bez crossorigin se sourceNode nedá vytvořit z Firebase URL,
+    // takže spectrum bude jen ozdoba (random hodnoty řízené isPlaying)
+  } catch(e) {
+    console.warn('Audio context error:', e);
+  }
 }
 
 // === Spectrum analyzer kreslení ===
+// Bez crossorigin nemůžeme číst frekvence z audio, takže
+// generujeme animaci řízenou isPlaying (rytmické pruhy)
+let fakeBars = new Array(16).fill(0);
+let fakeTargets = new Array(16).fill(0);
+let peakHolds = new Array(16).fill(0);
+let peakDecay = new Array(16).fill(0);
+
 function drawSpectrum() {
   if (!canvasRect) {
     const dpr = window.devicePixelRatio || 1;
@@ -572,41 +575,86 @@ function drawSpectrum() {
 
   ctx.clearRect(0, 0, canvasRect.w, canvasRect.h);
 
-  if (!analyser) {
-    requestAnimationFrame(drawSpectrum);
-    return;
-  }
-
-  analyser.getByteFrequencyData(dataArray);
-
-  // 16 pruhů - vezmi prvních 16 pásem (basy + středy, nejlepší vizuál)
   const bars = 16;
   const barWidth = canvasRect.w / bars;
   const gap = 2;
+  // LED segmenty - 12 kostiček na sloupec
+  const segments = 12;
+  const segGap = 1;
+  const segHeight = (canvasRect.h - (segments + 1) * segGap) / segments;
 
   for (let i = 0; i < bars; i++) {
-    const v = dataArray[i] / 255;  // 0-1
-    const h = v * canvasRect.h;
+    if (isPlaying) {
+      if (Math.abs(fakeBars[i] - fakeTargets[i]) < 0.05 || Math.random() < 0.05) {
+        fakeTargets[i] = Math.random() * 0.9 + 0.1;
+      }
+      fakeBars[i] += (fakeTargets[i] - fakeBars[i]) * 0.3;
+    } else {
+      fakeBars[i] *= 0.92;
+    }
 
-    // Duhový gradient podle indexu
-    const hue = (i / bars) * 280;  // 0-280 stupňů (od purpurové)
-    const grad = ctx.createLinearGradient(0, canvasRect.h - h, 0, canvasRect.h);
-    grad.addColorStop(0, `hsl(${hue}, 100%, 65%)`);
-    grad.addColorStop(0.5, `hsl(${hue}, 100%, 50%)`);
-    grad.addColorStop(1, `hsl(${hue}, 100%, 35%)`);
+    const v = Math.max(0, Math.min(1, fakeBars[i]));
+    const litSegments = Math.floor(v * segments);
 
-    ctx.fillStyle = grad;
-    ctx.fillRect(
-      i * barWidth + gap/2,
-      canvasRect.h - h,
-      barWidth - gap,
-      h
-    );
+    // Peak hold - "značka" co padá dolů pomalu
+    if (litSegments > peakHolds[i]) {
+      peakHolds[i] = litSegments;
+      peakDecay[i] = 0;
+    } else {
+      peakDecay[i]++;
+      if (peakDecay[i] > 20) {
+        peakHolds[i] = Math.max(litSegments, peakHolds[i] - 0.3);
+      }
+    }
 
-    // Peak svítí
-    if (v > 0.05) {
-      ctx.fillStyle = `hsla(${hue}, 100%, 80%, 0.8)`;
-      ctx.fillRect(i * barWidth + gap/2, canvasRect.h - h, barWidth - gap, 2);
+    const x = i * barWidth + gap/2;
+    const w = barWidth - gap;
+
+    // Kresli každý LED segment zdola nahoru
+    for (let s = 0; s < segments; s++) {
+      const segY = canvasRect.h - (s + 1) * (segHeight + segGap);
+      const isLit = s < litSegments;
+      const isPeak = Math.floor(peakHolds[i]) === s && s >= litSegments;
+
+      // Určit barvu segmentu podle pozice (zdola: zelená -> žlutá)
+      let color, dimColor;
+      if (s < segments * 0.6) {
+        // Spodních 60% = zelená
+        color = '#00ff44';
+        dimColor = 'rgba(0,80,20,0.5)';
+      } else if (s < segments * 0.85) {
+        // Středních 25% = žlutá
+        color = '#ffdd00';
+        dimColor = 'rgba(80,60,0,0.5)';
+      } else {
+        // Horních 15% = oranžovo-žlutá (lehký peak indicator)
+        color = '#ffaa00';
+        dimColor = 'rgba(80,40,0,0.5)';
+      }
+
+      if (isLit) {
+        // Rozsvícený segment s glow efektem
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 8;
+        ctx.fillStyle = color;
+        ctx.fillRect(x, segY, w, segHeight);
+        ctx.shadowBlur = 0;
+
+        // Vnitřní lesk
+        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.fillRect(x, segY, w, segHeight * 0.3);
+      } else if (isPeak) {
+        // Peak indicator - zářivá čárka
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 10;
+        ctx.fillStyle = color;
+        ctx.fillRect(x, segY, w, segHeight);
+        ctx.shadowBlur = 0;
+      } else {
+        // Zhasnutý segment - tmavá kostka
+        ctx.fillStyle = dimColor;
+        ctx.fillRect(x, segY, w, segHeight);
+      }
     }
   }
 
