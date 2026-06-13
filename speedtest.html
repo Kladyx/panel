@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KladyxSpeed v1.0Kl</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body {
+    width:100%; height:100%;
+    font-family:'Times New Roman', Times, serif;
+    background: linear-gradient(135deg, #0a0a1a, #1a0a2a);
+    color:#fff;
+    overflow-x:hidden;
+  }
+  .wrap {
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center;
+    padding:24px 16px 60px;
+    text-align:center;
+  }
+  .title {
+    font-size:2.4rem; font-weight:900;
+    background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
+    background-size:300% 100%;
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation: rainbow 6s linear infinite;
+    letter-spacing:.05em;
+  }
+  @keyframes rainbow {
+    0% { background-position:0% 50%; }
+    100% { background-position:300% 50%; }
+  }
+  .version { color:rgba(255,255,255,.4); font-size:.9rem; margin-bottom:24px; }
+
+  .gauge-wrap { position:relative; width:260px; height:260px; margin:10px auto 20px; }
+  .gauge-ring {
+    width:260px; height:260px; border-radius:50%;
+    border:6px solid;
+    border-image: linear-gradient(135deg, #ff00ff, #00ffff, #ffff00, #ff00ff) 1;
+    animation: borderPulse 4s linear infinite;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 0 30px rgba(255,0,255,.25), 0 0 50px rgba(0,255,255,.15);
+  }
+  @keyframes borderPulse {
+    0%   { border-image-source: linear-gradient(0deg,   #ff00ff, #00ffff, #ffff00, #ff00ff); }
+    25%  { border-image-source: linear-gradient(90deg,  #ff00ff, #00ffff, #ffff00, #ff00ff); }
+    50%  { border-image-source: linear-gradient(180deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
+    75%  { border-image-source: linear-gradient(270deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
+    100% { border-image-source: linear-gradient(360deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
+  }
+  .gauge-inner { text-align:center; }
+  .gauge-value {
+    font-size:3.2rem; font-weight:900; line-height:1;
+    text-shadow: 0 0 20px rgba(0,255,255,.6);
+  }
+  .gauge-unit { font-size:1rem; color:rgba(255,255,255,.6); margin-top:4px; }
+  .gauge-label { font-size:1.1rem; color:#00ffff; margin-top:8px; letter-spacing:.1em; }
+
+  .status {
+    font-size:1.1rem; min-height:1.6em; margin:8px 0 20px;
+    color:#ffff66;
+  }
+
+  .btn {
+    font-family:'Times New Roman', Times, serif;
+    font-size:1.3rem; font-weight:bold;
+    padding:14px 40px; border-radius:30px;
+    border:2px solid #ff00ff;
+    background: linear-gradient(135deg, rgba(255,0,255,.2), rgba(0,255,255,.2));
+    color:#fff; cursor:pointer;
+    box-shadow: 0 0 20px rgba(255,0,255,.4);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:active { transform: scale(0.96); }
+  .btn:disabled { opacity:.5; }
+
+  .results {
+    display:flex; gap:16px; flex-wrap:wrap; justify-content:center;
+    margin-top:30px; width:100%; max-width:420px;
+  }
+  .card {
+    flex:1; min-width:110px;
+    background: rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:12px; padding:14px 8px;
+  }
+  .card .icon { font-size:1.6rem; }
+  .card .val { font-size:1.5rem; font-weight:900; margin-top:4px; text-shadow:0 0 10px rgba(0,255,255,.4); }
+  .card .lbl { font-size:.85rem; color:rgba(255,255,255,.5); margin-top:2px; }
+
+  .footer { margin-top:30px; font-size:.8rem; color:rgba(255,255,255,.3); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="title">KLADYXSPEED</div>
+  <div class="version">v1.0 Kl</div>
+
+  <div class="gauge-wrap">
+    <div class="gauge-ring">
+      <div class="gauge-inner">
+        <div class="gauge-value" id="gaugeValue">--</div>
+        <div class="gauge-unit">Mbit/s</div>
+        <div class="gauge-label" id="gaugeLabel">PŘIPRAVENO</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status" id="status">Stiskni START pro test rychlosti</div>
+
+  <button class="btn" id="startBtn" onclick="runTest()">▶ START</button>
+
+  <div class="results">
+    <div class="card">
+      <div class="icon">🏓</div>
+      <div class="val" id="pingVal">--</div>
+      <div class="lbl">Ping (ms)</div>
+    </div>
+    <div class="card">
+      <div class="icon">⬇️</div>
+      <div class="val" id="downVal">--</div>
+      <div class="lbl">Download Mbit/s</div>
+    </div>
+    <div class="card">
+      <div class="icon">⬆️</div>
+      <div class="val" id="upVal">--</div>
+      <div class="lbl">Upload Mbit/s</div>
+    </div>
+  </div>
+
+  <div class="footer">měřeno přes Cloudflare speed servery</div>
+</div>
+
+<script>
+const PING_URL = 'https://speed.cloudflare.com/__down?bytes=0';
+const DOWN_URL = 'https://speed.cloudflare.com/__down?bytes=';
+const UP_URL   = 'https://speed.cloudflare.com/__up';
+
+const gaugeValue = document.getElementById('gaugeValue');
+const gaugeLabel = document.getElementById('gaugeLabel');
+const statusEl = document.getElementById('status');
+const startBtn = document.getElementById('startBtn');
+const pingVal = document.getElementById('pingVal');
+const downVal = document.getElementById('downVal');
+const upVal = document.getElementById('upVal');
+
+function setGauge(val, label) {
+  gaugeValue.textContent = val;
+  gaugeLabel.textContent = label;
+}
+
+async function measurePing(samples = 4) {
+  let times = [];
+  for (let i = 0; i < samples; i++) {
+    const t0 = performance.now();
+    try {
+      await fetch(PING_URL + '&_=' + Math.random(), { cache: 'no-store' });
+    } catch (e) {}
+    const t1 = performance.now();
+    times.push(t1 - t0);
+  }
+  times.sort((a,b)=>a-b);
+  return times[0]; // nejlepší (nejnižší) latence
+}
+
+async function measureDownload() {
+  // Postupně zkusíme různé velikosti, vezmeme rozumný odhad
+  const sizes = [1000000, 5000000, 10000000]; // 1MB, 5MB, 10MB
+  let best = 0;
+  for (const size of sizes) {
+    const url = DOWN_URL + size + '&_=' + Math.random();
+    const t0 = performance.now();
+    try {
+      const resp = await fetch(url, { cache: 'no-store' });
+      const blob = await resp.blob();
+      const t1 = performance.now();
+      const seconds = (t1 - t0) / 1000;
+      const bits = blob.size * 8;
+      const mbps = (bits / seconds) / 1e6;
+      if (mbps > best) best = mbps;
+      // live update
+      downVal.textContent = mbps.toFixed(1);
+      setGauge(mbps.toFixed(1), 'DOWNLOAD');
+      statusEl.textContent = 'Měřím download... (' + (size/1e6) + ' MB)';
+    } catch (e) {
+      statusEl.textContent = 'Chyba při downloadu: ' + e.message;
+    }
+  }
+  return best;
+}
+
+async function measureUpload() {
+  // odešleme náhodná data, různé velikosti
+  const sizes = [500000, 2000000, 5000000]; // 0.5MB, 2MB, 5MB
+  let best = 0;
+  for (const size of sizes) {
+    const data = new Uint8Array(size);
+    for (let i = 0; i < data.length; i += 4096) data[i] = Math.random() * 255;
+    const t0 = performance.now();
+    try {
+      await fetch(UP_URL, {
+        method: 'POST',
+        body: data,
+        cache: 'no-store'
+      });
+      const t1 = performance.now();
+      const seconds = (t1 - t0) / 1000;
+      const bits = size * 8;
+      const mbps = (bits / seconds) / 1e6;
+      if (mbps > best) best = mbps;
+      upVal.textContent = mbps.toFixed(1);
+      setGauge(mbps.toFixed(1), 'UPLOAD');
+      statusEl.textContent = 'Měřím upload... (' + (size/1e6) + ' MB)';
+    } catch (e) {
+      statusEl.textContent = 'Chyba při uploadu: ' + e.message;
+    }
+  }
+  return best;
+}
+
+async function runTest() {
+  startBtn.disabled = true;
+  pingVal.textContent = '--';
+  downVal.textContent = '--';
+  upVal.textContent = '--';
+  setGauge('--', 'PŘIPRAVUJI');
+  statusEl.textContent = 'Měřím ping...';
+
+  try {
+    const ping = await measurePing();
+    pingVal.textContent = ping.toFixed(0);
+    setGauge(ping.toFixed(0), 'PING (ms)');
+
+    statusEl.textContent = 'Měřím download rychlost...';
+    await measureDownload();
+
+    statusEl.textContent = 'Měřím upload rychlost...';
+    await measureUpload();
+
+    statusEl.textContent = '✅ Test dokončen';
+    setGauge(downVal.textContent, 'DOWNLOAD');
+  } catch (e) {
+    statusEl.textContent = '❌ Chyba: ' + e.message;
+  }
+
+  startBtn.disabled = false;
+}
+</script>
+</body>
+</html>
