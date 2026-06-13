@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v1.0Kl</title>
+<title>KladyxTransfer v1.3Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -52,7 +52,8 @@
   }
 
   .icon { font-size:3.5rem; margin-bottom:10px; }
-  .desc { font-size:1rem; color:rgba(255,255,255,.6); margin-bottom:20px; }
+  .desc { font-size:1rem; color:rgba(255,255,255,.6); margin-bottom:6px; }
+  .desc2 { font-size:.8rem; color:rgba(255,255,255,.4); margin-bottom:20px; }
 
   input[type=file] { display:none; }
   .pickbtn, .sendbtn {
@@ -73,32 +74,19 @@
     word-break:break-all; min-height:1.4em;
   }
 
-  .progress-wrap {
-    width:100%; height:22px; border-radius:11px;
-    background:rgba(255,255,255,.1);
-    overflow:hidden; margin-top:18px;
-    border:1px solid rgba(255,255,255,.15);
-    display:none;
-  }
-  .progress-bar {
-    height:100%; width:0%;
-    background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00);
-    transition: width .2s ease;
-  }
-  .progress-pct { font-size:.85rem; margin-top:6px; color:rgba(255,255,255,.7); }
-
-  .status { font-size:1rem; margin-top:18px; min-height:1.6em; color:#00ffff; }
+  .status { font-size:1rem; margin-top:18px; min-height:2.4em; color:#00ffff; }
   .footer { margin-top:30px; font-size:.8rem; color:rgba(255,255,255,.3); }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="title">KLADYXTRANSFER</div>
-  <div class="version">v1.0 Kl</div>
+  <div class="version">v1.3 Kl</div>
 
   <div class="box">
     <div class="icon">📤</div>
     <div class="desc">Vyber soubor na mobilu - objeví se na PC ve složce <b>prijate</b></div>
+    <div class="desc2">Max. velikost cca 4 MB (foto, dokument, krátký text)</div>
 
     <label class="pickbtn" for="fileInput">📁 Vybrat soubor</label>
     <input type="file" id="fileInput" onchange="onFileSelected()">
@@ -108,21 +96,15 @@
       <button class="sendbtn" id="sendBtn" onclick="sendFile()" disabled>🚀 Odeslat na PC</button>
     </div>
 
-    <div class="progress-wrap" id="progWrap">
-      <div class="progress-bar" id="progBar"></div>
-    </div>
-    <div class="progress-pct" id="progPct"></div>
-
     <div class="status" id="status"></div>
   </div>
 
-  <div class="footer">Firebase Storage · zxnext/transfer</div>
+  <div class="footer">přes Firebase Realtime Database</div>
 </div>
 
 <script>
-var FC = {
-  storageBucket: "kladyxland.firebasestorage.app"
-};
+var DB_BASE = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/transfer';
+var MAX_SIZE = 4 * 1024 * 1024; // 4 MB
 var selectedFile = null;
 
 function onFileSelected() {
@@ -131,66 +113,74 @@ function onFileSelected() {
   selectedFile = f;
   var nameEl = document.getElementById('fileName');
   var btn = document.getElementById('sendBtn');
+  var status = document.getElementById('status');
+  status.textContent = '';
   if (f) {
     var sizeMB = (f.size / 1e6).toFixed(2);
     nameEl.textContent = f.name + ' (' + sizeMB + ' MB)';
-    btn.disabled = false;
+    if (f.size > MAX_SIZE) {
+      status.textContent = '⚠️ Soubor je příliš velký (max 4 MB)';
+      btn.disabled = true;
+    } else {
+      btn.disabled = false;
+    }
   } else {
     nameEl.textContent = 'Žádný soubor nevybrán';
     btn.disabled = true;
   }
-  document.getElementById('status').textContent = '';
 }
 
 function sendFile() {
   if (!selectedFile) return;
   var btn = document.getElementById('sendBtn');
-  btn.disabled = true;
-
-  var progWrap = document.getElementById('progWrap');
-  var progBar = document.getElementById('progBar');
-  var progPct = document.getElementById('progPct');
   var status = document.getElementById('status');
+  btn.disabled = true;
+  status.textContent = '📤 Čtu soubor...';
 
-  progWrap.style.display = 'block';
-  progBar.style.width = '0%';
-  progPct.textContent = '0%';
-  status.textContent = 'Nahrávám...';
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    // e.target.result = "data:image/jpeg;base64,XXXXX"
+    var dataUrl = e.target.result;
+    var base64 = dataUrl.split(',')[1];
 
-  // bezpečný název souboru (bez diakritiky/mezer)
-  var safeName = Date.now() + '_' + selectedFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-  var path = 'zxnext/transfer/' + safeName;
-  var url = 'https://firebasestorage.googleapis.com/v0/b/' + FC.storageBucket + '/o?uploadType=media&name=' + encodeURIComponent(path);
+    var safeName = String(Date.now()) + '_' + selectedFile.name.replace(/[^a-zA-Z0-9_-]/g, '_');
+    var payload = {
+      name: selectedFile.name,
+      type: selectedFile.type || 'application/octet-stream',
+      data: base64,
+      ts: Date.now()
+    };
 
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', url);
-  xhr.setRequestHeader('Content-Type', selectedFile.type || 'application/octet-stream');
+    status.textContent = '📡 Odesílám do databáze...';
 
-  xhr.upload.onprogress = function(e) {
-    if (e.lengthComputable) {
-      var pct = Math.round((e.loaded / e.total) * 100);
-      progBar.style.width = pct + '%';
-      progPct.textContent = pct + '%';
-    }
+    var url = DB_BASE + '/' + encodeURIComponent(safeName) + '.json';
+    var xhr = new XMLHttpRequest();
+    xhr.open('PUT', url);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        status.textContent = '✅ Odesláno! Za chvíli (do 10s) se objeví na PC ve složce prijate.';
+      } else {
+        status.textContent = '❌ Chyba při odesílání (' + xhr.status + '): ' + xhr.responseText;
+      }
+      btn.disabled = false;
+    };
+
+    xhr.onerror = function() {
+      status.textContent = '❌ Chyba sítě při odesílání';
+      btn.disabled = false;
+    };
+
+    xhr.send(JSON.stringify(payload));
   };
 
-  xhr.onload = function() {
-    if (xhr.status >= 200 && xhr.status < 300) {
-      progBar.style.width = '100%';
-      progPct.textContent = '100%';
-      status.textContent = '✅ Odesláno! Za chvíli se objeví na PC.';
-    } else {
-      status.textContent = '❌ Chyba při odesílání (' + xhr.status + ')';
-    }
+  reader.onerror = function() {
+    status.textContent = '❌ Chyba při čtení souboru';
     btn.disabled = false;
   };
 
-  xhr.onerror = function() {
-    status.textContent = '❌ Chyba sítě při odesílání';
-    btn.disabled = false;
-  };
-
-  xhr.send(selectedFile);
+  reader.readAsDataURL(selectedFile);
 }
 </script>
 </body>
