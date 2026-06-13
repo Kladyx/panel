@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KladyxAmp v1.6Kl</title>
+<title>KladyxAmp v1.17Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
     min-height: 100%;
     background: #000;
-    font-family: 'Segoe UI', -apple-system, sans-serif;
+    font-family: 'Times New Roman', Times, serif;
     color: #fff;
     user-select: none;
   }
@@ -50,8 +50,9 @@
     width: 100%;
     max-width: 480px;
     background: linear-gradient(180deg, rgba(30,15,60,0.95), rgba(10,5,30,0.95));
-    border: 1px solid;
+    border: 4px solid;
     border-image: linear-gradient(135deg, #ff00ff, #00ffff, #ffff00, #ff00ff) 1;
+    animation: borderPulse 4s linear infinite;
     border-radius: 20px;
     padding: 24px;
     position: relative;
@@ -81,6 +82,13 @@
   @keyframes rainbow {
     0% { background-position: 0% 50%; }
     100% { background-position: 200% 50%; }
+  }
+  @keyframes borderPulse {
+    0% { border-image-source: linear-gradient(0deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
+    25% { border-image-source: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
+    50% { border-image-source: linear-gradient(180deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
+    75% { border-image-source: linear-gradient(270deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
+    100% { border-image-source: linear-gradient(360deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
   }
   .version {
     text-align: center;
@@ -135,8 +143,22 @@
     align-items: center;
     justify-content: center;
     font-size: 5rem;
-    color: rgba(255,255,255,0.2);
-    background: linear-gradient(135deg, #1a0a3a, #3a0a6a);
+    background-image:
+      radial-gradient(circle at 50% 50%, rgba(255,0,255,0.25), transparent 60%),
+      linear-gradient(135deg, #1a0a3a, #3a0a6a);
+    animation: placeholderPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes placeholderPulse {
+    0%, 100% {
+      text-shadow: 0 0 20px rgba(255,0,255,0.4), 0 0 40px rgba(0,255,255,0.2);
+      transform: scale(1);
+      filter: brightness(1);
+    }
+    50% {
+      text-shadow: 0 0 35px rgba(255,0,255,0.8), 0 0 60px rgba(0,255,255,0.5);
+      transform: scale(1.06);
+      filter: brightness(1.2);
+    }
   }
   .album-glow {
     position: absolute;
@@ -146,6 +168,7 @@
     z-index: -1;
     filter: blur(8px);
     opacity: 0.6;
+    animation: placeholderPulse 2.4s ease-in-out infinite;
   }
 
   /* Track info */
@@ -363,7 +386,7 @@
 
 <div class="app">
   <div class="logo">KLADYXAMP</div>
-  <div class="version">v 1.6 Kl</div>
+  <div class="version">v 1.17 Kl</div>
 
   <div class="topbar">
     <div class="clock" id="clock">--:--:--</div>
@@ -607,7 +630,7 @@ function drawSpectrum() {
       }
       fakeBars[i] += (fakeTargets[i] - fakeBars[i]) * 0.3;
     } else {
-      fakeBars[i] *= 0.92;
+      fakeBars[i] = 0.18 + 0.22 * Math.abs(Math.sin(Date.now() / 600 + i * 0.7));
     }
 
     const v = Math.max(0, Math.min(1, fakeBars[i]));
