@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SongUp v1.0Kl</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    min-height: 100%;
+    background: #000;
+    font-family: 'Times New Roman', Times, serif;
+    color: #fff;
+    user-select: none;
+  }
+  body {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    background: radial-gradient(ellipse at top, #1a0a3a 0%, #050010 60%, #000 100%);
+    position: relative;
+    padding: 16px 0;
+  }
+
+  /* Animované pozadí - hvězdy */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .star {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 4px #fff;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0.2; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* Hlavní container */
+  .app {
+    width: 100%;
+    max-width: 480px;
+    background: linear-gradient(180deg, rgba(30,15,60,0.95), rgba(10,5,30,0.95));
+    border: 4px solid;
+    border-image: linear-gradient(135deg, #ff00ff, #00ffff, #ffff00, #ff00ff) 1;
+    animation: borderPulse 4s linear infinite;
+    border-radius: 20px;
+    padding: 24px;
+    position: relative;
+    z-index: 1;
+    box-shadow:
+      0 0 40px rgba(255,0,255,0.3),
+      0 0 80px rgba(0,255,255,0.2),
+      inset 0 0 30px rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+  }
+
+  .logo {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(90deg, #ff00ff, #ff8800, #ffff00, #00ff00, #00ffff, #4488ff, #ff00ff);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: rainbow 4s linear infinite;
+    margin-bottom: 4px;
+    text-shadow: 0 0 30px rgba(255,255,255,0.3);
+  }
+  @keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  @keyframes borderPulse {
+    0% { border-image-source: linear-gradient(0deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
+    25% { border-image-source: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
+    50% { border-image-source: linear-gradient(180deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
+    75% { border-image-source: linear-gradient(270deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
+    100% { border-image-source: linear-gradient(360deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
+  }
+  .version {
+    text-align: center;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 3px;
+    margin-bottom: 18px;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    font-size: 0.75rem;
+  }
+  .clock {
+    color: #00ff88;
+    font-family: 'Consolas', monospace;
+    text-shadow: 0 0 8px rgba(0,255,136,0.5);
+    letter-spacing: 1px;
+  }
+  .status {
+    color: rgba(255,255,255,0.6);
+    font-family: 'Consolas', monospace;
+  }
+  .status.ok { color: #00ff88; }
+  .status.err { color: #ff4466; }
+  .status.busy { color: #ffff00; }
+
+  /* Upload sekce */
+  .upload-box {
+    border: 2px dashed rgba(0,255,255,0.4);
+    border-radius: 14px;
+    padding: 20px 14px;
+    text-align: center;
+    margin-bottom: 16px;
+    background: rgba(0,0,0,0.25);
+  }
+  .upload-icon {
+    font-size: 2.4rem;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 10px rgba(0,255,255,0.5));
+  }
+  .upload-hint {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+  .file-input {
+    display: none;
+  }
+  .btn-pick {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Consolas', monospace;
+  }
+  .btn-pick:active {
+    transform: scale(0.96);
+    background: rgba(255,255,255,0.15);
+  }
+  .selected-file {
+    margin-top: 12px;
+    font-size: 0.8rem;
+    color: #00ffff;
+    word-break: break-all;
+    min-height: 20px;
+  }
+  .btn-upload {
+    width: 100%;
+    margin-top: 14px;
+    padding: 14px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #ff00ff, #00ffff);
+    color: #050010;
+    font-weight: 900;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(255,0,255,0.5);
+    transition: all 0.2s;
+    font-family: 'Consolas', monospace;
+  }
+  .btn-upload:active {
+    transform: scale(0.97);
+  }
+  .btn-upload:disabled {
+    opacity: 0.4;
+    cursor: default;
+    box-shadow: none;
+  }
+
+  /* Progress bar */
+  .progress-wrap {
+    margin-top: 14px;
+    display: none;
+  }
+  .progress-wrap.show { display: block; }
+  .progress-bar {
+    height: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff00ff, #ffff00, #00ffff);
+    transition: width 0.15s linear;
+    border-radius: 5px;
+  }
+  .progress-pct {
+    text-align: center;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.7);
+    margin-top: 6px;
+    font-family: 'Consolas', monospace;
+  }
+
+  /* Databáze sekce */
+  .db-wrap {
+    margin-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 12px;
+  }
+  .db-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1px;
+  }
+  .db-count {
+    color: #00ffff;
+    font-family: 'Consolas', monospace;
+  }
+  .db-list {
+    max-height: 320px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 4px;
+  }
+  .db-list::-webkit-scrollbar { width: 6px; }
+  .db-list::-webkit-scrollbar-track { background: transparent; }
+  .db-list::-webkit-scrollbar-thumb { background: rgba(255,0,255,0.3); border-radius: 3px; }
+  .db-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 8px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .db-item:active {
+    background: rgba(255,255,255,0.08);
+  }
+  .db-item + .db-item {
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .db-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+  .db-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .db-name {
+    font-size: 0.85rem;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .db-meta {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.4);
+    font-family: 'Consolas', monospace;
+  }
+  .db-empty {
+    text-align: center;
+    padding: 30px 10px;
+    color: rgba(255,255,255,0.4);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="app">
+  <div class="logo">SONGUP</div>
+  <div class="version">v1.0Kl · KLADYX</div>
+
+  <div class="topbar">
+    <div class="clock" id="clock">00:00:00</div>
+    <div class="status" id="status">○ Připraven</div>
+  </div>
+
+  <div class="upload-box">
+    <div class="upload-icon">🎵</div>
+    <div class="upload-hint">MP3 · WAV · FLAC · M4A</div>
+    <input type="file" id="fileInput" class="file-input" accept=".mp3,.wav,.flac,.m4a,audio/*"/>
+    <label for="fileInput" class="btn-pick">📁 Vybrat soubor</label>
+    <div class="selected-file" id="selectedFile"></div>
+    <button class="btn-upload" id="btnUpload" disabled>⬆ ODESLAT SOUBOR</button>
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-pct" id="progressPct">0%</div>
+    </div>
+  </div>
+
+  <div class="db-wrap">
+    <div class="db-header">
+      <span>📚 DATABÁZE SONGŮ</span>
+      <span class="db-count" id="dbCount">0 songů</span>
+    </div>
+    <div class="db-list" id="dbList">
+      <div class="db-empty">Načítám…</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getStorage, ref as sref, listAll, getDownloadURL, getMetadata, uploadBytesResumable }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+// === Firebase config (stejný jako Panel / KladyxAmp) ===
+const firebaseConfig = {
+  apiKey: "AIzaSyDqLqLwYOPfRA0bLqOOyOA2g79NWQQwm60",
+  authDomain: "kladyxland.firebaseapp.com",
+  databaseURL: "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "kladyxland",
+  storageBucket: "kladyxland.firebasestorage.app",
+  messagingSenderId: "888367307538",
+  appId: "1:888367307538:web:abc"
+};
+
+const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
+
+// === Hvězdy v pozadí ===
+function makeStars() {
+  const c = document.getElementById('stars');
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.animationDelay = (Math.random() * 3) + 's';
+    s.style.animationDuration = (2 + Math.random() * 3) + 's';
+    c.appendChild(s);
+  }
+}
+makeStars();
+
+// === Hodiny ===
+function updateClock() {
+  const d = new Date();
+  const h = String(d.getHours()).padStart(2,'0');
+  const m = String(d.getMinutes()).padStart(2,'0');
+  const s = String(d.getSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// === Stav ===
+const fileInput = document.getElementById('fileInput');
+const selectedFile = document.getElementById('selectedFile');
+const btnUpload = document.getElementById('btnUpload');
+const statusEl = document.getElementById('status');
+const progressWrap = document.getElementById('progressWrap');
+const progressFill = document.getElementById('progressFill');
+const progressPct = document.getElementById('progressPct');
+const dbList = document.getElementById('dbList');
+const dbCount = document.getElementById('dbCount');
+
+let pickedFile = null;
+
+function setStatus(text, cls) {
+  statusEl.textContent = text;
+  statusEl.className = 'status' + (cls ? ' ' + cls : '');
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/(1024*1024)).toFixed(1) + ' MB';
+}
+
+function iconForName(name) {
+  const ext = name.split('.').pop().toLowerCase();
+  if (ext === 'flac') return '🎼';
+  if (ext === 'wav') return '🎚️';
+  if (ext === 'm4a') return '🎶';
+  return '🎵';
+}
+
+// === Výběr souboru ===
+fileInput.addEventListener('change', () => {
+  const f = fileInput.files[0];
+  if (!f) {
+    pickedFile = null;
+    selectedFile.textContent = '';
+    btnUpload.disabled = true;
+    return;
+  }
+  pickedFile = f;
+  selectedFile.textContent = `${f.name} (${formatSize(f.size)})`;
+  btnUpload.disabled = false;
+  setStatus('○ Připraven', '');
+});
+
+// === Upload ===
+btnUpload.addEventListener('click', () => {
+  if (!pickedFile) return;
+
+  btnUpload.disabled = true;
+  fileInput.disabled = true;
+  progressWrap.classList.add('show');
+  progressFill.style.width = '0%';
+  progressPct.textContent = '0%';
+  setStatus('▲ Nahrávám…', 'busy');
+
+  const storageRef = sref(storage, 'kladyxamp/' + pickedFile.name);
+  const uploadTask = uploadBytesResumable(storageRef, pickedFile);
+
+  uploadTask.on('state_changed',
+    (snapshot) => {
+      const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+      progressFill.style.width = pct + '%';
+      progressPct.textContent = pct + '%';
+    },
+    (error) => {
+      console.error('Upload error:', error);
+      setStatus('✕ Chyba při nahrávání', 'err');
+      btnUpload.disabled = false;
+      fileInput.disabled = false;
+    },
+    () => {
+      setStatus('✓ Nahráno', 'ok');
+      progressFill.style.width = '100%';
+      progressPct.textContent = '100%';
+      pickedFile = null;
+      fileInput.value = '';
+      selectedFile.textContent = '';
+      btnUpload.disabled = true;
+      fileInput.disabled = false;
+      setTimeout(() => {
+        progressWrap.classList.remove('show');
+      }, 1500);
+      loadDatabase();
+    }
+  );
+});
+
+// === Načti databázi songů z Firebase Storage /kladyxamp/ ===
+async function loadDatabase() {
+  try {
+    const listRef = sref(storage, 'kladyxamp');
+    const result = await listAll(listRef);
+    const audioItems = result.items.filter(it =>
+      /\.(mp3|wav|ogg|m4a|mp4|flac|aac|opus|weba|webm)$/i.test(it.name)
+    );
+
+    if (audioItems.length === 0) {
+      dbList.innerHTML = '<div class="db-empty">📁 Žádné songy v databázi</div>';
+      dbCount.textContent = '0 songů';
+      return;
+    }
+
+    dbCount.textContent = audioItems.length + (audioItems.length === 1 ? ' song' : ' songů');
+    dbList.innerHTML = '';
+
+    for (const item of audioItems) {
+      try {
+        const meta = await getMetadata(item);
+        const row = document.createElement('div');
+        row.className = 'db-item';
+
+        const icon = document.createElement('div');
+        icon.className = 'db-icon';
+        icon.textContent = iconForName(item.name);
+
+        const info = document.createElement('div');
+        info.className = 'db-info';
+
+        const name = document.createElement('div');
+        name.className = 'db-name';
+        name.textContent = item.name;
+
+        const metaEl = document.createElement('div');
+        metaEl.className = 'db-meta';
+        metaEl.textContent = formatSize(meta.size || 0);
+
+        info.appendChild(name);
+        info.appendChild(metaEl);
+        row.appendChild(icon);
+        row.appendChild(info);
+        dbList.appendChild(row);
+      } catch (e) {
+        console.error('Metadata error for', item.name, e);
+      }
+    }
+  } catch (e) {
+    console.error('loadDatabase error:', e);
+    dbList.innerHTML = '<div class="db-empty">✕ Chyba při načítání databáze</div>';
+  }
+}
+
+loadDatabase();
+</script>
+
+</body>
+</html>
