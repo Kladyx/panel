@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v1.3Kl</title>
+<title>KladyxTransfer v1.4Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -75,13 +75,33 @@
   }
 
   .status { font-size:1rem; margin-top:18px; min-height:2.4em; color:#00ffff; }
+  .status.waiting { color:#ff4444; }
+  .status.done { color:#00ff66; }
   .footer { margin-top:30px; font-size:.8rem; color:rgba(255,255,255,.3); }
+
+  .queue-wrap { margin-top:20px; width:100%; }
+  .queue-title { font-size:.85rem; color:rgba(255,255,255,.5); margin-bottom:8px; letter-spacing:1px; }
+  .queue-item {
+    display:flex; align-items:center; gap:8px;
+    padding:8px 12px; border-radius:8px;
+    background:rgba(255,255,255,.04);
+    margin-bottom:6px; font-size:.85rem;
+    text-align:left;
+  }
+  .queue-dot {
+    width:10px; height:10px; border-radius:50%;
+    flex-shrink:0;
+  }
+  .queue-dot.waiting { background:#ff4444; box-shadow:0 0 6px #ff4444; }
+  .queue-dot.done { background:#00ff66; box-shadow:0 0 6px #00ff66; }
+  .queue-name { flex:1; word-break:break-all; }
+  .queue-state { font-size:.75rem; opacity:.7; flex-shrink:0; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="title">KLADYXTRANSFER</div>
-  <div class="version">v1.3 Kl</div>
+  <div class="version">v1.4 Kl</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -97,6 +117,11 @@
     </div>
 
     <div class="status" id="status"></div>
+
+    <div class="queue-wrap" id="queueWrap" style="display:none">
+      <div class="queue-title">📋 Stav odeslaných souborů</div>
+      <div id="queueList"></div>
+    </div>
   </div>
 
   <div class="footer">přes Firebase Realtime Database</div>
@@ -160,7 +185,9 @@ function sendFile() {
 
     xhr.onload = function() {
       if (xhr.status >= 200 && xhr.status < 300) {
-        status.textContent = '✅ Odesláno! Za chvíli (do 10s) se objeví na PC ve složce prijate.';
+        status.textContent = '✅ Odesláno! Sleduji stav přenosu...';
+        addQueueItem(safeName, selectedFile.name);
+        startPolling(safeName);
       } else {
         status.textContent = '❌ Chyba při odesílání (' + xhr.status + '): ' + xhr.responseText;
       }
@@ -181,6 +208,75 @@ function sendFile() {
   };
 
   reader.readAsDataURL(selectedFile);
+}
+
+// ─── Sledování stavu přenosu (čekající/odesláno) ───────────────
+var POLL_INTERVAL = 3000; // 3 sekundy
+
+function addQueueItem(safeName, displayName) {
+  var queueWrap = document.getElementById('queueWrap');
+  var queueList = document.getElementById('queueList');
+  queueWrap.style.display = 'block';
+
+  var item = document.createElement('div');
+  item.className = 'queue-item';
+  item.id = 'q_' + safeName;
+
+  var dot = document.createElement('div');
+  dot.className = 'queue-dot waiting';
+
+  var name = document.createElement('div');
+  name.className = 'queue-name';
+  name.textContent = displayName;
+
+  var state = document.createElement('div');
+  state.className = 'queue-state';
+  state.textContent = '🔴 Čekající';
+
+  item.appendChild(dot);
+  item.appendChild(name);
+  item.appendChild(state);
+  queueList.insertBefore(item, queueList.firstChild);
+}
+
+function setQueueItemDone(safeName) {
+  var item = document.getElementById('q_' + safeName);
+  if (!item) return;
+  var dot = item.querySelector('.queue-dot');
+  var state = item.querySelector('.queue-state');
+  dot.className = 'queue-dot done';
+  state.textContent = '🟢 Odesláno';
+}
+
+function startPolling(safeName) {
+  var checkUrl = DB_BASE + '/' + encodeURIComponent(safeName) + '.json';
+  var status = document.getElementById('status');
+
+  var poll = function() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', checkUrl);
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        var result = xhr.responseText;
+        if (result === 'null' || result === '') {
+          // záznam zmizel = PC stáhlo soubor
+          setQueueItemDone(safeName);
+          status.textContent = '✅ Soubor byl stažen do PC (složka přijaté)';
+          status.className = 'status done';
+          return; // konec pollingu
+        }
+      }
+      // ještě existuje, čekáme dál
+      setTimeout(poll, POLL_INTERVAL);
+    };
+    xhr.onerror = function() {
+      setTimeout(poll, POLL_INTERVAL);
+    };
+    xhr.send();
+  };
+
+  status.className = 'status waiting';
+  poll();
 }
 </script>
 </body>
