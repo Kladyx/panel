@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v1.4Kl</title>
+<title>KladyxTransfer v1.6Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -96,12 +96,35 @@
   .queue-dot.done { background:#00ff66; box-shadow:0 0 6px #00ff66; }
   .queue-name { flex:1; word-break:break-all; }
   .queue-state { font-size:.75rem; opacity:.7; flex-shrink:0; }
+
+  .progress-wrap {
+    margin-top:14px; width:100%;
+    background:rgba(255,255,255,.08);
+    border-radius:8px; height:22px;
+    overflow:hidden; position:relative;
+    border:1px solid rgba(0,255,255,.2);
+    display:none;
+  }
+  .progress-bar {
+    height:100%; width:0%;
+    background:linear-gradient(90deg, #00ffff, #00ff66);
+    border-radius:8px;
+    transition:width 0.2s ease;
+    box-shadow:0 0 12px rgba(0,255,255,.5);
+  }
+  .progress-text {
+    position:absolute; top:0; left:0; right:0; bottom:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:.8rem; font-weight:bold; color:#fff;
+    text-shadow:0 0 4px #000;
+    font-family:monospace;
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="title">KLADYXTRANSFER</div>
-  <div class="version">v1.4 Kl</div>
+  <div class="version">v1.6 Kl</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -118,6 +141,11 @@
 
     <div class="status" id="status"></div>
 
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar" id="progressBar"></div>
+      <div class="progress-text" id="progressText">0%</div>
+    </div>
+
     <div class="queue-wrap" id="queueWrap" style="display:none">
       <div class="queue-title">📋 Stav odeslaných souborů</div>
       <div id="queueList"></div>
@@ -131,6 +159,29 @@
 var DB_BASE = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/transfer';
 var MAX_SIZE = 4 * 1024 * 1024; // 4 MB
 var selectedFile = null;
+var audioCtx = null;
+
+// Zvukové cinknutí přes Web Audio API (bez externího souboru)
+function playDing() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    var now = audioCtx.currentTime;
+    [880, 1320].forEach(function(freq, i) {
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, now + i * 0.12);
+      gain.gain.linearRampToValueAtTime(0.3, now + i * 0.12 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.5);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now + i * 0.12);
+      osc.stop(now + i * 0.12 + 0.5);
+    });
+  } catch(e) {}
+}
 
 function onFileSelected() {
   var input = document.getElementById('fileInput');
@@ -162,6 +213,12 @@ function sendFile() {
   btn.disabled = true;
   status.textContent = '📤 Čtu soubor...';
 
+  // Aktivuj AudioContext na user gesture (Android Chrome to vyžaduje)
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  } catch(e) {}
+
   var reader = new FileReader();
   reader.onload = function(e) {
     // e.target.result = "data:image/jpeg;base64,XXXXX"
@@ -178,23 +235,45 @@ function sendFile() {
 
     status.textContent = '📡 Odesílám do databáze...';
 
+    // Zobraz progress bar
+    var pWrap = document.getElementById('progressWrap');
+    var pBar = document.getElementById('progressBar');
+    var pText = document.getElementById('progressText');
+    pWrap.style.display = 'block';
+    pBar.style.width = '0%';
+    pText.textContent = '0%';
+
     var url = DB_BASE + '/' + encodeURIComponent(safeName) + '.json';
     var xhr = new XMLHttpRequest();
     xhr.open('PUT', url);
     xhr.setRequestHeader('Content-Type', 'application/json');
 
+    // Sledování průběhu uploadu
+    xhr.upload.onprogress = function(e) {
+      if (e.lengthComputable) {
+        var pct = Math.round((e.loaded / e.total) * 100);
+        pBar.style.width = pct + '%';
+        pText.textContent = pct + '%';
+      }
+    };
+
     xhr.onload = function() {
       if (xhr.status >= 200 && xhr.status < 300) {
+        pBar.style.width = '100%';
+        pText.textContent = '100% ✓';
+        setTimeout(function(){ pWrap.style.display = 'none'; }, 1500);
         status.textContent = '✅ Odesláno! Sleduji stav přenosu...';
         addQueueItem(safeName, selectedFile.name);
         startPolling(safeName);
       } else {
+        pWrap.style.display = 'none';
         status.textContent = '❌ Chyba při odesílání (' + xhr.status + '): ' + xhr.responseText;
       }
       btn.disabled = false;
     };
 
     xhr.onerror = function() {
+      pWrap.style.display = 'none';
       status.textContent = '❌ Chyba sítě při odesílání';
       btn.disabled = false;
     };
@@ -246,6 +325,7 @@ function setQueueItemDone(safeName) {
   var state = item.querySelector('.queue-state');
   dot.className = 'queue-dot done';
   state.textContent = '🟢 Odesláno';
+  playDing();
 }
 
 function startPolling(safeName) {
