@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KladyxAmp v1.19Kl</title>
+<title>KladyxAmp v1.21Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -332,6 +332,78 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  /* Podkres sekce */
+  .podkres-wrap {
+    margin-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 10px;
+  }
+  .podkres-toggle {
+    width: 100%;
+    background: rgba(255,0,255,0.08);
+    border: 1px solid rgba(255,0,255,0.3);
+    color: #ff66ff;
+    font-size: 0.78rem;
+    font-weight: bold;
+    padding: 9px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .podkres-toggle:active { opacity: 0.8; }
+  .podkres-list {
+    margin-top: 8px;
+    max-height: 160px;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 4px;
+    display: none;
+  }
+  .podkres-list.open { display: block; }
+  .podkres-list::-webkit-scrollbar { width: 6px; }
+  .podkres-list::-webkit-scrollbar-thumb { background: rgba(255,0,255,0.3); border-radius: 3px; }
+  .pk-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 0.78rem;
+    color: #e0e8ff;
+  }
+  .pk-item:hover { background: rgba(255,255,255,0.08); }
+  .pk-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #444;
+    flex-shrink: 0;
+  }
+  .pk-item.active .pk-dot {
+    background: #00ff88;
+    box-shadow: 0 0 8px #00ff88;
+  }
+  .pk-item.active {
+    background: rgba(0,255,136,0.08);
+  }
+  .pk-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pk-empty {
+    text-align: center;
+    color: rgba(255,255,255,0.4);
+    font-size: 0.72rem;
+    padding: 12px;
+  }
   .playlist {
     max-height: 180px;
     overflow-y: auto;
@@ -417,7 +489,7 @@
 
 <div class="app">
   <div class="logo">KLADYXAMP</div>
-  <div class="version">v 1.19 Kl</div>
+  <div class="version">v 1.21 Kl</div>
 
   <div class="topbar">
     <div class="clock" id="clock">--:--:--</div>
@@ -470,6 +542,16 @@
     <div class="playlist" id="playlist">
       <div class="loading">Načítám písně z Firebase</div>
     </div>
+
+    <div class="podkres-wrap">
+      <button class="podkres-toggle" id="podkresToggle" type="button">
+        <span>🎼 PODKRES PANELU</span>
+        <span id="podkresArrow">▼</span>
+      </button>
+      <div class="podkres-list" id="podkresList">
+        <div class="pk-empty">Načítám...</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -480,6 +562,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getStorage, ref as sref, listAll, getDownloadURL, getMetadata, uploadBytes }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+import { getDatabase, ref as dref, set as dset, get as dget }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 // === Firebase config (stejný jako Panel) ===
 const firebaseConfig = {
@@ -494,6 +578,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
+const db = getDatabase(app);
 
 // === Globální stav ===
 let tracks = [];        // { name, url, title, artist, art }
@@ -507,6 +592,7 @@ let dataArray = null;
 let sourceNode = null;
 let canvasRect = null;
 let _justUploadedName = null; // jméno souboru nahraného přes upload - po loadTracks se nastaví jako aktuální
+let _activePodkres = null; // jméno aktivně vybraného podkresu
 
 const audio = document.getElementById('audio');
 const canvas = document.getElementById('spectrum');
@@ -982,6 +1068,74 @@ document.getElementById('uploadInput').addEventListener('change', (e) => {
 
   e.target.value = '';
 });
+
+// === Podkres Panelu - načtení seznamu z Storage /podkres/ ===
+async function loadPodkres() {
+  const listEl = document.getElementById('podkresList');
+  try {
+    // Načti aktivní podkres z RTDB
+    try {
+      const snap = await dget(dref(db, 'kladyxPodkres/active'));
+      if (snap.exists()) _activePodkres = snap.val();
+    } catch(e) { console.warn('Podkres active load fail:', e); }
+
+    // Načti seznam souborů ze Storage
+    const listRef = sref(storage, 'podkres');
+    const result = await listAll(listRef);
+    const items = result.items.filter(it =>
+      /\.(mp3|wav|ogg|m4a|mp4|flac|aac|opus|weba|webm)$/i.test(it.name)
+    );
+
+    if (items.length === 0) {
+      listEl.innerHTML = '<div class="pk-empty">📁 Žádné podkresy ve složce <b>podkres/</b></div>';
+      return;
+    }
+
+    listEl.innerHTML = '';
+    items.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'pk-item' + (item.name === _activePodkres ? ' active' : '');
+      const dot = document.createElement('span');
+      dot.className = 'pk-dot';
+      const name = document.createElement('span');
+      name.className = 'pk-name';
+      name.textContent = item.name;
+      row.appendChild(dot);
+      row.appendChild(name);
+      row.onclick = () => selectPodkres(item.name);
+      listEl.appendChild(row);
+    });
+  } catch (e) {
+    console.error('Podkres load error:', e);
+    listEl.innerHTML = `<div class="pk-empty">❌ Chyba: ${e.code || e.message}</div>`;
+  }
+}
+
+async function selectPodkres(name) {
+  try {
+    await dset(dref(db, 'kladyxPodkres/active'), name);
+    _activePodkres = name;
+    // Aktualizuj UI - zelená tečka u nového
+    const items = document.querySelectorAll('#podkresList .pk-item');
+    items.forEach(el => {
+      const itemName = el.querySelector('.pk-name').textContent;
+      el.classList.toggle('active', itemName === name);
+    });
+  } catch (e) {
+    console.error('Podkres save error:', e);
+    alert('Chyba ukládání podkresu: ' + (e.code || e.message));
+  }
+}
+
+// Toggle rozbalení seznamu
+document.getElementById('podkresToggle').addEventListener('click', () => {
+  const list = document.getElementById('podkresList');
+  const arrow = document.getElementById('podkresArrow');
+  const open = list.classList.toggle('open');
+  arrow.textContent = open ? '▲' : '▼';
+});
+
+loadPodkres();
 
 // === Start ===
 loadTracks();
