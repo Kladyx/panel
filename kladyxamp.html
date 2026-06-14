@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KladyxAmp v1.17Kl</title>
+<title>KladyxAmp v1.18Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -301,6 +301,37 @@
     color: #00ffff;
     font-family: 'Consolas', monospace;
   }
+  .upload-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .upload-row label {
+    background: linear-gradient(135deg, #ff00ff, #00ffff);
+    color: #000;
+    font-size: 0.72rem;
+    font-weight: bold;
+    padding: 7px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    letter-spacing: 1px;
+  }
+  .upload-row label:active {
+    opacity: 0.8;
+  }
+  .upload-row input[type="file"] {
+    display: none;
+  }
+  .upload-status {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.6);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .playlist {
     max-height: 180px;
     overflow-y: auto;
@@ -386,7 +417,7 @@
 
 <div class="app">
   <div class="logo">KLADYXAMP</div>
-  <div class="version">v 1.17 Kl</div>
+  <div class="version">v 1.18 Kl</div>
 
   <div class="topbar">
     <div class="clock" id="clock">--:--:--</div>
@@ -431,6 +462,11 @@
       <span>PLAYLIST</span>
       <span class="playlist-count" id="playlistCount">0 songů</span>
     </div>
+    <div class="upload-row">
+      <label for="uploadInput">📤 Nahrát song</label>
+      <input type="file" id="uploadInput" accept="audio/*">
+      <span class="upload-status" id="uploadStatus"></span>
+    </div>
     <div class="playlist" id="playlist">
       <div class="loading">Načítám písně z Firebase</div>
     </div>
@@ -442,7 +478,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getStorage, ref as sref, listAll, getDownloadURL, getMetadata }
+import { getStorage, ref as sref, listAll, getDownloadURL, getMetadata, uploadBytes }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
 // === Firebase config (stejný jako Panel) ===
@@ -470,6 +506,7 @@ let analyser = null;
 let dataArray = null;
 let sourceNode = null;
 let canvasRect = null;
+let _justUploadedName = null; // jméno souboru nahraného přes upload - po loadTracks se nastaví jako aktuální
 
 const audio = document.getElementById('audio');
 const canvas = document.getElementById('spectrum');
@@ -551,6 +588,19 @@ async function loadTracks() {
     renderPlaylist();
     document.getElementById('status').textContent = `● Připraveno`;
     document.getElementById('playlistCount').textContent = `${tracks.length} songů`;
+
+    // Pokud byl právě nahrán nový song, nastav ho jako vybraný (auto-select, ne autoplay)
+    if (_justUploadedName) {
+      const idx = tracks.findIndex(t => t.name === _justUploadedName);
+      if (idx !== -1) {
+        currentIdx = idx;
+        const t = tracks[idx];
+        document.getElementById('trackTitle').textContent = t.title;
+        document.getElementById('trackArtist').textContent = t.artist;
+        renderPlaylist();
+      }
+      _justUploadedName = null;
+    }
   } catch (e) {
     console.error('Load error:', e);
     document.getElementById('playlist').innerHTML =
@@ -896,6 +946,38 @@ document.addEventListener('keydown', (e) => {
 
 // === Resize canvas ===
 window.addEventListener('resize', () => { canvasRect = null; });
+
+// === Upload nového songu do Firebase Storage /kladyxamp/ ===
+document.getElementById('uploadInput').addEventListener('change', (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const statusEl = document.getElementById('uploadStatus');
+
+  const maxSize = 50 * 1024 * 1024; // 50 MB
+  if (f.size > maxSize) {
+    statusEl.textContent = '⚠️ Soubor je příliš velký (max 50 MB)';
+    e.target.value = '';
+    return;
+  }
+
+  statusEl.textContent = `📤 Nahrávám: ${f.name}...`;
+
+  const fileRef = sref(storage, 'kladyxamp/' + f.name);
+  uploadBytes(fileRef, f).then(() => {
+    statusEl.textContent = `✅ Nahráno: ${f.name}`;
+    _justUploadedName = f.name;
+    tracks = [];
+    document.getElementById('playlist').innerHTML = '<div class="loading">Načítám písně z Firebase</div>';
+    loadTracks().then(() => {
+      setTimeout(() => { statusEl.textContent = ''; }, 4000);
+    });
+  }).catch((err) => {
+    statusEl.textContent = `❌ Chyba nahrávání: ${err.code || err.message}`;
+    console.error('Upload error:', err);
+  });
+
+  e.target.value = '';
+});
 
 // === Start ===
 loadTracks();
