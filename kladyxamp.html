@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KladyxAmp v1.18Kl</title>
+<title>KladyxAmp v1.19Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -417,7 +417,7 @@
 
 <div class="app">
   <div class="logo">KLADYXAMP</div>
-  <div class="version">v 1.18 Kl</div>
+  <div class="version">v 1.19 Kl</div>
 
   <div class="topbar">
     <div class="clock" id="clock">--:--:--</div>
@@ -595,6 +595,10 @@ async function loadTracks() {
       if (idx !== -1) {
         currentIdx = idx;
         const t = tracks[idx];
+        audio.pause();
+        audio.src = t.url;
+        isPlaying = false;
+        updateUI();
         document.getElementById('trackTitle').textContent = t.title;
         document.getElementById('trackArtist').textContent = t.artist;
         renderPlaylist();
