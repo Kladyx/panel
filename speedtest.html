@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxSpeed v1.2Kl</title>
+<title>KladyxSpeed v1.5Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -95,7 +95,7 @@
 <body>
 <div class="wrap">
   <div class="title">KLADYXSPEED</div>
-  <div class="version">v1.2 Kl</div>
+  <div class="version">v1.5 Kl</div>
 
   <div class="gauge-wrap">
     <div class="gauge-ring">
@@ -168,9 +168,9 @@ async function measureDownload() {
   // PARALELNÍ download - 8 streamů × 25 MB = zaplníme linku
   // Vyřadíme prvních 500ms (TCP slowstart) z měření
   const PARALLEL = 8;
-  const CHUNK_SIZE = 25 * 1024 * 1024; // 25 MB na stream
-  const WARMUP_MS = 500; // vyřadit prvních 500ms
-  const TEST_MS = 8000; // měříme 8 sekund
+  const CHUNK_SIZE = 25 * 1024 * 1024; // 25 MB
+  const WARMUP_MS = 500;
+  const TEST_MS = 8000;
 
   statusEl.textContent = 'Měřím download (' + PARALLEL + ' paralelních streamů)...';
 
@@ -180,7 +180,6 @@ async function measureDownload() {
   const startTime = performance.now();
   let warmupDone = false;
 
-  // Funkce na jeden stream
   async function streamDownload() {
     while (testActive) {
       const url = DOWN_URL + CHUNK_SIZE + '&_=' + Math.random();
@@ -193,25 +192,20 @@ async function measureDownload() {
           totalBytes += value.length;
           if (warmupDone) measuredBytes += value.length;
         }
-      } catch (e) {
-        // konec při abort
-      }
+      } catch (e) {}
     }
   }
 
-  // Spustíme 8 streamů paralelně
   const streams = [];
   for (let i = 0; i < PARALLEL; i++) {
     streams.push(streamDownload());
   }
 
-  // Po 500ms začneme měřit "měřené" bajty
   const warmupTimer = setTimeout(() => {
     warmupDone = true;
-    measuredBytes = 0; // reset
+    measuredBytes = 0;
   }, WARMUP_MS);
 
-  // Live update průběhu během 8 sekund
   const measureStart = startTime + WARMUP_MS;
   const updateTimer = setInterval(() => {
     if (warmupDone) {
@@ -224,100 +218,46 @@ async function measureDownload() {
     }
   }, 200);
 
-  // Počkat na konec testu
   await new Promise(r => setTimeout(r, TEST_MS));
   testActive = false;
   clearInterval(updateTimer);
   clearTimeout(warmupTimer);
 
-  // Finální výpočet
   const totalTime = (TEST_MS - WARMUP_MS) / 1000;
   const finalMbps = (measuredBytes * 8) / totalTime / 1e6;
-
-  // Počkat až všechny streamy doběhnou
   try { await Promise.race([Promise.all(streams), new Promise(r => setTimeout(r, 1000))]); } catch(e){}
-
   downVal.textContent = finalMbps.toFixed(1);
   setGauge(finalMbps.toFixed(1), 'DOWNLOAD');
   return finalMbps;
 }
 
 async function measureUpload() {
-  // PARALELNÍ upload - 4 streamy × 1 MB chunky
-  // Malé chunky = každý dokončí rychle, dostaneme přesný odpočet
-  const PARALLEL = 4;
-  const CHUNK_SIZE = 1 * 1024 * 1024; // 1 MB na chunk
-  const TEST_MS = 10000; // 10 sekund upload (upload je pomalejší)
-
-  statusEl.textContent = 'Měřím upload (' + PARALLEL + ' paralelních streamů)...';
-
-  // Vyrobíme jeden chunk dat, použijeme ho víckrát
-  const data = new Uint8Array(CHUNK_SIZE);
-  for (let i = 0; i < CHUNK_SIZE; i += 4096) data[i] = Math.random() * 255;
-
-  let uploadedBytes = 0;
-  let testActive = true;
-  let measureStart = 0;
-  let warmupDone = false;
-
-  async function streamUpload() {
-    while (testActive) {
-      try {
-        const before = performance.now();
-        await fetch(UP_URL, { method: 'POST', body: data, cache: 'no-store' });
-        const after = performance.now();
-        // Po prvním dokončeném uploadu spustíme měření (warmup proběhl)
-        if (!warmupDone) {
-          warmupDone = true;
-          measureStart = after;
-          uploadedBytes = 0;
-        } else {
-          uploadedBytes += CHUNK_SIZE;
-        }
-      } catch (e) {
-        console.warn('Upload chunk failed:', e);
-      }
+  // odešleme náhodná data, různé velikosti
+  const sizes = [500000, 2000000, 5000000]; // 0.5MB, 2MB, 5MB
+  let best = 0;
+  for (const size of sizes) {
+    const data = new Uint8Array(size);
+    for (let i = 0; i < data.length; i += 4096) data[i] = Math.random() * 255;
+    const t0 = performance.now();
+    try {
+      await fetch(UP_URL, {
+        method: 'POST',
+        body: data,
+        cache: 'no-store'
+      });
+      const t1 = performance.now();
+      const seconds = (t1 - t0) / 1000;
+      const bits = size * 8;
+      const mbps = (bits / seconds) / 1e6;
+      if (mbps > best) best = mbps;
+      upVal.textContent = mbps.toFixed(1);
+      setGauge(mbps.toFixed(1), 'UPLOAD');
+      statusEl.textContent = 'Měřím upload... (' + (size/1e6) + ' MB)';
+    } catch (e) {
+      statusEl.textContent = 'Chyba při uploadu: ' + e.message;
     }
   }
-
-  // Spustíme 4 streamy paralelně
-  const streams = [];
-  for (let i = 0; i < PARALLEL; i++) {
-    streams.push(streamUpload());
-  }
-
-  // Live update
-  const updateTimer = setInterval(() => {
-    if (warmupDone && measureStart > 0) {
-      const elapsed = (performance.now() - measureStart) / 1000;
-      if (elapsed > 0.1) {
-        const mbps = (uploadedBytes * 8) / elapsed / 1e6;
-        upVal.textContent = mbps.toFixed(1);
-        setGauge(mbps.toFixed(1), 'UPLOAD');
-      }
-    }
-  }, 200);
-
-  // Čekej do konce testu
-  await new Promise(r => setTimeout(r, TEST_MS));
-  testActive = false;
-  clearInterval(updateTimer);
-
-  // Počkat až všechny streamy doběhnou
-  try { await Promise.race([Promise.all(streams), new Promise(r => setTimeout(r, 2000))]); } catch(e){}
-
-  // Finální výpočet
-  let finalMbps = 0;
-  if (warmupDone && measureStart > 0) {
-    const elapsed = (performance.now() - measureStart) / 1000;
-    if (elapsed > 0) {
-      finalMbps = (uploadedBytes * 8) / elapsed / 1e6;
-    }
-  }
-
-  upVal.textContent = finalMbps.toFixed(1);
-  setGauge(finalMbps.toFixed(1), 'UPLOAD');
-  return finalMbps;
+  return best;
 }
 
 async function runTest() {
