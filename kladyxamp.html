@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KladyxAmp v1.22Kl</title>
+<title>KladyxAmp v1.23Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -404,6 +404,59 @@
     font-size: 0.72rem;
     padding: 12px;
   }
+  /* Akce na podkresu (Play / Smazat) */
+  .pk-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .pk-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: background 0.15s, transform 0.1s;
+    padding: 0;
+    color: rgba(255,255,255,0.7);
+  }
+  .pk-btn:active { transform: scale(0.92); }
+  .pk-btn.play { color: #4ade80; }
+  .pk-btn.play:hover { background: rgba(74,222,128,0.18); }
+  .pk-btn.del { color: #f87171; }
+  .pk-btn.del:hover { background: rgba(248,113,113,0.18); }
+  /* Upload tlačítko pro podkres */
+  .pk-upload-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 6px 0 8px;
+  }
+  .pk-upload-row label {
+    cursor: pointer;
+    background: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%);
+    color: #000;
+    padding: 7px 18px;
+    border-radius: 99px;
+    font-weight: 700;
+    font-size: 0.72rem;
+    user-select: none;
+    transition: transform 0.1s;
+  }
+  .pk-upload-row label:active { transform: scale(0.96); }
+  .pk-upload-row input { display: none; }
+  .pk-upload-status {
+    text-align: center;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+    min-height: 14px;
+  }
   .playlist {
     max-height: 180px;
     overflow-y: auto;
@@ -515,7 +568,7 @@
 
 <div class="app">
   <div class="logo">KLADYXAMP</div>
-  <div class="version">v 1.22 Kl</div>
+  <div class="version">v 1.23 Kl</div>
 
   <div class="topbar">
     <div class="clock" id="clock">--:--:--</div>
@@ -575,13 +628,21 @@
         <span id="podkresArrow">▼</span>
       </button>
       <div class="podkres-list" id="podkresList">
-        <div class="pk-empty">Načítám...</div>
+        <div class="pk-upload-row">
+          <label for="pkUploadInput">📤 Nahrát podkres</label>
+          <input type="file" id="pkUploadInput" accept="audio/*">
+        </div>
+        <div class="pk-upload-status" id="pkUploadStatus"></div>
+        <div id="podkresItems">
+          <div class="pk-empty">Načítám...</div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <audio id="audio"></audio>
+<audio id="pkPreview" style="display:none"></audio>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
 
 <script type="module">
@@ -1169,9 +1230,38 @@ document.getElementById('uploadInput').addEventListener('change', (e) => {
   e.target.value = '';
 });
 
+// === Upload nového podkresu do Storage /podkres/ ===
+document.getElementById('pkUploadInput').addEventListener('change', (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const statusEl = document.getElementById('pkUploadStatus');
+
+  const maxSize = 50 * 1024 * 1024; // 50 MB
+  if (f.size > maxSize) {
+    statusEl.textContent = '⚠️ Soubor je příliš velký (max 50 MB)';
+    e.target.value = '';
+    return;
+  }
+
+  statusEl.textContent = `📤 Nahrávám: ${f.name}...`;
+
+  const fileRef = sref(storage, 'podkres/' + f.name);
+  uploadBytes(fileRef, f).then(() => {
+    statusEl.textContent = `✅ Nahráno: ${f.name}`;
+    // Reload seznam podkresů
+    loadPodkres();
+    setTimeout(() => { statusEl.textContent = ''; }, 4000);
+  }).catch((err) => {
+    statusEl.textContent = `❌ Chyba nahrávání: ${err.code || err.message}`;
+    console.error('Podkres upload error:', err);
+  });
+
+  e.target.value = '';
+});
+
 // === Podkres Panelu - načtení seznamu z Storage /podkres/ ===
 async function loadPodkres() {
-  const listEl = document.getElementById('podkresList');
+  const listEl = document.getElementById('podkresItems');
   try {
     // Načti aktivní podkres z RTDB
     try {
@@ -1195,14 +1285,102 @@ async function loadPodkres() {
     items.forEach(item => {
       const row = document.createElement('div');
       row.className = 'pk-item' + (item.name === _activePodkres ? ' active' : '');
+
       const dot = document.createElement('span');
       dot.className = 'pk-dot';
+
       const name = document.createElement('span');
       name.className = 'pk-name';
       name.textContent = item.name;
+
+      // Akce: play + smaz
+      const actions = document.createElement('div');
+      actions.className = 'pk-actions';
+
+      const playBtn = document.createElement('button');
+      playBtn.type = 'button';
+      playBtn.className = 'pk-btn play';
+      playBtn.title = 'Přehrát podkres';
+      playBtn.textContent = '▶';
+
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'pk-btn del';
+      delBtn.title = 'Smazat ze Storage';
+      delBtn.textContent = '🗑';
+
+      actions.appendChild(playBtn);
+      actions.appendChild(delBtn);
+
       row.appendChild(dot);
       row.appendChild(name);
-      row.onclick = () => selectPodkres(item.name);
+      row.appendChild(actions);
+
+      // Klik na řádek (mimo tlačítka) = vyber jako aktivní (stará logika)
+      row.onclick = (ev) => {
+        if (ev.target.closest('.pk-btn')) return;
+        selectPodkres(item.name);
+      };
+
+      // Play tlačítko = přehrát podkres ve skrytém pkPreview audio
+      playBtn.addEventListener('click', async (ev) => {
+        ev.stopPropagation();
+        try {
+          const url = await getDownloadURL(item);
+          const pkAudio = document.getElementById('pkPreview');
+          // Pauznout hlavní KladyxAmp audio (ať nehraje současně)
+          const mainAudio = document.getElementById('audio');
+          if (mainAudio && !mainAudio.paused) {
+            mainAudio.pause();
+          }
+          // Pauznout ostatní preview
+          pkAudio.pause();
+          pkAudio.src = url;
+          pkAudio.style.display = 'block';
+          pkAudio.controls = true;
+          // Vložit přehrávač pod tento řádek
+          row.parentNode.insertBefore(pkAudio, row.nextSibling);
+          pkAudio.load();
+          pkAudio.play().catch(err => console.warn('Podkres play:', err));
+        } catch (e) {
+          console.error('Podkres play error:', e);
+          alert('Chyba přehrávání: ' + (e.code || e.message));
+        }
+      });
+
+      // Smaz tlačítko = potvrzení + delete
+      delBtn.addEventListener('click', async (ev) => {
+        ev.stopPropagation();
+        const confirmMsg = 'Opravdu smazat podkres "' + item.name + '" ze Storage?\n\nPo smazání Panel přestane tento podkres přehrávat.';
+        if (!confirm(confirmMsg)) return;
+        try {
+          delBtn.disabled = true;
+          delBtn.textContent = '⏳';
+          await deleteObject(item);
+          // Pokud byl aktivní, vymazat z RTDB
+          if (item.name === _activePodkres) {
+            try {
+              await dset(dref(db, 'kladyxPodkres/active'), null);
+              _activePodkres = null;
+            } catch(e) { console.warn('Clear active failed:', e); }
+          }
+          // Pokud preview hraje, stop
+          const pkAudio = document.getElementById('pkPreview');
+          if (pkAudio && !pkAudio.paused) {
+            pkAudio.pause();
+            pkAudio.src = '';
+            pkAudio.style.display = 'none';
+          }
+          // Reload celý seznam
+          loadPodkres();
+        } catch (e) {
+          console.error('Podkres delete error:', e);
+          alert('Chyba mazání: ' + (e.code || e.message));
+          delBtn.disabled = false;
+          delBtn.textContent = '🗑';
+        }
+      });
+
       listEl.appendChild(row);
     });
   } catch (e) {
