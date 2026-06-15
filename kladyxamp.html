@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KladyxAmp v1.21Kl</title>
+<title>KladyxAmp v1.22Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -454,6 +454,32 @@
     padding: 20px;
     font-size: 0.8rem;
   }
+  /* === Akce na songu (Play / Smazat) === */
+  .pl-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .pl-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: background 0.15s, transform 0.1s;
+    padding: 0;
+    color: rgba(255,255,255,0.7);
+  }
+  .pl-btn:active { transform: scale(0.92); }
+  .pl-btn.play { color: #4ade80; }
+  .pl-btn.play:hover { background: rgba(74,222,128,0.18); }
+  .pl-btn.del { color: #f87171; }
+  .pl-btn.del:hover { background: rgba(248,113,113,0.18); }
 
   /* Loading */
   .loading {
@@ -489,7 +515,7 @@
 
 <div class="app">
   <div class="logo">KLADYXAMP</div>
-  <div class="version">v 1.21 Kl</div>
+  <div class="version">v 1.22 Kl</div>
 
   <div class="topbar">
     <div class="clock" id="clock">--:--:--</div>
@@ -560,7 +586,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getStorage, ref as sref, listAll, getDownloadURL, getMetadata, uploadBytes }
+import { getStorage, ref as sref, listAll, getDownloadURL, getMetadata, uploadBytes, deleteObject }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 import { getDatabase, ref as dref, set as dset, get as dget }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -705,11 +731,85 @@ function renderPlaylist() {
   tracks.forEach((t, i) => {
     const item = document.createElement('div');
     item.className = 'pl-item' + (i === currentIdx ? ' active' : '');
-    item.innerHTML = `
-      <span class="pl-num">${String(i+1).padStart(2,'0')}</span>
-      <span class="pl-title">${escapeHtml(t.artist === '—' ? t.title : t.artist + ' — ' + t.title)}</span>
-    `;
-    item.onclick = () => playTrack(i);
+
+    const num = document.createElement('span');
+    num.className = 'pl-num';
+    num.textContent = String(i+1).padStart(2,'0');
+
+    const title = document.createElement('span');
+    title.className = 'pl-title';
+    title.textContent = (t.artist === '—' ? t.title : t.artist + ' — ' + t.title);
+
+    // === Akční tlačítka ===
+    const actions = document.createElement('div');
+    actions.className = 'pl-actions';
+
+    const playBtn = document.createElement('button');
+    playBtn.type = 'button';
+    playBtn.className = 'pl-btn play';
+    playBtn.title = 'Přehrát';
+    playBtn.textContent = '▶';
+
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'pl-btn del';
+    delBtn.title = 'Smazat ze Storage';
+    delBtn.textContent = '🗑';
+
+    actions.appendChild(playBtn);
+    actions.appendChild(delBtn);
+
+    item.appendChild(num);
+    item.appendChild(title);
+    item.appendChild(actions);
+
+    // Klik na celý řádek (mimo tlačítka) = spustí song (původní chování)
+    item.onclick = (ev) => {
+      // Pokud uživatel klikl na tlačítko, ignoruj kliknutí na řádek
+      if (ev.target.closest('.pl-btn')) return;
+      playTrack(i);
+    };
+
+    // Play tlačítko = spustí song
+    playBtn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      playTrack(i);
+    });
+
+    // Smaž tlačítko = potvrzení + delete
+    delBtn.addEventListener('click', async (ev) => {
+      ev.stopPropagation();
+      const confirmMsg = 'Opravdu smazat "' + t.name + '" ze Storage?\n\nPo smazání zmizí ze SongUp i z KladyxAmp.';
+      if (!confirm(confirmMsg)) return;
+      try {
+        delBtn.disabled = true;
+        delBtn.textContent = '⏳';
+        // Reference do Storage (kladyxamp/název)
+        const fileRef = sref(storage, 'kladyxamp/' + t.name);
+        await deleteObject(fileRef);
+        // Pokud byl smazaný song zrovna přehráván, zastav přehrávání
+        if (i === currentIdx) {
+          audio.pause();
+          audio.src = '';
+          currentIdx = -1;
+        }
+        // Odebrat z pole tracks
+        tracks.splice(i, 1);
+        // Pokud byl smazaný před aktuálním, posuň index
+        if (currentIdx > i) currentIdx--;
+        // Update počítadla
+        document.getElementById('playlistCount').textContent = tracks.length + ' songů';
+        // Překreslit
+        renderPlaylist();
+        updateUI();
+      } catch (e) {
+        console.error('Delete error:', e);
+        alert('Chyba při mazání: ' + e.message);
+        delBtn.disabled = false;
+        delBtn.textContent = '🗑';
+      }
+    });
+
     pl.appendChild(item);
   });
 }
