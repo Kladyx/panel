@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxSpeed v1.2Kl</title>
+<title>KladyxSpeed v1.3Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -95,7 +95,7 @@
 <body>
 <div class="wrap">
   <div class="title">KLADYXSPEED</div>
-  <div class="version">v1.2 Kl</div>
+  <div class="version">v1.3 Kl</div>
 
   <div class="gauge-wrap">
     <div class="gauge-ring">
@@ -243,55 +243,92 @@ async function measureDownload() {
 }
 
 async function measureUpload() {
-  // PARALELNÍ upload - 4 streamy × 1 MB chunky
-  // Malé chunky = každý dokončí rychle, dostaneme přesný odpočet
+  // Upload měření přes XMLHttpRequest s xhr.upload.onprogress
+  // (fetch() neumí monitorovat upload progress - tohle je jediná spolehlivá cesta)
+  // 4 paralelní streamy, každý nahrává 25 MB ve smyčce
   const PARALLEL = 4;
-  const CHUNK_SIZE = 1 * 1024 * 1024; // 1 MB na chunk
-  const TEST_MS = 10000; // 10 sekund upload (upload je pomalejší)
+  const CHUNK_SIZE = 25 * 1024 * 1024; // 25 MB
+  const WARMUP_MS = 1000; // upload má pomalejší slowstart
+  const TEST_MS = 10000; // 10 sekund
 
   statusEl.textContent = 'Měřím upload (' + PARALLEL + ' paralelních streamů)...';
 
-  // Vyrobíme jeden chunk dat, použijeme ho víckrát
+  // Vyrobíme jeden chunk dat
   const data = new Uint8Array(CHUNK_SIZE);
   for (let i = 0; i < CHUNK_SIZE; i += 4096) data[i] = Math.random() * 255;
 
-  let uploadedBytes = 0;
+  let totalUploaded = 0; // celkem nahráno bajtů (všemi streamy dohromady)
+  let warmupBytes = 0; // bajty před warmup
   let testActive = true;
-  let measureStart = 0;
   let warmupDone = false;
+  const testStartTime = performance.now();
+  let measureStartTime = 0;
+  const activeXhrs = [];
 
-  async function streamUpload() {
-    while (testActive) {
-      try {
-        const before = performance.now();
-        await fetch(UP_URL, { method: 'POST', body: data, cache: 'no-store' });
-        const after = performance.now();
-        // Po prvním dokončeném uploadu spustíme měření (warmup proběhl)
-        if (!warmupDone) {
-          warmupDone = true;
-          measureStart = after;
-          uploadedBytes = 0;
-        } else {
-          uploadedBytes += CHUNK_SIZE;
+  function streamUpload() {
+    return new Promise((resolve) => {
+      function nextChunk() {
+        if (!testActive) { resolve(); return; }
+        const xhr = new XMLHttpRequest();
+        activeXhrs.push(xhr);
+        let lastLoaded = 0;
+        xhr.upload.onprogress = (e) => {
+          const delta = e.loaded - lastLoaded;
+          lastLoaded = e.loaded;
+          totalUploaded += delta;
+        };
+        xhr.onload = () => {
+          const idx = activeXhrs.indexOf(xhr);
+          if (idx >= 0) activeXhrs.splice(idx, 1);
+          if (testActive) nextChunk();
+          else resolve();
+        };
+        xhr.onerror = () => {
+          console.warn('Upload XHR error');
+          const idx = activeXhrs.indexOf(xhr);
+          if (idx >= 0) activeXhrs.splice(idx, 1);
+          if (testActive) {
+            setTimeout(nextChunk, 100); // retry
+          } else resolve();
+        };
+        xhr.onabort = () => {
+          const idx = activeXhrs.indexOf(xhr);
+          if (idx >= 0) activeXhrs.splice(idx, 1);
+          resolve();
+        };
+        try {
+          xhr.open('POST', UP_URL, true);
+          xhr.send(data);
+        } catch (e) {
+          console.warn('Upload send fail:', e);
+          if (testActive) setTimeout(nextChunk, 100);
+          else resolve();
         }
-      } catch (e) {
-        console.warn('Upload chunk failed:', e);
       }
-    }
+      nextChunk();
+    });
   }
 
-  // Spustíme 4 streamy paralelně
-  const streams = [];
+  // Spustíme 4 paralelní streamy
+  const streamPromises = [];
   for (let i = 0; i < PARALLEL; i++) {
-    streams.push(streamUpload());
+    streamPromises.push(streamUpload());
   }
 
-  // Live update
+  // Po 1 sekundě warmup ukončíme, resetneme čítače
+  const warmupTimer = setTimeout(() => {
+    warmupBytes = totalUploaded;
+    warmupDone = true;
+    measureStartTime = performance.now();
+  }, WARMUP_MS);
+
+  // Live update každých 200 ms
   const updateTimer = setInterval(() => {
-    if (warmupDone && measureStart > 0) {
-      const elapsed = (performance.now() - measureStart) / 1000;
+    if (warmupDone) {
+      const elapsed = (performance.now() - measureStartTime) / 1000;
+      const measuredBytes = totalUploaded - warmupBytes;
       if (elapsed > 0.1) {
-        const mbps = (uploadedBytes * 8) / elapsed / 1e6;
+        const mbps = (measuredBytes * 8) / elapsed / 1e6;
         upVal.textContent = mbps.toFixed(1);
         setGauge(mbps.toFixed(1), 'UPLOAD');
       }
@@ -302,17 +339,29 @@ async function measureUpload() {
   await new Promise(r => setTimeout(r, TEST_MS));
   testActive = false;
   clearInterval(updateTimer);
+  clearTimeout(warmupTimer);
+
+  // Zruš všechny běžící XHR
+  activeXhrs.forEach(xhr => { try { xhr.abort(); } catch(e){} });
 
   // Počkat až všechny streamy doběhnou
-  try { await Promise.race([Promise.all(streams), new Promise(r => setTimeout(r, 2000))]); } catch(e){}
+  try {
+    await Promise.race([
+      Promise.all(streamPromises),
+      new Promise(r => setTimeout(r, 2000))
+    ]);
+  } catch(e) {}
 
   // Finální výpočet
   let finalMbps = 0;
-  if (warmupDone && measureStart > 0) {
-    const elapsed = (performance.now() - measureStart) / 1000;
-    if (elapsed > 0) {
-      finalMbps = (uploadedBytes * 8) / elapsed / 1e6;
-    }
+  if (warmupDone) {
+    const elapsed = (performance.now() - measureStartTime) / 1000;
+    const measuredBytes = totalUploaded - warmupBytes;
+    if (elapsed > 0) finalMbps = (measuredBytes * 8) / elapsed / 1e6;
+  } else {
+    // Warmup nedoběhl - použij celkový čas
+    const elapsed = (performance.now() - testStartTime) / 1000;
+    if (elapsed > 0) finalMbps = (totalUploaded * 8) / elapsed / 1e6;
   }
 
   upVal.textContent = finalMbps.toFixed(1);
