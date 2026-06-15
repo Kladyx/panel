@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SongUp v1.5Kl</title>
+<title>SongUp v1.6Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -290,6 +290,56 @@
     color: rgba(255,255,255,0.4);
     font-size: 0.85rem;
   }
+  /* === Akce na songu (Play / Smazat) === */
+  .db-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .db-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: background 0.15s, transform 0.1s;
+    padding: 0;
+  }
+  .db-btn:active { transform: scale(0.92); }
+  .db-btn.play { color: #4ade80; }
+  .db-btn.play:hover { background: rgba(74,222,128,0.15); }
+  .db-btn.del { color: #f87171; }
+  .db-btn.del:hover { background: rgba(248,113,113,0.15); }
+  /* === Mini-přehrávač === */
+  .db-item-wrap {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 8px;
+    border-radius: 6px;
+  }
+  .db-item-wrap + .db-item-wrap {
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .db-item-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .db-player {
+    width: 100%;
+    margin-top: 8px;
+    display: none;
+  }
+  .db-player.show { display: block; }
+  .db-player audio {
+    width: 100%;
+    height: 36px;
+  }
 </style>
 </head>
 <body>
@@ -298,7 +348,7 @@
 
 <div class="app">
   <div class="logo">SONGUP</div>
-  <div class="version">v1.5Kl · KLADYX</div>
+  <div class="version">v1.6Kl · KLADYX</div>
 
   <div class="topbar">
     <div class="clock" id="clock">00:00:00</div>
@@ -333,7 +383,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getStorage, ref as sref, listAll, getDownloadURL, getMetadata, uploadBytesResumable }
+import { getStorage, ref as sref, listAll, getDownloadURL, getMetadata, uploadBytesResumable, deleteObject }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 import { getAuth, signInAnonymously, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -511,8 +561,13 @@ async function loadDatabase() {
     for (const item of audioItems) {
       try {
         const meta = await getMetadata(item);
+
+        // Wrap obsahuje řádek + skrytý player pod ním
+        const wrap = document.createElement('div');
+        wrap.className = 'db-item-wrap';
+
         const row = document.createElement('div');
-        row.className = 'db-item';
+        row.className = 'db-item-row';
 
         const icon = document.createElement('div');
         icon.className = 'db-icon';
@@ -531,9 +586,89 @@ async function loadDatabase() {
 
         info.appendChild(name);
         info.appendChild(metaEl);
+
+        // === Akční tlačítka ===
+        const actions = document.createElement('div');
+        actions.className = 'db-actions';
+
+        const playBtn = document.createElement('button');
+        playBtn.type = 'button';
+        playBtn.className = 'db-btn play';
+        playBtn.title = 'Přehrát';
+        playBtn.textContent = '▶';
+
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className = 'db-btn del';
+        delBtn.title = 'Smazat ze Storage';
+        delBtn.textContent = '🗑';
+
+        actions.appendChild(playBtn);
+        actions.appendChild(delBtn);
+
         row.appendChild(icon);
         row.appendChild(info);
-        dbList.appendChild(row);
+        row.appendChild(actions);
+
+        // === Mini-přehrávač (skrytý do prvního play) ===
+        const playerWrap = document.createElement('div');
+        playerWrap.className = 'db-player';
+        const audioEl = document.createElement('audio');
+        audioEl.controls = true;
+        audioEl.preload = 'none';
+        playerWrap.appendChild(audioEl);
+
+        wrap.appendChild(row);
+        wrap.appendChild(playerWrap);
+        dbList.appendChild(wrap);
+
+        // === Play tlačítko ===
+        let urlLoaded = false;
+        playBtn.addEventListener('click', async function(){
+          try {
+            if (!urlLoaded) {
+              const url = await getDownloadURL(item);
+              audioEl.src = url;
+              urlLoaded = true;
+            }
+            playerWrap.classList.add('show');
+            // Pauznout všechny ostatní přehrávače (jen 1 hraje současně)
+            document.querySelectorAll('.db-player audio').forEach(a => {
+              if (a !== audioEl) a.pause();
+            });
+            audioEl.play().catch(function(err){
+              console.warn('Play error:', err);
+            });
+          } catch (e) {
+            console.error('Play song error:', e);
+            alert('Nepodařilo se přehrát: ' + e.message);
+          }
+        });
+
+        // === Smaž tlačítko ===
+        delBtn.addEventListener('click', async function(){
+          const confirmMsg = 'Opravdu smazat "' + item.name + '" ze Storage?\n\nPo smazání zmizí ze SongUp i z KladyxAmp.';
+          if (!confirm(confirmMsg)) return;
+          try {
+            delBtn.disabled = true;
+            delBtn.textContent = '⏳';
+            await deleteObject(item);
+            // Odebrat řádek z DOMu (rychlejší než celý reload)
+            wrap.remove();
+            // Aktualizovat počítadlo
+            const remaining = dbList.querySelectorAll('.db-item-wrap').length;
+            dbCount.textContent = remaining + (remaining === 1 ? ' song' : ' songů');
+            if (remaining === 0) {
+              dbList.innerHTML = '<div class="db-empty">📁 Žádné songy v databázi</div>';
+            }
+          } catch (e) {
+            console.error('Delete error:', e);
+            alert('Chyba při mazání: ' + e.message);
+            delBtn.disabled = false;
+            delBtn.textContent = '🗑';
+          }
+        });
+
       } catch (e) {
         console.error('Metadata error for', item.name, e);
       }
