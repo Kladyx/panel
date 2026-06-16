@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxSpeed v1.5Kl</title>
+<title>KladyxSpeed v1.2Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -75,6 +75,64 @@
   .btn:active { transform: scale(0.96); }
   .btn:disabled { opacity:.5; }
 
+  .btn-row {
+    display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+    margin-top:12px;
+  }
+  .btn-sm {
+    font-family:inherit; font-size:.85rem; font-weight:600;
+    padding:8px 16px; border-radius:8px;
+    background: rgba(0,245,255,.1);
+    border:1px solid rgba(0,245,255,.35);
+    color: rgba(0,245,255,.85); cursor:pointer;
+    transition: all .15s ease;
+  }
+  .btn-sm:hover { background: rgba(0,245,255,.2); }
+  .btn-sm:active { transform: scale(0.95); }
+  .btn-sm:disabled { opacity:.4; cursor:not-allowed; }
+
+  .archive {
+    display:none; margin-top:24px; width:100%; max-width:480px;
+    text-align:left;
+  }
+  .archive.show { display:block; }
+  .archive h3 {
+    font-size:1rem; color:rgba(255,255,255,.75);
+    margin:0 0 10px; text-align:center; letter-spacing:.05em;
+  }
+  .archive-item {
+    background: rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:8px; padding:8px 10px; margin-bottom:6px;
+    display:flex; align-items:center; gap:8px;
+    font-size:.78rem; flex-wrap:wrap;
+  }
+  .archive-item .date { color:rgba(255,255,255,.55); flex-basis:100%; font-size:.72rem; }
+  .archive-item .stat-grp { display:flex; gap:10px; flex:1; flex-wrap:wrap; }
+  .archive-item .stat { color:rgba(0,245,255,.85); font-weight:600; }
+  .archive-item .stat .lbl { color:rgba(255,255,255,.5); font-weight:400; font-size:.7rem; margin-right:3px; }
+  .archive-item .del {
+    background: rgba(255,80,80,.15);
+    border:1px solid rgba(255,80,80,.35);
+    color: rgba(255,80,80,.9); cursor:pointer;
+    border-radius:5px; padding:4px 10px; font-size:.7rem;
+  }
+  .archive-item .del:hover { background: rgba(255,80,80,.3); }
+  .archive-clear {
+    display:block; margin:12px auto 0;
+    background: rgba(255,80,80,.15);
+    border:1px solid rgba(255,80,80,.35);
+    color: rgba(255,80,80,.95);
+    padding:8px 18px; border-radius:8px; cursor:pointer;
+    font-size:.8rem;
+  }
+  .archive-clear:hover { background: rgba(255,80,80,.25); }
+  .archive-empty {
+    color: rgba(255,255,255,.45);
+    font-style: italic; text-align:center;
+    padding:14px;
+  }
+
   .results {
     display:flex; gap:16px; flex-wrap:wrap; justify-content:center;
     margin-top:30px; width:100%; max-width:420px;
@@ -95,7 +153,7 @@
 <body>
 <div class="wrap">
   <div class="title">KLADYXSPEED</div>
-  <div class="version">v1.5 Kl</div>
+  <div class="version">v1.4 Kl</div>
 
   <div class="gauge-wrap">
     <div class="gauge-ring">
@@ -110,6 +168,11 @@
   <div class="status" id="status">Stiskni START pro test rychlosti</div>
 
   <button class="btn" id="startBtn" onclick="runTest()">▶ START</button>
+
+  <div class="btn-row">
+    <button class="btn-sm" id="resetBtn">🗑 RESET</button>
+    <button class="btn-sm" id="archiveBtn">📋 ARCHIV</button>
+  </div>
 
   <div class="results">
     <div class="card">
@@ -129,13 +192,17 @@
     </div>
   </div>
 
+  <div class="archive" id="archive">
+    <h3>📋 Archiv výsledků</h3>
+    <div id="archiveList"></div>
+    <button class="archive-clear" id="clearArchiveBtn">🗑 Smazat vše</button>
+  </div>
+
   <div class="footer">měřeno přes Cloudflare speed servery</div>
 </div>
 
-<script>
-const PING_URL = 'https://speed.cloudflare.com/__down?bytes=0';
-const DOWN_URL = 'https://speed.cloudflare.com/__down?bytes=';
-const UP_URL   = 'https://speed.cloudflare.com/__up';
+<script type="module">
+import SpeedTest from 'https://cdn.jsdelivr.net/npm/@cloudflare/speedtest@1/+esm';
 
 const gaugeValue = document.getElementById('gaugeValue');
 const gaugeLabel = document.getElementById('gaugeLabel');
@@ -150,143 +217,225 @@ function setGauge(val, label) {
   gaugeLabel.textContent = label;
 }
 
-async function measurePing(samples = 4) {
-  let times = [];
-  for (let i = 0; i < samples; i++) {
-    const t0 = performance.now();
-    try {
-      await fetch(PING_URL + '&_=' + Math.random(), { cache: 'no-store' });
-    } catch (e) {}
-    const t1 = performance.now();
-    times.push(t1 - t0);
-  }
-  times.sort((a,b)=>a-b);
-  return times[0]; // nejlepší (nejnižší) latence
+// === IFRAME-SAFE LOCALSTORAGE ===
+// Apka v iframe ma blokovany window.localStorage, pouzij parent
+function getStorage(){try{var s=window.parent.localStorage;s.getItem('__test__');return s;}catch(e){return localStorage;}}
+
+const STORAGE_KEY = 'kladyx_speedtest_archive';
+
+// === RESET ===
+function resetResults() {
+  pingVal.textContent = '--';
+  downVal.textContent = '--';
+  upVal.textContent = '--';
+  setGauge('--', 'PŘIPRAVENO');
+  statusEl.textContent = 'Stiskni START pro test rychlosti';
 }
 
-async function measureDownload() {
-  // PARALELNÍ download - 8 streamů × 25 MB = zaplníme linku
-  // Vyřadíme prvních 500ms (TCP slowstart) z měření
-  const PARALLEL = 8;
-  const CHUNK_SIZE = 25 * 1024 * 1024; // 25 MB
-  const WARMUP_MS = 500;
-  const TEST_MS = 8000;
-
-  statusEl.textContent = 'Měřím download (' + PARALLEL + ' paralelních streamů)...';
-
-  let totalBytes = 0;
-  let measuredBytes = 0;
-  let testActive = true;
-  const startTime = performance.now();
-  let warmupDone = false;
-
-  async function streamDownload() {
-    while (testActive) {
-      const url = DOWN_URL + CHUNK_SIZE + '&_=' + Math.random();
-      try {
-        const resp = await fetch(url, { cache: 'no-store' });
-        const reader = resp.body.getReader();
-        while (testActive) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          totalBytes += value.length;
-          if (warmupDone) measuredBytes += value.length;
-        }
-      } catch (e) {}
-    }
+// === ARCHIV ===
+function loadArchive() {
+  try {
+    const raw = getStorage().getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) {
+    console.warn('Archive load error:', e);
+    return [];
   }
-
-  const streams = [];
-  for (let i = 0; i < PARALLEL; i++) {
-    streams.push(streamDownload());
-  }
-
-  const warmupTimer = setTimeout(() => {
-    warmupDone = true;
-    measuredBytes = 0;
-  }, WARMUP_MS);
-
-  const measureStart = startTime + WARMUP_MS;
-  const updateTimer = setInterval(() => {
-    if (warmupDone) {
-      const elapsed = (performance.now() - measureStart) / 1000;
-      if (elapsed > 0) {
-        const mbps = (measuredBytes * 8) / elapsed / 1e6;
-        downVal.textContent = mbps.toFixed(1);
-        setGauge(mbps.toFixed(1), 'DOWNLOAD');
-      }
-    }
-  }, 200);
-
-  await new Promise(r => setTimeout(r, TEST_MS));
-  testActive = false;
-  clearInterval(updateTimer);
-  clearTimeout(warmupTimer);
-
-  const totalTime = (TEST_MS - WARMUP_MS) / 1000;
-  const finalMbps = (measuredBytes * 8) / totalTime / 1e6;
-  try { await Promise.race([Promise.all(streams), new Promise(r => setTimeout(r, 1000))]); } catch(e){}
-  downVal.textContent = finalMbps.toFixed(1);
-  setGauge(finalMbps.toFixed(1), 'DOWNLOAD');
-  return finalMbps;
 }
 
-async function measureUpload() {
-  // odešleme náhodná data, různé velikosti
-  const sizes = [500000, 2000000, 5000000]; // 0.5MB, 2MB, 5MB
-  let best = 0;
-  for (const size of sizes) {
-    const data = new Uint8Array(size);
-    for (let i = 0; i < data.length; i += 4096) data[i] = Math.random() * 255;
-    const t0 = performance.now();
-    try {
-      await fetch(UP_URL, {
-        method: 'POST',
-        body: data,
-        cache: 'no-store'
-      });
-      const t1 = performance.now();
-      const seconds = (t1 - t0) / 1000;
-      const bits = size * 8;
-      const mbps = (bits / seconds) / 1e6;
-      if (mbps > best) best = mbps;
-      upVal.textContent = mbps.toFixed(1);
-      setGauge(mbps.toFixed(1), 'UPLOAD');
-      statusEl.textContent = 'Měřím upload... (' + (size/1e6) + ' MB)';
-    } catch (e) {
-      statusEl.textContent = 'Chyba při uploadu: ' + e.message;
-    }
+function saveArchive(arr) {
+  try {
+    getStorage().setItem(STORAGE_KEY, JSON.stringify(arr));
+  } catch(e) {
+    console.warn('Archive save error:', e);
   }
-  return best;
 }
 
-async function runTest() {
+function addToArchive(ping, downMbps, upMbps) {
+  if (!ping && !downMbps && !upMbps) return; // nic neukladat pri prazdnem testu
+  const arr = loadArchive();
+  arr.unshift({
+    id: Date.now(),
+    ts: Date.now(),
+    ping: ping ? Math.round(ping) : null,
+    down: downMbps ? parseFloat(downMbps.toFixed(1)) : null,
+    up: upMbps ? parseFloat(upMbps.toFixed(1)) : null
+  });
+  // Limit na 100 zaznamu
+  if (arr.length > 100) arr.length = 100;
+  saveArchive(arr);
+  // Pokud je archiv otevreny, refresh
+  if (document.getElementById('archive').classList.contains('show')) {
+    renderArchive();
+  }
+}
+
+function formatDate(ts) {
+  const d = new Date(ts);
+  const pad = n => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function renderArchive() {
+  const list = document.getElementById('archiveList');
+  const arr = loadArchive();
+  if (arr.length === 0) {
+    list.innerHTML = '<div class="archive-empty">Žádné výsledky zatím</div>';
+    return;
+  }
+  list.innerHTML = arr.map(it => `
+    <div class="archive-item" data-id="${it.id}">
+      <div class="date">${formatDate(it.ts)}</div>
+      <div class="stat-grp">
+        <span class="stat"><span class="lbl">🏓</span>${it.ping != null ? it.ping + ' ms' : '—'}</span>
+        <span class="stat"><span class="lbl">⬇️</span>${it.down != null ? it.down + ' Mbps' : '—'}</span>
+        <span class="stat"><span class="lbl">⬆️</span>${it.up != null ? it.up + ' Mbps' : '—'}</span>
+      </div>
+      <button class="del" data-id="${it.id}">×</button>
+    </div>
+  `).join('');
+  // Pripojit eventy na del tlacitka
+  list.querySelectorAll('.del').forEach(btn => {
+    btn.onclick = function() {
+      const id = parseInt(this.getAttribute('data-id'));
+      const arr2 = loadArchive().filter(x => x.id !== id);
+      saveArchive(arr2);
+      renderArchive();
+    };
+  });
+}
+
+function toggleArchive() {
+  const arch = document.getElementById('archive');
+  arch.classList.toggle('show');
+  if (arch.classList.contains('show')) {
+    renderArchive();
+  }
+}
+
+function clearArchive() {
+  if (confirm('Opravdu chceš smazat všechny výsledky z archivu?')) {
+    saveArchive([]);
+    renderArchive();
+  }
+}
+
+// Pripojit eventy na tlacitka
+document.getElementById('resetBtn').onclick = resetResults;
+document.getElementById('archiveBtn').onclick = toggleArchive;
+document.getElementById('clearArchiveBtn').onclick = clearArchive;
+
+window.runTest = function() {
   startBtn.disabled = true;
   pingVal.textContent = '--';
   downVal.textContent = '--';
   upVal.textContent = '--';
-  setGauge('--', 'PŘIPRAVUJI');
-  statusEl.textContent = 'Měřím ping...';
+  setGauge('--', 'SPOUŠTÍM');
+  statusEl.textContent = 'Spouštím Cloudflare engine...';
 
-  try {
-    const ping = await measurePing();
-    pingVal.textContent = ping.toFixed(0);
-    setGauge(ping.toFixed(0), 'PING (ms)');
+  const st = new SpeedTest({
+    autoStart: false,
+    // Vypneme packetLoss (vyžaduje vlastní TURN server)
+    // Toto je oficiální výchozí sada měření MÍNUS packetLoss
+    measurements: [
+      { type: 'latency', numPackets: 1 },
+      { type: 'download', bytes: 1e5, count: 1, bypassMinDuration: true },
+      { type: 'latency', numPackets: 20 },
+      { type: 'download', bytes: 1e5, count: 9 },
+      { type: 'download', bytes: 1e6, count: 8 },
+      { type: 'upload', bytes: 1e5, count: 8 },
+      { type: 'upload', bytes: 1e6, count: 6 },
+      { type: 'download', bytes: 1e7, count: 6 },
+      { type: 'upload', bytes: 1e7, count: 4 },
+      { type: 'download', bytes: 2.5e7, count: 4 },
+      { type: 'upload', bytes: 2.5e7, count: 4 },
+      { type: 'download', bytes: 1e8, count: 3 },
+      { type: 'upload', bytes: 5e7, count: 3 }
+    ]
+  });
 
-    statusEl.textContent = 'Měřím download rychlost...';
-    await measureDownload();
+  st.onResultsChange = (info) => {
+    try {
+      const results = st.results;
+      const type = info && info.type;
 
-    statusEl.textContent = 'Měřím upload rychlost...';
-    await measureUpload();
+      // Latency (ping)
+      const lat = results.getUnloadedLatency();
+      if (lat && lat > 0) {
+        pingVal.textContent = Math.round(lat);
+      }
 
-    statusEl.textContent = '✅ Test dokončen';
-    setGauge(downVal.textContent, 'DOWNLOAD');
-  } catch (e) {
-    statusEl.textContent = '❌ Chyba: ' + e.message;
-  }
+      // Download bandwidth (bps)
+      const down = results.getDownloadBandwidth();
+      if (down && down > 0) {
+        const mbps = down / 1e6;
+        downVal.textContent = mbps.toFixed(1);
+        if (type === 'download') {
+          setGauge(mbps.toFixed(1), 'DOWNLOAD');
+          statusEl.textContent = 'Měřím download (' + mbps.toFixed(1) + ' Mbit/s)...';
+        }
+      }
 
-  startBtn.disabled = false;
-}
+      // Upload bandwidth (bps)
+      const up = results.getUploadBandwidth();
+      if (up && up > 0) {
+        const mbps = up / 1e6;
+        upVal.textContent = mbps.toFixed(1);
+        if (type === 'upload') {
+          setGauge(mbps.toFixed(1), 'UPLOAD');
+          statusEl.textContent = 'Měřím upload (' + mbps.toFixed(1) + ' Mbit/s)...';
+        }
+      }
+
+      // Status text podle aktuálního měření
+      if (type === 'latency' && lat) {
+        setGauge(Math.round(lat), 'PING (ms)');
+        statusEl.textContent = 'Měřím ping (' + Math.round(lat) + ' ms)...';
+      }
+    } catch (e) {
+      console.warn('onResultsChange error:', e);
+    }
+  };
+
+  st.onFinish = (results) => {
+    try {
+      const lat = results.getUnloadedLatency();
+      const down = results.getDownloadBandwidth();
+      const up = results.getUploadBandwidth();
+
+      if (lat) pingVal.textContent = Math.round(lat);
+      if (down) downVal.textContent = (down / 1e6).toFixed(1);
+      if (up) upVal.textContent = (up / 1e6).toFixed(1);
+
+      if (down) setGauge((down / 1e6).toFixed(1), 'DOWNLOAD');
+      statusEl.textContent = '✅ Test dokončen';
+
+      // Uložit do archivu
+      addToArchive(lat, down ? down / 1e6 : null, up ? up / 1e6 : null);
+
+      console.log('SpeedTest hotov:', {
+        ping_ms: lat,
+        download_bps: down,
+        upload_bps: up,
+        download_mbps: down ? (down / 1e6).toFixed(2) : null,
+        upload_mbps: up ? (up / 1e6).toFixed(2) : null,
+        summary: results.getSummary()
+      });
+    } catch (e) {
+      console.error('onFinish error:', e);
+      statusEl.textContent = '❌ Chyba při zpracování: ' + e.message;
+    }
+    startBtn.disabled = false;
+  };
+
+  st.onError = (err) => {
+    console.error('SpeedTest error:', err);
+    statusEl.textContent = '❌ Chyba: ' + (err && (err.message || err.toString()) || 'neznámá chyba');
+    startBtn.disabled = false;
+  };
+
+  st.play();
+};
 </script>
 </body>
 </html>
