@@ -174,7 +174,7 @@
 <body>
 <div class="wrap">
   <div class="title">KLADYXSPEED</div>
-  <div class="version">v1.5 Kl</div>
+  <div class="version">v1.6 Kl</div>
 
   <div class="gauge-wrap">
     <div class="gauge-ring">
@@ -348,6 +348,38 @@ document.getElementById('resetBtn').onclick = resetResults;
 document.getElementById('archiveBtn').onclick = toggleArchive;
 document.getElementById('clearArchiveBtn').onclick = clearArchive;
 
+// === ZVUKOVÝ SIGNÁL ===
+function playCompletionSound() {
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioContext.currentTime;
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+    osc.frequency.value = 800; // Hz
+    
+    // 3x beep s pausou: [beep 200ms, pauza 100ms] x3
+    gain.gain.setValueAtTime(0.3, now);
+    // 1. beep
+    gain.gain.setValueAtTime(0, now + 0.1); // fade in/out
+    gain.gain.setValueAtTime(0.3, now + 0.05);
+    gain.gain.setValueAtTime(0, now + 0.25); // silence
+    // 2. beep
+    gain.gain.setValueAtTime(0.3, now + 0.30);
+    gain.gain.setValueAtTime(0, now + 0.50);
+    // 3. beep
+    gain.gain.setValueAtTime(0.3, now + 0.55);
+    gain.gain.setValueAtTime(0, now + 0.75);
+    
+    osc.start(now);
+    osc.stop(now + 0.8);
+  } catch(e) {
+    console.warn('Audio playback error:', e);
+  }
+}
+
 window.runTest = function() {
   startBtn.disabled = true;
   // Odstranit complete vizualizaci z minulého testu
@@ -437,6 +469,9 @@ window.runTest = function() {
       statusEl.textContent = '✅ COMPLETE - Test dokončen!';
       statusEl.classList.add('complete');
       gaugeLabel.classList.add('complete');
+
+      // Zvukový signál
+      playCompletionSound();
 
       // Vibrace na mobilu (krátká-pauza-krátká pro upozornění)
       if (navigator.vibrate) {
