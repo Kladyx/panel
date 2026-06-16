@@ -60,6 +60,27 @@
   .status {
     font-size:1.1rem; min-height:1.6em; margin:8px 0 20px;
     color:#ffff66;
+    transition: all .3s ease;
+  }
+  .status.complete {
+    font-size:1.5rem; font-weight:bold;
+    color:#00ff66;
+    animation: pulse-complete 0.7s ease-in-out 4;
+  }
+  @keyframes pulse-complete {
+    0%, 100% {
+      transform: scale(1);
+      text-shadow: 0 0 10px rgba(0,255,100,.6);
+    }
+    50% {
+      transform: scale(1.1);
+      text-shadow: 0 0 30px rgba(0,255,100,1), 0 0 50px rgba(0,255,100,.7);
+    }
+  }
+  .gauge-label.complete {
+    color:#00ff66 !important;
+    text-shadow: 0 0 15px rgba(0,255,100,.8);
+    animation: pulse-complete 0.7s ease-in-out 4;
   }
 
   .btn {
@@ -153,7 +174,7 @@
 <body>
 <div class="wrap">
   <div class="title">KLADYXSPEED</div>
-  <div class="version">v1.4 Kl</div>
+  <div class="version">v1.5 Kl</div>
 
   <div class="gauge-wrap">
     <div class="gauge-ring">
@@ -230,6 +251,8 @@ function resetResults() {
   upVal.textContent = '--';
   setGauge('--', 'PŘIPRAVENO');
   statusEl.textContent = 'Stiskni START pro test rychlosti';
+  statusEl.classList.remove('complete');
+  gaugeLabel.classList.remove('complete');
 }
 
 // === ARCHIV ===
@@ -327,6 +350,9 @@ document.getElementById('clearArchiveBtn').onclick = clearArchive;
 
 window.runTest = function() {
   startBtn.disabled = true;
+  // Odstranit complete vizualizaci z minulého testu
+  statusEl.classList.remove('complete');
+  gaugeLabel.classList.remove('complete');
   pingVal.textContent = '--';
   downVal.textContent = '--';
   upVal.textContent = '--';
@@ -407,8 +433,15 @@ window.runTest = function() {
       if (down) downVal.textContent = (down / 1e6).toFixed(1);
       if (up) upVal.textContent = (up / 1e6).toFixed(1);
 
-      if (down) setGauge((down / 1e6).toFixed(1), 'DOWNLOAD');
-      statusEl.textContent = '✅ Test dokončen';
+      if (down) setGauge((down / 1e6).toFixed(1), 'COMPLETE ✅');
+      statusEl.textContent = '✅ COMPLETE - Test dokončen!';
+      statusEl.classList.add('complete');
+      gaugeLabel.classList.add('complete');
+
+      // Vibrace na mobilu (krátká-pauza-krátká pro upozornění)
+      if (navigator.vibrate) {
+        try { navigator.vibrate([200, 100, 200]); } catch(e) {}
+      }
 
       // Uložit do archivu
       addToArchive(lat, down ? down / 1e6 : null, up ? up / 1e6 : null);
