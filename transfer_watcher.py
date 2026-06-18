@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# KladyxTransfer Watcher v3 - Pi4
+# KladyxTransfer Watcher v3 - PC Windows
 # Sleduje Firebase RTDB nextsync/transfer/
-# Stahuje soubory do /home/pi/nextsync/prijate
+# Stahuje soubory do C:\nextsync\prijate
 # Hraje zvukovy signal po doruceni
 
 import urllib.request
@@ -10,31 +10,21 @@ import json
 import base64
 import os
 import time
-import subprocess
+import winsound
 
 DB_URL = "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app"
 TRANSFER_PATH = "/nextsync/transfer"
-DOWNLOAD_DIR = "/home/pi/nextsync/prijate"
+DOWNLOAD_DIR = r"C:\nextsync\prijate"
 CHECK_INTERVAL = 10  # sekund
 
 def play_sound():
-    """Zahraje 3x beep pres speaker-test nebo aplay"""
+    """Zahraje 3x beep pres winsound (Windows)"""
     try:
-        # Generuje 3x kratky beep pres Python - nevyzaduje zadny soubor
         for _ in range(3):
-            subprocess.run(
-                ["speaker-test", "-t", "sine", "-f", "800", "-l", "1", "-s", "1"],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                timeout=1
-            )
-            time.sleep(0.2)
-    except Exception:
-        try:
-            # Zaloha - beep pres /dev/tty (konzolovy bell)
-            subprocess.run(["bash", "-c", "echo -ne '\\007'"], timeout=1)
-        except Exception:
-            pass
+            winsound.Beep(800, 200)
+            time.sleep(0.1)
+    except Exception as e:
+        print("  -> chyba zvuku:", e)
 
 def get_pending():
     """Nacte vsechny cekajici soubory z Firebase"""
@@ -81,7 +71,7 @@ def delete_rtdb_entry(safe_name):
 
 def main():
     print("=" * 50)
-    print("KladyxTransfer Watcher v3")
+    print("KladyxTransfer Watcher v3 (PC Windows)")
     print("Sleduji RTDB:", DB_URL)
     print("Stahuji do:", DOWNLOAD_DIR)
     print("Interval:", CHECK_INTERVAL, "s")
@@ -101,7 +91,7 @@ def main():
                     delete_rtdb_entry(safe_name)
                     ok_count += 1
             if ok_count > 0:
-                print(f"[✓] Doruceno {ok_count} souboru - prehravam signal")
+                print(f"[OK] Doruceno {ok_count} souboru - prehravam signal")
                 play_sound()
         time.sleep(CHECK_INTERVAL)
 
