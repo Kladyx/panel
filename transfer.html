@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v1.6Kl</title>
+<title>KladyxTransfer v1.7Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -119,12 +119,22 @@
     text-shadow:0 0 4px #000;
     font-family:monospace;
   }
+
+  .pifile-item {
+    padding:8px 12px; border-radius:8px;
+    background:rgba(255,255,255,.04);
+    margin-bottom:6px; font-size:.85rem;
+    text-align:left;
+  }
+  .pifile-name { word-break:break-all; color:#fff; }
+  .pifile-meta { font-size:.75rem; color:rgba(255,255,255,.5); margin-top:2px; }
+  .pifile-empty { font-size:.8rem; color:rgba(255,255,255,.4); text-align:left; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="title">KLADYXTRANSFER</div>
-  <div class="version">v1.6 Kl</div>
+  <div class="version">v1.7 Kl</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -149,6 +159,11 @@
     <div class="queue-wrap" id="queueWrap" style="display:none">
       <div class="queue-title">📋 Stav odeslaných souborů</div>
       <div id="queueList"></div>
+    </div>
+
+    <div class="queue-wrap" id="piQueueWrap">
+      <div class="queue-title">📥 Soubory čekající na Pi4</div>
+      <div id="piQueueList"><div class="pifile-empty">Načítám...</div></div>
     </div>
   </div>
 
@@ -358,6 +373,60 @@ function startPolling(safeName) {
   status.className = 'status waiting';
   poll();
 }
+
+// ─── Soubory čekající na Pi4 (z prijate_lister.py, aktualizace každých 30s) ───
+var PI_LIST_URL = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/prijate_list.json';
+var PI_POLL_INTERVAL = 15000; // 15 sekund
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+}
+
+function formatAgo(ts) {
+  var sec = Math.floor((Date.now() - ts) / 1000);
+  if (sec < 5) return 'právě teď';
+  if (sec < 60) return 'před ' + sec + ' s';
+  var min = Math.floor(sec / 60);
+  if (min < 60) return 'před ' + min + ' min';
+  var hod = Math.floor(min / 60);
+  return 'před ' + hod + ' h';
+}
+
+function escapeHtml(s) {
+  var div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+function loadPiQueue() {
+  var listEl = document.getElementById('piQueueList');
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', PI_LIST_URL);
+  xhr.onload = function() {
+    if (xhr.status < 200 || xhr.status >= 300) return;
+    var data = null;
+    try { data = JSON.parse(xhr.responseText); } catch (e) {}
+    if (!data || !data.files || data.files.length === 0) {
+      listEl.innerHTML = '<div class="pifile-empty">Žádné soubory nečekají</div>';
+      return;
+    }
+    var html = '';
+    for (var i = 0; i < data.files.length; i++) {
+      var f = data.files[i];
+      html += '<div class="pifile-item">';
+      html += '<div class="pifile-name">' + escapeHtml(f.name) + '</div>';
+      html += '<div class="pifile-meta">' + formatSize(f.size) + ' · ' + formatAgo(f.ts) + '</div>';
+      html += '</div>';
+    }
+    listEl.innerHTML = html;
+  };
+  setTimeout(loadPiQueue, PI_POLL_INTERVAL);
+  xhr.send();
+}
+
+loadPiQueue();
 </script>
 </body>
 </html>
