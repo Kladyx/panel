@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="version" content="1.2Kl">
+<title>KladyxHome - Smart Home Control</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 100%);
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  padding: 20px;
+  min-height: 100vh;
+}
+.container { max-width: 600px; margin: 0 auto; }
+h1 {
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: 26px;
+  color: #00d4ff;
+  letter-spacing: 3px;
+  text-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
+}
+.subtitle {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 11px;
+  color: #555;
+  letter-spacing: 2px;
+}
+.device {
+  background: #16213e;
+  border: 2px solid #0f3460;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.1);
+  transition: all 0.4s;
+}
+.device.on {
+  border-color: #00ff41;
+  box-shadow: 0 4px 25px rgba(0, 255, 65, 0.35);
+}
+.device.off { border-color: #555; }
+.device.unknown { border-color: #888; opacity: 0.75; }
+.device-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.device-name { font-size: 17px; font-weight: bold; color: #00d4ff; }
+.device-status {
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: #333;
+  color: #aaa;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+.device.on .device-status { background: #00ff41; color: #000; }
+.device.off .device-status { background: #444; color: #ccc; }
+.buttons { display: flex; gap: 10px; }
+.btn {
+  flex: 1;
+  padding: 14px 16px;
+  border: 2px solid;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: inherit;
+}
+.btn-on { background: #1a3a1a; color: #00ff41; border-color: #00ff41; }
+.btn-on.active {
+  background: #00ff41; color: #000;
+  animation: pulse-on 1.6s infinite;
+}
+.btn-on:hover { background: #00cc33; color: #000; transform: scale(1.03); }
+.btn-off { background: #3a1a1a; color: #ff3333; border-color: #ff3333; }
+.btn-off.active { background: #ff3333; color: #fff; }
+.btn-off:hover { background: #cc2222; color: #fff; transform: scale(1.03); }
+.btn:active { transform: scale(0.97); }
+@keyframes pulse-on {
+  0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 65, 0.6); }
+  50% { box-shadow: 0 0 25px rgba(0, 255, 65, 1); }
+}
+.footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 10px;
+  color: #444;
+  letter-spacing: 2px;
+}
+#debug {
+  margin-top: 15px;
+  padding: 12px;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 6px;
+  font-size: 13px;
+  color: #00d4ff;
+  text-align: center;
+  min-height: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+}
+#debug.ok {
+  color: #00ff41;
+  background: rgba(0, 255, 65, 0.08);
+  border-color: rgba(0, 255, 65, 0.4);
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.6);
+}
+#debug.err {
+  color: #ff3333;
+  background: rgba(255, 51, 51, 0.08);
+  border-color: rgba(255, 51, 51, 0.4);
+  text-shadow: 0 0 8px rgba(255, 51, 51, 0.6);
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>KLADYX HOME</h1>
+<div class="subtitle">SMART HOME CONTROL</div>
+
+<div class="device unknown" id="dev-p115">
+  <div class="device-header">
+    <div class="device-name">DJ Studio (P115)</div>
+    <div class="device-status" id="status-p115">...</div>
+  </div>
+  <div class="buttons">
+    <button class="btn btn-on" id="btn-on-p115">Zapni Studio</button>
+    <button class="btn btn-off" id="btn-off-p115">Vypni Studio</button>
+  </div>
+</div>
+
+<div class="device unknown" id="dev-p100">
+  <div class="device-header">
+    <div class="device-name">Lavova Lampa (P100)</div>
+    <div class="device-status" id="status-p100">...</div>
+  </div>
+  <div class="buttons">
+    <button class="btn btn-on" id="btn-on-p100">Zapni Lampu</button>
+    <button class="btn btn-off" id="btn-off-p100">Vypni Lampu</button>
+  </div>
+</div>
+
+<div id="debug">Pripojuji k Firebase...</div>
+<div class="footer">KLADYXHOME v1.2Kl - FIREBASE REAL-TIME</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+var cfg = {
+  apiKey: "AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",
+  authDomain: "kladyxland.firebaseapp.com",
+  projectId: "kladyxland",
+  databaseURL: "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",
+  appId: "1:178078059030:web:8d8a0271b23a7aca2b4337"
+};
+
+var dbg = document.getElementById('debug');
+function log(msg, type) {
+  if (dbg) {
+    dbg.textContent = msg;
+    dbg.className = type || '';
+  }
+  if (window.console) console.log('[KladyxHome]', msg);
+}
+
+try {
+  firebase.initializeApp(cfg);
+  var db = firebase.database();
+  log('Firebase OK - cekam na data...');
+
+  function setupDevice(node, suffix) {
+    var devEl = document.getElementById('dev-' + suffix);
+    var statEl = document.getElementById('status-' + suffix);
+    var btnOn = document.getElementById('btn-on-' + suffix);
+    var btnOff = document.getElementById('btn-off-' + suffix);
+
+    db.ref(node).on('value', function(snap) {
+      var d = snap.val();
+      if (!d) {
+        devEl.className = 'device unknown';
+        statEl.textContent = 'OFFLINE';
+        btnOn.classList.remove('active');
+        btnOff.classList.remove('active');
+        return;
+      }
+      var age = d.lastSeen ? Date.now() - d.lastSeen : 999999;
+      if (age > 60000) {
+        devEl.className = 'device unknown';
+        statEl.textContent = 'BRIDGE OFFLINE';
+        btnOn.classList.remove('active');
+        btnOff.classList.remove('active');
+        return;
+      }
+      if (d.on === true) {
+        devEl.className = 'device on';
+        statEl.textContent = 'ZAPNUTO';
+        btnOn.classList.add('active');
+        btnOff.classList.remove('active');
+      } else {
+        devEl.className = 'device off';
+        statEl.textContent = 'VYPNUTO';
+        btnOn.classList.remove('active');
+        btnOff.classList.add('active');
+      }
+      log('Pripojeno OK', 'ok');
+    }, function(err) {
+      log('Chyba cteni ' + node + ': ' + (err.message || err), 'err');
+    });
+
+    btnOn.addEventListener('click', function() { sendCmd(node, 'on'); });
+    btnOff.addEventListener('click', function() { sendCmd(node, 'off'); });
+  }
+
+  function sendCmd(node, cmd) {
+    log('Odesilam ' + cmd.toUpperCase() + ' na ' + node + '...');
+    db.ref(node + '/command').set(cmd)
+      .then(function() { log('Prikaz ' + cmd.toUpperCase() + ' OK', 'ok'); })
+      .catch(function(e) { log('Chyba: ' + (e.message || e), 'err'); });
+  }
+
+  setupDevice('tapoDb', 'p115');
+  setupDevice('tapoDbP100', 'p100');
+
+} catch(e) {
+  log('FATAL: ' + (e.message || e), 'err');
+}
+</script>
+</body>
+</html>
