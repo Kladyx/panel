@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="1.3Kl">
+<meta name="version" content="1.4Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -45,6 +45,7 @@ h1 {
 }
 .device.off { border-color: #555; }
 .device.unknown { border-color: #888; opacity: 0.75; }
+.device.ready { border-color: #ffaa00; box-shadow: 0 4px 20px rgba(255,170,0,0.25); }
 .device-header {
   display: flex;
   justify-content: space-between;
@@ -63,6 +64,7 @@ h1 {
 }
 .device.on .device-status { background: #00ff41; color: #000; }
 .device.off .device-status { background: #444; color: #ccc; }
+.device.ready .device-status { background: #ffaa00; color: #000; }
 .buttons { display: flex; gap: 10px; }
 .btn {
   flex: 1;
@@ -86,6 +88,9 @@ h1 {
 .btn-off { background: #3a1a1a; color: #ff3333; border-color: #ff3333; }
 .btn-off.active { background: #ff3333; color: #fff; }
 .btn-off:hover { background: #cc2222; color: #fff; transform: scale(1.03); }
+.btn-ir { background: #2a1a00; color: #ffaa00; border-color: #ffaa00; }
+.btn-ir:hover { background: #ffaa00; color: #000; transform: scale(1.03); }
+.btn-ir:active { transform: scale(0.97); background: #cc8800; color: #000; }
 .btn:active { transform: scale(0.97); }
 @keyframes pulse-on {
   0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 65, 0.6); }
@@ -164,8 +169,18 @@ h1 {
   </div>
 </div>
 
+<div class="device unknown" id="dev-ir">
+  <div class="device-header">
+    <div class="device-name">Radio Samsung (IR)</div>
+    <div class="device-status" id="status-ir">...</div>
+  </div>
+  <div class="buttons">
+    <button class="btn btn-ir" id="btn-power-ir">🎵 POWER</button>
+  </div>
+</div>
+
 <div id="debug">Pripojuji k Firebase...</div>
-<div class="footer">KLADYXHOME v1.3Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v1.4Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -236,6 +251,39 @@ try {
     btnOff.addEventListener('click', function() { sendCmd(node, 'off'); });
   }
 
+  function setupIRDevice(node, suffix) {
+    var devEl = document.getElementById('dev-' + suffix);
+    var statEl = document.getElementById('status-' + suffix);
+    var btnPower = document.getElementById('btn-power-' + suffix);
+
+    db.ref(node + '/lastSeen').on('value', function(snap) {
+      var lastSeen = snap.val();
+      if (!lastSeen) {
+        devEl.className = 'device unknown';
+        statEl.textContent = 'OFFLINE';
+        return;
+      }
+      var age = Date.now() - lastSeen;
+      if (age > 60000) {
+        devEl.className = 'device unknown';
+        statEl.textContent = 'BRIDGE OFFLINE';
+      } else {
+        devEl.className = 'device ready';
+        statEl.textContent = 'PRIPRAVENO';
+      }
+      log('IR bridge OK', 'ok');
+    }, function(err) {
+      log('Chyba IR: ' + (err.message || err), 'err');
+    });
+
+    btnPower.addEventListener('click', function() {
+      log('Odesilam POWER...');
+      db.ref(node + '/command').set('power')
+        .then(function() { log('IR POWER OK', 'ok'); })
+        .catch(function(e) { log('Chyba: ' + (e.message || e), 'err'); });
+    });
+  }
+
   function sendCmd(node, cmd) {
     log('Odesilam ' + cmd.toUpperCase() + ' na ' + node + '...');
     db.ref(node + '/command').set(cmd)
@@ -246,6 +294,7 @@ try {
   setupDevice('tapoDb', 'p115');
   setupDevice('tapoDbP100', 'p100');
   setupDevice('tuyaDb', 'tuya');
+  setupIRDevice('irDb', 'ir');
 
 } catch(e) {
   log('FATAL: ' + (e.message || e), 'err');
