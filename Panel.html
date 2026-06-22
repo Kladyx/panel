@@ -2056,36 +2056,6 @@ APP_HTML["cd"] = `<!DOCTYPE html>
   const _storage = firebase.storage();
   const _cdRef = _db.ref('cdRecordsDb');
 
-  // ── AUTO-SYNC IKON PŘI STARTU ──────────────────────────────────
-  var _ICON_IDS={
-    "HouseTime":"housetime","CD datab\u00E1ze":"cd","Hardware":"hardware",
-    "Architektura":"architektura","LP Desky":"lp","Mixcloud":"mixcloud",
-    "Ode\u010Dty":"odecty","Platby":"platby","J\u00EDdlo":"jidlo","Gluk\u00F3za":"gluco",
-    "OBS Status":"obs","Po\u010Das\u00ED":"pocasi","Pozn\u00E1mky":"notes","Kalend\u00E1\u0159":"kalendar",
-    "ZX Next":"zxnext","Manu\u00E1ly":"manualy","\u010Dte\u010Dka":"reader","WordMaster":"wordmaster",
-    "Multitrack":"multitrack","Status":"status","Radio ID":"radio",
-    "ZX Games":"zxgames","World Time":"worldtime","P\u0159eklada\u010D":"prekladac",
-    "NextSync":"nextsync","Co to je???":"cotoje","KladyxAmp":"kladyxamp",
-    "SpeedTest":"speedtest","Transfer":"transfer","SongUp":"songup","KladyxHome":"kladyxhome"
-  };
-  setTimeout(function(){
-    try{
-      _db.ref("kladyx_icons").once("value").then(function(snap){
-        if(!snap||!snap.exists()||!snap.val())return;
-        var icons=snap.val();
-        Object.keys(icons).forEach(function(appName){
-          var appId=_ICON_IDS[appName];
-          if(!appId)return;
-          var btnEl=document.querySelector("#btn-"+appId+" .bi");
-          if(btnEl)btnEl.innerHTML=icons[appName];
-          var wcEl=document.querySelector(".wcard[onclick*="+appId+"] .wi");
-          if(wcEl)wcEl.innerHTML=icons[appName];
-        });
-      }).catch(function(){});
-    }catch(e){}
-  },1500);
-  // ───────────────────────────────────────────────────────────────
-
   function _setSyncStatus(msg, color) {
     const el = document.getElementById('sync-dot');
     if (el) { el.textContent = msg; el.style.color = color || '#4a6d90'; }
@@ -17354,31 +17324,23 @@ function initFirebase(){
     if(!fb){setTimeout(initFirebase,1500);return;}
     var db=fb.database();
     _fbRef=db.ref("kladyx_icons");
-    _fbRef.once("value").then(function(snap){
-      if(snap.exists()&&snap.val()){
-        Object.assign(_customIcons,snap.val());
-        saveIconsLocal();
-        render();
-        try{
-          Object.keys(_customIcons).forEach(function(appName){
-            var appId=APP_IDS[appName];
-            if(!appId)return;
-            var btnEl=window.parent.document.querySelector("#btn-"+appId+" .bi");
-            if(btnEl)btnEl.innerHTML=_customIcons[appName];
-            var wcEl=window.parent.document.querySelector(".wcard[onclick*="+appId+"] .wi");
-            if(wcEl)wcEl.innerHTML=_customIcons[appName];
-          });
-        }catch(pe){}
-        setSyncStatus("\u2601 Sync \u2713","#34d399");
-      }
-    }).catch(function(){setSyncStatus("\u2601 Offline","#f87171");});
+    _fbRef.on("value",function(snap){
+      if(snap.exists()&&snap.val()){Object.assign(_customIcons,snap.val());saveIconsLocal();render();setSyncStatus("\u2601 Sync \u2713","#34d399");}
+      else{setSyncStatus("\u2601 Online","#34d399");}
+    },function(){setSyncStatus("\u2601 Offline","#f87171");});
+    if(Object.keys(_pendingSave).length>0){
+      _fbRef.update(_pendingSave).then(function(){_pendingSave={};}).catch(function(){});
+    }
   }catch(e){setTimeout(initFirebase,1500);}
 }
 
+var _pendingSave={};
+
 function saveIconToFirebase(appId,icon){
-  if(!_fbRef)return;
-  var upd={};
-  upd[appId]=icon;
+  _pendingSave[appId]=icon;
+  if(!_fbRef){return;}
+  var upd=_pendingSave;
+  _pendingSave={};
   _fbRef.update(upd).then(function(){setSyncStatus("\u2601 Ulo\u017Eeno \u2713","#34d399");setTimeout(function(){setSyncStatus("","");},2000);}).catch(function(){});
 }
 
@@ -17625,6 +17587,7 @@ loadIcons();
 initAddIconPicker();
 render();
 initFirebase();
+setTimeout(function(){if(!_fbRef){render();}},3000);
 <\/script>
 </body>
 </html>
@@ -19082,6 +19045,40 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
   localStorage.setItem(key, count);
   var el = document.getElementById('vc-num');
   if (el) el.textContent = count;
+})();
+</script>
+
+<script>
+// ── CUSTOM ICONS – aplikuje uložené ikony z Moje Apky na top bar + wcard ──
+(function applyCustomIcons(){
+  var APP_IDS_MAP = {
+    "HouseTime":"housetime","CD databáze":"cd","Hardware":"hardware",
+    "Architektura":"architektura","LP Desky":"lp","Mixcloud":"mixcloud",
+    "Odečty":"odecty","Platby":"platby","Jídlo":"jidlo","Glukóza":"gluco",
+    "OBS Status":"obs","Počasí":"pocasi","Poznámky":"notes","Kalendář":"kalendar",
+    "ZX Next":"zxnext","Manuály":"manualy","Čtečka":"reader","WordMaster":"wordmaster",
+    "Multitrack":"multitrack","Status":"status","Radio ID":"radio",
+    "ZX Games":"zxgames","World Time":"worldtime","Překladač":"prekladac",
+    "NextSync":"nextsync","Co to je???":"cotoje","KladyxAmp":"kladyxamp",
+    "SpeedTest":"speedtest","Transfer":"transfer","SongUp":"songup","KladyxHome":"kladyxhome"
+  };
+  try {
+    var raw = localStorage.getItem('kladyx_custom_icons');
+    if (!raw) return;
+    var icons = JSON.parse(raw);
+    Object.keys(icons).forEach(function(appName){
+      var icon = icons[appName];
+      if (!icon) return;
+      var appId = APP_IDS_MAP[appName];
+      if (!appId) return;
+      // top bar .bi
+      var btnBi = document.querySelector('#btn-' + appId + ' .bi');
+      if (btnBi) btnBi.innerHTML = icon;
+      // wcard .wi
+      var wcWi = document.querySelector('.wcard[onclick*="' + appId + '"] .wi');
+      if (wcWi) wcWi.innerHTML = icon;
+    });
+  } catch(e) {}
 })();
 </script>
 
