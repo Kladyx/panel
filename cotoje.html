@@ -72,10 +72,6 @@ h1 .emoji{display:inline-block;animation:wobble 3s ease-in-out infinite;}
     <button class="key-save" onclick="saveKey()">Uložit</button>
   </div>
   <div class="key-ok" id="keyOk">✓ Klíč uložen</div>
-  <div class="cloud-row" id="cloudRow" style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-    <button class="cloud-btn" id="cloudBtn" onclick="cloudAction()" style="padding:8px 14px;background:rgba(0,255,180,0.12);border:1.5px solid rgba(0,255,180,0.4);border-radius:10px;color:#00ffb4;font-family:'Quicksand',sans-serif;font-weight:700;font-size:.75rem;cursor:pointer;text-shadow:0 0 4px rgba(0,255,180,0.6);">☁️ Přihlásit & sync</button>
-    <span id="cloudStatus" style="font-size:.7rem;color:rgba(0,255,180,.7);">Cloud sync: offline</span>
-  </div>
 </div>
 <div class="category-row">
   <button class="cat-btn active" data-cat="universal"><span class="cat-icon">🔍</span>Vše</button>
@@ -108,75 +104,6 @@ h1 .emoji{display:inline-block;animation:wobble 3s ease-in-out infinite;}
   <button class="copy-btn" onclick="copyResult()">📋 Kopírovat</button>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script>
-// === Firebase Cloud Sync pro API klíč ===
-var _FC={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
-if(!firebase.apps.length) firebase.initializeApp(_FC);
-var _db=firebase.database();
-var _auth=firebase.auth();
-var _user=null;
-
-function setCloudUI(text,color){
-  var st=document.getElementById('cloudStatus');
-  var btn=document.getElementById('cloudBtn');
-  if(st){st.textContent='Cloud sync: '+text;st.style.color=color||'rgba(0,255,180,.7)';}
-}
-
-function cloudAction(){
-  if(_user){
-    _auth.signOut().then(function(){
-      setCloudUI('odhlášeno','rgba(255,150,150,.7)');
-      document.getElementById('cloudBtn').textContent='☁️ Přihlásit & sync';
-    });
-    return;
-  }
-  var provider=new firebase.auth.GoogleAuthProvider();
-  _auth.signInWithPopup(provider).then(function(res){
-    setCloudUI('načítám klíč...','#ffd700');
-  }).catch(function(err){
-    setCloudUI('chyba přihlášení','rgba(255,100,100,.8)');
-    console.error(err);
-  });
-}
-
-_auth.onAuthStateChanged(function(user){
-  _user=user;
-  var btn=document.getElementById('cloudBtn');
-  if(user){
-    setCloudUI('✓ '+(user.email||'přihlášen'),'#00ffb4');
-    if(btn) btn.textContent='🚪 Odhlásit';
-    // Load API key from Firebase
-    _db.ref('passwords/'+user.uid+'/gemini_apikey').once('value').then(function(snap){
-      var k=snap.val();
-      if(k){
-        document.getElementById('keyInput').value=k;
-        localStorage.setItem('gemini_api_key',k);
-        document.getElementById('keyOk').style.display='block';
-        setCloudUI('✓ klíč načten z cloudu','#00ffb4');
-      } else {
-        // Klíč v cloudu zatím není - pokud máme lokální, nahrajeme ho
-        var local=localStorage.getItem('gemini_api_key')||'';
-        if(local){
-          _db.ref('passwords/'+user.uid+'/gemini_apikey').set(local).then(function(){
-            setCloudUI('✓ lokální klíč uložen do cloudu','#00ffb4');
-          });
-        } else {
-          setCloudUI('✓ přihlášen (žádný klíč)','#00ffb4');
-        }
-      }
-    }).catch(function(err){
-      setCloudUI('chyba čtení: '+err.code,'rgba(255,100,100,.8)');
-    });
-  } else {
-    setCloudUI('offline','rgba(0,255,180,.5)');
-    if(btn) btn.textContent='☁️ Přihlásit & sync';
-  }
-});
-</script>
-
 <script>
 var PROMPTS={
   universal:'Analyzuj tento obrázek detailně. Řekni mi: 1) Co přesně je na obrázku, 2) Důležité detaily a vlastnosti, 3) Případné upozornění nebo zajímavosti. Odpověz v češtině.',
@@ -188,23 +115,29 @@ var PROMPTS={
 };
 var currentBase64=null, currentMime='image/jpeg', currentCat='universal';
 
-var savedKey=localStorage.getItem('gemini_api_key')||'';
-if(savedKey){document.getElementById('keyInput').value=savedKey;document.getElementById('keyOk').style.display='block';}
+function _lsGet(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e){}try{var v=window.parent.localStorage.getItem(k);if(v!==null)return v;}catch(e){}return null;}
+function _lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}try{window.parent.localStorage.setItem(k,v);}catch(e){}}
+
+function restoreKey(){
+  var savedKey=_lsGet('gemini_api_key')||'';
+  if(savedKey){
+    var inp=document.getElementById('keyInput');
+    if(inp){inp.value=savedKey;}
+    var ok=document.getElementById('keyOk');
+    if(ok){ok.style.display='block';}
+  }
+}
 
 function saveKey(){
   var k=document.getElementById('keyInput').value.trim();
   if(!k)return;
-  localStorage.setItem('gemini_api_key',k);
+  _lsSet('gemini_api_key',k);
   document.getElementById('keyOk').style.display='block';
-  // Pokud je přihlášen, uloží i do cloudu
-  if(_user){
-    _db.ref('passwords/'+_user.uid+'/gemini_apikey').set(k).then(function(){
-      setCloudUI('✓ klíč uložen do cloudu','#00ffb4');
-    }).catch(function(err){
-      setCloudUI('cloud chyba: '+err.code,'rgba(255,100,100,.8)');
-    });
-  }
 }
+
+document.addEventListener('DOMContentLoaded',function(){
+  restoreKey();
+});
 
 document.querySelectorAll('.cat-btn').forEach(function(btn){
   btn.onclick=function(){
@@ -364,7 +297,7 @@ function stopProgress(){
 
 function analyze(){
   if(!currentBase64)return;
-  var key=localStorage.getItem('gemini_api_key')||'';
+  var key=_lsGet('gemini_api_key')||'';
   if(!key){showErr('Nejprve ulož Gemini API klíč!');return;}
   var btn=document.getElementById('btnAnalyze');
   btn.disabled=true;
