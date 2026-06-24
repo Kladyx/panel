@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KladyxAmp v1.25Kl</title>
+<title>KladyxAmp v1.27Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -615,7 +615,7 @@
     </div>
     <div class="upload-row">
       <label for="uploadInput">📤 Nahrát song</label>
-      <input type="file" id="uploadInput" accept="audio/*,video/mp4">
+      <input type="file" id="uploadInput" accept="*/*">
       <span class="upload-status" id="uploadStatus"></span>
     </div>
     <div class="playlist" id="playlist">
@@ -630,7 +630,7 @@
       <div class="podkres-list" id="podkresList">
         <div class="pk-upload-row">
           <label for="pkUploadInput">📤 Nahrát podkres</label>
-          <input type="file" id="pkUploadInput" accept="audio/*,video/mp4">
+          <input type="file" id="pkUploadInput" accept="*/*">
         </div>
         <div class="pk-upload-status" id="pkUploadStatus"></div>
         <div id="podkresItems">
@@ -780,8 +780,10 @@ async function loadTracks() {
       if (idx !== -1) {
         currentIdx = idx;
         const t = tracks[idx];
-        audio.pause();
-        audio.src = t.url;
+        audio.pause(); audio.src = '';
+        audioVideo.pause(); audioVideo.src = '';
+        const media = getMediaEl(t.url);
+        media.src = t.url;
         isPlaying = false;
         updateUI();
         document.getElementById('trackTitle').textContent = t.title;
@@ -1118,12 +1120,14 @@ function togglePlay() {
 function nextTrack() {
   if (tracks.length === 0) return;
   if (shuffleOn) {
-    // Náhodný index různý od aktuálního
     let next;
-    if (tracks.length === 1) next = 0;
+    if (tracks.length === 1) { next = 0; }
     else {
+      if (!window._shuffleHistory) window._shuffleHistory = [];
+      if (window._shuffleHistory.length >= tracks.length - 1) window._shuffleHistory = [];
       do { next = Math.floor(Math.random() * tracks.length); }
-      while (next === currentIdx);
+      while (next === currentIdx || window._shuffleHistory.includes(next));
+      window._shuffleHistory.push(next);
     }
     playTrack(next);
   } else {
