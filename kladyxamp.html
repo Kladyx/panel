@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KladyxAmp v1.24Kl</title>
+<title>KladyxAmp v1.25Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -615,7 +615,7 @@
     </div>
     <div class="upload-row">
       <label for="uploadInput">📤 Nahrát song</label>
-      <input type="file" id="uploadInput" accept="audio/*">
+      <input type="file" id="uploadInput" accept="audio/*,video/mp4">
       <span class="upload-status" id="uploadStatus"></span>
     </div>
     <div class="playlist" id="playlist">
@@ -630,7 +630,7 @@
       <div class="podkres-list" id="podkresList">
         <div class="pk-upload-row">
           <label for="pkUploadInput">📤 Nahrát podkres</label>
-          <input type="file" id="pkUploadInput" accept="audio/*">
+          <input type="file" id="pkUploadInput" accept="audio/*,video/mp4">
         </div>
         <div class="pk-upload-status" id="pkUploadStatus"></div>
         <div id="podkresItems">
@@ -642,6 +642,7 @@
 </div>
 
 <audio id="audio"></audio>
+<video id="audioVideo" style="display:none" playsinline></video>
 <audio id="pkPreview" style="display:none"></audio>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
 
@@ -682,8 +683,19 @@ let _justUploadedName = null; // jméno souboru nahraného přes upload - po loa
 let _activePodkres = null; // jméno aktivně vybraného podkresu
 
 const audio = document.getElementById('audio');
+const audioVideo = document.getElementById('audioVideo');
 const canvas = document.getElementById('spectrum');
 const ctx = canvas.getContext('2d');
+
+// Vrátí správný media element podle přípony
+function getMediaEl(url) {
+  return /\.mp4$/i.test(url) ? audioVideo : audio;
+}
+// Aktuální přehrávač
+function curMedia() {
+  return (audio.src && !audio.src.endsWith('#')) ? audio :
+         (audioVideo.src && !audioVideo.src.endsWith('#')) ? audioVideo : audio;
+}
 
 // === Hvězdy v pozadí ===
 function makeStars() {
@@ -1012,8 +1024,13 @@ function playTrack(idx) {
   setupAudio();
   if (audioCtx.state === 'suspended') audioCtx.resume();
 
-  audio.src = t.url;
-  audio.play().then(() => {
+  // Zastav oba elementy
+  audio.pause(); audio.src = '';
+  audioVideo.pause(); audioVideo.src = '';
+
+  const media = getMediaEl(t.url);
+  media.src = t.url;
+  media.play().then(() => {
     isPlaying = true;
     updateUI();
   }).catch(e => console.error('Play error:', e));
@@ -1088,11 +1105,11 @@ function togglePlay() {
     return;
   }
   if (isPlaying) {
-    audio.pause();
+    curMedia().pause();
     isPlaying = false;
   } else {
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    audio.play();
+    curMedia().play();
     isPlaying = true;
   }
   updateUI();
@@ -1150,29 +1167,35 @@ function formatTime(s) {
   return `${m}:${String(sec).padStart(2,'0')}`;
 }
 
-audio.addEventListener('timeupdate', () => {
-  if (!audio.duration) return;
-  const pct = (audio.currentTime / audio.duration) * 100;
+function onTimeUpdate() {
+  const m = curMedia();
+  if (!m.duration) return;
+  const pct = (m.currentTime / m.duration) * 100;
   document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('curTime').textContent = formatTime(audio.currentTime);
-  document.getElementById('totalTime').textContent = formatTime(audio.duration);
-});
+  document.getElementById('curTime').textContent = formatTime(m.currentTime);
+  document.getElementById('totalTime').textContent = formatTime(m.duration);
+}
 
-audio.addEventListener('ended', () => {
+function onEnded() {
   if (repeatOn) {
-    // Opakuj aktuální skladbu
-    audio.currentTime = 0;
-    audio.play();
+    curMedia().currentTime = 0;
+    curMedia().play();
   } else {
     nextTrack();
   }
-});
+}
+
+audio.addEventListener('timeupdate', onTimeUpdate);
+audioVideo.addEventListener('timeupdate', onTimeUpdate);
+audio.addEventListener('ended', onEnded);
+audioVideo.addEventListener('ended', onEnded);
 
 document.getElementById('progressBar').addEventListener('click', (e) => {
-  if (!audio.duration) return;
+  const m = curMedia();
+  if (!m.duration) return;
   const r = e.currentTarget.getBoundingClientRect();
   const pct = (e.clientX - r.left) / r.width;
-  audio.currentTime = pct * audio.duration;
+  m.currentTime = pct * m.duration;
 });
 
 // === Tlačítka ===
