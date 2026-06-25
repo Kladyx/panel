@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="1.7Kl">
+<meta name="version" content="1.8Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -42,10 +42,14 @@ h1 {
 .device.on {
   border-color: #00ff41;
   box-shadow: 0 4px 25px rgba(0, 255, 65, 0.35);
+  animation: device-pulse 2s infinite;
 }
-.device.off { border-color: #555; }
+.device.off { border-color: #ff3333; box-shadow: 0 4px 20px rgba(255,51,51,0.25); }
 .device.unknown { border-color: #888; opacity: 0.75; }
-.device.ready { border-color: #ffaa00; box-shadow: 0 4px 20px rgba(255,170,0,0.25); }
+@keyframes device-pulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(0,255,65,0.35); }
+  50% { box-shadow: 0 4px 30px rgba(0,255,65,0.85); }
+}
 .device-header {
   display: flex;
   justify-content: space-between;
@@ -63,8 +67,7 @@ h1 {
   font-weight: bold;
 }
 .device.on .device-status { background: #00ff41; color: #000; }
-.device.off .device-status { background: #444; color: #ccc; }
-.device.ready .device-status { background: #ffaa00; color: #000; }
+.device.off .device-status { background: #ff3333; color: #fff; }
 .buttons { display: flex; gap: 10px; }
 .btn {
   flex: 1;
@@ -181,7 +184,7 @@ h1 {
 </div>
 
 <div id="debug">Pripojuji k Firebase...</div>
-<div class="footer">KLADYXHOME v1.7Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v1.8Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -262,20 +265,33 @@ try {
     var btnOn = document.getElementById('btn-on-' + suffix);
     var btnOff = document.getElementById('btn-off-' + suffix);
 
-    db.ref(node + '/lastSeen').on('value', function(snap) {
-      var lastSeen = snap.val();
-      if (!lastSeen) {
+    db.ref(node).on('value', function(snap) {
+      var d = snap.val();
+      if (!d || !d.lastSeen) {
         devEl.className = 'device unknown';
         statEl.textContent = 'OFFLINE';
+        btnOn.classList.remove('active');
+        btnOff.classList.remove('active');
         return;
       }
-      var age = Date.now() - lastSeen;
+      var age = Date.now() - d.lastSeen;
       if (age > 60000) {
         devEl.className = 'device unknown';
         statEl.textContent = 'BRIDGE OFFLINE';
+        btnOn.classList.remove('active');
+        btnOff.classList.remove('active');
+        return;
+      }
+      if (d.on === true) {
+        devEl.className = 'device on';
+        statEl.textContent = 'ZAPNUTO';
+        btnOn.classList.add('active');
+        btnOff.classList.remove('active');
       } else {
-        devEl.className = 'device ready';
-        statEl.textContent = 'PRIPRAVENO';
+        devEl.className = 'device off';
+        statEl.textContent = 'VYPNUTO';
+        btnOn.classList.remove('active');
+        btnOff.classList.add('active');
       }
       log('IR bridge OK', 'ok');
     }, function(err) {
@@ -289,13 +305,19 @@ try {
     addIRTap(btnOn, function() {
       log('Odesilam ZAPNOUT (IR)...');
       db.ref(node + '/command').set('power')
-        .then(function() { log('IR ZAPNOUT OK', 'ok'); })
+        .then(function() {
+          db.ref(node + '/on').set(true);
+          log('IR ZAPNOUT OK', 'ok');
+        })
         .catch(function(e) { log('Chyba: ' + (e.message || e), 'err'); });
     });
     addIRTap(btnOff, function() {
       log('Odesilam VYPNOUT (IR)...');
       db.ref(node + '/command').set('power')
-        .then(function() { log('IR VYPNOUT OK', 'ok'); })
+        .then(function() {
+          db.ref(node + '/on').set(false);
+          log('IR VYPNOUT OK', 'ok');
+        })
         .catch(function(e) { log('Chyba: ' + (e.message || e), 'err'); });
     });
   }
