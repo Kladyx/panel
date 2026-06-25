@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="1.4Kl">
+<meta name="version" content="1.5Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -175,12 +175,13 @@ h1 {
     <div class="device-status" id="status-ir">...</div>
   </div>
   <div class="buttons">
-    <button class="btn btn-ir" id="btn-power-ir">🎵 POWER</button>
+    <button class="btn btn-ir" id="btn-on-ir">🎵 Zapni</button>
+    <button class="btn btn-ir" id="btn-off-ir">🎵 Vypni</button>
   </div>
 </div>
 
 <div id="debug">Pripojuji k Firebase...</div>
-<div class="footer">KLADYXHOME v1.4Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v1.5Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -254,7 +255,8 @@ try {
   function setupIRDevice(node, suffix) {
     var devEl = document.getElementById('dev-' + suffix);
     var statEl = document.getElementById('status-' + suffix);
-    var btnPower = document.getElementById('btn-power-' + suffix);
+    var btnOn = document.getElementById('btn-on-' + suffix);
+    var btnOff = document.getElementById('btn-off-' + suffix);
 
     db.ref(node + '/lastSeen').on('value', function(snap) {
       var lastSeen = snap.val();
@@ -276,10 +278,17 @@ try {
       log('Chyba IR: ' + (err.message || err), 'err');
     });
 
-    btnPower.addEventListener('click', function() {
-      log('Odesilam POWER...');
+    btnOn.addEventListener('click', function() {
+      log('Odesilam ZAPNOUT (IR)...');
       db.ref(node + '/command').set('power')
-        .then(function() { log('IR POWER OK', 'ok'); })
+        .then(function() { log('IR ZAPNOUT OK', 'ok'); })
+        .catch(function(e) { log('Chyba: ' + (e.message || e), 'err'); });
+    });
+
+    btnOff.addEventListener('click', function() {
+      log('Odesilam VYPNOUT (IR)...');
+      db.ref(node + '/command').set('power')
+        .then(function() { log('IR VYPNOUT OK', 'ok'); })
         .catch(function(e) { log('Chyba: ' + (e.message || e), 'err'); });
     });
   }
