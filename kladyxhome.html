@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="1.5Kl">
+<meta name="version" content="1.6Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -181,7 +181,7 @@ h1 {
 </div>
 
 <div id="debug">Pripojuji k Firebase...</div>
-<div class="footer">KLADYXHOME v1.5Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v1.6Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -248,8 +248,12 @@ try {
       log('Chyba cteni ' + node + ': ' + (err.message || err), 'err');
     });
 
-    btnOn.addEventListener('click', function() { sendCmd(node, 'on'); });
-    btnOff.addEventListener('click', function() { sendCmd(node, 'off'); });
+    function addTap(el, fn) {
+      el.addEventListener('touchstart', function(e) { e.preventDefault(); fn(); }, {passive: false});
+      el.addEventListener('click', fn);
+    }
+    addTap(btnOn, function() { sendCmd(node, 'on'); });
+    addTap(btnOff, function() { sendCmd(node, 'off'); });
   }
 
   function setupIRDevice(node, suffix) {
@@ -278,14 +282,17 @@ try {
       log('Chyba IR: ' + (err.message || err), 'err');
     });
 
-    btnOn.addEventListener('click', function() {
+    function addIRTap(el, fn) {
+      el.addEventListener('touchstart', function(e) { e.preventDefault(); fn(); }, {passive: false});
+      el.addEventListener('click', fn);
+    }
+    addIRTap(btnOn, function() {
       log('Odesilam ZAPNOUT (IR)...');
       db.ref(node + '/command').set('power')
         .then(function() { log('IR ZAPNOUT OK', 'ok'); })
         .catch(function(e) { log('Chyba: ' + (e.message || e), 'err'); });
     });
-
-    btnOff.addEventListener('click', function() {
+    addIRTap(btnOff, function() {
       log('Odesilam VYPNOUT (IR)...');
       db.ref(node + '/command').set('power')
         .then(function() { log('IR VYPNOUT OK', 'ok'); })
