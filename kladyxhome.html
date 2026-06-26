@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="1.9Kl">
+<meta name="version" content="2.0Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -181,7 +181,7 @@ h1 {
 </div>
 
 <div id="debug">Pripojuji k Firebase...</div>
-<div class="footer">KLADYXHOME v1.9Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v2.0Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -262,24 +262,9 @@ try {
     var btnOn = document.getElementById('btn-on-' + suffix);
     var btnOff = document.getElementById('btn-off-' + suffix);
 
-    db.ref(node).on('value', function(snap) {
-      var d = snap.val();
-      if (!d || !d.lastSeen) {
-        devEl.className = 'device unknown';
-        statEl.textContent = 'OFFLINE';
-        btnOn.classList.remove('active');
-        btnOff.classList.remove('active');
-        return;
-      }
-      var age = Date.now() - d.lastSeen;
-      if (age > 60000) {
-        devEl.className = 'device unknown';
-        statEl.textContent = 'BRIDGE OFFLINE';
-        btnOn.classList.remove('active');
-        btnOff.classList.remove('active');
-        return;
-      }
-      if (d.on === true) {
+    db.ref(node + '/on').on('value', function(snap) {
+      var val = snap.val();
+      if (val === true) {
         devEl.className = 'device on';
         statEl.textContent = 'ZAPNUTO';
         btnOn.classList.add('active');
@@ -290,7 +275,7 @@ try {
         btnOn.classList.remove('active');
         btnOff.classList.add('active');
       }
-      log('IR bridge OK', 'ok');
+      log('IR stav OK', 'ok');
     }, function(err) {
       log('Chyba IR: ' + (err.message || err), 'err');
     });
