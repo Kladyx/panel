@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="version" content="v1.0.Kl">
+<title>Pi Monitor v1.0.Kl</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0a0e1a;
+  --card:rgba(255,255,255,0.04);
+  --red:#ff3c5a;
+  --cyan:#00d4ff;
+  --green:#00ff88;
+  --warn:#ffaa00;
+  --text:#e0e8ff;
+  --muted:#5a6488;
+}
+body{font-family:'Courier New',monospace;background:var(--bg);color:var(--text);min-height:100vh;padding:12px;}
+h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);letter-spacing:3px;text-align:center;margin-bottom:2px;}
+.sub{font-size:0.5rem;letter-spacing:3px;color:var(--muted);text-align:center;margin-bottom:12px;}
+/* GRID STATS */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.card{background:var(--card);border:1px solid rgba(255,60,90,0.2);border-radius:10px;padding:10px 12px;}
+.card .lbl{font-size:0.48rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+.card .val{font-size:1.5rem;font-weight:700;color:var(--red);text-shadow:0 0 12px rgba(255,60,90,0.4);line-height:1;}
+.card .unit{font-size:0.55rem;color:#8090b0;margin-top:1px;}
+.bar-wrap{background:rgba(255,255,255,0.06);border-radius:4px;height:5px;margin-top:6px;overflow:hidden;}
+.bar{height:5px;border-radius:4px;transition:width .6s;}
+.bar-ok{background:linear-gradient(90deg,#00ff88,#00cc66);}
+.bar-warn{background:linear-gradient(90deg,#ffaa00,#ff6600);}
+.bar-hot{background:linear-gradient(90deg,#ff6600,#ff3c5a);}
+/* UPTIME */
+.uptime{background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.15);border-radius:10px;padding:8px 12px;text-align:center;margin-bottom:10px;}
+.uptime-val{font-size:0.95rem;color:var(--cyan);text-shadow:0 0 8px rgba(0,212,255,0.4);letter-spacing:2px;}
+.uptime-lbl{font-size:0.45rem;letter-spacing:2px;color:var(--muted);margin-top:2px;}
+/* SERVICES */
+.section{background:rgba(255,255,255,0.03);border:1px solid rgba(255,60,90,0.12);border-radius:10px;padding:8px 12px;margin-bottom:10px;}
+.sec-title{font-size:0.48rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+.svc-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.svc-row:last-child{border-bottom:none;}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.dot-ok{background:var(--green);box-shadow:0 0 5px var(--green);}
+.dot-err{background:var(--red);box-shadow:0 0 5px var(--red);}
+.dot-wait{background:var(--warn);box-shadow:0 0 5px var(--warn);animation:pulse .8s infinite alternate;}
+@keyframes pulse{from{opacity:.3}to{opacity:1}}
+.svc-name{flex:1;font-size:0.65rem;color:#c0cce0;}
+.svc-st{font-size:0.58rem;color:var(--muted);}
+/* NET */
+.net-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.net-row:last-child{border-bottom:none;}
+.net-lbl{font-size:0.55rem;color:var(--muted);}
+.net-val{font-size:0.65rem;color:var(--cyan);}
+/* OFFLINE */
+.offline{text-align:center;padding:14px;color:var(--red);font-size:0.7rem;letter-spacing:2px;opacity:.7;display:none;}
+.offline span{font-size:0.5rem;color:var(--muted);display:block;margin-top:4px;}
+/* REFRESH */
+.refresh-btn{display:block;width:100%;padding:7px;border:1px solid rgba(255,60,90,0.3);background:rgba(255,60,90,0.06);color:var(--red);font-family:'Courier New',monospace;font-size:0.65rem;letter-spacing:2px;cursor:pointer;border-radius:6px;margin-bottom:10px;}
+.refresh-btn:active{background:rgba(255,60,90,0.15);}
+.footer{text-align:center;font-size:0.45rem;color:rgba(90,100,136,0.4);letter-spacing:2px;margin-top:6px;}
+</style>
+</head>
+<body>
+
+<h1>🍓 PI MONITOR</h1>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v1.0.Kl</div>
+
+<button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
+
+<div class="grid">
+  <div class="card"><div class="lbl">CPU</div><div class="val" id="val-cpu">—</div><div class="unit">%</div><div class="bar-wrap"><div class="bar bar-ok" id="bar-cpu" style="width:0%"></div></div></div>
+  <div class="card"><div class="lbl">RAM</div><div class="val" id="val-ram">—</div><div class="unit">%</div><div class="bar-wrap"><div class="bar bar-ok" id="bar-ram" style="width:0%"></div></div></div>
+  <div class="card"><div class="lbl">TEPLOTA</div><div class="val" id="val-temp">—</div><div class="unit">°C</div><div class="bar-wrap"><div class="bar bar-ok" id="bar-temp" style="width:0%"></div></div></div>
+  <div class="card"><div class="lbl">DISK</div><div class="val" id="val-disk">—</div><div class="unit">%</div><div class="bar-wrap"><div class="bar bar-ok" id="bar-disk" style="width:0%"></div></div></div>
+</div>
+
+<div class="uptime">
+  <div class="uptime-val" id="val-uptime">—</div>
+  <div class="uptime-lbl">UPTIME</div>
+</div>
+
+<div class="section">
+  <div class="sec-title">⚙ SYSTEMD SERVICES</div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-tapo"></div><div class="svc-name">kladyx-tapobridge</div><div class="svc-st" id="s-tapo">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-transfer"></div><div class="svc-name">kladyx-transferwatcher</div><div class="svc-st" id="s-transfer">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-upload"></div><div class="svc-name">kladyx-uploadserver</div><div class="svc-st" id="s-upload">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-nextsync"></div><div class="svc-name">kladyx-nextsync</div><div class="svc-st" id="s-nextsync">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-obs"></div><div class="svc-name">kladyx-obsbridge</div><div class="svc-st" id="s-obs">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-prijate"></div><div class="svc-name">kladyx-prijatelister</div><div class="svc-st" id="s-prijate">…</div></div>
+</div>
+
+<div class="section">
+  <div class="sec-title">🌐 SÍŤ</div>
+  <div class="net-row"><div class="net-lbl">IP adresa</div><div class="net-val" id="net-ip">—</div></div>
+  <div class="net-row"><div class="net-lbl">Poslední data</div><div class="net-val" id="net-hb">—</div></div>
+  <div class="net-row"><div class="net-lbl">Stáří dat</div><div class="net-val" id="net-age">—</div></div>
+</div>
+
+<div class="offline" id="offline-msg">
+  ⚠ PI4 OFFLINE nebo piStats neběží
+  <span>Nainstaluj kladyx-pimonitor service na Pi4</span>
+</div>
+
+<div class="footer">AUTO-REFRESH 30s · KLADYXLAND 2026</div>
+
+<script>
+var FB='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
+
+function setBar(id,pct){
+  var b=document.getElementById(id);
+  if(!b)return;
+  b.style.width=Math.min(100,pct)+'%';
+  b.className='bar '+(pct<70?'bar-ok':pct<85?'bar-warn':'bar-hot');
+}
+
+function fmtUptime(sec){
+  if(!sec||sec<=0)return '—';
+  var d=Math.floor(sec/86400),h=Math.floor((sec%86400)/3600),m=Math.floor((sec%3600)/60);
+  if(d>0)return d+'d '+h+'h '+m+'m';
+  if(h>0)return h+'h '+m+'m';
+  return m+'m '+Math.floor(sec%60)+'s';
+}
+
+function fmtAge(ms){
+  var s=Math.floor(ms/1000);
+  if(s<60)return s+'s zpět';
+  if(s<3600)return Math.floor(s/60)+'min zpět';
+  return Math.floor(s/3600)+'h zpět';
+}
+
+function setSvc(id,ok){
+  var d=document.getElementById('d-'+id);
+  var s=document.getElementById('s-'+id);
+  if(d)d.className='dot '+(ok?'dot-ok':'dot-err');
+  if(s)s.textContent=ok?'Running ✓':'Stopped ✗';
+}
+
+function showOffline(){
+  document.getElementById('offline-msg').style.display='block';
+  ['cpu','ram','temp','disk'].forEach(function(k){
+    document.getElementById('val-'+k).textContent='—';
+    setBar('bar-'+k,0);
+  });
+  document.getElementById('val-uptime').textContent='—';
+  ['tapo','transfer','upload','nextsync','obs','prijate'].forEach(function(id){
+    var d=document.getElementById('d-'+id);
+    if(d)d.className='dot dot-wait';
+    var s=document.getElementById('s-'+id);
+    if(s)s.textContent='?';
+  });
+}
+
+function loadStats(){
+  document.getElementById('offline-msg').style.display='none';
+  // Zkus piStats node
+  fetch(FB+'/piStats.json',{signal:AbortSignal.timeout(8000)})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(!d){showOffline();loadFallback();return;}
+    var age=Date.now()-(d.ts||0);
+    if(age>120000){showOffline();loadFallback();return;}
+    // CPU
+    var cpu=Math.round(d.cpu_pct||0);
+    document.getElementById('val-cpu').textContent=cpu;
+    setBar('bar-cpu',cpu);
+    // RAM
+    var ram=Math.round(d.ram_pct||0);
+    document.getElementById('val-ram').textContent=ram;
+    setBar('bar-ram',ram);
+    // Teplota
+    var temp=parseFloat(d.temp_c||0).toFixed(1);
+    document.getElementById('val-temp').textContent=temp;
+    setBar('bar-temp',parseFloat(temp)/85*100);
+    // Disk
+    var disk=Math.round(d.disk_pct||0);
+    document.getElementById('val-disk').textContent=disk;
+    setBar('bar-disk',disk);
+    // Uptime
+    document.getElementById('val-uptime').textContent=fmtUptime(d.uptime_sec||0);
+    // Síť
+    document.getElementById('net-ip').textContent=d.ip||'—';
+    document.getElementById('net-hb').textContent=new Date(d.ts).toLocaleTimeString('cs-CZ');
+    document.getElementById('net-age').textContent=fmtAge(age);
+    // Services
+    if(d.services){
+      ['tapo','transfer','upload','nextsync','obs','prijate'].forEach(function(k){
+        if(d.services[k]!==undefined)setSvc(k,d.services[k]===true||d.services[k]==='active');
+      });
+    }
+  })
+  .catch(function(){showOffline();loadFallback();});
+}
+
+function loadFallback(){
+  // Fallback: nextsync/status pro základní info
+  fetch(FB+'/nextsync/status.json',{signal:AbortSignal.timeout(5000)})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(!d||!d.lastSeen)return;
+    var age=Date.now()-d.lastSeen;
+    if(age<120000){
+      document.getElementById('net-ip').textContent=d.ip||'—';
+      document.getElementById('net-hb').textContent=new Date(d.lastSeen).toLocaleTimeString('cs-CZ');
+      document.getElementById('net-age').textContent=fmtAge(age);
+      // Alespoň upload server běží (posílá heartbeat)
+      setSvc('upload',true);
+    }
+  }).catch(function(){});
+}
+
+document.getElementById('btn-refresh').onclick=loadStats;
+loadStats();
+setInterval(loadStats,30000);
+</script>
+</body>
+</html>
