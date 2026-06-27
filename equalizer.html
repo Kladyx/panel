@@ -3,246 +3,283 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v1.9.Kl">
-<title>Equalizer v1.9.Kl</title>
+<meta name="version" content="v3.0.Kl">
+<title>Stereo VU Equalizer v3.0.Kl</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#0a0e1a;
-  --card:rgba(255,255,255,0.04);
+  --bg:#0a0e14;
+  --panel:#0e1420;
+  --grid:rgba(0,200,255,0.08);
+  --text:#bdc7d5;
+  --label:#5a6680;
   --cyan:#00d4ff;
-  --green:#00ff88;
-  --yellow:#ffdd00;
-  --orange:#ff8800;
+  --green:#00ff7e;
+  --yellow:#ffd400;
+  --orange:#ff8c00;
   --red:#ff3c5a;
-  --text:#e0e8ff;
-  --muted:#5a6488;
-  --cell-off:rgba(255,255,255,0.04);
 }
-body{font-family:'Courier New',monospace;background:var(--bg);color:var(--text);min-height:100vh;padding:12px;position:relative;overflow-x:hidden;}
-/* SCANLINE EFEKT */
-body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,212,255,0.015) 0px,rgba(0,212,255,0.015) 1px,transparent 1px,transparent 3px);z-index:1;}
-body > *{position:relative;z-index:3;}
-/* NADPIS */
-h1{font-size:1.0rem;letter-spacing:3px;text-align:center;margin-bottom:2px;background:linear-gradient(90deg,#00d4ff,#00ff88,#00d4ff);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:gradient-shift 4s linear infinite;filter:drop-shadow(0 0 8px rgba(0,212,255,0.4));}
-@keyframes gradient-shift{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-.sub{font-size:0.5rem;letter-spacing:3px;color:var(--muted);text-align:center;margin-bottom:14px;}
-.sub .dot-live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);margin-right:5px;animation:pulse-live 1.4s infinite ease-in-out;vertical-align:middle;}
-@keyframes pulse-live{0%,100%{opacity:1;}50%{opacity:.4;}}
-/* STATUS BAR */
-.status{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(0,212,255,0.02));border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:6px 12px;margin-bottom:14px;font-size:0.55rem;letter-spacing:1px;}
-.status-left{color:var(--muted);}
-.status-right{color:var(--cyan);text-shadow:0 0 5px rgba(0,212,255,0.5);}
-.status-mode{color:var(--green);}
-.status-mode.fake{color:var(--yellow);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);color:var(--text);min-height:100vh;padding:14px;}
+.header{text-align:center;padding:8px 0 14px;}
+.title{font-size:18px;color:var(--cyan);letter-spacing:6px;font-weight:600;text-shadow:0 0 12px rgba(0,212,255,0.5);}
+.sub{font-size:10px;color:var(--label);letter-spacing:3px;margin-top:4px;}
+.dot-live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);margin-right:5px;animation:pulse 1.4s infinite ease-in-out;vertical-align:middle;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+.status{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--panel);border:1px solid rgba(0,212,255,0.15);border-radius:6px;margin-bottom:12px;font-size:11px;}
+.status-mode{font-weight:600;letter-spacing:1px;}
+.status-mode.live{color:var(--green);}
+.status-mode.fake{color:var(--cyan);}
 .status-mode.offline{color:var(--red);}
-/* EQ KONTEJNER */
-.eq-wrap{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));border:1px solid rgba(0,212,255,0.15);border-radius:12px;padding:14px 10px 10px;position:relative;overflow:hidden;margin-bottom:12px;}
-.eq-wrap::before{content:"";position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,0.4),transparent);}
-.channels{display:flex;gap:14px;justify-content:center;}
-.channel{flex:1;max-width:48%;}
-.ch-label{text-align:center;font-size:0.6rem;letter-spacing:4px;color:var(--cyan);margin-bottom:8px;text-shadow:0 0 6px rgba(0,212,255,0.4);}
-.ch-label.r{color:var(--red);text-shadow:0 0 6px rgba(255,60,90,0.4);}
-/* 8 SLOUPCU */
-.bars{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;height:200px;align-items:end;}
-.bar{display:flex;flex-direction:column-reverse;gap:2px;height:100%;}
-.cell{flex:none;height:3px;background:var(--cell-off);border-radius:0px;transition:background .06s ease,box-shadow .06s ease;}
-.cell.on-g{background:var(--green);box-shadow:0 0 4px var(--green);}
-.cell.on-y{background:var(--yellow);box-shadow:0 0 4px var(--yellow);}
-.cell.on-o{background:var(--orange);box-shadow:0 0 4px var(--orange);}
-.cell.on-r{background:var(--red);box-shadow:0 0 5px var(--red);}
-.cell.peak{background:#fff;box-shadow:0 0 6px #fff;}
-/* FREQ LABELS */
-.freq-labels{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-top:6px;}
-.freq-labels span{font-size:0.4rem;color:var(--muted);text-align:center;letter-spacing:1px;}
-/* PEAK INDICATORS */
-.peaks{display:flex;gap:14px;justify-content:center;margin-bottom:10px;}
-.peak-box{flex:1;max-width:48%;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:5px 10px;font-size:0.5rem;letter-spacing:1px;color:var(--muted);}
-.peak-val{font-size:0.7rem;color:var(--cyan);text-shadow:0 0 5px rgba(0,212,255,0.4);font-weight:bold;}
-.peak-val.r{color:var(--red);text-shadow:0 0 5px rgba(255,60,90,0.4);}
-.peak-val.hot{color:var(--red);animation:pulse-hot 0.3s infinite alternate;}
-@keyframes pulse-hot{from{opacity:.7}to{opacity:1}}
-/* TLAČÍTKO MODE */
-.mode-btn{display:block;width:100%;padding:7px;border:1px solid rgba(0,212,255,0.3);background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(0,212,255,0.03));color:var(--cyan);font-family:'Courier New',monospace;font-size:0.6rem;letter-spacing:2px;cursor:pointer;border-radius:6px;margin-bottom:8px;transition:all .3s ease;}
-.mode-btn:hover{border-color:rgba(0,212,255,0.6);box-shadow:0 0 12px rgba(0,212,255,0.2);}
-.mode-btn:active{transform:scale(0.98);}
-.footer{text-align:center;font-size:0.45rem;color:rgba(90,100,136,0.5);letter-spacing:2px;margin-top:8px;}
+
+/* VU METR - profi DJ styl */
+.vu-wrap{background:var(--panel);border:1px solid rgba(0,212,255,0.15);border-radius:8px;padding:18px 14px;position:relative;}
+.vu-row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;}
+
+/* dB stupnice */
+.scale{display:flex;flex-direction:column;justify-content:space-between;height:240px;font-size:9px;color:var(--label);padding:2px 0;text-align:right;width:22px;}
+.scale span{line-height:1;}
+
+/* Kanal L/R blok */
+.channel{flex:1;display:flex;flex-direction:column;align-items:center;}
+.ch-label{font-size:12px;color:var(--cyan);letter-spacing:2px;margin-bottom:10px;font-weight:600;}
+.ch-label.r{color:var(--red);}
+
+/* 8 sloupcu v ramci kanalu */
+.bars{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;height:240px;width:100%;}
+.bar-col{position:relative;height:100%;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);overflow:hidden;}
+/* PLYNULY SLOUPEC - jeden gradient, ne dilky */
+.bar-fill{position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(to top,
+  var(--green) 0%,
+  var(--green) 50%,
+  var(--yellow) 70%,
+  var(--orange) 85%,
+  var(--red) 100%);
+  transition:height 80ms cubic-bezier(0.25,0.1,0.25,1);
+  box-shadow:0 0 8px rgba(0,255,126,0.4);
+}
+/* Peak hold cara */
+.bar-peak{position:absolute;left:0;right:0;height:2px;background:#fff;box-shadow:0 0 4px #fff;transition:bottom 300ms linear;opacity:0.9;}
+
+/* Frekvencni stitky */
+.freq-row{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:6px;width:100%;}
+.freq-row span{font-size:8px;color:var(--label);text-align:center;}
+
+/* Spodni info */
+.info-row{display:flex;justify-content:space-between;margin-top:14px;font-size:10px;color:var(--label);letter-spacing:1px;}
+.peak-val{color:var(--cyan);font-weight:600;}
+
+/* Tlacitko prepnuti modu */
+.btn-mode{margin-top:14px;width:100%;padding:11px;background:transparent;border:1px solid var(--cyan);color:var(--cyan);font-family:inherit;font-size:11px;letter-spacing:3px;border-radius:6px;cursor:pointer;transition:all 0.2s;}
+.btn-mode:hover{background:rgba(0,212,255,0.1);}
+
+.footer{text-align:center;font-size:9px;color:#2a3142;letter-spacing:3px;margin-top:18px;}
 </style>
 </head>
 <body>
 
-<h1>♪ STEREO EQUALIZER ♪</h1>
-<div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v1.9.Kl</div>
-
-<div class="status">
-  <div class="status-left">MODE: <span class="status-mode fake" id="mode">FAKE DEMO</span></div>
-  <div class="status-right" id="hb">— —</div>
+<div class="header">
+  <div class="title">♪ STEREO VU EQUALIZER ♪</div>
+  <div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v3.0.Kl</div>
 </div>
 
-<div class="eq-wrap">
-  <div class="channels">
+<div class="status">
+  <div>MODE: <span class="status-mode fake" id="mode">FAKE DEMO</span></div>
+  <div id="hb">— —</div>
+</div>
+
+<div class="vu-wrap">
+  <div class="vu-row">
+    <!-- Leva dB stupnice -->
+    <div class="scale">
+      <span>0</span>
+      <span>-15</span>
+      <span>-30</span>
+      <span>-45</span>
+      <span>-60</span>
+    </div>
+    
+    <!-- L kanal -->
     <div class="channel">
       <div class="ch-label">◄ L</div>
       <div class="bars" id="bars-l"></div>
-      <div class="freq-labels">
-        <span>60</span><span>150</span><span>400</span><span>1k</span><span>2.4k</span><span>6k</span><span>12k</span><span>16k</span>
+      <div class="freq-row">
+        <span>60</span><span>150</span><span>400</span><span>1k</span>
+        <span>2.4k</span><span>6k</span><span>12k</span><span>16k</span>
       </div>
     </div>
+    
+    <!-- R kanal -->
     <div class="channel">
       <div class="ch-label r">R ►</div>
       <div class="bars" id="bars-r"></div>
-      <div class="freq-labels">
-        <span>60</span><span>150</span><span>400</span><span>1k</span><span>2.4k</span><span>6k</span><span>12k</span><span>16k</span>
+      <div class="freq-row">
+        <span>60</span><span>150</span><span>400</span><span>1k</span>
+        <span>2.4k</span><span>6k</span><span>12k</span><span>16k</span>
       </div>
     </div>
+    
+    <!-- Prava dB stupnice -->
+    <div class="scale">
+      <span>0</span>
+      <span>-15</span>
+      <span>-30</span>
+      <span>-45</span>
+      <span>-60</span>
+    </div>
+  </div>
+  
+  <div class="info-row">
+    <div>PEAK L: <span class="peak-val" id="peak-l">0</span></div>
+    <div>PEAK R: <span class="peak-val" id="peak-r">0</span></div>
   </div>
 </div>
 
-<div class="peaks">
-  <div class="peak-box"><span>PEAK L</span><span class="peak-val" id="peak-l">—</span></div>
-  <div class="peak-box"><span>PEAK R</span><span class="peak-val r" id="peak-r">—</span></div>
-</div>
+<button class="btn-mode" id="btn-mode">↻ PŘEPNOUT MODE (FAKE / LIVE)</button>
 
-<button class="mode-btn" id="btn-mode">⟳ PŘEPNOUT MODE (FAKE / LIVE)</button>
-
-<div class="footer">FFT 8 BANDS · 60Hz–16kHz · KLADYXLAND 2026</div>
+<div class="footer">FFT 8 BANDS · PEAK METER · KLADYXLAND 2026</div>
 
 <script>
 var FB='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
-var CELLS = 20;           // počet kostek na sloupci
-var BANDS = 8;            // počet frekvenčních pásem
-var MAX_AGE_MS = 5000;    // max stáří dat z Firebase (5s = LIVE)
-var FAKE_MODE = true;     // start v fake režimu
+var BANDS = 8;
+var MAX_AGE_MS = 5000;
+var FAKE_MODE = true;
 
-// Vytvoř HTML strukturu sloupců (8 sloupců, každý 20 kostek)
+// Peak hold per pasmo
+var peakHoldL = new Array(BANDS).fill(0);
+var peakHoldR = new Array(BANDS).fill(0);
+var peakDecayL = new Array(BANDS).fill(0);
+var peakDecayR = new Array(BANDS).fill(0);
+
+// Vytvor sloupce
 function buildBars(containerId){
   var c = document.getElementById(containerId);
   c.innerHTML = '';
   for(var b=0; b<BANDS; b++){
-    var bar = document.createElement('div');
-    bar.className = 'bar';
-    for(var i=0; i<CELLS; i++){
-      var cell = document.createElement('div');
-      cell.className = 'cell';
-      bar.appendChild(cell);
-    }
-    c.appendChild(bar);
+    var col = document.createElement('div');
+    col.className = 'bar-col';
+    var fill = document.createElement('div');
+    fill.className = 'bar-fill';
+    fill.id = containerId + '-fill-' + b;
+    var peak = document.createElement('div');
+    peak.className = 'bar-peak';
+    peak.id = containerId + '-peak-' + b;
+    peak.style.bottom = '0%';
+    col.appendChild(fill);
+    col.appendChild(peak);
+    c.appendChild(col);
   }
 }
 
-// Vykresli úrovně (pole 8 hodnot 0-100) do daného kontejneru
-function renderBars(containerId, values){
-  var c = document.getElementById(containerId);
-  var bars = c.children;
+buildBars('bars-l');
+buildBars('bars-r');
+
+// Aktualizuj sloupce - plynule
+function updateBars(L, R){
+  var maxL = 0, maxR = 0;
   for(var b=0; b<BANDS; b++){
-    var lit = Math.round(values[b]/100 * CELLS);
-    var cells = bars[b].children;
-    for(var i=0; i<CELLS; i++){
-      var cell = cells[i];
-      if(i < lit){
-        // Barva podle výšky: dolních 12 zelená, 4 žlutá, 2 oranžová, 2 červená
-        var color;
-        if(i < 14) color = 'on-g';
-        else if(i < 18) color = 'on-y';
-        else color = 'on-o';
-        cell.className = 'cell ' + color;
-      } else {
-        cell.className = 'cell';
-      }
-    }
+    var lVal = Math.max(0, Math.min(100, L[b]));
+    var rVal = Math.max(0, Math.min(100, R[b]));
+    
+    // Plynula vyska sloupce
+    document.getElementById('bars-l-fill-' + b).style.height = lVal + '%';
+    document.getElementById('bars-r-fill-' + b).style.height = rVal + '%';
+    
+    // Peak hold - drzi nejvyssi hodnotu s pomalym poklesem
+    if(lVal > peakHoldL[b]){ peakHoldL[b] = lVal; peakDecayL[b] = 0; }
+    else { peakDecayL[b]++; if(peakDecayL[b] > 8) peakHoldL[b] = Math.max(0, peakHoldL[b] - 1.5); }
+    
+    if(rVal > peakHoldR[b]){ peakHoldR[b] = rVal; peakDecayR[b] = 0; }
+    else { peakDecayR[b]++; if(peakDecayR[b] > 8) peakHoldR[b] = Math.max(0, peakHoldR[b] - 1.5); }
+    
+    document.getElementById('bars-l-peak-' + b).style.bottom = peakHoldL[b] + '%';
+    document.getElementById('bars-r-peak-' + b).style.bottom = peakHoldR[b] + '%';
+    
+    if(lVal > maxL) maxL = lVal;
+    if(rVal > maxR) maxR = rVal;
   }
+  document.getElementById('peak-l').textContent = Math.round(maxL);
+  document.getElementById('peak-r').textContent = Math.round(maxR);
 }
 
-// FAKE DATA: generuj testovací vlnku jako z hudby
+// FAKE generator - simuluje hudbu
 var fakePhase = 0;
 function generateFake(){
   var L = [], R = [];
-  fakePhase += 0.06;
+  fakePhase += 0.08;
   for(var b=0; b<BANDS; b++){
-    // Basy hodně, středy více, výšky méně
-    var weight = b < 2 ? 85 : (b < 5 ? 70 : 55);
-    var lVal = weight + Math.sin(fakePhase + b*0.7) * 25 + Math.random() * 15;
-    var rVal = weight + Math.sin(fakePhase + b*0.7 + 0.4) * 25 + Math.random() * 15;
+    var weight = b<2 ? 70 : (b<5 ? 55 : 40);
+    var lVal = weight + Math.sin(fakePhase + b*0.7) * 22 + Math.random() * 12;
+    var rVal = weight + Math.sin(fakePhase + b*0.7 + 0.4) * 22 + Math.random() * 12;
     L.push(Math.max(0, Math.min(100, lVal)));
     R.push(Math.max(0, Math.min(100, rVal)));
   }
   return {L:L, R:R};
 }
 
-// Peak hodnota (max ze všech pásem)
-function calcPeak(arr){
-  var max = 0;
-  for(var i=0; i<arr.length; i++) if(arr[i] > max) max = arr[i];
-  return Math.round(max);
-}
-function showPeak(elId, val){
-  var el = document.getElementById(elId);
-  el.textContent = val;
-  if(val > 90) el.classList.add('hot');
-  else el.classList.remove('hot');
-}
-
-// LIVE režim: čte audio_spectrum z Firebase
-function fetchLive(){
-  fetch(FB+'/audio_spectrum.json',{signal:AbortSignal.timeout(2000)})
-  .then(function(r){return r.json();})
-  .then(function(d){
-    if(!d){setStatus('offline','OFFLINE');return;}
-    var age = Date.now() - (d.ts || 0);
-    if(age > MAX_AGE_MS){setStatus('offline','OFFLINE (stará data)');return;}
-    if(d.L && d.R){
-      renderBars('bars-l', d.L);
-      renderBars('bars-r', d.R);
-      showPeak('peak-l', calcPeak(d.L));
-      showPeak('peak-r', calcPeak(d.R));
-      setStatus('','LIVE · '+age+'ms');
-      document.getElementById('hb').textContent = new Date(d.ts).toLocaleTimeString('cs-CZ');
+// Cti z Firebase
+function fetchLive(cb){
+  var url = FB + '/audio_spectrum.json?ts=' + Date.now();
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.timeout = 2000;
+  xhr.onreadystatechange = function(){
+    if(xhr.readyState === 4){
+      if(xhr.status === 200){
+        try{ cb(JSON.parse(xhr.responseText)); }
+        catch(e){ cb(null); }
+      } else cb(null);
     }
-  })
-  .catch(function(){setStatus('offline','OFFLINE');});
+  };
+  xhr.send();
 }
 
-// Nastav status pásek
-function setStatus(cls, text){
-  var m = document.getElementById('mode');
-  m.className = 'status-mode ' + cls;
-  m.textContent = FAKE_MODE ? 'FAKE DEMO' : text;
-}
-
-// HLAVNI SMYCKA
+// Hlavni loop
 function tick(){
   if(FAKE_MODE){
-    var f = generateFake();
-    renderBars('bars-l', f.L);
-    renderBars('bars-r', f.R);
-    showPeak('peak-l', calcPeak(f.L));
-    showPeak('peak-r', calcPeak(f.R));
+    var d = generateFake();
+    updateBars(d.L, d.R);
+    document.getElementById('mode').textContent = 'FAKE DEMO';
+    document.getElementById('mode').className = 'status-mode fake';
     document.getElementById('hb').textContent = 'simulace';
-  } else {
-    fetchLive();
+    return;
   }
+  
+  fetchLive(function(data){
+    if(!data || !data.L || !data.R){
+      document.getElementById('mode').textContent = 'OFFLINE';
+      document.getElementById('mode').className = 'status-mode offline';
+      document.getElementById('hb').textContent = 'cekam...';
+      return;
+    }
+    var age = Date.now() - (data.ts || 0);
+    if(age > MAX_AGE_MS){
+      document.getElementById('mode').textContent = 'OFFLINE (stara data)';
+      document.getElementById('mode').className = 'status-mode offline';
+      document.getElementById('hb').textContent = Math.round(age/1000) + 's';
+      return;
+    }
+    updateBars(data.L, data.R);
+    document.getElementById('mode').textContent = 'LIVE · ' + age + 'ms';
+    document.getElementById('mode').className = 'status-mode live';
+    var now = new Date();
+    document.getElementById('hb').textContent = 
+      String(now.getHours()).padStart(2,'0') + ':' +
+      String(now.getMinutes()).padStart(2,'0') + ':' +
+      String(now.getSeconds()).padStart(2,'0');
+  });
 }
 
-// Inicializace
-buildBars('bars-l');
-buildBars('bars-r');
-
-// Tlačítko pro přepínání režimů
+// Tlacitko prepnuti
 document.getElementById('btn-mode').onclick = function(){
   FAKE_MODE = !FAKE_MODE;
-  var m = document.getElementById('mode');
-  if(FAKE_MODE){
-    m.className = 'status-mode fake';
-    m.textContent = 'FAKE DEMO';
-  } else {
-    m.className = 'status-mode';
-    m.textContent = 'LIVE';
-  }
+  tick();
 };
 
-// Spusť smyčku - 60ms = ~16 FPS (plynulé bez zatížení)
+// Start - 50ms = 20 FPS
+setInterval(tick, 50);
 tick();
-setInterval(tick, 60);
 </script>
+
 </body>
 </html>
