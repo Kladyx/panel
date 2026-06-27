@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v1.8.Kl">
-<title>Equalizer v1.8.Kl</title>
+<meta name="version" content="v1.9.Kl">
+<title>Equalizer v1.9.Kl</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -44,7 +44,7 @@ h1{font-size:1.0rem;letter-spacing:3px;text-align:center;margin-bottom:2px;backg
 .ch-label{text-align:center;font-size:0.6rem;letter-spacing:4px;color:var(--cyan);margin-bottom:8px;text-shadow:0 0 6px rgba(0,212,255,0.4);}
 .ch-label.r{color:var(--red);text-shadow:0 0 6px rgba(255,60,90,0.4);}
 /* 8 SLOUPCU */
-.bars{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;height:120px;align-items:end;}
+.bars{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;height:200px;align-items:end;}
 .bar{display:flex;flex-direction:column-reverse;gap:2px;height:100%;}
 .cell{flex:none;height:3px;background:var(--cell-off);border-radius:0px;transition:background .06s ease,box-shadow .06s ease;}
 .cell.on-g{background:var(--green);box-shadow:0 0 4px var(--green);}
@@ -72,7 +72,7 @@ h1{font-size:1.0rem;letter-spacing:3px;text-align:center;margin-bottom:2px;backg
 <body>
 
 <h1>♪ STEREO EQUALIZER ♪</h1>
-<div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v1.8.Kl</div>
+<div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v1.9.Kl</div>
 
 <div class="status">
   <div class="status-left">MODE: <span class="status-mode fake" id="mode">FAKE DEMO</span></div>
@@ -109,7 +109,7 @@ h1{font-size:1.0rem;letter-spacing:3px;text-align:center;margin-bottom:2px;backg
 
 <script>
 var FB='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
-var CELLS = 5;            // počet kostek na sloupci
+var CELLS = 20;           // počet kostek na sloupci
 var BANDS = 8;            // počet frekvenčních pásem
 var MAX_AGE_MS = 5000;    // max stáří dat z Firebase (5s = LIVE)
 var FAKE_MODE = true;     // start v fake režimu
@@ -142,8 +142,8 @@ function renderBars(containerId, values){
       if(i < lit){
         // Barva podle výšky: dolních 12 zelená, 4 žlutá, 2 oranžová, 2 červená
         var color;
-        if(i < 3) color = 'on-g';
-        else if(i < 4) color = 'on-y';
+        if(i < 14) color = 'on-g';
+        else if(i < 18) color = 'on-y';
         else color = 'on-o';
         cell.className = 'cell ' + color;
       } else {
