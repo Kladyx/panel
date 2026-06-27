@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="version" content="v1.1.Kl">
+<title>Equalizer v1.1.Kl</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0a0e1a;
+  --card:rgba(255,255,255,0.04);
+  --cyan:#00d4ff;
+  --green:#00ff88;
+  --yellow:#ffdd00;
+  --orange:#ff8800;
+  --red:#ff3c5a;
+  --text:#e0e8ff;
+  --muted:#5a6488;
+  --cell-off:rgba(255,255,255,0.04);
+}
+body{font-family:'Courier New',monospace;background:var(--bg);color:var(--text);min-height:100vh;padding:12px;position:relative;overflow-x:hidden;}
+/* SCANLINE EFEKT */
+body::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,212,255,0.015) 0px,rgba(0,212,255,0.015) 1px,transparent 1px,transparent 3px);z-index:1;}
+body > *{position:relative;z-index:3;}
+/* NADPIS */
+h1{font-size:1.0rem;letter-spacing:3px;text-align:center;margin-bottom:2px;background:linear-gradient(90deg,#00d4ff,#00ff88,#00d4ff);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:gradient-shift 4s linear infinite;filter:drop-shadow(0 0 8px rgba(0,212,255,0.4));}
+@keyframes gradient-shift{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+.sub{font-size:0.5rem;letter-spacing:3px;color:var(--muted);text-align:center;margin-bottom:14px;}
+.sub .dot-live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);margin-right:5px;animation:pulse-live 1.4s infinite ease-in-out;vertical-align:middle;}
+@keyframes pulse-live{0%,100%{opacity:1;}50%{opacity:.4;}}
+/* STATUS BAR */
+.status{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(0,212,255,0.02));border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:6px 12px;margin-bottom:14px;font-size:0.55rem;letter-spacing:1px;}
+.status-left{color:var(--muted);}
+.status-right{color:var(--cyan);text-shadow:0 0 5px rgba(0,212,255,0.5);}
+.status-mode{color:var(--green);}
+.status-mode.fake{color:var(--yellow);}
+.status-mode.offline{color:var(--red);}
+/* EQ KONTEJNER */
+.eq-wrap{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));border:1px solid rgba(0,212,255,0.15);border-radius:12px;padding:14px 10px 10px;position:relative;overflow:hidden;margin-bottom:12px;}
+.eq-wrap::before{content:"";position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,0.4),transparent);}
+.channels{display:flex;gap:14px;justify-content:center;}
+.channel{flex:1;max-width:48%;}
+.ch-label{text-align:center;font-size:0.6rem;letter-spacing:4px;color:var(--cyan);margin-bottom:8px;text-shadow:0 0 6px rgba(0,212,255,0.4);}
+.ch-label.r{color:var(--red);text-shadow:0 0 6px rgba(255,60,90,0.4);}
+/* 8 SLOUPCU */
+.bars{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;height:200px;align-items:end;}
+.bar{display:flex;flex-direction:column-reverse;gap:2px;height:100%;}
+.cell{flex:1;background:var(--cell-off);border-radius:1px;transition:background .08s ease,box-shadow .08s ease;}
+.cell.on-g{background:var(--green);box-shadow:0 0 4px var(--green);}
+.cell.on-y{background:var(--yellow);box-shadow:0 0 4px var(--yellow);}
+.cell.on-o{background:var(--orange);box-shadow:0 0 4px var(--orange);}
+.cell.on-r{background:var(--red);box-shadow:0 0 5px var(--red);}
+.cell.peak{background:#fff;box-shadow:0 0 6px #fff;}
+/* FREQ LABELS */
+.freq-labels{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-top:6px;}
+.freq-labels span{font-size:0.4rem;color:var(--muted);text-align:center;letter-spacing:1px;}
+/* PEAK INDICATORS */
+.peaks{display:flex;gap:14px;justify-content:center;margin-bottom:10px;}
+.peak-box{flex:1;max-width:48%;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:5px 10px;font-size:0.5rem;letter-spacing:1px;color:var(--muted);}
+.peak-val{font-size:0.7rem;color:var(--cyan);text-shadow:0 0 5px rgba(0,212,255,0.4);font-weight:bold;}
+.peak-val.r{color:var(--red);text-shadow:0 0 5px rgba(255,60,90,0.4);}
+.peak-val.hot{color:var(--red);animation:pulse-hot 0.3s infinite alternate;}
+@keyframes pulse-hot{from{opacity:.7}to{opacity:1}}
+/* TLAČÍTKO MODE */
+.mode-btn{display:block;width:100%;padding:7px;border:1px solid rgba(0,212,255,0.3);background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(0,212,255,0.03));color:var(--cyan);font-family:'Courier New',monospace;font-size:0.6rem;letter-spacing:2px;cursor:pointer;border-radius:6px;margin-bottom:8px;transition:all .3s ease;}
+.mode-btn:hover{border-color:rgba(0,212,255,0.6);box-shadow:0 0 12px rgba(0,212,255,0.2);}
+.mode-btn:active{transform:scale(0.98);}
+.footer{text-align:center;font-size:0.45rem;color:rgba(90,100,136,0.5);letter-spacing:2px;margin-top:8px;}
+</style>
+</head>
+<body>
+
+<h1>♪ STEREO EQUALIZER ♪</h1>
+<div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v1.1.Kl</div>
+
+<div class="status">
+  <div class="status-left">MODE: <span class="status-mode fake" id="mode">FAKE DEMO</span></div>
+  <div class="status-right" id="hb">— —</div>
+</div>
+
+<div class="eq-wrap">
+  <div class="channels">
+    <div class="channel">
+      <div class="ch-label">◄ L</div>
+      <div class="bars" id="bars-l"></div>
+      <div class="freq-labels">
+        <span>60</span><span>150</span><span>400</span><span>1k</span><span>2.4k</span><span>6k</span><span>12k</span><span>16k</span>
+      </div>
+    </div>
+    <div class="channel">
+      <div class="ch-label r">R ►</div>
+      <div class="bars" id="bars-r"></div>
+      <div class="freq-labels">
+        <span>60</span><span>150</span><span>400</span><span>1k</span><span>2.4k</span><span>6k</span><span>12k</span><span>16k</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="peaks">
+  <div class="peak-box"><span>PEAK L</span><span class="peak-val" id="peak-l">—</span></div>
+  <div class="peak-box"><span>PEAK R</span><span class="peak-val r" id="peak-r">—</span></div>
+</div>
+
+<button class="mode-btn" id="btn-mode">⟳ PŘEPNOUT MODE (FAKE / LIVE)</button>
+
+<div class="footer">FFT 8 BANDS · 60Hz–16kHz · KLADYXLAND 2026</div>
+
+<script>
+var FB='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
+var CELLS = 20;           // počet kostek na sloupci
+var BANDS = 8;            // počet frekvenčních pásem
+var MAX_AGE_MS = 1000;    // max stáří dat z Firebase (1s = LIVE)
+var FAKE_MODE = true;     // start v fake režimu
+
+// Vytvoř HTML strukturu sloupců (8 sloupců, každý 20 kostek)
+function buildBars(containerId){
+  var c = document.getElementById(containerId);
+  c.innerHTML = '';
+  for(var b=0; b<BANDS; b++){
+    var bar = document.createElement('div');
+    bar.className = 'bar';
+    for(var i=0; i<CELLS; i++){
+      var cell = document.createElement('div');
+      cell.className = 'cell';
+      bar.appendChild(cell);
+    }
+    c.appendChild(bar);
+  }
+}
+
+// Vykresli úrovně (pole 8 hodnot 0-100) do daného kontejneru
+function renderBars(containerId, values){
+  var c = document.getElementById(containerId);
+  var bars = c.children;
+  for(var b=0; b<BANDS; b++){
+    var lit = Math.round(values[b]/100 * CELLS);
+    var cells = bars[b].children;
+    for(var i=0; i<CELLS; i++){
+      var cell = cells[i];
+      if(i < lit){
+        // Barva podle výšky: dolních 12 zelená, 4 žlutá, 2 oranžová, 2 červená
+        var color;
+        if(i < 12) color = 'on-g';
+        else if(i < 16) color = 'on-y';
+        else if(i < 18) color = 'on-o';
+        else color = 'on-r';
+        cell.className = 'cell ' + color;
+      } else {
+        cell.className = 'cell';
+      }
+    }
+  }
+}
+
+// FAKE DATA: generuj testovací vlnku jako z hudby
+var fakePhase = 0;
+function generateFake(){
+  var L = [], R = [];
+  fakePhase += 0.06;
+  for(var b=0; b<BANDS; b++){
+    // Basy hodně, středy více, výšky méně
+    var weight = b < 2 ? 85 : (b < 5 ? 70 : 55);
+    var lVal = weight + Math.sin(fakePhase + b*0.7) * 25 + Math.random() * 15;
+    var rVal = weight + Math.sin(fakePhase + b*0.7 + 0.4) * 25 + Math.random() * 15;
+    L.push(Math.max(0, Math.min(100, lVal)));
+    R.push(Math.max(0, Math.min(100, rVal)));
+  }
+  return {L:L, R:R};
+}
+
+// Peak hodnota (max ze všech pásem)
+function calcPeak(arr){
+  var max = 0;
+  for(var i=0; i<arr.length; i++) if(arr[i] > max) max = arr[i];
+  return Math.round(max);
+}
+function showPeak(elId, val){
+  var el = document.getElementById(elId);
+  el.textContent = val;
+  if(val > 90) el.classList.add('hot');
+  else el.classList.remove('hot');
+}
+
+// LIVE režim: čte audio_spectrum z Firebase
+function fetchLive(){
+  fetch(FB+'/audio_spectrum.json',{signal:AbortSignal.timeout(2000)})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(!d){setStatus('offline','OFFLINE');return;}
+    var age = Date.now() - (d.ts || 0);
+    if(age > MAX_AGE_MS){setStatus('offline','OFFLINE (stará data)');return;}
+    if(d.L && d.R){
+      renderBars('bars-l', d.L);
+      renderBars('bars-r', d.R);
+      showPeak('peak-l', calcPeak(d.L));
+      showPeak('peak-r', calcPeak(d.R));
+      setStatus('','LIVE · '+age+'ms');
+      document.getElementById('hb').textContent = new Date(d.ts).toLocaleTimeString('cs-CZ');
+    }
+  })
+  .catch(function(){setStatus('offline','OFFLINE');});
+}
+
+// Nastav status pásek
+function setStatus(cls, text){
+  var m = document.getElementById('mode');
+  m.className = 'status-mode ' + cls;
+  m.textContent = FAKE_MODE ? 'FAKE DEMO' : text;
+}
+
+// HLAVNI SMYCKA
+function tick(){
+  if(FAKE_MODE){
+    var f = generateFake();
+    renderBars('bars-l', f.L);
+    renderBars('bars-r', f.R);
+    showPeak('peak-l', calcPeak(f.L));
+    showPeak('peak-r', calcPeak(f.R));
+    document.getElementById('hb').textContent = 'simulace';
+  } else {
+    fetchLive();
+  }
+}
+
+// Inicializace
+buildBars('bars-l');
+buildBars('bars-r');
+
+// Tlačítko pro přepínání režimů
+document.getElementById('btn-mode').onclick = function(){
+  FAKE_MODE = !FAKE_MODE;
+  var m = document.getElementById('mode');
+  if(FAKE_MODE){
+    m.className = 'status-mode fake';
+    m.textContent = 'FAKE DEMO';
+  } else {
+    m.className = 'status-mode';
+    m.textContent = 'LIVE';
+  }
+};
+
+// Spusť smyčku - 60ms = ~16 FPS (plynulé bez zatížení)
+tick();
+setInterval(tick, 60);
+</script>
+</body>
+</html>
