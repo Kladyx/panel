@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v1.2.Kl">
-<title>Equalizer v1.2.Kl</title>
+<meta name="version" content="v1.3.Kl">
+<title>Equalizer v1.3.Kl</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -72,7 +72,7 @@ h1{font-size:1.0rem;letter-spacing:3px;text-align:center;margin-bottom:2px;backg
 <body>
 
 <h1>♪ STEREO EQUALIZER ♪</h1>
-<div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v1.2.Kl</div>
+<div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v1.3.Kl</div>
 
 <div class="status">
   <div class="status-left">MODE: <span class="status-mode fake" id="mode">FAKE DEMO</span></div>
@@ -142,9 +142,9 @@ function renderBars(containerId, values){
       if(i < lit){
         // Barva podle výšky: dolních 12 zelená, 4 žlutá, 2 oranžová, 2 červená
         var color;
-        if(i < 12) color = 'on-g';
-        else if(i < 16) color = 'on-y';
-        else if(i < 18) color = 'on-o';
+        if(i < 15) color = 'on-g';
+        else if(i < 17) color = 'on-y';
+        else if(i < 19) color = 'on-o';
         else color = 'on-r';
         cell.className = 'cell ' + color;
       } else {
