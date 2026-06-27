@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v1.1.Kl">
-<title>Pi Monitor v1.1.Kl</title>
+<meta name="version" content="v1.2.Kl">
+<title>Pi Monitor v1.2.Kl</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -48,7 +48,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 @keyframes pulse-ok{0%,100%{opacity:1;box-shadow:0 0 5px var(--green);}50%{opacity:.5;box-shadow:0 0 12px var(--green);}}
 .svc-name{flex:1;font-size:0.65rem;color:#c0cce0;}
 .svc-st{font-size:0.58rem;color:var(--muted);}
-.svc-st.ok{color:var(--green);text-shadow:0 0 6px rgba(0,255,136,0.4);}
+.svc-st.ok{color:var(--green);text-shadow:0 0 6px rgba(0,255,136,0.4);animation:pulse-ok 1.4s infinite ease-in-out;}
 .svc-st.err{color:var(--red);text-shadow:0 0 6px rgba(255,60,90,0.4);}
 /* NET */
 .net-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
@@ -67,7 +67,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v1.1.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v1.2.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 
