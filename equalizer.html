@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v1.1.Kl">
-<title>Equalizer v1.1.Kl</title>
+<meta name="version" content="v1.2.Kl">
+<title>Equalizer v1.2.Kl</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -72,7 +72,7 @@ h1{font-size:1.0rem;letter-spacing:3px;text-align:center;margin-bottom:2px;backg
 <body>
 
 <h1>♪ STEREO EQUALIZER ♪</h1>
-<div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v1.1.Kl</div>
+<div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v1.2.Kl</div>
 
 <div class="status">
   <div class="status-left">MODE: <span class="status-mode fake" id="mode">FAKE DEMO</span></div>
@@ -111,7 +111,7 @@ h1{font-size:1.0rem;letter-spacing:3px;text-align:center;margin-bottom:2px;backg
 var FB='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
 var CELLS = 20;           // počet kostek na sloupci
 var BANDS = 8;            // počet frekvenčních pásem
-var MAX_AGE_MS = 1000;    // max stáří dat z Firebase (1s = LIVE)
+var MAX_AGE_MS = 5000;    // max stáří dat z Firebase (5s = LIVE)
 var FAKE_MODE = true;     // start v fake režimu
 
 // Vytvoř HTML strukturu sloupců (8 sloupců, každý 20 kostek)
