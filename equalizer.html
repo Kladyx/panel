@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v3.2.Kl">
-<title>Stereo VU Equalizer v3.2.Kl</title>
+<meta name="version" content="v3.3.Kl">
+<title>Stereo VU Equalizer v3.3.Kl</title>
 <style>
 :root{
   --bg:#0a0e14;
@@ -55,7 +55,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
   var(--yellow) 70%,
   var(--orange) 85%,
   var(--red) 100%);
-  transition:height 300ms cubic-bezier(0.25,0.1,0.25,1);
+  transition:height 450ms cubic-bezier(0.25,0.1,0.25,1);
   box-shadow:0 0 8px rgba(0,255,126,0.4);
 }
 /* Peak hold cara */
@@ -80,7 +80,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 
 <div class="header">
   <div class="title">♪ STEREO VU EQUALIZER ♪</div>
-  <div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v3.2.Kl</div>
+  <div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v3.3.Kl</div>
 </div>
 
 <div class="status">
@@ -187,10 +187,10 @@ function updateBars(L, R){
     
     // Peak hold - drzi nejvyssi hodnotu s pomalym poklesem
     if(lVal > peakHoldL[b]){ peakHoldL[b] = lVal; peakDecayL[b] = 0; }
-    else { peakDecayL[b]++; if(peakDecayL[b] > 8) peakHoldL[b] = Math.max(0, peakHoldL[b] - 0.4); }
+    else { peakDecayL[b]++; if(peakDecayL[b] > 8) peakHoldL[b] = Math.max(0, peakHoldL[b] - 0.2); }
     
     if(rVal > peakHoldR[b]){ peakHoldR[b] = rVal; peakDecayR[b] = 0; }
-    else { peakDecayR[b]++; if(peakDecayR[b] > 8) peakHoldR[b] = Math.max(0, peakHoldR[b] - 0.4); }
+    else { peakDecayR[b]++; if(peakDecayR[b] > 8) peakHoldR[b] = Math.max(0, peakHoldR[b] - 0.2); }
     
     document.getElementById('bars-l-peak-' + b).style.bottom = peakHoldL[b] + '%';
     document.getElementById('bars-r-peak-' + b).style.bottom = peakHoldR[b] + '%';
