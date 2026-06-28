@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v3.5.Kl">
-<title>Stereo VU Equalizer v3.5.Kl</title>
+<meta name="version" content="v3.6.Kl">
+<title>Stereo VU Equalizer v3.6.Kl</title>
 <style>
 :root{
   --bg:#0a0e14;
@@ -80,7 +80,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 
 <div class="header">
   <div class="title">♪ STEREO VU EQUALIZER ♪</div>
-  <div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v3.5.Kl</div>
+  <div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v3.6.Kl</div>
 </div>
 
 <div class="status">
@@ -137,10 +137,10 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 
 <button class="btn-mode" id="btn-mode">↻ PŘEPNOUT MODE (FAKE / LIVE)</button>
 
-<div class="footer">FFT 8 BANDS · PEAK METER · KLADYXLAND 2026</div>
+<div class="footer">FFT 8 BANDS · PEAK METER · KLADYXLAND 2026 · v3.6.Kl</div>
 
 <script>
-var FB='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
+var FB = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
 var BANDS = 8;
 var MAX_AGE_MS = 5000;
 var FAKE_MODE = true;
@@ -151,11 +151,21 @@ var peakHoldR = new Array(BANDS).fill(0);
 var peakDecayL = new Array(BANDS).fill(0);
 var peakDecayR = new Array(BANDS).fill(0);
 
+// Smoothing
+var smoothL = new Array(BANDS).fill(0);
+var smoothR = new Array(BANDS).fill(0);
+var SMOOTH_UP = 0.7;
+var SMOOTH_DOWN = 0.2;
+
+// Posledni live data z Firebase (SSE)
+var liveData = null;
+var sseConn = null;
+
 // Vytvor sloupce
 function buildBars(containerId){
   var c = document.getElementById(containerId);
   c.innerHTML = '';
-  for(var b=0; b<BANDS; b++){
+  for(var b = 0; b < BANDS; b++){
     var col = document.createElement('div');
     col.className = 'bar-col';
     var fill = document.createElement('div');
@@ -170,45 +180,29 @@ function buildBars(containerId){
     c.appendChild(col);
   }
 }
-
 buildBars('bars-l');
 buildBars('bars-r');
 
-// Smoothing buffery - exponencialni klouzavy prumer
-var smoothL = new Array(8).fill(0);
-var smoothR = new Array(8).fill(0);
-var SMOOTH_UP = 0.55;   // rychlost nabehu (rychlejsi)
-var SMOOTH_DOWN = 0.25; // rychlost poklesu (pomaly, plynuly)
-
-// Aktualizuj sloupce - plynule s interpolaci
+// Aktualizuj bary
 function updateBars(L, R){
   var maxL = 0, maxR = 0;
-  for(var b=0; b<BANDS; b++){
+  for(var b = 0; b < BANDS; b++){
     var lRaw = Math.max(0, Math.min(100, L[b]));
     var rRaw = Math.max(0, Math.min(100, R[b]));
-    
-    // Exponencialni smoothing - rychly nabeh, pomaly pokles
     var aL = lRaw > smoothL[b] ? SMOOTH_UP : SMOOTH_DOWN;
     var aR = rRaw > smoothR[b] ? SMOOTH_UP : SMOOTH_DOWN;
     smoothL[b] = smoothL[b] + aL * (lRaw - smoothL[b]);
     smoothR[b] = smoothR[b] + aR * (rRaw - smoothR[b]);
     var lVal = smoothL[b];
     var rVal = smoothR[b];
-    
-    // Plynula vyska sloupce
     document.getElementById('bars-l-fill-' + b).style.height = lVal.toFixed(1) + '%';
     document.getElementById('bars-r-fill-' + b).style.height = rVal.toFixed(1) + '%';
-    
-    // Peak hold - drzi nejvyssi hodnotu s pomalym poklesem
     if(lVal > peakHoldL[b]){ peakHoldL[b] = lVal; peakDecayL[b] = 0; }
-    else { peakDecayL[b]++; if(peakDecayL[b] > 8) peakHoldL[b] = Math.max(0, peakHoldL[b] - 0.2); }
-    
+    else { peakDecayL[b]++; if(peakDecayL[b] > 8) peakHoldL[b] = Math.max(0, peakHoldL[b] - 0.3); }
     if(rVal > peakHoldR[b]){ peakHoldR[b] = rVal; peakDecayR[b] = 0; }
-    else { peakDecayR[b]++; if(peakDecayR[b] > 8) peakHoldR[b] = Math.max(0, peakHoldR[b] - 0.2); }
-    
+    else { peakDecayR[b]++; if(peakDecayR[b] > 8) peakHoldR[b] = Math.max(0, peakHoldR[b] - 0.3); }
     document.getElementById('bars-l-peak-' + b).style.bottom = peakHoldL[b] + '%';
     document.getElementById('bars-r-peak-' + b).style.bottom = peakHoldR[b] + '%';
-    
     if(lVal > maxL) maxL = lVal;
     if(rVal > maxR) maxR = rVal;
   }
@@ -216,40 +210,48 @@ function updateBars(L, R){
   document.getElementById('peak-r').textContent = Math.round(maxR);
 }
 
-// FAKE generator - simuluje hudbu
+// FAKE generator
 var fakePhase = 0;
 function generateFake(){
   var L = [], R = [];
   fakePhase += 0.08;
-  for(var b=0; b<BANDS; b++){
-    var weight = b<2 ? 70 : (b<5 ? 55 : 40);
-    var lVal = weight + Math.sin(fakePhase + b*0.7) * 22 + Math.random() * 12;
-    var rVal = weight + Math.sin(fakePhase + b*0.7 + 0.4) * 22 + Math.random() * 12;
-    L.push(Math.max(0, Math.min(100, lVal)));
-    R.push(Math.max(0, Math.min(100, rVal)));
+  for(var b = 0; b < BANDS; b++){
+    var weight = b < 2 ? 70 : (b < 5 ? 55 : 40);
+    L.push(Math.max(0, Math.min(100, weight + Math.sin(fakePhase + b * 0.7) * 22 + Math.random() * 12)));
+    R.push(Math.max(0, Math.min(100, weight + Math.sin(fakePhase + b * 0.7 + 0.4) * 22 + Math.random() * 12)));
   }
-  return {L:L, R:R};
+  return {L: L, R: R};
 }
 
-// Cti z Firebase
-function fetchLive(cb){
-  var url = FB + '/audio_spectrum.json?ts=' + Date.now();
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.timeout = 2000;
-  xhr.onreadystatechange = function(){
-    if(xhr.readyState === 4){
-      if(xhr.status === 200){
-        try{ cb(JSON.parse(xhr.responseText)); }
-        catch(e){ cb(null); }
-      } else cb(null);
-    }
-  };
-  xhr.send();
+// Firebase SSE (Realtime listener) - okamzita data bez pollingu
+function startSSE(){
+  if(sseConn){ sseConn.close(); sseConn = null; }
+  var url = FB + '/audio_spectrum.json';
+  try{
+    sseConn = new EventSource(url);
+    sseConn.addEventListener('put', function(e){
+      try{
+        var msg = JSON.parse(e.data);
+        if(msg && msg.data && msg.data.L && msg.data.R){
+          liveData = msg.data;
+        }
+      } catch(err){}
+    });
+    sseConn.onerror = function(){
+      // Automaticky reconnect po chybe
+      setTimeout(function(){ if(!FAKE_MODE) startSSE(); }, 2000);
+    };
+  } catch(err){ liveData = null; }
 }
 
-// Hlavni loop
-function tick(){
+function stopSSE(){
+  if(sseConn){ sseConn.close(); sseConn = null; }
+  liveData = null;
+}
+
+// RAF render loop - plynuly render, data z SSE
+function rafLoop(){
+  requestAnimationFrame(rafLoop);
   if(FAKE_MODE){
     var d = generateFake();
     updateBars(d.L, d.R);
@@ -258,48 +260,38 @@ function tick(){
     document.getElementById('hb').textContent = 'simulace';
     return;
   }
-  
-  fetchLive(function(data){
-    if(!data || !data.L || !data.R){
-      document.getElementById('mode').textContent = 'OFFLINE';
-      document.getElementById('mode').className = 'status-mode offline';
-      document.getElementById('hb').textContent = 'cekam...';
-      return;
-    }
-    var age = Date.now() - (data.ts || 0);
-    if(age > MAX_AGE_MS){
-      document.getElementById('mode').textContent = 'OFFLINE (stara data)';
-      document.getElementById('mode').className = 'status-mode offline';
-      document.getElementById('hb').textContent = Math.round(age/1000) + 's';
-      return;
-    }
-    updateBars(data.L, data.R);
-    document.getElementById('mode').textContent = 'LIVE · ' + age + 'ms';
-    document.getElementById('mode').className = 'status-mode live';
-    var now = new Date();
-    document.getElementById('hb').textContent = 
-      String(now.getHours()).padStart(2,'0') + ':' +
-      String(now.getMinutes()).padStart(2,'0') + ':' +
-      String(now.getSeconds()).padStart(2,'0');
-  });
+  // LIVE mode - render z posledniho SSE snapshotu
+  if(!liveData){
+    document.getElementById('mode').textContent = 'OFFLINE';
+    document.getElementById('mode').className = 'status-mode offline';
+    document.getElementById('hb').textContent = 'cekam...';
+    return;
+  }
+  var age = Date.now() - (liveData.ts || 0);
+  if(age > MAX_AGE_MS){
+    document.getElementById('mode').textContent = 'OFFLINE (stara data)';
+    document.getElementById('mode').className = 'status-mode offline';
+    document.getElementById('hb').textContent = Math.round(age / 1000) + 's';
+    return;
+  }
+  updateBars(liveData.L, liveData.R);
+  document.getElementById('mode').textContent = 'LIVE · ' + age + 'ms';
+  document.getElementById('mode').className = 'status-mode live';
+  var now = new Date();
+  document.getElementById('hb').textContent =
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0') + ':' +
+    String(now.getSeconds()).padStart(2,'0');
 }
 
 // Tlacitko prepnuti
 document.getElementById('btn-mode').onclick = function(){
   FAKE_MODE = !FAKE_MODE;
-  tick();
+  if(FAKE_MODE){ stopSSE(); }
+  else { startSSE(); }
 };
 
-// Start - requestAnimationFrame pro plynuly render bez trhani
-var lastTick = 0;
-var TICK_MS = 50; // 20 FPS z Firebase, ale render plynuly
-function rafLoop(ts){
-  if(ts - lastTick >= TICK_MS){
-    lastTick = ts;
-    tick();
-  }
-  requestAnimationFrame(rafLoop);
-}
+// Start
 requestAnimationFrame(rafLoop);
 </script>
 
