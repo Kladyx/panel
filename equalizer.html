@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v3.11.Kl">
-<title>Stereo VU Equalizer v3.11.Kl</title>
+<meta name="version" content="v3.13.Kl">
+<title>Stereo VU Equalizer v3.13.Kl</title>
 <style>
 :root{
   --bg:#0a0e14;
@@ -75,7 +75,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 
 <div class="header">
   <div class="title">&#9834; STEREO VU EQUALIZER &#9834;</div>
-  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.11.Kl</div>
+  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.13.Kl</div>
 </div>
 
 <div class="status">
@@ -121,7 +121,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 
 <button class="btn-start" id="btn-start" onclick="startAudio()">&#9654; SPUSTIT ANALYZU</button>
 
-<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.11.Kl</div>
+<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.13.Kl</div>
 
 <script>
 var BANDS = 8;
@@ -131,8 +131,8 @@ var FREQ_BOUNDS = [40, 100, 200, 500, 1200, 3000, 7000, 14000, 22050];
 
 var smoothL = new Array(BANDS).fill(0);
 var smoothR = new Array(BANDS).fill(0);
-var SMOOTH_UP   = 0.95;  // okamzity nastup
-var SMOOTH_DOWN = 0.55;  // rychly pokles
+var SMOOTH_UP   = 0.75;  // trochu pomalejsi nastup
+var SMOOTH_DOWN = 0.35;  // trochu pomalejsi pokles
 
 var peakHoldL = new Array(BANDS).fill(0);
 var peakHoldR = new Array(BANDS).fill(0);
