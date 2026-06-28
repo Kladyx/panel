@@ -1,12 +1,6 @@
 @echo off
 title KLADYX Audio Analyzer
-cd /d C:\Users\klady\Desktop
-echo.
-echo ========================================
-echo  KLADYX AUDIO ANALYZER - Stereo EQ
-echo ========================================
-echo.
+REM Pockej 60s az se Windows plne nastartuje a sit je pripravena
+timeout /t 60 /nobreak
+cd C:\Users\klady\Desktop
 python audio_analyzer.py
-echo.
-echo Script ukoncen. Stiskni libovolnou klavesu...
-pause
