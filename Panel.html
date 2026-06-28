@@ -17941,55 +17941,55 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 
 // ── REVEAL PASS ──
 const _revealed={};
-var _revealPending={k:null,pass:null};
+var _rp={k:null,pass:null};
 function toggleReveal(k,pass){
   const el=document.getElementById('fv-pass-'+k);
   if(!el)return;
   if(_revealed[k]){el.textContent='•'.repeat(Math.min((pass||'').length,12)||8);el.classList.add('masked');_revealed[k]=false;return;}
-  // PIN ochrana před zobrazením
-  _revealPending={k:k,pass:pass};
-  var od=document.getElementById('reveal-pin-overlay');
+  _rp={k:k,pass:pass};
+  var od=document.getElementById('_rpov');
   if(!od){
     od=document.createElement('div');
-    od.id='reveal-pin-overlay';
-    od.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99999;display:flex;align-items:center;justify-content:center;';
-    od.innerHTML='<div style="background:#0e1118;border:2px solid rgba(255,184,0,0.5);border-radius:14px;padding:28px 32px;text-align:center;min-width:260px;">'
-      +'<div style="color:#ffb800;font-size:1rem;font-family:Orbitron,sans-serif;letter-spacing:2px;margin-bottom:16px;">🔐 ZADEJ PIN</div>'
-      +'<input id="reveal-pin-input" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="width:120px;font-size:1.6rem;letter-spacing:.4em;text-align:center;padding:10px;border-radius:8px;border:2px solid rgba(255,180,0,.4);background:#0e1118;color:#ffb800;font-family:monospace;outline:none;margin-bottom:16px;display:block;margin-left:auto;margin-right:auto;">'
-      +'<div style="display:flex;gap:12px;justify-content:center;">'
-      +'<button onclick="revealPinConfirm()" style="background:#ffb800;color:#000;border:none;border-radius:8px;padding:8px 22px;font-family:Orbitron,sans-serif;font-size:.85rem;cursor:pointer;font-weight:bold;">OK</button>'
-      +'<button onclick="revealPinCancel()" style="background:transparent;color:#aaa;border:1px solid #444;border-radius:8px;padding:8px 18px;font-family:Orbitron,sans-serif;font-size:.85rem;cursor:pointer;">ZRUŠIT</button>'
-      +'</div>'
-      +'<div id="reveal-pin-err" style="color:#ff4444;font-size:.8rem;margin-top:10px;min-height:1em;"></div>'
-      +'</div>';
+    od.id='_rpov';
+    od.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:99999;display:flex;align-items:center;justify-content:center;';
+    var h='<div style="background:#0e1118;border:2px solid #ffb800;border-radius:12px;padding:28px 32px;text-align:center;min-width:240px;">';
+    h+='<div style="color:#ffb800;font-size:1rem;letter-spacing:2px;margin-bottom:14px;font-weight:bold;">ZADEJ PIN</div>';
+    h+='<input id="_rpinp" type="password" inputmode="numeric" maxlength="4" placeholder="    " style="width:110px;font-size:1.8rem;letter-spacing:.5em;text-align:center;padding:8px;border-radius:8px;border:2px solid #ffb800;background:#000;color:#ffb800;font-family:monospace;outline:none;display:block;margin:0 auto 14px;">';
+    h+='<div style="display:flex;gap:10px;justify-content:center;">';
+    h+='<button onclick="_rpok()" style="background:#ffb800;color:#000;border:none;border-radius:8px;padding:8px 20px;font-size:.85rem;cursor:pointer;font-weight:bold;">OK</button>';
+    h+='<button onclick="_rpcan()" style="background:transparent;color:#888;border:1px solid #444;border-radius:8px;padding:8px 16px;font-size:.85rem;cursor:pointer;">ZRUSIT</button>';
+    h+='</div><div id="_rperr" style="color:#f44;font-size:.8rem;margin-top:10px;min-height:1em;"></div></div>';
+    od.innerHTML=h;
     document.body.appendChild(od);
-    od.querySelector('#reveal-pin-input').addEventListener('keydown',function(e){if(e.key==='Enter')revealPinConfirm();});
-  } else {
+    document.getElementById('_rpinp').addEventListener('keydown',function(e){if(e.key==='Enter')_rpok();});
+  }else{
     od.style.display='flex';
-    document.getElementById('reveal-pin-err').textContent='';
-    document.getElementById('reveal-pin-input').value='';
+    document.getElementById('_rperr').textContent='';
+    document.getElementById('_rpinp').value='';
   }
-  setTimeout(function(){var i=document.getElementById('reveal-pin-input');if(i)i.focus();},100);
+  setTimeout(function(){var i=document.getElementById('_rpinp');if(i)i.focus();},120);
 }
-function revealPinConfirm(){
-  var val=(document.getElementById('reveal-pin-input').value||'').replace(/\s/g,'');
-  var stored;try{stored=window.parent.localStorage.getItem('kpoz_pin')||localStorage.getItem('kpoz_pin')||'8417';}catch(e){stored='8417';}stored=stored.replace(/\s/g,'');
-  if(val===stored){
-    document.getElementById('reveal-pin-overlay').style.display='none';
-    var k=_revealPending.k,pass=_revealPending.pass;
-    var el=document.getElementById('fv-pass-'+k);
-    if(el){el.textContent=pass||'';el.classList.remove('masked');_revealed[k]=true;}
-    _revealPending={k:null,pass:null};
-  } else {
-    document.getElementById('reveal-pin-err').textContent='Špatný PIN';
-    document.getElementById('reveal-pin-input').value='';
-    document.getElementById('reveal-pin-input').focus();
+function _rpok(){
+  var v=(document.getElementById('_rpinp').value||'').trim();
+  var s='8417';
+  try{s=window.parent.localStorage.getItem('kpoz_pin')||s;}catch(e){}
+  try{s=localStorage.getItem('kpoz_pin')||s;}catch(e){}
+  s=s.trim();
+  if(v===s){
+    document.getElementById('_rpov').style.display='none';
+    var el=document.getElementById('fv-pass-'+_rp.k);
+    if(el){el.textContent=_rp.pass||'';el.classList.remove('masked');_revealed[_rp.k]=true;}
+    _rp={k:null,pass:null};
+  }else{
+    document.getElementById('_rperr').textContent='Spatny PIN';
+    document.getElementById('_rpinp').value='';
+    document.getElementById('_rpinp').focus();
   }
 }
-function revealPinCancel(){
-  document.getElementById('reveal-pin-overlay').style.display='none';
-  document.getElementById('reveal-pin-input').value='';
-  _revealPending={k:null,pass:null};
+function _rpcan(){
+  document.getElementById('_rpov').style.display='none';
+  document.getElementById('_rpinp').value='';
+  _rp={k:null,pass:null};
 }
 
 // ── COPY ──
