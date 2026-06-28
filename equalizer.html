@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v3.6.Kl">
-<title>Stereo VU Equalizer v3.6.Kl</title>
+<meta name="version" content="v3.7.Kl">
+<title>Stereo VU Equalizer v3.7.Kl</title>
 <style>
 :root{
   --bg:#0a0e14;
   --panel:#0e1420;
-  --grid:rgba(0,200,255,0.08);
   --text:#bdc7d5;
   --label:#5a6680;
   --cyan:#00d4ff;
@@ -29,49 +28,47 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 .status{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--panel);border:1px solid rgba(0,212,255,0.15);border-radius:6px;margin-bottom:12px;font-size:11px;}
 .status-mode{font-weight:600;letter-spacing:1px;}
 .status-mode.live{color:var(--green);}
-.status-mode.fake{color:var(--cyan);}
+.status-mode.wait{color:var(--yellow);}
 .status-mode.offline{color:var(--red);}
 
-/* VU METR - profi DJ styl */
 .vu-wrap{background:var(--panel);border:1px solid rgba(0,212,255,0.15);border-radius:8px;padding:18px 14px;position:relative;}
 .vu-row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;}
 
-/* dB stupnice */
 .scale{display:flex;flex-direction:column;justify-content:space-between;height:240px;font-size:9px;color:var(--label);padding:2px 0;text-align:right;width:22px;}
 .scale span{line-height:1;}
 
-/* Kanal L/R blok */
 .channel{flex:1;display:flex;flex-direction:column;align-items:center;}
 .ch-label{font-size:12px;color:var(--cyan);letter-spacing:2px;margin-bottom:10px;font-weight:600;}
 .ch-label.r{color:var(--red);}
 
-/* 8 sloupcu v ramci kanalu */
 .bars{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;height:240px;width:100%;}
 .bar-col{position:relative;height:100%;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);overflow:hidden;}
-/* PLYNULY SLOUPEC - jeden gradient, ne dilky */
 .bar-fill{position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(to top,
   var(--green) 0%,
   var(--green) 70%,
   var(--yellow) 83%,
   var(--orange) 92%,
   var(--red) 97%);
-  transition:height 80ms linear;
+  transition:height 40ms linear;
   box-shadow:0 0 8px rgba(0,255,126,0.4);
 }
-/* Peak hold cara */
-.bar-peak{position:absolute;left:0;right:0;height:2px;background:#fff;box-shadow:0 0 4px #fff;transition:bottom 150ms linear;opacity:0.9;}
+.bar-peak{position:absolute;left:0;right:0;height:2px;background:#fff;box-shadow:0 0 4px #fff;transition:bottom 60ms linear;opacity:0.9;}
 
-/* Frekvencni stitky */
 .freq-row{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:6px;width:100%;}
 .freq-row span{font-size:8px;color:var(--label);text-align:center;}
 
-/* Spodni info */
 .info-row{display:flex;justify-content:space-between;margin-top:14px;font-size:10px;color:var(--label);letter-spacing:1px;}
 .peak-val{color:var(--cyan);font-weight:600;}
 
-/* Tlacitko prepnuti modu */
-.btn-mode{margin-top:14px;width:100%;padding:11px;background:transparent;border:1px solid var(--cyan);color:var(--cyan);font-family:inherit;font-size:11px;letter-spacing:3px;border-radius:6px;cursor:pointer;transition:all 0.2s;}
-.btn-mode:hover{background:rgba(0,212,255,0.1);}
+.btn-start{margin-top:14px;width:100%;padding:13px;background:transparent;border:2px solid var(--cyan);color:var(--cyan);font-family:inherit;font-size:12px;letter-spacing:3px;border-radius:6px;cursor:pointer;transition:all 0.2s;}
+.btn-start:hover{background:rgba(0,212,255,0.12);}
+.btn-start.active{border-color:var(--green);color:var(--green);}
+
+/* Vyber zarizeni */
+.device-row{display:flex;gap:8px;margin-top:10px;align-items:center;}
+.device-row select{flex:1;background:#0e1420;border:1px solid rgba(0,212,255,0.3);color:var(--text);font-family:inherit;font-size:10px;padding:7px 10px;border-radius:6px;outline:none;cursor:pointer;}
+.device-row select option{background:#0e1420;}
+.device-row label{font-size:10px;color:var(--label);letter-spacing:1px;white-space:nowrap;}
 
 .footer{text-align:center;font-size:9px;color:#2a3142;letter-spacing:3px;margin-top:18px;}
 </style>
@@ -79,101 +76,95 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 <body>
 
 <div class="header">
-  <div class="title">♪ STEREO VU EQUALIZER ♪</div>
-  <div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v3.6.Kl</div>
+  <div class="title">&#9834; STEREO VU EQUALIZER &#9834;</div>
+  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.7.Kl</div>
 </div>
 
 <div class="status">
-  <div>MODE: <span class="status-mode fake" id="mode">FAKE DEMO</span></div>
-  <div id="hb">— —</div>
+  <div>MODE: <span class="status-mode wait" id="mode">CEKA NA VSTUP</span></div>
+  <div id="hb">&#8212; &#8212;</div>
 </div>
 
 <div class="vu-wrap">
   <div class="vu-row">
-    <!-- Leva dB stupnice -->
     <div class="scale">
-      <span>0</span>
-      <span>-15</span>
-      <span>-30</span>
-      <span>-45</span>
-      <span>-60</span>
+      <span>0</span><span>-15</span><span>-30</span><span>-45</span><span>-60</span>
     </div>
-    
-    <!-- L kanal -->
     <div class="channel">
-      <div class="ch-label">◄ L</div>
+      <div class="ch-label">&#9668; L</div>
       <div class="bars" id="bars-l"></div>
       <div class="freq-row">
         <span>60</span><span>150</span><span>400</span><span>1k</span>
         <span>2.4k</span><span>6k</span><span>12k</span><span>16k</span>
       </div>
     </div>
-    
-    <!-- R kanal -->
     <div class="channel">
-      <div class="ch-label r">R ►</div>
+      <div class="ch-label r">R &#9658;</div>
       <div class="bars" id="bars-r"></div>
       <div class="freq-row">
         <span>60</span><span>150</span><span>400</span><span>1k</span>
         <span>2.4k</span><span>6k</span><span>12k</span><span>16k</span>
       </div>
     </div>
-    
-    <!-- Prava dB stupnice -->
     <div class="scale">
-      <span>0</span>
-      <span>-15</span>
-      <span>-30</span>
-      <span>-45</span>
-      <span>-60</span>
+      <span>0</span><span>-15</span><span>-30</span><span>-45</span><span>-60</span>
     </div>
   </div>
-  
   <div class="info-row">
     <div>PEAK L: <span class="peak-val" id="peak-l">0</span></div>
     <div>PEAK R: <span class="peak-val" id="peak-r">0</span></div>
   </div>
 </div>
 
-<button class="btn-mode" id="btn-mode">↻ PŘEPNOUT MODE (FAKE / LIVE)</button>
+<div class="device-row">
+  <label>VSTUP:</label>
+  <select id="dev-select"><option value="">-- vyber audio vstup --</option></select>
+</div>
 
-<div class="footer">FFT 8 BANDS · PEAK METER · KLADYXLAND 2026 · v3.6.Kl</div>
+<button class="btn-start" id="btn-start" onclick="startAudio()">&#9654; SPUSTIT ANALYZU</button>
+
+<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.7.Kl</div>
 
 <script>
-var FB = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
 var BANDS = 8;
-var MAX_AGE_MS = 5000;
-var FAKE_MODE = true;
 
-// Peak hold per pasmo
-var peakHoldL = new Array(BANDS).fill(0);
-var peakHoldR = new Array(BANDS).fill(0);
-var peakDecayL = new Array(BANDS).fill(0);
-var peakDecayR = new Array(BANDS).fill(0);
+// Frekvencni pásma - hranice v Hz (8 pásem)
+var FREQ_BOUNDS = [40, 100, 200, 500, 1200, 3000, 7000, 14000, 22050];
 
-// Smoothing
 var smoothL = new Array(BANDS).fill(0);
 var smoothR = new Array(BANDS).fill(0);
-var SMOOTH_UP = 0.7;
-var SMOOTH_DOWN = 0.2;
+var SMOOTH_UP   = 0.85;  // rychlý nástup - okamžitá reakce na úder
+var SMOOTH_DOWN = 0.35;  // rychlý pokles - živý pohyb
 
-// Posledni live data z Firebase (SSE)
-var liveData = null;
-var sseConn = null;
+var peakHoldL = new Array(BANDS).fill(0);
+var peakHoldR = new Array(BANDS).fill(0);
+var peakTimerL = new Array(BANDS).fill(0);
+var peakTimerR = new Array(BANDS).fill(0);
+var PEAK_HOLD_MS = 1200;
+var PEAK_DECAY   = 0.96;
 
-// Vytvor sloupce
-function buildBars(containerId){
-  var c = document.getElementById(containerId);
+var audioCtx = null;
+var analyserL = null;
+var analyserR = null;
+var stream = null;
+var running = false;
+var rafId = null;
+
+var FFT_SIZE = 2048;
+
+// Sestavit sloupce
+function buildBars(id){
+  var c = document.getElementById(id);
   c.innerHTML = '';
   for(var b = 0; b < BANDS; b++){
     var col = document.createElement('div');
     col.className = 'bar-col';
     var fill = document.createElement('div');
     fill.className = 'bar-fill';
-    fill.id = containerId + '-fill-' + b;
+    fill.id = id + '-fill-' + b;
     var peak = document.createElement('div');
     peak.className = 'bar-peak';
-    peak.id = containerId + '-peak-' + b;
+    peak.id = id + '-peak-' + b;
     peak.style.bottom = '0%';
     col.appendChild(fill);
     col.appendChild(peak);
@@ -183,117 +174,192 @@ function buildBars(containerId){
 buildBars('bars-l');
 buildBars('bars-r');
 
-// Aktualizuj bary
-function updateBars(L, R){
+// Nacist dostupna audio zarizeni
+async function loadDevices(){
+  try{
+    // Potrebujeme kratke povoleni aby se zobrazila jmena
+    var tmp = await navigator.mediaDevices.getUserMedia({audio:true});
+    tmp.getTracks().forEach(function(t){t.stop();});
+    var devs = await navigator.mediaDevices.enumerateDevices();
+    var sel = document.getElementById('dev-select');
+    sel.innerHTML = '<option value="">-- vyber audio vstup --</option>';
+    devs.forEach(function(d){
+      if(d.kind === 'audioinput'){
+        var opt = document.createElement('option');
+        opt.value = d.deviceId;
+        opt.textContent = d.label || ('Mikrofon ' + d.deviceId.substring(0,8));
+        // Predvyber ES4 pokud je v nazvu
+        if(d.label && (d.label.indexOf('ES4') !== -1 || d.label.indexOf('PreSonus') !== -1 || d.label.indexOf('Presonus') !== -1)){
+          opt.selected = true;
+        }
+        sel.appendChild(opt);
+      }
+    });
+  }catch(e){
+    setMode('offline','NENI POVOLENI');
+  }
+}
+loadDevices();
+
+// FFT -> energie v pasmu
+function bandEnergy(dataArray, sampleRate, freqLow, freqHigh){
+  var binCount = dataArray.length;
+  var binSize = sampleRate / (FFT_SIZE);
+  var lo = Math.floor(freqLow / binSize);
+  var hi = Math.min(Math.ceil(freqHigh / binSize), binCount - 1);
+  if(hi < lo) return 0;
+  var sum = 0;
+  for(var i = lo; i <= hi; i++){
+    // dataArray[i] je 0-255, prevedeme na 0-1 linearni energii
+    var v = (dataArray[i] / 255.0);
+    sum += v * v;
+  }
+  return Math.sqrt(sum / (hi - lo + 1));
+}
+
+function setMode(cls, txt){
+  var el = document.getElementById('mode');
+  el.className = 'status-mode ' + cls;
+  el.textContent = txt;
+}
+
+async function startAudio(){
+  if(running){
+    stopAudio();
+    return;
+  }
+  var devId = document.getElementById('dev-select').value;
+  if(!devId){
+    setMode('offline','VYBER VSTUP');
+    return;
+  }
+  try{
+    setMode('wait','SPOUSTIM...');
+    var constraints = {
+      audio:{
+        deviceId:{exact: devId},
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false,
+        sampleRate: 48000
+      }
+    };
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)({sampleRate:48000});
+    var source = audioCtx.createMediaStreamSource(stream);
+
+    // Stereo splitter
+    var splitter = audioCtx.createChannelSplitter(2);
+    source.connect(splitter);
+
+    analyserL = audioCtx.createAnalyser();
+    analyserL.fftSize = FFT_SIZE;
+    analyserL.smoothingTimeConstant = 0.0; // smoothing delame sami
+
+    analyserR = audioCtx.createAnalyser();
+    analyserR.fftSize = FFT_SIZE;
+    analyserR.smoothingTimeConstant = 0.0;
+
+    splitter.connect(analyserL, 0);
+    splitter.connect(analyserR, 1);
+
+    running = true;
+    document.getElementById('btn-start').textContent = 'STOP';
+    document.getElementById('btn-start').classList.add('active');
+    setMode('live','LIVE - WEB AUDIO');
+    rafLoop();
+
+  }catch(e){
+    setMode('offline','CHYBA: ' + e.message);
+    console.error(e);
+  }
+}
+
+function stopAudio(){
+  running = false;
+  if(rafId) cancelAnimationFrame(rafId);
+  if(stream) stream.getTracks().forEach(function(t){t.stop();});
+  if(audioCtx) audioCtx.close();
+  audioCtx = null; analyserL = null; analyserR = null; stream = null;
+  document.getElementById('btn-start').textContent = '\u25B6 SPUSTIT ANALYZU';
+  document.getElementById('btn-start').classList.remove('active');
+  setMode('wait','ZASTAVENO');
+  // Reset baru
+  for(var b=0;b<BANDS;b++){
+    smoothL[b]=0; smoothR[b]=0;
+    peakHoldL[b]=0; peakHoldR[b]=0;
+    document.getElementById('bars-l-fill-'+b).style.height='0%';
+    document.getElementById('bars-r-fill-'+b).style.height='0%';
+    document.getElementById('bars-l-peak-'+b).style.bottom='0%';
+    document.getElementById('bars-r-peak-'+b).style.bottom='0%';
+  }
+}
+
+var dataL = null;
+var dataR = null;
+var now_ts = 0;
+
+function rafLoop(){
+  if(!running){ return; }
+  rafId = requestAnimationFrame(rafLoop);
+
+  if(!analyserL || !analyserR) return;
+
+  if(!dataL) dataL = new Uint8Array(analyserL.frequencyBinCount);
+  if(!dataR) dataR = new Uint8Array(analyserR.frequencyBinCount);
+
+  analyserL.getByteFrequencyData(dataL);
+  analyserR.getByteFrequencyData(dataR);
+
+  var sr = audioCtx.sampleRate;
   var maxL = 0, maxR = 0;
+  var now = Date.now();
+
   for(var b = 0; b < BANDS; b++){
-    var lRaw = Math.max(0, Math.min(100, L[b]));
-    var rRaw = Math.max(0, Math.min(100, R[b]));
+    var lRaw = bandEnergy(dataL, sr, FREQ_BOUNDS[b], FREQ_BOUNDS[b+1]) * 100;
+    var rRaw = bandEnergy(dataR, sr, FREQ_BOUNDS[b], FREQ_BOUNDS[b+1]) * 100;
+
+    lRaw = Math.min(100, lRaw * 1.6); // zesileni pro vizualni efekt
+    rRaw = Math.min(100, rRaw * 1.6);
+
     var aL = lRaw > smoothL[b] ? SMOOTH_UP : SMOOTH_DOWN;
     var aR = rRaw > smoothR[b] ? SMOOTH_UP : SMOOTH_DOWN;
     smoothL[b] = smoothL[b] + aL * (lRaw - smoothL[b]);
     smoothR[b] = smoothR[b] + aR * (rRaw - smoothR[b]);
+
     var lVal = smoothL[b];
     var rVal = smoothR[b];
-    document.getElementById('bars-l-fill-' + b).style.height = lVal.toFixed(1) + '%';
-    document.getElementById('bars-r-fill-' + b).style.height = rVal.toFixed(1) + '%';
-    if(lVal > peakHoldL[b]){ peakHoldL[b] = lVal; peakDecayL[b] = 0; }
-    else { peakDecayL[b]++; if(peakDecayL[b] > 8) peakHoldL[b] = Math.max(0, peakHoldL[b] - 0.3); }
-    if(rVal > peakHoldR[b]){ peakHoldR[b] = rVal; peakDecayR[b] = 0; }
-    else { peakDecayR[b]++; if(peakDecayR[b] > 8) peakHoldR[b] = Math.max(0, peakHoldR[b] - 0.3); }
-    document.getElementById('bars-l-peak-' + b).style.bottom = peakHoldL[b] + '%';
-    document.getElementById('bars-r-peak-' + b).style.bottom = peakHoldR[b] + '%';
+
+    document.getElementById('bars-l-fill-'+b).style.height = lVal.toFixed(1)+'%';
+    document.getElementById('bars-r-fill-'+b).style.height = rVal.toFixed(1)+'%';
+
+    // Peak hold L
+    if(lVal >= peakHoldL[b]){
+      peakHoldL[b] = lVal;
+      peakTimerL[b] = now;
+    }else if(now - peakTimerL[b] > PEAK_HOLD_MS){
+      peakHoldL[b] *= PEAK_DECAY;
+    }
+    // Peak hold R
+    if(rVal >= peakHoldR[b]){
+      peakHoldR[b] = rVal;
+      peakTimerR[b] = now;
+    }else if(now - peakTimerR[b] > PEAK_HOLD_MS){
+      peakHoldR[b] *= PEAK_DECAY;
+    }
+
+    document.getElementById('bars-l-peak-'+b).style.bottom = peakHoldL[b].toFixed(1)+'%';
+    document.getElementById('bars-r-peak-'+b).style.bottom = peakHoldR[b].toFixed(1)+'%';
+
     if(lVal > maxL) maxL = lVal;
     if(rVal > maxR) maxR = rVal;
   }
-  document.getElementById('peak-l').textContent = Math.round(maxL);
-  document.getElementById('peak-r').textContent = Math.round(maxR);
+
+  document.getElementById('peak-l').textContent = maxL.toFixed(0);
+  document.getElementById('peak-r').textContent = maxR.toFixed(0);
+  document.getElementById('hb').textContent = new Date().toLocaleTimeString('cs-CZ');
 }
-
-// FAKE generator
-var fakePhase = 0;
-function generateFake(){
-  var L = [], R = [];
-  fakePhase += 0.08;
-  for(var b = 0; b < BANDS; b++){
-    var weight = b < 2 ? 70 : (b < 5 ? 55 : 40);
-    L.push(Math.max(0, Math.min(100, weight + Math.sin(fakePhase + b * 0.7) * 22 + Math.random() * 12)));
-    R.push(Math.max(0, Math.min(100, weight + Math.sin(fakePhase + b * 0.7 + 0.4) * 22 + Math.random() * 12)));
-  }
-  return {L: L, R: R};
-}
-
-// Firebase SSE (Realtime listener) - okamzita data bez pollingu
-function startSSE(){
-  if(sseConn){ sseConn.close(); sseConn = null; }
-  var url = FB + '/audio_spectrum.json';
-  try{
-    sseConn = new EventSource(url);
-    sseConn.addEventListener('put', function(e){
-      try{
-        var msg = JSON.parse(e.data);
-        if(msg && msg.data && msg.data.L && msg.data.R){
-          liveData = msg.data;
-        }
-      } catch(err){}
-    });
-    sseConn.onerror = function(){
-      // Automaticky reconnect po chybe
-      setTimeout(function(){ if(!FAKE_MODE) startSSE(); }, 2000);
-    };
-  } catch(err){ liveData = null; }
-}
-
-function stopSSE(){
-  if(sseConn){ sseConn.close(); sseConn = null; }
-  liveData = null;
-}
-
-// RAF render loop - plynuly render, data z SSE
-function rafLoop(){
-  requestAnimationFrame(rafLoop);
-  if(FAKE_MODE){
-    var d = generateFake();
-    updateBars(d.L, d.R);
-    document.getElementById('mode').textContent = 'FAKE DEMO';
-    document.getElementById('mode').className = 'status-mode fake';
-    document.getElementById('hb').textContent = 'simulace';
-    return;
-  }
-  // LIVE mode - render z posledniho SSE snapshotu
-  if(!liveData){
-    document.getElementById('mode').textContent = 'OFFLINE';
-    document.getElementById('mode').className = 'status-mode offline';
-    document.getElementById('hb').textContent = 'cekam...';
-    return;
-  }
-  var age = Date.now() - (liveData.ts || 0);
-  if(age > MAX_AGE_MS){
-    document.getElementById('mode').textContent = 'OFFLINE (stara data)';
-    document.getElementById('mode').className = 'status-mode offline';
-    document.getElementById('hb').textContent = Math.round(age / 1000) + 's';
-    return;
-  }
-  updateBars(liveData.L, liveData.R);
-  document.getElementById('mode').textContent = 'LIVE · ' + age + 'ms';
-  document.getElementById('mode').className = 'status-mode live';
-  var now = new Date();
-  document.getElementById('hb').textContent =
-    String(now.getHours()).padStart(2,'0') + ':' +
-    String(now.getMinutes()).padStart(2,'0') + ':' +
-    String(now.getSeconds()).padStart(2,'0');
-}
-
-// Tlacitko prepnuti
-document.getElementById('btn-mode').onclick = function(){
-  FAKE_MODE = !FAKE_MODE;
-  if(FAKE_MODE){ stopSSE(); }
-  else { startSSE(); }
-};
-
-// Start
-requestAnimationFrame(rafLoop);
 </script>
-
 </body>
 </html>
