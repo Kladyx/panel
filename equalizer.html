@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v3.7.Kl">
-<title>Stereo VU Equalizer v3.7.Kl</title>
+<meta name="version" content="v3.10.Kl">
+<title>Stereo VU Equalizer v3.10.Kl</title>
 <style>
 :root{
   --bg:#0a0e14;
@@ -39,16 +39,14 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 
 .channel{flex:1;display:flex;flex-direction:column;align-items:center;}
 .ch-label{font-size:12px;color:var(--cyan);letter-spacing:2px;margin-bottom:10px;font-weight:600;}
-.ch-label.r{color:var(--red);}
+.ch-label.r{color:var(--yellow);}
 
 .bars{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;height:240px;width:100%;}
 .bar-col{position:relative;height:100%;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);overflow:hidden;}
 .bar-fill{position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(to top,
   var(--green) 0%,
-  var(--green) 70%,
-  var(--yellow) 83%,
-  var(--orange) 92%,
-  var(--red) 97%);
+  var(--green) 80%,
+  var(--yellow) 100%);
   transition:height 40ms linear;
   box-shadow:0 0 8px rgba(0,255,126,0.4);
 }
@@ -77,7 +75,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 
 <div class="header">
   <div class="title">&#9834; STEREO VU EQUALIZER &#9834;</div>
-  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.7.Kl</div>
+  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.10.Kl</div>
 </div>
 
 <div class="status">
@@ -123,7 +121,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 
 <button class="btn-start" id="btn-start" onclick="startAudio()">&#9654; SPUSTIT ANALYZU</button>
 
-<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.7.Kl</div>
+<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.10.Kl</div>
 
 <script>
 var BANDS = 8;
@@ -229,21 +227,16 @@ async function startAudio(){
     return;
   }
   var devId = document.getElementById('dev-select').value;
-  if(!devId){
-    setMode('offline','VYBER VSTUP');
-    return;
-  }
   try{
     setMode('wait','SPOUSTIM...');
-    var constraints = {
-      audio:{
-        deviceId:{exact: devId},
+    var audioConstraints = {
         echoCancellation: false,
         noiseSuppression: false,
         autoGainControl: false,
         sampleRate: 48000
-      }
     };
+    if(devId){ audioConstraints.deviceId = {exact: devId}; }
+    var constraints = { audio: audioConstraints };
     stream = await navigator.mediaDevices.getUserMedia(constraints);
 
     audioCtx = new (window.AudioContext || window.webkitAudioContext)({sampleRate:48000});
@@ -320,8 +313,8 @@ function rafLoop(){
     var lRaw = bandEnergy(dataL, sr, FREQ_BOUNDS[b], FREQ_BOUNDS[b+1]) * 100;
     var rRaw = bandEnergy(dataR, sr, FREQ_BOUNDS[b], FREQ_BOUNDS[b+1]) * 100;
 
-    lRaw = Math.min(100, lRaw * 1.6); // zesileni pro vizualni efekt
-    rRaw = Math.min(100, rRaw * 1.6);
+    lRaw = Math.min(100, lRaw * 2.2); // zesileni pro vizualni efekt
+    rRaw = Math.min(100, rRaw * 2.2);
 
     var aL = lRaw > smoothL[b] ? SMOOTH_UP : SMOOTH_DOWN;
     var aR = rRaw > smoothR[b] ? SMOOTH_UP : SMOOTH_DOWN;
