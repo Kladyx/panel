@@ -17973,7 +17973,7 @@ function toggleReveal(k,pass){
 }
 function revealPinConfirm(){
   var val=(document.getElementById('reveal-pin-input').value||'').replace(/\s/g,'');
-  var stored=(getPin()||'8417').replace(/\s/g,'');
+  var stored;try{stored=window.parent.localStorage.getItem('kpoz_pin')||localStorage.getItem('kpoz_pin')||'8417';}catch(e){stored='8417';}stored=stored.replace(/\s/g,'');
   if(val===stored){
     document.getElementById('reveal-pin-overlay').style.display='none';
     var k=_revealPending.k,pass=_revealPending.pass;
