@@ -398,6 +398,10 @@
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🏠</div><div class="bl">KladyxHome</div>
     </button>
+    <button class="app-btn" id="btn-pimonitor" style="--ac:#ff3c5a;--ac-rgb:255,60,90" onclick="openApp('pimonitor')">
+      <div class="app-dot"></div>
+      <div class="bd"></div><div class="bi">🍓</div><div class="bl">Pi Monitor</div>
+    </button>
     <button class="app-btn" id="btn-equalizer" style="--ac:#ff00ff;--ac-rgb:255,0,255" onclick="openApp('equalizer')">
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🎛️</div><div class="bl">Equalizer</div>
@@ -488,6 +492,7 @@
         <div class="wcard" onclick="openApp('speedtest')" onmouseover="this.style.borderColor='#00ff66';this.style.boxShadow='0 0 14px rgba(0,255,102,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00ff66;box-shadow:0 0 6px #00ff66"></span><div class="wi">🚀</div><div class="wn">SpeedTest</div><div class="wd">Test rychlosti sítě</div></div>
         <div class="wcard" onclick="openApp('transfer')" onmouseover="this.style.borderColor='#ff6600';this.style.boxShadow='0 0 14px rgba(255,102,0,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff6600;box-shadow:0 0 6px #ff6600"></span><div class="wi">📤</div><div class="wn">Transfer</div><div class="wd">Mobil → PC</div></div>
         <div class="wcard" onclick="openApp('kladyxhome')" onmouseover="this.style.borderColor='#00aaff';this.style.boxShadow='0 0 14px rgba(0,170,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00aaff;box-shadow:0 0 6px #00aaff"></span><div class="wi">🏠</div><div class="wn">KladyxHome</div><div class="wd">Smart Home</div></div>
+        <div class="wcard" onclick="openApp('pimonitor')" onmouseover="this.style.borderColor='#ff3c5a';this.style.boxShadow='0 0 14px rgba(255,60,90,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff3c5a;box-shadow:0 0 6px #ff3c5a"></span><div class="wi">🍓</div><div class="wn">Pi Monitor</div><div class="wd">RPi4 Dashboard</div></div>
         <div class="wcard" onclick="openApp('equalizer')" onmouseover="this.style.borderColor='#ff00ff';this.style.boxShadow='0 0 14px rgba(255,0,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff00ff;box-shadow:0 0 6px #ff00ff"></span><div class="wi">🎛️</div><div class="wn">Equalizer</div><div class="wd">Stereo VU Meter</div></div>
 
       </div>
@@ -534,6 +539,7 @@
     <iframe id="frame-speedtest" class="app-frame" title="speedtest" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-transfer" class="app-frame" title="transfer" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-kladyxhome" class="app-frame" title="kladyxhome" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
+    <iframe id="frame-pimonitor" class="app-frame" title="pimonitor" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-equalizer" class="app-frame" title="equalizer" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
 
   </div>
@@ -17372,7 +17378,7 @@ var DEFAULT=[
   "\uD83E\uDE78 Gluk\u00F3za","\uD83C\uDF99 OBS Status","\uD83C\uDF24 Po\u010Das\u00ED","\uD83D\uDCDD Pozn\u00E1mky","\uD83D\uDCC5 Kalend\u00E1\u0159",
   "\uD83D\uDD79 ZX Next","\uD83D\uDCD6 Manu\u00E1ly","\uD83D\uDCDA \u010Dte\u010Dka","\uD83C\uDDEC\uD83C\uDDE7 WordMaster","\uD83D\uDCFB Multitrack",
   "\uD83D\uDFE2 Status","\uD83C\uDFA4 Radio ID","\uD83C\uDFAE ZX Games","\uD83C\uDF0D World Time","\uD83C\uDF10 P\u0159eklada\u010D",
-  "\uD83D\uDCE1 NextSync","\uD83D\uDCF8 Co to je???","\uD83C\uDFB5 KladyxAmp","\uD83D\uDE80 SpeedTest","\uD83D\uDCE4 Transfer","\uD83C\uDFE0 KladyxHome","\uD83C\uDF9B\uFE0F Equalizer"
+  "\uD83D\uDCE1 NextSync","\uD83D\uDCF8 Co to je???","\uD83C\uDFB5 KladyxAmp","\uD83D\uDE80 SpeedTest","\uD83D\uDCE4 Transfer","\uD83C\uDFE0 KladyxHome","\uD83C\uDF53 Pi Monitor","\uD83C\uDF9B\uFE0F Equalizer"
 ];
 
 var APP_IDS={
@@ -17383,7 +17389,7 @@ var APP_IDS={
   "ZX Next":"zxnext","Manu\u00E1ly":"manualy","\u010Dte\u010Dka":"reader","WordMaster":"wordmaster",
   "Multitrack":"multitrack","Status":"status","Radio ID":"radio",
   "ZX Games":"zxgames","World Time":"worldtime","P\u0159eklada\u010D":"prekladac",
-  "NextSync":"nextsync","Co to je???":"cotoje","KladyxAmp":"kladyxamp","SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Equalizer":"equalizer"
+  "NextSync":"nextsync","Co to je???":"cotoje","KladyxAmp":"kladyxamp","SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer"
 };
 
 var selectedAddIcon=QUICK_ICONS[0];
@@ -18691,6 +18697,8 @@ function openApp(id) {
             frame.src = 'https://kladyx.github.io/panel/transfer.html';
           } else if (id === 'kladyxhome') {
             frame.src = 'https://kladyx.github.io/panel/kladyxhome.html';
+          } else if (id === 'pimonitor') {
+            frame.src = 'https://kladyx.github.io/panel/pimonitor.html';
           } else if (id === 'equalizer') {
             frame.src = 'https://kladyx.github.io/panel/equalizer.html';
           } else {
@@ -19138,7 +19146,7 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
     "Multitrack":"multitrack","Status":"status","Radio ID":"radio",
     "ZX Games":"zxgames","World Time":"worldtime","Překladač":"prekladac",
     "NextSync":"nextsync","Co to je???":"cotoje","KladyxAmp":"kladyxamp",
-    "SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Equalizer":"equalizer"
+    "SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer"
   };
   try {
     var raw = localStorage.getItem('kladyx_custom_icons');
