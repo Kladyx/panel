@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v3.3.Kl">
-<title>Stereo VU Equalizer v3.3.Kl</title>
+<meta name="version" content="v3.5.Kl">
+<title>Stereo VU Equalizer v3.5.Kl</title>
 <style>
 :root{
   --bg:#0a0e14;
@@ -51,15 +51,15 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 /* PLYNULY SLOUPEC - jeden gradient, ne dilky */
 .bar-fill{position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(to top,
   var(--green) 0%,
-  var(--green) 50%,
-  var(--yellow) 70%,
-  var(--orange) 85%,
-  var(--red) 100%);
-  transition:height 450ms cubic-bezier(0.25,0.1,0.25,1);
+  var(--green) 70%,
+  var(--yellow) 83%,
+  var(--orange) 92%,
+  var(--red) 97%);
+  transition:height 80ms linear;
   box-shadow:0 0 8px rgba(0,255,126,0.4);
 }
 /* Peak hold cara */
-.bar-peak{position:absolute;left:0;right:0;height:2px;background:#fff;box-shadow:0 0 4px #fff;transition:bottom 300ms linear;opacity:0.9;}
+.bar-peak{position:absolute;left:0;right:0;height:2px;background:#fff;box-shadow:0 0 4px #fff;transition:bottom 150ms linear;opacity:0.9;}
 
 /* Frekvencni stitky */
 .freq-row{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:6px;width:100%;}
@@ -80,7 +80,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 
 <div class="header">
   <div class="title">♪ STEREO VU EQUALIZER ♪</div>
-  <div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v3.3.Kl</div>
+  <div class="sub"><span class="dot-live"></span>KLADYXLAND · PRESONUS ES4 · v3.5.Kl</div>
 </div>
 
 <div class="status">
@@ -174,16 +174,30 @@ function buildBars(containerId){
 buildBars('bars-l');
 buildBars('bars-r');
 
-// Aktualizuj sloupce - plynule
+// Smoothing buffery - exponencialni klouzavy prumer
+var smoothL = new Array(8).fill(0);
+var smoothR = new Array(8).fill(0);
+var SMOOTH_UP = 0.55;   // rychlost nabehu (rychlejsi)
+var SMOOTH_DOWN = 0.25; // rychlost poklesu (pomaly, plynuly)
+
+// Aktualizuj sloupce - plynule s interpolaci
 function updateBars(L, R){
   var maxL = 0, maxR = 0;
   for(var b=0; b<BANDS; b++){
-    var lVal = Math.max(0, Math.min(100, L[b]));
-    var rVal = Math.max(0, Math.min(100, R[b]));
+    var lRaw = Math.max(0, Math.min(100, L[b]));
+    var rRaw = Math.max(0, Math.min(100, R[b]));
+    
+    // Exponencialni smoothing - rychly nabeh, pomaly pokles
+    var aL = lRaw > smoothL[b] ? SMOOTH_UP : SMOOTH_DOWN;
+    var aR = rRaw > smoothR[b] ? SMOOTH_UP : SMOOTH_DOWN;
+    smoothL[b] = smoothL[b] + aL * (lRaw - smoothL[b]);
+    smoothR[b] = smoothR[b] + aR * (rRaw - smoothR[b]);
+    var lVal = smoothL[b];
+    var rVal = smoothR[b];
     
     // Plynula vyska sloupce
-    document.getElementById('bars-l-fill-' + b).style.height = lVal + '%';
-    document.getElementById('bars-r-fill-' + b).style.height = rVal + '%';
+    document.getElementById('bars-l-fill-' + b).style.height = lVal.toFixed(1) + '%';
+    document.getElementById('bars-r-fill-' + b).style.height = rVal.toFixed(1) + '%';
     
     // Peak hold - drzi nejvyssi hodnotu s pomalym poklesem
     if(lVal > peakHoldL[b]){ peakHoldL[b] = lVal; peakDecayL[b] = 0; }
@@ -276,9 +290,17 @@ document.getElementById('btn-mode').onclick = function(){
   tick();
 };
 
-// Start - 50ms = 20 FPS
-setInterval(tick, 50);
-tick();
+// Start - requestAnimationFrame pro plynuly render bez trhani
+var lastTick = 0;
+var TICK_MS = 50; // 20 FPS z Firebase, ale render plynuly
+function rafLoop(ts){
+  if(ts - lastTick >= TICK_MS){
+    lastTick = ts;
+    tick();
+  }
+  requestAnimationFrame(rafLoop);
+}
+requestAnimationFrame(rafLoop);
 </script>
 
 </body>
