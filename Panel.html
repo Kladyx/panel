@@ -18236,21 +18236,22 @@ body{display:flex;flex-direction:column;}
 <div class="topbar">
   <div class="topbar-title">&#x1F4E1; NEXT<span>SYNC</span></div>
   <div><span class="hb-dot" id="hb-dot"></span><span id="hb-text" style="font-size:9px;color:#888;">--</span></div>
-  <button class="btn-switch" id="btn-switch" title="Prepnout URL HTTPS/PC">&#x1F501; URL</button>
+  <a class="btn-switch" href="https://kladyx.github.io/panel/Panel.html" target="_top" title="Prepnout na mobil URL" style="text-decoration:none;">&#x1F4F1; MOB</a>
+  <a class="btn-switch" href="http://192.168.0.50:8765/" target="_top" title="Prepnout na PC URL" style="text-decoration:none;">&#x1F5A5;&#xFE0F; PC</a>
   <div class="ver">v3.6.17.Kl</div>
 </div>
 
 <div class="url-modal" id="url-modal">
   <div class="url-modal-card">
     <div class="url-modal-title">&#x1F501; PREPNUTI URL</div>
-    <a class="url-modal-btn" id="url-btn-mob" href="https://kladyx.github.io/panel/Panel.html" target="_top" style="display:none;text-decoration:none;">
+    <button class="url-modal-btn" id="url-btn-mob" onclick="switchToUrl('mob')" style="display:none;">
       &#x1F4F1; ZPET NA MOBIL
       <small>kladyx.github.io &middot; hudba, Tapo, vse krome ZX sync</small>
-    </a>
-    <a class="url-modal-btn" id="url-btn-pc" href="#" target="_top" style="display:none;text-decoration:none;">
+    </button>
+    <button class="url-modal-btn" id="url-btn-pc" onclick="switchToUrl('pc')" style="display:none;">
       &#x1F5A5;&#xFE0F; PREPNOUT NA PC SERVER
       <small>192.168.0.50 &middot; ZX Next sync, bez hudby a Tapo</small>
-    </a>
+    </button>
     <div class="url-spin" id="url-spin">PREPINAM</div>
     <button class="url-modal-cancel" onclick="closeUrlModal()">&#x2715; ZRUSIT</button>
   </div>
@@ -18297,7 +18298,6 @@ function showUrlModal(){
     btnPC.style.display='none';
     btnMob.style.display='block';
   } else {
-    btnPC.href='http://'+cfg.pc_ip+':'+cfg.pc_port+'/';
     btnPC.style.display='block';
     btnMob.style.display='none';
   }
