@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v3.10.Kl">
-<title>Stereo VU Equalizer v3.10.Kl</title>
+<meta name="version" content="v3.11.Kl">
+<title>Stereo VU Equalizer v3.11.Kl</title>
 <style>
 :root{
   --bg:#0a0e14;
@@ -75,7 +75,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 
 <div class="header">
   <div class="title">&#9834; STEREO VU EQUALIZER &#9834;</div>
-  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.10.Kl</div>
+  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.11.Kl</div>
 </div>
 
 <div class="status">
@@ -121,7 +121,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 
 <button class="btn-start" id="btn-start" onclick="startAudio()">&#9654; SPUSTIT ANALYZU</button>
 
-<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.10.Kl</div>
+<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.11.Kl</div>
 
 <script>
 var BANDS = 8;
@@ -131,15 +131,15 @@ var FREQ_BOUNDS = [40, 100, 200, 500, 1200, 3000, 7000, 14000, 22050];
 
 var smoothL = new Array(BANDS).fill(0);
 var smoothR = new Array(BANDS).fill(0);
-var SMOOTH_UP   = 0.85;  // rychlý nástup - okamžitá reakce na úder
-var SMOOTH_DOWN = 0.35;  // rychlý pokles - živý pohyb
+var SMOOTH_UP   = 0.95;  // okamzity nastup
+var SMOOTH_DOWN = 0.55;  // rychly pokles
 
 var peakHoldL = new Array(BANDS).fill(0);
 var peakHoldR = new Array(BANDS).fill(0);
 var peakTimerL = new Array(BANDS).fill(0);
 var peakTimerR = new Array(BANDS).fill(0);
-var PEAK_HOLD_MS = 1200;
-var PEAK_DECAY   = 0.96;
+var PEAK_HOLD_MS = 400;
+var PEAK_DECAY   = 0.88;
 
 var audioCtx = null;
 var analyserL = null;
@@ -148,7 +148,7 @@ var stream = null;
 var running = false;
 var rafId = null;
 
-var FFT_SIZE = 2048;
+var FFT_SIZE = 1024;
 
 // Sestavit sloupce
 function buildBars(id){
@@ -248,11 +248,11 @@ async function startAudio(){
 
     analyserL = audioCtx.createAnalyser();
     analyserL.fftSize = FFT_SIZE;
-    analyserL.smoothingTimeConstant = 0.0; // smoothing delame sami
+    analyserL.smoothingTimeConstant = 0.1;
 
     analyserR = audioCtx.createAnalyser();
     analyserR.fftSize = FFT_SIZE;
-    analyserR.smoothingTimeConstant = 0.0;
+    analyserR.smoothingTimeConstant = 0.1;
 
     splitter.connect(analyserL, 0);
     splitter.connect(analyserR, 1);
@@ -313,8 +313,10 @@ function rafLoop(){
     var lRaw = bandEnergy(dataL, sr, FREQ_BOUNDS[b], FREQ_BOUNDS[b+1]) * 100;
     var rRaw = bandEnergy(dataR, sr, FREQ_BOUNDS[b], FREQ_BOUNDS[b+1]) * 100;
 
-    lRaw = Math.min(100, lRaw * 2.2); // zesileni pro vizualni efekt
-    rRaw = Math.min(100, rRaw * 2.2);
+    // Zesileni podle pasma - bas vice, vysky mene
+    var boost = [3.5, 3.0, 2.5, 2.2, 2.0, 1.8, 1.6, 1.5];
+    lRaw = Math.min(100, lRaw * boost[b]);
+    rRaw = Math.min(100, rRaw * boost[b]);
 
     var aL = lRaw > smoothL[b] ? SMOOTH_UP : SMOOTH_DOWN;
     var aR = rRaw > smoothR[b] ? SMOOTH_UP : SMOOTH_DOWN;
