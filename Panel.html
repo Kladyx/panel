@@ -18236,8 +18236,7 @@ body{display:flex;flex-direction:column;}
 <div class="topbar">
   <div class="topbar-title">&#x1F4E1; NEXT<span>SYNC</span></div>
   <div><span class="hb-dot" id="hb-dot"></span><span id="hb-text" style="font-size:9px;color:#888;">--</span></div>
-  <a class="btn-switch" href="https://kladyx.github.io/panel/Panel.html" target="_top" title="Prepnout na mobil URL" style="text-decoration:none;">&#x1F4F1; MOB</a>
-  <a class="btn-switch" href="http://192.168.0.50:8765/" target="_top" title="Prepnout na PC URL" style="text-decoration:none;">&#x1F5A5;&#xFE0F; PC</a>
+  <button class="btn-switch" id="btn-switch" title="Prepnout URL HTTPS/PC">&#x1F501; URL</button>
   <div class="ver">v3.6.17.Kl</div>
 </div>
 
@@ -18310,7 +18309,7 @@ function closeUrlModal(){
 function switchToUrl(target){
   var url='';
   if(target==='pc'){url='http://'+cfg.pc_ip+':'+cfg.pc_port+'/';}
-  else{url='https://kladyx.github.io/panel/';}
+  else{url='https://kladyx.github.io/panel/Panel.html';}
   var spin=document.getElementById('url-spin');
   var btnPC=document.getElementById('url-btn-pc');
   var btnMob=document.getElementById('url-btn-mob');
