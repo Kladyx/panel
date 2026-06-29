@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v3.13.Kl">
-<title>Stereo VU Equalizer v3.13.Kl</title>
+<meta name="version" content="v3.14.Kl">
+<title>Stereo VU Equalizer v3.14.Kl</title>
 <style>
 :root{
   --bg:#0a0e14;
@@ -68,6 +68,9 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 .device-row select option{background:#0e1420;}
 .device-row label{font-size:10px;color:var(--label);letter-spacing:1px;white-space:nowrap;}
 
+.btn-reset{margin-top:8px;width:100%;padding:9px;background:transparent;border:1px solid var(--yellow);color:var(--yellow);font-family:inherit;font-size:11px;letter-spacing:3px;border-radius:6px;cursor:pointer;transition:all 0.2s;}
+.btn-reset:hover{background:rgba(255,212,0,0.1);}
+.btn-reset:disabled{opacity:0.3;cursor:default;}
 .footer{text-align:center;font-size:9px;color:#2a3142;letter-spacing:3px;margin-top:18px;}
 </style>
 </head>
@@ -75,7 +78,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 
 <div class="header">
   <div class="title">&#9834; STEREO VU EQUALIZER &#9834;</div>
-  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.13.Kl</div>
+  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.14.Kl</div>
 </div>
 
 <div class="status">
@@ -120,8 +123,9 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 </div>
 
 <button class="btn-start" id="btn-start" onclick="startAudio()">&#9654; SPUSTIT ANALYZU</button>
+<button class="btn-reset" id="btn-reset" onclick="resetPeak()" disabled>&#8635; RESET PEAK</button>
 
-<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.13.Kl</div>
+<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.14.Kl</div>
 
 <script>
 var BANDS = 8;
@@ -229,6 +233,8 @@ async function startAudio(){
   var devId = document.getElementById('dev-select').value;
   try{
     setMode('wait','SPOUSTIM...');
+    document.getElementById('btn-start').disabled=true;
+    document.getElementById('btn-start').textContent='...CEKEJ...';
     var audioConstraints = {
         echoCancellation: false,
         noiseSuppression: false,
@@ -258,13 +264,17 @@ async function startAudio(){
     splitter.connect(analyserR, 1);
 
     running = true;
+    document.getElementById('btn-start').disabled=false;
     document.getElementById('btn-start').textContent = 'STOP';
     document.getElementById('btn-start').classList.add('active');
-    setMode('live','LIVE - WEB AUDIO');
+    document.getElementById('btn-reset').disabled=false;
+    setMode('live','ANALYZUJE');
     rafLoop();
 
   }catch(e){
     setMode('offline','CHYBA: ' + e.message);
+    document.getElementById('btn-start').disabled=false;
+    document.getElementById('btn-start').textContent='▶ SPUSTIT ANALYZU';
     console.error(e);
   }
 }
@@ -277,6 +287,7 @@ function stopAudio(){
   audioCtx = null; analyserL = null; analyserR = null; stream = null;
   document.getElementById('btn-start').textContent = '\u25B6 SPUSTIT ANALYZU';
   document.getElementById('btn-start').classList.remove('active');
+  document.getElementById('btn-reset').disabled=true;
   setMode('wait','ZASTAVENO');
   // Reset baru
   for(var b=0;b<BANDS;b++){
@@ -287,6 +298,17 @@ function stopAudio(){
     document.getElementById('bars-l-peak-'+b).style.bottom='0%';
     document.getElementById('bars-r-peak-'+b).style.bottom='0%';
   }
+}
+
+function resetPeak(){
+  for(var b=0;b<BANDS;b++){
+    peakHoldL[b]=0; peakHoldR[b]=0;
+    peakTimerL[b]=0; peakTimerR[b]=0;
+    document.getElementById('bars-l-peak-'+b).style.bottom='0%';
+    document.getElementById('bars-r-peak-'+b).style.bottom='0%';
+  }
+  document.getElementById('peak-l').textContent='0';
+  document.getElementById('peak-r').textContent='0';
 }
 
 var dataL = null;
