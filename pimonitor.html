@@ -218,7 +218,7 @@ function setObsPC(status){
     d.className='dot dot-ok';
     s.textContent='Live ●';
     s.style.color='#00ff88';
-  }else if(status==='OFFLINE'||status==='STANDBY'){
+  }else if(status==='STANDBY'){
     d.className='dot dot-ok';
     s.textContent='Standby';
     s.style.color='#ffaa00';
@@ -228,7 +228,6 @@ function setObsPC(status){
     s.style.color='#ff3c5a';
   }
 }
-
 function loadObsStatus(){
   fetch(FB+'/obs_status.json',{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
@@ -242,7 +241,6 @@ function loadObsStatus(){
   })
   .catch(function(){setObsPC('STOPPED');});
 }
-
 document.getElementById('btn-refresh').onclick=function(){loadStats();loadObsStatus();};
 loadStats();
 loadObsStatus();
