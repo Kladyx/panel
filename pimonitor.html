@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v1.6.Kl">
-<title>Pi Monitor v1.6.Kl</title>
+<meta name="version" content="v1.7.Kl">
+<title>Pi Monitor v1.7.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -34,6 +34,9 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .bar-ok{background:linear-gradient(90deg,#00ff88,#00cc66);}
 .bar-warn{background:linear-gradient(90deg,#ffaa00,#ff6600);}
 .bar-hot{background:linear-gradient(90deg,#ff6600,#ff3c5a);}
+.spark{width:100%;display:block;margin-top:6px;opacity:0.85;}
+.card.temp-warn{border-color:rgba(255,60,90,0.6);box-shadow:0 0 10px rgba(255,60,90,0.25);}
+.card.temp-warn .val{animation:pulse-red 1.2s infinite;}
 /* UPTIME */
 .uptime{background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.15);border-radius:10px;padding:8px 12px;text-align:center;margin-bottom:10px;}
 .uptime-val{font-size:0.95rem;color:var(--cyan);text-shadow:0 0 8px rgba(0,212,255,0.4);letter-spacing:2px;}
@@ -71,14 +74,14 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v1.6.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v1.7.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 
 <div class="grid">
-  <div class="card"><div class="lbl">CPU</div><div class="val" id="val-cpu">—</div><div class="unit">%</div><div class="bar-wrap"><div class="bar bar-ok" id="bar-cpu" style="width:0%"></div></div></div>
+  <div class="card"><div class="lbl">CPU</div><div class="val" id="val-cpu">—</div><div class="unit">%</div><div class="bar-wrap"><div class="bar bar-ok" id="bar-cpu" style="width:0%"></div></div><canvas class="spark" id="spark-cpu" height="28"></canvas></div>
   <div class="card"><div class="lbl">RAM</div><div class="val" id="val-ram">—</div><div class="unit">%</div><div class="bar-wrap"><div class="bar bar-ok" id="bar-ram" style="width:0%"></div></div></div>
-  <div class="card"><div class="lbl">TEPLOTA</div><div class="val" id="val-temp">—</div><div class="unit">°C</div><div class="bar-wrap"><div class="bar bar-ok" id="bar-temp" style="width:0%"></div></div></div>
+  <div class="card"><div class="lbl">TEPLOTA</div><div class="val" id="val-temp">—</div><div class="unit">°C</div><div class="bar-wrap"><div class="bar bar-ok" id="bar-temp" style="width:0%"></div></div><canvas class="spark" id="spark-temp" height="28"></canvas></div>
   <div class="card"><div class="lbl">DISK</div><div class="val" id="val-disk">—</div><div class="unit">%</div><div class="bar-wrap"><div class="bar bar-ok" id="bar-disk" style="width:0%"></div></div></div>
 </div>
 
@@ -114,6 +117,38 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 
 <script>
 var FB='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
+
+function drawSpark(id,values,color){
+  var c=document.getElementById(id);
+  if(!c||!values||values.length<2)return;
+  var w=c.clientWidth||300,h=c.height;
+  c.width=w;
+  var ctx=c.getContext('2d');
+  ctx.clearRect(0,0,w,h);
+  var min=Math.min.apply(null,values),max=Math.max.apply(null,values);
+  if(max-min<1){min=min-1;max=max+1;}
+  ctx.beginPath();
+  ctx.strokeStyle=color;
+  ctx.lineWidth=1.5;
+  values.forEach(function(v,i){
+    var x=i/(values.length-1)*w;
+    var y=h-((v-min)/(max-min))*h;
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+}
+
+function loadHistory(){
+  fetch(FB+'/piHistory.json?orderBy="$key"&limitToLast=40',{signal:AbortSignal.timeout(8000)})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(!d)return;
+    var entries=Object.values(d).sort(function(a,b){return a.ts-b.ts;});
+    drawSpark('spark-cpu',entries.map(function(e){return e.cpu;}),'#ff3c5a');
+    drawSpark('spark-temp',entries.map(function(e){return e.temp;}),'#ff6600');
+  })
+  .catch(function(){});
+}
 
 function setBar(id,pct){
   var b=document.getElementById(id);
@@ -183,6 +218,8 @@ function loadStats(){
     var temp=parseFloat(d.temp_c||0).toFixed(1);
     document.getElementById('val-temp').textContent=temp;
     setBar('bar-temp',parseFloat(temp)/85*100);
+    var tempCard=document.getElementById('val-temp').closest('.card');
+    if(tempCard)tempCard.className='card'+(parseFloat(temp)>65?' temp-warn':'');
     // Disk
     var disk=Math.round(d.disk_pct||0);
     document.getElementById('val-disk').textContent=disk;
@@ -228,7 +265,9 @@ function loadFallback(){
 
 document.getElementById('btn-refresh').onclick=loadStats;
 loadStats();
+loadHistory();
 setInterval(loadStats,30000);
+setInterval(loadHistory,60000);
 </script>
 </body>
 </html>
