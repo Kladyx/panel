@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v3.16.Kl">
-<title>Stereo VU Equalizer v3.16.Kl</title>
+<meta name="version" content="v3.17.Kl">
+<title>Stereo VU Equalizer v3.17.Kl</title>
 <style>
 :root{
   --bg:#0a0e14;
@@ -72,13 +72,20 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 .btn-reset:hover{background:rgba(255,212,0,0.1);}
 .btn-reset:disabled{opacity:0.3;cursor:default;}
 .footer{text-align:center;font-size:9px;color:#2a3142;letter-spacing:3px;margin-top:18px;}
+
+.radial-row{display:flex;justify-content:center;gap:34px;align-items:center;padding:6px 0 18px;}
+.radial-box{display:flex;flex-direction:column;align-items:center;}
+.radial-box .ch-label{margin-bottom:6px;}
+.radial-val{font-size:13px;color:var(--cyan);font-weight:600;margin-top:-58px;}
+.radial-box.r .radial-val{color:var(--yellow);}
+
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="title">&#9834; STEREO VU EQUALIZER &#9834;</div>
-  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.16.Kl</div>
+  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.17.Kl</div>
 </div>
 
 <div class="status">
@@ -87,6 +94,28 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 </div>
 
 <div class="vu-wrap">
+  <div class="radial-row">
+    <div class="radial-box">
+      <div class="ch-label">&#9668; L</div>
+      <svg width="100" height="100" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+        <circle id="radial-l" cx="50" cy="50" r="42" fill="none" stroke="var(--green)" stroke-width="8"
+          stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9"
+          transform="rotate(-90 50 50)" style="transition:stroke-dashoffset 60ms linear, stroke 80ms linear;"/>
+      </svg>
+      <div class="radial-val" id="radial-l-val">0</div>
+    </div>
+    <div class="radial-box r">
+      <div class="ch-label r">R &#9658;</div>
+      <svg width="100" height="100" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+        <circle id="radial-r" cx="50" cy="50" r="42" fill="none" stroke="var(--green)" stroke-width="8"
+          stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9"
+          transform="rotate(-90 50 50)" style="transition:stroke-dashoffset 60ms linear, stroke 80ms linear;"/>
+      </svg>
+      <div class="radial-val" id="radial-r-val">0</div>
+    </div>
+  </div>
   <div class="vu-row">
     <div class="scale">
       <span>0</span><span>-15</span><span>-30</span><span>-45</span><span>-60</span>
@@ -125,7 +154,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 <button class="btn-start" id="btn-start" onclick="startAudio()">&#9654; SPUSTIT ANALYZU</button>
 <button class="btn-reset" id="btn-reset" onclick="resetPeak()" disabled>&#8635; RESET PEAK</button>
 
-<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.16.Kl</div>
+<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.17.Kl</div>
 
 <script>
 var BANDS = 8;
@@ -302,6 +331,8 @@ function stopAudio(){
     document.getElementById('bars-l-peak-'+b).style.bottom='0%';
     document.getElementById('bars-r-peak-'+b).style.bottom='0%';
   }
+  updateRadial('radial-l', 'radial-l-val', 0);
+  updateRadial('radial-r', 'radial-r-val', 0);
 }
 
 function resetPeak(){
@@ -379,6 +410,20 @@ function rafLoop(){
   document.getElementById('peak-l').textContent = maxL.toFixed(0);
   document.getElementById('peak-r').textContent = maxR.toFixed(0);
   document.getElementById('hb').textContent = new Date().toLocaleTimeString('cs-CZ');
+
+  updateRadial('radial-l', 'radial-l-val', maxL);
+  updateRadial('radial-r', 'radial-r-val', maxR);
+}
+
+var RADIAL_CIRC = 263.9;
+function updateRadial(circId, valId, pct){
+  var c = Math.max(0, Math.min(100, pct));
+  var offset = RADIAL_CIRC * (1 - c / 100);
+  var el = document.getElementById(circId);
+  el.style.strokeDashoffset = offset.toFixed(1);
+  var color = c < 70 ? 'var(--green)' : (c < 90 ? 'var(--yellow)' : 'var(--red)');
+  el.style.stroke = color;
+  document.getElementById(valId).textContent = c.toFixed(0);
 }
 </script>
 </body>
