@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v3.14.Kl">
-<title>Stereo VU Equalizer v3.14.Kl</title>
+<meta name="version" content="v3.15.Kl">
+<title>Stereo VU Equalizer v3.15.Kl</title>
 <style>
 :root{
   --bg:#0a0e14;
@@ -78,7 +78,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 
 <div class="header">
   <div class="title">&#9834; STEREO VU EQUALIZER &#9834;</div>
-  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.14.Kl</div>
+  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.15.Kl</div>
 </div>
 
 <div class="status">
@@ -125,7 +125,7 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 <button class="btn-start" id="btn-start" onclick="startAudio()">&#9654; SPUSTIT ANALYZU</button>
 <button class="btn-reset" id="btn-reset" onclick="resetPeak()" disabled>&#8635; RESET PEAK</button>
 
-<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.14.Kl</div>
+<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.15.Kl</div>
 
 <script>
 var BANDS = 8;
@@ -207,9 +207,9 @@ loadDevices();
 function bandEnergy(dataArray, sampleRate, freqLow, freqHigh){
   var binCount = dataArray.length;
   var binSize = sampleRate / (FFT_SIZE);
-  var lo = Math.floor(freqLow / binSize);
-  var hi = Math.min(Math.ceil(freqHigh / binSize), binCount - 1);
-  if(hi < lo) return 0;
+  var lo = Math.max(1, Math.round(freqLow / binSize)); // bin 0 = DC, vynechat
+  var hi = Math.min(Math.round(freqHigh / binSize), binCount - 1);
+  if(hi < lo) hi = lo;
   var sum = 0;
   for(var i = lo; i <= hi; i++){
     // dataArray[i] je 0-255, prevedeme na 0-1 linearni energii
@@ -336,7 +336,7 @@ function rafLoop(){
     var rRaw = bandEnergy(dataR, sr, FREQ_BOUNDS[b], FREQ_BOUNDS[b+1]) * 100;
 
     // Zesileni podle pasma - bas vice, vysky mene
-    var boost = [3.5, 3.0, 2.5, 2.2, 2.0, 1.8, 1.6, 1.5];
+    var boost = [5.0, 4.0, 2.5, 2.2, 2.0, 1.8, 1.6, 1.5];
     lRaw = Math.min(100, lRaw * boost[b]);
     rRaw = Math.min(100, rRaw * boost[b]);
 
