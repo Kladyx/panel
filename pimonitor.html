@@ -3,8 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v1.4.Kl">
-<title>Pi Monitor v1.4.Kl</title>
+<meta name="version" content="v1.6.Kl">
+<title>Pi Monitor v1.6.Kl</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -68,7 +71,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v1.4.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v1.6.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 
@@ -92,6 +95,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="svc-row"><div class="dot dot-wait" id="d-nextsync"></div><div class="svc-name">kladyx-nextsync</div><div class="svc-st" id="s-nextsync">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-obs"></div><div class="svc-name">kladyx-obsbridge</div><div class="svc-st" id="s-obs">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-prijate"></div><div class="svc-name">kladyx-prijatelister</div><div class="svc-st" id="s-prijate">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-eq"></div><div class="svc-name">kladyx-equalizer</div><div class="svc-st" id="s-eq">…</div></div>
 </div>
 
 <div class="section">
@@ -150,7 +154,7 @@ function showOffline(){
     setBar('bar-'+k,0);
   });
   document.getElementById('val-uptime').textContent='—';
-  ['tapo','transfer','upload','nextsync','obs','prijate'].forEach(function(id){
+  ['tapo','transfer','upload','nextsync','obs','prijate','eq'].forEach(function(id){
     var d=document.getElementById('d-'+id);
     if(d)d.className='dot dot-wait';
     var s=document.getElementById('s-'+id);
@@ -199,6 +203,8 @@ function loadStats(){
     setSvc('obs',d.obs_pc===true);
     // ZX Next (samostatný zdroj pravdy: d.next_pc)
     setSvc('nextsync',d.next_pc===true);
+    // Equalizer na PC (samostatný zdroj pravdy: d.eq_pc)
+    setSvc('eq',d.eq_pc===true);
   })
   .catch(function(){showOffline();loadFallback();});
 }
