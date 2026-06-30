@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v1.1.Kl">
-<title>Pi Monitor v1.1.Kl</title>
+<meta name="version" content="v1.2.Kl">
+<title>Pi Monitor v1.2.Kl</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -68,7 +68,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v1.1.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v1.2.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 
@@ -150,7 +150,7 @@ function showOffline(){
     setBar('bar-'+k,0);
   });
   document.getElementById('val-uptime').textContent='—';
-  ['tapo','transfer','upload','nextsync','obs','prijate'].forEach(function(id){
+  ['tapo','transfer','upload','nextsync','obs','obsbridge','prijate'].forEach(function(id){
     var d=document.getElementById('d-'+id);
     if(d)d.className='dot dot-wait';
     var s=document.getElementById('s-'+id);
@@ -191,7 +191,7 @@ function loadStats(){
     document.getElementById('net-age').textContent=fmtAge(age);
     // Services
     if(d.services){
-      ['tapo','transfer','upload','nextsync','obs','prijate'].forEach(function(k){
+      ['tapo','transfer','upload','nextsync','obs','obsbridge','prijate'].forEach(function(k){
         if(d.services[k]!==undefined)setSvc(k,d.services[k]===true||d.services[k]==='active');
       });
     }
