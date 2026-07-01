@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v3.17.Kl">
-<title>Stereo VU Equalizer v3.17.Kl</title>
+<meta name="version" content="v3.20.Kl">
+<title>Stereo VU Equalizer v3.20.Kl</title>
 <style>
 :root{
   --bg:#0a0e14;
@@ -62,7 +62,6 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 .btn-start:hover{background:rgba(0,212,255,0.12);}
 .btn-start.active{border-color:var(--green);color:var(--green);}
 
-/* Vyber zarizeni */
 .device-row{display:flex;gap:8px;margin-top:10px;align-items:center;}
 .device-row select{flex:1;background:#0e1420;border:1px solid rgba(0,212,255,0.3);color:var(--text);font-family:inherit;font-size:10px;padding:7px 10px;border-radius:6px;outline:none;cursor:pointer;}
 .device-row select option{background:#0e1420;}
@@ -73,19 +72,20 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 .btn-reset:disabled{opacity:0.3;cursor:default;}
 .footer{text-align:center;font-size:9px;color:#2a3142;letter-spacing:3px;margin-top:18px;}
 
-.radial-row{display:flex;justify-content:center;gap:34px;align-items:center;padding:6px 0 18px;}
-.radial-box{display:flex;flex-direction:column;align-items:center;}
-.radial-box .ch-label{margin-bottom:6px;}
-.radial-val{font-size:13px;color:var(--cyan);font-weight:600;margin-top:-58px;}
-.radial-box.r .radial-val{color:var(--yellow);}
-
+/* Rucickove VU metry */
+.vu-meters-row{display:flex;justify-content:center;gap:10px;padding:4px 0 18px;}
+.vu-meter-box{display:flex;flex-direction:column;align-items:center;background:#0a0d12;border:1px solid rgba(0,212,255,0.15);border-radius:8px;padding:8px 8px 6px;}
+.vu-meter-box .ch-label{margin-bottom:4px;}
+.vu-meter-readout{display:flex;justify-content:space-between;width:100%;font-size:8px;color:var(--label);margin-top:3px;letter-spacing:1px;padding:0 2px;}
+.vu-meter-readout .vu-val{font-size:11px;font-weight:600;color:var(--green);}
+.vu-meter-box.r .vu-meter-readout .vu-val{color:var(--yellow);}
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="title">&#9834; STEREO VU EQUALIZER &#9834;</div>
-  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.17.Kl</div>
+  <div class="sub"><span class="dot-live"></span>KLADYXLAND &middot; WEB AUDIO API &middot; v3.20.Kl</div>
 </div>
 
 <div class="status">
@@ -94,28 +94,19 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 </div>
 
 <div class="vu-wrap">
-  <div class="radial-row">
-    <div class="radial-box">
+  <div class="vu-meters-row">
+    <div class="vu-meter-box">
       <div class="ch-label">&#9668; L</div>
-      <svg width="100" height="100" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
-        <circle id="radial-l" cx="50" cy="50" r="42" fill="none" stroke="var(--green)" stroke-width="8"
-          stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9"
-          transform="rotate(-90 50 50)" style="transition:stroke-dashoffset 60ms linear, stroke 80ms linear;"/>
-      </svg>
-      <div class="radial-val" id="radial-l-val">0</div>
+      <svg id="vu-svg-l" width="148" height="95" viewBox="0 0 200 128"></svg>
+      <div class="vu-meter-readout"><span>CURRENT</span><span class="vu-val" id="vu-l-val">-&#8734;</span></div>
     </div>
-    <div class="radial-box r">
+    <div class="vu-meter-box r">
       <div class="ch-label r">R &#9658;</div>
-      <svg width="100" height="100" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
-        <circle id="radial-r" cx="50" cy="50" r="42" fill="none" stroke="var(--green)" stroke-width="8"
-          stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9"
-          transform="rotate(-90 50 50)" style="transition:stroke-dashoffset 60ms linear, stroke 80ms linear;"/>
-      </svg>
-      <div class="radial-val" id="radial-r-val">0</div>
+      <svg id="vu-svg-r" width="148" height="95" viewBox="0 0 200 128"></svg>
+      <div class="vu-meter-readout"><span>CURRENT</span><span class="vu-val" id="vu-r-val">-&#8734;</span></div>
     </div>
   </div>
+
   <div class="vu-row">
     <div class="scale">
       <span>0</span><span>-15</span><span>-30</span><span>-45</span><span>-60</span>
@@ -154,18 +145,16 @@ body{font-family:'JetBrains Mono','Courier New',monospace;background:var(--bg);c
 <button class="btn-start" id="btn-start" onclick="startAudio()">&#9654; SPUSTIT ANALYZU</button>
 <button class="btn-reset" id="btn-reset" onclick="resetPeak()" disabled>&#8635; RESET PEAK</button>
 
-<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.17.Kl</div>
+<div class="footer">WEB AUDIO API &middot; FFT 8 BANDS &middot; REAL-TIME &middot; KLADYXLAND 2026 &middot; v3.20.Kl</div>
 
 <script>
 var BANDS = 8;
-
-// Frekvencni pásma - hranice v Hz (8 pásem)
 var FREQ_BOUNDS = [40, 100, 200, 500, 1200, 3000, 7000, 14000, 22050];
 
 var smoothL = new Array(BANDS).fill(0);
 var smoothR = new Array(BANDS).fill(0);
-var SMOOTH_UP   = 0.75;  // trochu pomalejsi nastup
-var SMOOTH_DOWN = 0.35;  // trochu pomalejsi pokles
+var SMOOTH_UP   = 0.75;
+var SMOOTH_DOWN = 0.35;
 
 var peakHoldL = new Array(BANDS).fill(0);
 var peakHoldR = new Array(BANDS).fill(0);
@@ -180,10 +169,12 @@ var analyserR = null;
 var stream = null;
 var running = false;
 var rafId = null;
-
 var FFT_SIZE = 1024;
 
-// Sestavit sloupce
+// VU smooth (analogova ballistics)
+var vuSmL = 0, vuSmR = 0;
+var VU_UP = 0.45, VU_DOWN = 0.12;
+
 function buildBars(id){
   var c = document.getElementById(id);
   c.innerHTML = '';
@@ -205,10 +196,178 @@ function buildBars(id){
 buildBars('bars-l');
 buildBars('bars-r');
 
-// Nacist dostupna audio zarizeni
+// ---- Rucickovy VU metr ----
+// Pivot: cx=100, cy=112, r_arc=82
+// Rozsah uhlu od vertikaly: -68 az +68 stupnu
+// VU stupnice: -20 az +3 VU (23 dB celkem)
+// pct 0-100 -> uhel -68 az +68
+
+var VU_CX = 100, VU_CY = 112, VU_R = 82;
+var VU_ANG_MIN = -68, VU_ANG_MAX = 68; // stupne od vertikaly
+
+function vuPctToAngle(pct){
+  return VU_ANG_MIN + (pct / 100) * (VU_ANG_MAX - VU_ANG_MIN);
+}
+
+function vuPt(r, angDeg){
+  var rad = angDeg * Math.PI / 180;
+  return {
+    x: VU_CX + r * Math.sin(rad),
+    y: VU_CY - r * Math.cos(rad)
+  };
+}
+
+function arcPath(r, angStart, angEnd){
+  var p1 = vuPt(r, angStart);
+  var p2 = vuPt(r, angEnd);
+  var span = angEnd - angStart;
+  var laf = (span > 180) ? 1 : 0;
+  return 'M ' + p1.x.toFixed(2) + ' ' + p1.y.toFixed(2) +
+         ' A ' + r + ' ' + r + ' 0 ' + laf + ' 1 ' +
+         p2.x.toFixed(2) + ' ' + p2.y.toFixed(2);
+}
+
+function buildVuMeter(svgId, isRight){
+  var svg = document.getElementById(svgId);
+  var ns = 'http://www.w3.org/2000/svg';
+
+  function el(tag, attrs){
+    var e = document.createElementNS(ns, tag);
+    for(var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  // pozadi oblouk
+  svg.appendChild(el('path',{
+    d: arcPath(VU_R, VU_ANG_MIN, VU_ANG_MAX),
+    fill:'none', stroke:'rgba(255,255,255,0.07)', 'stroke-width':'12', 'stroke-linecap':'round'
+  }));
+
+  // VU stupnice: -20 az +3, zonove hranice v pct
+  // -3 VU = pct 73.9%, 0 VU = pct 87%, +2 VU = pct 95.7%
+  var zGreenEnd = VU_ANG_MIN + 0.739 * (VU_ANG_MAX - VU_ANG_MIN); // -3 VU
+  var zYellEnd  = VU_ANG_MIN + 0.870 * (VU_ANG_MAX - VU_ANG_MIN); // 0 VU
+  var zOrgEnd   = VU_ANG_MIN + 0.957 * (VU_ANG_MAX - VU_ANG_MIN); // +2 VU
+
+  var zones = [
+    {a0: VU_ANG_MIN, a1: zGreenEnd, color:'#00c853'},
+    {a0: zGreenEnd,  a1: zYellEnd,  color:'#ffd400'},
+    {a0: zYellEnd,   a1: zOrgEnd,   color:'#ff8c00'},
+    {a0: zOrgEnd,    a1: VU_ANG_MAX, color:'#ff3c5a'}
+  ];
+  zones.forEach(function(z){
+    svg.appendChild(el('path',{
+      d: arcPath(VU_R, z.a0, z.a1),
+      fill:'none', stroke: z.color, 'stroke-width':'12',
+      'stroke-linecap':'butt', opacity:'0.55'
+    }));
+  });
+
+  // Tick marks + labely
+  // VU labely: -20,-10,-7,-5,-3,-2,-1,0,1,2,3
+  var labels = [
+    {vu:-20, pct:0},
+    {vu:-10, pct:43.5},
+    {vu:-7,  pct:56.5},
+    {vu:-5,  pct:65.2},
+    {vu:-3,  pct:73.9},
+    {vu:-2,  pct:78.3},
+    {vu:-1,  pct:82.6},
+    {vu:0,   pct:87.0},
+    {vu:1,   pct:91.3},
+    {vu:2,   pct:95.7},
+    {vu:3,   pct:100}
+  ];
+  var majorLabels = [-20,-10,-5,-3,0,3];
+  var R_OUT = VU_R + 11;
+  var R_IN_MAJ = VU_R - 8;
+  var R_IN_MIN = VU_R - 5;
+  var R_TXT = VU_R - 20;
+
+  labels.forEach(function(lbl){
+    var ang = vuPctToAngle(lbl.pct);
+    var isMaj = majorLabels.indexOf(lbl.vu) !== -1;
+    var pOuter = vuPt(R_OUT, ang);
+    var pInner = vuPt(isMaj ? R_IN_MAJ : R_IN_MIN, ang);
+    var col = lbl.pct >= 95.7 ? '#ff3c5a' : (lbl.pct >= 87.0 ? '#ff8c00' : (lbl.pct >= 73.9 ? '#ffd400' : '#5a7a60'));
+    svg.appendChild(el('line',{
+      x1: pOuter.x.toFixed(2), y1: pOuter.y.toFixed(2),
+      x2: pInner.x.toFixed(2), y2: pInner.y.toFixed(2),
+      stroke: col, 'stroke-width': isMaj ? '1.8' : '1.1'
+    }));
+    if(isMaj){
+      var pTxt = vuPt(R_TXT, ang);
+      var txt = el('text',{
+        x: pTxt.x.toFixed(2), y: (pTxt.y + 3).toFixed(2),
+        'text-anchor':'middle', fill: col,
+        'font-size':'7.5', 'font-family':'monospace'
+      });
+      txt.textContent = lbl.vu > 0 ? ('+'+lbl.vu) : lbl.vu;
+      svg.appendChild(txt);
+    }
+  });
+
+  // "VU" label uprostred pod obloukem
+  var vuTxt = el('text',{
+    x:'100', y:'122', 'text-anchor':'middle',
+    fill:'rgba(255,255,255,0.25)', 'font-size':'9', 'font-family':'monospace', 'letter-spacing':'3'
+  });
+  vuTxt.textContent = 'VU';
+  svg.appendChild(vuTxt);
+
+  // Ručička - wrapper g s CSS transition
+  var grpId = svgId + '-grp';
+  var g = document.createElementNS(ns, 'g');
+  g.setAttribute('id', grpId);
+  g.style.transformOrigin = VU_CX + 'px ' + VU_CY + 'px';
+  g.style.transform = 'rotate(' + VU_ANG_MIN + 'deg)';
+  g.style.transition = 'transform 120ms cubic-bezier(0.15,0.9,0.35,1)';
+
+  // shadow
+  var shadow = el('line',{
+    x1: VU_CX, y1: VU_CY,
+    x2: VU_CX, y2: (VU_CY - VU_R - 4),
+    stroke: 'rgba(0,0,0,0.5)', 'stroke-width':'3', 'stroke-linecap':'round'
+  });
+  // hlavni ručicka
+  var needle = el('line',{
+    x1: VU_CX, y1: (VU_CY + 8),
+    x2: VU_CX, y2: (VU_CY - VU_R - 4),
+    stroke: isRight ? '#ffe080' : '#e8f8ff',
+    'stroke-width':'1.8', 'stroke-linecap':'round'
+  });
+  g.appendChild(shadow);
+  g.appendChild(needle);
+  svg.appendChild(g);
+
+  // pivot
+  svg.appendChild(el('circle',{
+    cx: VU_CX, cy: VU_CY, r:'5',
+    fill:'#1a2030', stroke:'#556677', 'stroke-width':'1.5'
+  }));
+  // pivot stred
+  svg.appendChild(el('circle',{
+    cx: VU_CX, cy: VU_CY, r:'2',
+    fill:'#889'
+  }));
+}
+
+buildVuMeter('vu-svg-l', false);
+buildVuMeter('vu-svg-r', true);
+
+function updateVuNeedle(svgId, valId, pct){
+  var c = Math.max(0, Math.min(100, pct));
+  var ang = vuPctToAngle(c);
+  var g = document.getElementById(svgId + '-grp');
+  if(g) g.style.transform = 'rotate(' + ang.toFixed(1) + 'deg)';
+  var vu = -20 + c * 23 / 100;
+  var el = document.getElementById(valId);
+  if(el) el.textContent = (vu >= 0 ? '+' : '') + vu.toFixed(1);
+}
+
+// ---- Audio init ----
 async function loadDevices(){
   try{
-    // Potrebujeme kratke povoleni aby se zobrazila jmena
     var tmp = await navigator.mediaDevices.getUserMedia({audio:true});
     tmp.getTracks().forEach(function(t){t.stop();});
     var devs = await navigator.mediaDevices.enumerateDevices();
@@ -219,7 +378,6 @@ async function loadDevices(){
         var opt = document.createElement('option');
         opt.value = d.deviceId;
         opt.textContent = d.label || ('Mikrofon ' + d.deviceId.substring(0,8));
-        // Predvyber ES4 pokud je v nazvu
         if(d.label && (d.label.indexOf('ES4') !== -1 || d.label.indexOf('PreSonus') !== -1 || d.label.indexOf('Presonus') !== -1)){
           opt.selected = true;
         }
@@ -232,16 +390,14 @@ async function loadDevices(){
 }
 loadDevices();
 
-// FFT -> energie v pasmu
 function bandEnergy(dataArray, sampleRate, freqLow, freqHigh){
   var binCount = dataArray.length;
-  var binSize = sampleRate / (FFT_SIZE);
-  var lo = Math.max(1, Math.round(freqLow / binSize)); // bin 0 = DC, vynechat
+  var binSize = sampleRate / FFT_SIZE;
+  var lo = Math.max(1, Math.round(freqLow / binSize));
   var hi = Math.min(Math.round(freqHigh / binSize), binCount - 1);
   if(hi < lo) hi = lo;
   var sum = 0;
   for(var i = lo; i <= hi; i++){
-    // dataArray[i] je 0-255, prevedeme na 0-1 linearni energii
     var v = (dataArray[i] / 255.0);
     sum += v * v;
   }
@@ -255,29 +411,20 @@ function setMode(cls, txt){
 }
 
 async function startAudio(){
-  if(running){
-    stopAudio();
-    return;
-  }
+  if(running){ stopAudio(); return; }
   var devId = document.getElementById('dev-select').value;
   try{
     setMode('wait','SPOUSTIM...');
     document.getElementById('btn-start').disabled=true;
     document.getElementById('btn-start').textContent='...CEKEJ...';
     var audioConstraints = {
-        echoCancellation: false,
-        noiseSuppression: false,
-        autoGainControl: false,
-        sampleRate: 48000
+      echoCancellation:false, noiseSuppression:false,
+      autoGainControl:false, sampleRate:48000
     };
     if(devId){ audioConstraints.deviceId = {exact: devId}; }
-    var constraints = { audio: audioConstraints };
-    stream = await navigator.mediaDevices.getUserMedia(constraints);
-
+    stream = await navigator.mediaDevices.getUserMedia({audio: audioConstraints});
     audioCtx = new (window.AudioContext || window.webkitAudioContext)({sampleRate:48000});
     var source = audioCtx.createMediaStreamSource(stream);
-
-    // Stereo splitter
     var splitter = audioCtx.createChannelSplitter(2);
     source.connect(splitter);
 
@@ -303,11 +450,10 @@ async function startAudio(){
     document.getElementById('btn-reset').disabled=false;
     setMode('live','ANALYZUJE');
     rafLoop();
-
   }catch(e){
     setMode('offline','CHYBA: ' + e.message);
     document.getElementById('btn-start').disabled=false;
-    document.getElementById('btn-start').textContent='▶ SPUSTIT ANALYZU';
+    document.getElementById('btn-start').textContent='\u25B6 SPUSTIT ANALYZU';
     console.error(e);
   }
 }
@@ -322,7 +468,6 @@ function stopAudio(){
   document.getElementById('btn-start').classList.remove('active');
   document.getElementById('btn-reset').disabled=true;
   setMode('wait','ZASTAVENO');
-  // Reset baru
   for(var b=0;b<BANDS;b++){
     smoothL[b]=0; smoothR[b]=0;
     peakHoldL[b]=0; peakHoldR[b]=0;
@@ -331,8 +476,11 @@ function stopAudio(){
     document.getElementById('bars-l-peak-'+b).style.bottom='0%';
     document.getElementById('bars-r-peak-'+b).style.bottom='0%';
   }
-  updateRadial('radial-l', 'radial-l-val', 0);
-  updateRadial('radial-r', 'radial-r-val', 0);
+  vuSmL = 0; vuSmR = 0;
+  updateVuNeedle('vu-svg-l', 'vu-l-val', 0);
+  updateVuNeedle('vu-svg-r', 'vu-r-val', 0);
+  document.getElementById('vu-l-val').textContent = '-\u221e';
+  document.getElementById('vu-r-val').textContent = '-\u221e';
 }
 
 function resetPeak(){
@@ -348,14 +496,11 @@ function resetPeak(){
 
 var dataL = null;
 var dataR = null;
-var now_ts = 0;
 
 function rafLoop(){
   if(!running){ return; }
   rafId = requestAnimationFrame(rafLoop);
-
   if(!analyserL || !analyserR) return;
-
   if(!dataL) dataL = new Uint8Array(analyserL.frequencyBinCount);
   if(!dataR) dataR = new Uint8Array(analyserR.frequencyBinCount);
 
@@ -370,7 +515,6 @@ function rafLoop(){
     var lRaw = bandEnergy(dataL, sr, FREQ_BOUNDS[b], FREQ_BOUNDS[b+1]) * 100;
     var rRaw = bandEnergy(dataR, sr, FREQ_BOUNDS[b], FREQ_BOUNDS[b+1]) * 100;
 
-    // Jednotny gain pro vsechna pasma - citlivost reseno pres minDecibels/maxDecibels analyzeru
     lRaw = Math.min(100, lRaw * 1.6);
     rRaw = Math.min(100, rRaw * 1.6);
 
@@ -385,20 +529,10 @@ function rafLoop(){
     document.getElementById('bars-l-fill-'+b).style.height = lVal.toFixed(1)+'%';
     document.getElementById('bars-r-fill-'+b).style.height = rVal.toFixed(1)+'%';
 
-    // Peak hold L
-    if(lVal >= peakHoldL[b]){
-      peakHoldL[b] = lVal;
-      peakTimerL[b] = now;
-    }else if(now - peakTimerL[b] > PEAK_HOLD_MS){
-      peakHoldL[b] *= PEAK_DECAY;
-    }
-    // Peak hold R
-    if(rVal >= peakHoldR[b]){
-      peakHoldR[b] = rVal;
-      peakTimerR[b] = now;
-    }else if(now - peakTimerR[b] > PEAK_HOLD_MS){
-      peakHoldR[b] *= PEAK_DECAY;
-    }
+    if(lVal >= peakHoldL[b]){ peakHoldL[b]=lVal; peakTimerL[b]=now; }
+    else if(now - peakTimerL[b] > PEAK_HOLD_MS){ peakHoldL[b] *= PEAK_DECAY; }
+    if(rVal >= peakHoldR[b]){ peakHoldR[b]=rVal; peakTimerR[b]=now; }
+    else if(now - peakTimerR[b] > PEAK_HOLD_MS){ peakHoldR[b] *= PEAK_DECAY; }
 
     document.getElementById('bars-l-peak-'+b).style.bottom = peakHoldL[b].toFixed(1)+'%';
     document.getElementById('bars-r-peak-'+b).style.bottom = peakHoldR[b].toFixed(1)+'%';
@@ -411,19 +545,11 @@ function rafLoop(){
   document.getElementById('peak-r').textContent = maxR.toFixed(0);
   document.getElementById('hb').textContent = new Date().toLocaleTimeString('cs-CZ');
 
-  updateRadial('radial-l', 'radial-l-val', maxL);
-  updateRadial('radial-r', 'radial-r-val', maxR);
-}
-
-var RADIAL_CIRC = 263.9;
-function updateRadial(circId, valId, pct){
-  var c = Math.max(0, Math.min(100, pct));
-  var offset = RADIAL_CIRC * (1 - c / 100);
-  var el = document.getElementById(circId);
-  el.style.strokeDashoffset = offset.toFixed(1);
-  var color = c < 70 ? 'var(--green)' : (c < 90 ? 'var(--yellow)' : 'var(--red)');
-  el.style.stroke = color;
-  document.getElementById(valId).textContent = c.toFixed(0);
+  // VU analogova ballistics
+  vuSmL += (maxL > vuSmL ? VU_UP : VU_DOWN) * (maxL - vuSmL);
+  vuSmR += (maxR > vuSmR ? VU_UP : VU_DOWN) * (maxR - vuSmR);
+  updateVuNeedle('vu-svg-l', 'vu-l-val', vuSmL);
+  updateVuNeedle('vu-svg-r', 'vu-r-val', vuSmR);
 }
 </script>
 </body>
