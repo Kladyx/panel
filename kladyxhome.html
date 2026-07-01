@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="2.3Kl">
+<meta name="version" content="2.4Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -307,7 +307,7 @@ h1 {
 <div class="container">
 <h1>KLADYX HOME</h1>
 <div class="subtitle">SMART HOME CONTROL</div>
-<div class="version-badge">v2.3Kl</div>
+<div class="version-badge">v2.4Kl</div>
 
 <div class="device unknown" id="dev-p115">
   <div class="device-header">
@@ -349,8 +349,7 @@ h1 {
     <div class="device-status" id="status-tvir">...</div>
   </div>
   <div class="buttons">
-    <button class="btn btn-on" id="btn-on-tvir">📺 Zapni TV</button>
-    <button class="btn btn-off" id="btn-off-tvir">📺 Vypni TV</button>
+    <button class="btn btn-on" id="btn-toggle-tvir">📺 Přepnout TV</button>
   </div>
 </div>
 
@@ -366,7 +365,7 @@ h1 {
 </div>
 
 <div id="debug">Pripojuji k Firebase...</div>
-<div class="footer">KLADYXHOME v2.3Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v2.4Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -489,6 +488,44 @@ try {
     });
   }
 
+  function setupIRToggleDevice(node, suffix) {
+    var devEl = document.getElementById('dev-' + suffix);
+    var statEl = document.getElementById('status-' + suffix);
+    var btnToggle = document.getElementById('btn-toggle-' + suffix);
+    var currentOn = false;
+
+    db.ref(node + '/on').on('value', function(snap) {
+      var val = snap.val();
+      currentOn = (val === true);
+      if (currentOn) {
+        devEl.className = 'device on';
+        statEl.textContent = 'ZAPNUTO';
+        btnToggle.classList.add('active');
+      } else {
+        devEl.className = 'device off';
+        statEl.textContent = 'VYPNUTO';
+        btnToggle.classList.remove('active');
+      }
+      log('IR stav OK', 'ok');
+    }, function(err) {
+      log('Chyba IR: ' + (err.message || err), 'err');
+    });
+
+    function addIRTap(el, fn) {
+      el.addEventListener('touchstart', function(e) { e.preventDefault(); fn(); }, {passive: false});
+      el.addEventListener('click', fn);
+    }
+    addIRTap(btnToggle, function() {
+      log('Odesilam PREPNOUT TV (IR)...');
+      db.ref(node + '/command').set('power')
+        .then(function() {
+          db.ref(node + '/on').set(!currentOn);
+          log('TV prepnuta OK', 'ok');
+        })
+        .catch(function(e) { log('Chyba: ' + (e.message || e), 'err'); });
+    });
+  }
+
   function sendCmd(node, cmd) {
     log('Odesilam ' + cmd.toUpperCase() + ' na ' + node + '...');
     db.ref(node + '/command').set(cmd)
@@ -500,7 +537,7 @@ try {
   setupDevice('tapoDbP100', 'p100');
   setupDevice('tuyaDb', 'tuya');
   setupIRDevice('irDb', 'ir');
-  setupIRDevice('irDbTv', 'tvir');
+  setupIRToggleDevice('irDbTv', 'tvir');
 
   // TV System → automaticky i TV Sharp IR
   (function(){
@@ -513,14 +550,12 @@ try {
     tap2(btnOnSys,function(){
       setTimeout(function(){
         db.ref('irDbTv/command').set('power');
-        db.ref('irDbTv/on').set(true);
-        log('TV Sharp IR zapnuta automaticky','ok');
+        log('TV Sharp IR prepnuta automaticky (System ON)','ok');
       },3000);
     });
     tap2(btnOffSys,function(){
       db.ref('irDbTv/command').set('power');
-      db.ref('irDbTv/on').set(false);
-      log('TV Sharp IR vypnuta automaticky','ok');
+      log('TV Sharp IR prepnuta automaticky (System OFF)','ok');
     });
   })();
 
