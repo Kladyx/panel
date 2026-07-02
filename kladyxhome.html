@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="2.8Kl">
+<meta name="version" content="2.1Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -307,7 +307,7 @@ h1 {
 <div class="container">
 <h1>KLADYX HOME</h1>
 <div class="subtitle">SMART HOME CONTROL</div>
-<div class="version-badge">v2.8Kl</div>
+<div class="version-badge">v2.1Kl</div>
 
 <div class="device unknown" id="dev-p115">
   <div class="device-header">
@@ -333,23 +333,12 @@ h1 {
 
 <div class="device unknown" id="dev-tuya">
   <div class="device-header">
-    <div class="device-name">TV System (Tuya)</div>
+    <div class="device-name">TV Sharp (Tuya)</div>
     <div class="device-status" id="status-tuya">...</div>
   </div>
   <div class="buttons">
-    <button class="btn btn-on" id="btn-on-tuya">Zapni System</button>
-    <button class="btn btn-off" id="btn-off-tuya">Vypni System</button>
-  </div>
-</div>
-
-
-<div class="device unknown" id="dev-tvir">
-  <div class="device-header">
-    <div class="device-name">TV Sharp (IR)</div>
-    <div class="device-status" id="status-tvir">...</div>
-  </div>
-  <div class="buttons">
-    <button class="btn btn-on" id="btn-on-tvir" style="width:100%">Zapnout</button>
+    <button class="btn btn-on" id="btn-on-tuya">Zapni TV</button>
+    <button class="btn btn-off" id="btn-off-tuya">Vypni TV</button>
   </div>
 </div>
 
@@ -365,7 +354,7 @@ h1 {
 </div>
 
 <div id="debug">Pripojuji k Firebase...</div>
-<div class="footer">KLADYXHOME v2.8Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v2.1Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -398,18 +387,25 @@ try {
     var statEl = document.getElementById('status-' + suffix);
     var btnOn = document.getElementById('btn-on-' + suffix);
     var btnOff = document.getElementById('btn-off-' + suffix);
-    var isOn = false;
-    var bridgeOk = false;
 
-    function updateUI() {
-      if (!bridgeOk) {
+    db.ref(node).on('value', function(snap) {
+      var d = snap.val();
+      if (!d) {
+        devEl.className = 'device unknown';
+        statEl.textContent = 'OFFLINE';
+        btnOn.classList.remove('active');
+        btnOff.classList.remove('active');
+        return;
+      }
+      var age = d.lastSeen ? Date.now() - d.lastSeen : 999999;
+      if (age > 60000) {
         devEl.className = 'device unknown';
         statEl.textContent = 'BRIDGE OFFLINE';
         btnOn.classList.remove('active');
         btnOff.classList.remove('active');
         return;
       }
-      if (isOn) {
+      if (d.on === true) {
         devEl.className = 'device on';
         statEl.textContent = 'ZAPNUTO';
         btnOn.classList.add('active');
@@ -420,25 +416,10 @@ try {
         btnOn.classList.remove('active');
         btnOff.classList.add('active');
       }
-    }
-
-    db.ref(node + '/on').on('value', function(snap) {
-      isOn = snap.val() === true;
-      updateUI();
       log('Pripojeno OK', 'ok');
     }, function(err) {
       log('Chyba cteni ' + node + ': ' + (err.message || err), 'err');
     });
-
-    function checkBridge() {
-      db.ref(node + '/lastSeen').once('value', function(snap) {
-        var ts = snap.val();
-        bridgeOk = ts && (Date.now() - ts < 60000);
-        updateUI();
-      });
-    }
-    checkBridge();
-    setInterval(checkBridge, 30000);
 
     function addTap(el, fn) {
       el.addEventListener('touchstart', function(e) { e.preventDefault(); fn(); }, {passive: false});
@@ -453,18 +434,10 @@ try {
     var statEl = document.getElementById('status-' + suffix);
     var btnOn = document.getElementById('btn-on-' + suffix);
     var btnOff = document.getElementById('btn-off-' + suffix);
-    var isOn = false;
-    var bridgeOk = false;
 
-    function updateUI() {
-      if (!bridgeOk) {
-        devEl.className = 'device unknown';
-        statEl.textContent = 'BRIDGE OFFLINE';
-        btnOn.classList.remove('active');
-        btnOff.classList.remove('active');
-        return;
-      }
-      if (isOn) {
+    db.ref(node + '/on').on('value', function(snap) {
+      var val = snap.val();
+      if (val === true) {
         devEl.className = 'device on';
         statEl.textContent = 'ZAPNUTO';
         btnOn.classList.add('active');
@@ -475,25 +448,10 @@ try {
         btnOn.classList.remove('active');
         btnOff.classList.add('active');
       }
-    }
-
-    db.ref(node + '/on').on('value', function(snap) {
-      isOn = snap.val() === true;
-      updateUI();
-      log('Pripojeno OK', 'ok');
+      log('IR stav OK', 'ok');
     }, function(err) {
       log('Chyba IR: ' + (err.message || err), 'err');
     });
-
-    function checkBridge() {
-      db.ref(node + '/lastSeen').once('value', function(snap) {
-        var ts = snap.val();
-        bridgeOk = ts && (Date.now() - ts < 60000);
-        updateUI();
-      });
-    }
-    checkBridge();
-    setInterval(checkBridge, 30000);
 
     function addIRTap(el, fn) {
       el.addEventListener('touchstart', function(e) { e.preventDefault(); fn(); }, {passive: false});
@@ -519,71 +477,6 @@ try {
     });
   }
 
-  function setupSmartLifeDevice(node, suffix) {
-    var devEl = document.getElementById('dev-' + suffix);
-    var statEl = document.getElementById('status-' + suffix);
-    var btnOn = document.getElementById('btn-on-' + suffix);
-    var btnOff = document.getElementById('btn-off-' + suffix);
-    var isOn = false;
-    var bridgeOk = false;
-
-    function updateUI() {
-      if (!bridgeOk) {
-        devEl.className = 'device unknown';
-        statEl.textContent = 'BRIDGE OFFLINE';
-        btnOn.classList.remove('active');
-        if (btnOff) btnOff.classList.remove('active');
-        return;
-      }
-      if (isOn) {
-        devEl.className = 'device on';
-        statEl.textContent = 'ZAPNUTO';
-        btnOn.classList.add('active');
-        if (btnOff) btnOff.classList.remove('active');
-      } else {
-        devEl.className = 'device off';
-        statEl.textContent = 'VYPNUTO';
-        btnOn.classList.remove('active');
-        if (btnOff) btnOff.classList.add('active');
-      }
-    }
-
-    db.ref(node + '/on').on('value', function(snap) {
-      isOn = snap.val() === true;
-      updateUI();
-      log('Pripojeno OK', 'ok');
-    }, function(err) {
-      log('Chyba: ' + (err.message || err), 'err');
-    });
-
-    function checkBridge() {
-      db.ref(node + '/lastSeen').once('value', function(snap) {
-        var ts = snap.val();
-        bridgeOk = ts && (Date.now() - ts < 60000);
-        updateUI();
-      });
-    }
-    checkBridge();
-    setInterval(checkBridge, 30000);
-
-    function openAppOn() {
-      db.ref(node + '/on').set(true);
-      window.location.href = 'intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.tuya.smartlife;end';
-      log('Oteviram Smart Life...', 'ok');
-    }
-    function openAppOff() {
-      db.ref(node + '/on').set(false);
-      window.location.href = 'intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.tuya.smartlife;end';
-      log('Oteviram Smart Life...', 'ok');
-    }
-    function addTap(el, fn) {
-      el.addEventListener('touchstart', function(e) { e.preventDefault(); fn(); }, {passive: false});
-      el.addEventListener('click', fn);
-    }
-    addTap(btnOn, openAppOn);
-    if (btnOff) addTap(btnOff, openAppOff);
-  }
-
   function sendCmd(node, cmd) {
     log('Odesilam ' + cmd.toUpperCase() + ' na ' + node + '...');
     db.ref(node + '/command').set(cmd)
@@ -594,8 +487,7 @@ try {
   setupDevice('tapoDb', 'p115');
   setupDevice('tapoDbP100', 'p100');
   setupDevice('tuyaDb', 'tuya');
-  setupSmartLifeDevice('irDb', 'ir');
-  setupSmartLifeDevice('irDbTv', 'tvir');
+  setupIRDevice('irDb', 'ir');
 
 } catch(e) {
   log('FATAL: ' + (e.message || e), 'err');
