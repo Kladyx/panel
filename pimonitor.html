@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.4.Kl">
-<title>Pi Monitor v2.4.Kl</title>
+<meta name="version" content="v2.6.Kl">
+<title>Pi Monitor v2.6.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -79,7 +79,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v2.4.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v2.6.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -318,12 +318,24 @@ function loadFallback(){
   }).catch(function(){});
 }
 
-document.getElementById('btn-refresh').onclick=loadStats;
+document.getElementById('btn-refresh').onclick=function(){
+  loadStats();
+  var b=document.getElementById('btn-refresh');
+  var orig=b.textContent;
+  b.textContent='✓ OBNOVENO';
+  setTimeout(function(){b.textContent=orig;},1200);
+};
 document.getElementById('btn-restart').onclick=function(){
   if(!confirm('Opravdu restartovat Pi4?'))return;
+  var b=document.getElementById('btn-restart');
+  var orig=b.textContent;
   var url=FB+'/nextsync/piReboot.json';
   fetch(url,{method:'PUT',body:JSON.stringify({ts:Date.now()}),headers:{'Content-Type':'application/json'}})
-  .then(function(){alert('Příkaz odeslán. Pi4 se restartuje do 30s.');})
+  .then(function(){
+    b.textContent='✓ RESTARTOVÁNO';
+    setTimeout(function(){b.textContent=orig;},3000);
+    alert('Příkaz odeslán. Pi4 se restartuje do 30s.');
+  })
   .catch(function(){alert('Chyba odesílání příkazu.');});
 };
 loadStats();
