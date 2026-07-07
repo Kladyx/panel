@@ -8214,10 +8214,6 @@ h1{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;letter-spac
 .enote{flex:1;font-size:.7rem;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
 .delbtn{background:transparent;border:none;color:rgba(255,68,102,.4);cursor:pointer;font-size:.8rem;padding:2px 5px;flex-shrink:0;}
 .delbtn:hover{color:#ff4466;}
-.vchk{width:16px;height:16px;flex-shrink:0;accent-color:#00ff88;cursor:pointer;}
-.ecard.vok{opacity:.45;}
-.ecard.vok .eamt{text-decoration:line-through;color:#00ff88;}
-.sum-v2{font-family:'Orbitron',monospace;font-size:.62rem;color:rgba(0,255,136,.6);margin-top:2px;}
 .empty{text-align:center;color:rgba(200,216,232,.3);font-size:.68rem;padding:28px 0;}
 .amonth{max-width:580px;margin:0 auto 12px;background:#0e1118;border:1px solid rgba(0,245,255,.12);border-radius:8px;overflow:hidden;}
 .ahead{padding:9px 14px;display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,245,255,.1);}
@@ -8260,7 +8256,7 @@ h1{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;letter-spac
 </head>
 <body>
 <header>
-  <div class="topbar"><span class="ver">v14.6</span><span id="sync-dot">💾 Start...</span></div>
+  <div class="topbar"><span class="ver">v14.5</span><span id="sync-dot">💾 Start...</span></div>
   <h1>🍽️ JÍDLO</h1>
   <div class="hline"></div>
 </header>
@@ -8281,7 +8277,7 @@ h1{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;letter-spac
     <button class="addbtn" id="btn-add">+ PŘIDAT ZÁZNAM</button>
   </div>
   <div class="jidlo-print-btn"><button id="btn-jidlo-tisk" onclick="printJidlo()">🖨️ TISKNOUT</button></div>
-  <div class="sumbox"><div><div class="sum-l">Zbývá doplatit</div><div class="sum-n" id="sum-n">0 záznamů</div><div class="sum-v2" id="sum-v2"></div></div><div class="sum-v" id="sum-v">0 Kč</div></div>
+  <div class="sumbox"><div><div class="sum-l">Celkem tento měsíc</div><div class="sum-n" id="sum-n">0 záznamů</div></div><div class="sum-v" id="sum-v">0 Kč</div></div>
   <div class="elist" id="elist"></div>
 </div>
 <div class="panel" id="p-archiv"><div id="arch"></div></div>
@@ -8344,26 +8340,17 @@ function RM(){
 
 function RZ(){
   var es=GM(CUR);
-  var totAll=es.reduce(function(s,e){return s+e.a;},0);
-  var totVyr=es.reduce(function(s,e){return s+(e.v?e.a:0);},0);
-  var totZbyva=totAll-totVyr;
-  var sv=document.getElementById('sum-v');if(sv)sv.textContent=totZbyva.toLocaleString('cs-CZ')+' Kč';
+  var tot=es.reduce(function(s,e){return s+e.a;},0);
+  var sv=document.getElementById('sum-v');if(sv)sv.textContent=tot.toLocaleString('cs-CZ')+' Kč';
   var sn=document.getElementById('sum-n');if(sn)sn.textContent=es.length+' záznamy';
-  var sv2=document.getElementById('sum-v2');if(sv2)sv2.textContent=totVyr>0?('celkem '+totAll.toLocaleString('cs-CZ')+' Kč · vyrovnáno '+totVyr.toLocaleString('cs-CZ')+' Kč'):'';
   var el=document.getElementById('elist');if(!el)return;
   el.innerHTML='';
   if(!es.length){el.innerHTML='<div class="empty">// žádné záznamy</div>';return;}
   es.forEach(function(e){
-    var c=document.createElement('div');c.className='ecard'+(e.v?' vok':'');
+    var c=document.createElement('div');c.className='ecard';
     var dp=e.d?e.d.split('-').slice(1).join('.'):'';
     var ym=e.d?e.d.substring(0,7):CUR;
-    var cb=document.createElement('input');cb.type='checkbox';cb.className='vchk';cb.title='Vyrovnáno';cb.checked=!!e.v;
-    (function(y2,i2){cb.onchange=function(){TOG(y2,i2);};})(ym,e.id);
-    c.appendChild(cb);
-    var rest=document.createElement('span');
-    rest.innerHTML='<span class="edate">'+dp+'</span><span class="eamt">'+e.a.toLocaleString('cs-CZ')+' Kč</span><span class="enote">'+(e.n||'—')+'</span>';
-    rest.style.display='contents';
-    c.appendChild(rest);
+    c.innerHTML='<span class="edate">'+dp+'</span><span class="eamt">'+e.a.toLocaleString('cs-CZ')+' Kč</span><span class="enote">'+(e.n||'—')+'</span>';
     var db=document.createElement('button');db.className='delbtn';db.textContent='✕';
     (function(y2,i2){db.onclick=function(){DEL(y2,i2);};})(ym,e.id);
     c.appendChild(db);
@@ -8377,11 +8364,9 @@ function RA(){
   for(var m=12;m>=1;m--){
     var ym=y+'-'+('0'+m).slice(-2);
     var es=GM(ym);if(!es.length)continue;found=true;
-    var totAll=es.reduce(function(s,e){return s+e.a;},0);
-    var totVyr=es.reduce(function(s,e){return s+(e.v?e.a:0);},0);
-    var tot=totAll-totVyr;
+    var tot=es.reduce(function(s,e){return s+e.a;},0);
     var rows='';
-    es.forEach(function(e){rows+='<div class="arow" style="'+(e.v?'opacity:.45;text-decoration:line-through;':'')+'"><span class="ad">'+(e.d?e.d.split('-').slice(1).join('.'):'')+'</span><span class="aa">'+e.a.toLocaleString('cs-CZ')+' Kč</span><span class="an">'+(e.n||'—')+(e.v?' ✔':'')+'</span></div>';});
+    es.forEach(function(e){rows+='<div class="arow"><span class="ad">'+(e.d?e.d.split('-').slice(1).join('.'):'')+'</span><span class="aa">'+e.a.toLocaleString('cs-CZ')+' Kč</span><span class="an">'+(e.n||'—')+'</span></div>';});
     var box=document.createElement('div');box.className='amonth';
     box.innerHTML='<div class="ahead"><span class="aname">'+MN[m-1]+' '+y+'</span><span class="atot">'+tot.toLocaleString('cs-CZ')+' Kč</span></div><div class="arows">'+rows+'</div>';
     ac.appendChild(box);
@@ -8420,26 +8405,15 @@ function DEL(ym,id){
   SAVE();RZ();RM();
 }
 
-function TOG(ym,id){
-  if(!DAT[ym])return;
-  var e=DAT[ym].find(function(x){return x.id===id;});
-  if(!e)return;
-  e.v=!e.v;
-  SAVE();RZ();
-}
-
 function printJidlo(){
   var es=GM(CUR);
   if(!es.length){alert('Žádné záznamy k tisku.');return;}
   var monthName=MN[mo()-1]+' '+yr();
-  var totAll=es.reduce(function(s,e){return s+e.a;},0);
-  var totVyr=es.reduce(function(s,e){return s+(e.v?e.a:0);},0);
-  var tot=totAll-totVyr;
+  var tot=es.reduce(function(s,e){return s+e.a;},0);
   function rows(list){
     return list.map(function(e,i){
       var dp=e.d?e.d.split('-').slice(1).join('.'):'';
-      var st=e.v?'text-decoration:line-through;opacity:.5;':'';
-      return '<tr style="'+st+'"><td>'+(i+1)+'</td><td>'+(e.n||'—')+(e.v?' (vyrovnáno)':'')+'</td><td style="text-align:right;">'+dp+'</td><td style="text-align:right;font-weight:bold;">'+e.a.toLocaleString('cs-CZ')+' Kč</td></tr>';
+      return '<tr><td>'+(i+1)+'</td><td>'+(e.n||'—')+'</td><td style="text-align:right;">'+dp+'</td><td style="text-align:right;font-weight:bold;">'+e.a.toLocaleString('cs-CZ')+' Kč</td></tr>';
     }).join('');
   }
   var printHTML='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Jídlo – '+monthName+'</title>'+
@@ -8453,8 +8427,7 @@ function printJidlo(){
     '</style></head><body>'+
     '<h2>🍽️ JÍDLO — '+monthName+'</h2>'+
     '<table><thead><tr><th>č.</th><th>Poznámka</th><th>Datum</th><th>Částka</th></tr></thead><tbody>'+rows(es)+'</tbody>'+
-    '<tfoot><tr class="summary-box"><td colspan="3"><strong>CELKEM</strong></td><td style="text-align:right;font-weight:bold;font-size:15px;">'+totAll.toLocaleString('cs-CZ')+' Kč</td></tr>'+
-    '<tr class="summary-box"><td colspan="3"><strong>ZBÝVÁ DOPLATIT</strong></td><td style="text-align:right;font-weight:bold;font-size:15px;color:#c0392b;">'+tot.toLocaleString('cs-CZ')+' Kč</td></tr></tfoot>'+
+    '<tfoot><tr class="summary-box"><td colspan="3"><strong>CELKEM</strong></td><td style="text-align:right;font-weight:bold;font-size:15px;">'+tot.toLocaleString('cs-CZ')+' Kč</td></tr></tfoot>'+
     '</table>'+
     '<button onclick="window.print()" style="margin-top:14px;padding:8px 20px;font-size:13px;">🖨 Tisknout</button>'+
     '</body></html>';
