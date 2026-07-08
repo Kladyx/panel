@@ -8276,11 +8276,10 @@ h1{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;letter-spac
       <div><div class="lbl">💰 Částka Kč</div><input class="inp" type="number" id="fi-amt" placeholder="0" min="1"/></div>
     </div>
     <div class="row1"><div class="lbl">📝 Poznámka</div><input class="inp" type="text" id="fi-note" placeholder="kde / co..."/></div>
-    <div class="row1"><div class="lbl">💳 Vyrovnáno Kč</div><input class="inp" type="number" id="fi-vyr" placeholder="0" min="0"/></div>
-    <button class="addbtn" id="btn-add">+ PŘIDAT ZÁZNAM</button>
+      <button class="addbtn" id="btn-add">+ PŘIDAT ZÁZNAM</button>
   </div>
   <div class="jidlo-print-btn"><button id="btn-jidlo-tisk" onclick="printJidlo()">🖨️ TISKNOUT</button></div>
-  <div class="sumbox"><div><div class="sum-l">Celkem tento měsíc</div><div class="sum-n" id="sum-n">0 záznamů</div></div><div style="text-align:right"><div class="sum-v" id="sum-v">0 Kč</div><div class="sum-l" style="margin-top:4px">Zůstatek: <span class="sum-zust" id="sum-zust">—</span></div></div></div>
+  <div class="sumbox"><div><div class="sum-l">Celkem tento měsíc</div><div class="sum-n" id="sum-n">0 záznamů</div></div><div style="text-align:right"><div class="sum-v" id="sum-v">0 Kč</div></div></div>
   <div class="elist" id="elist"></div>
 </div>
 <div class="panel" id="p-archiv"><div id="arch"></div></div>
@@ -8346,10 +8345,6 @@ function RZ(){
   var tot=es.reduce(function(s,e){return s+e.a;},0);
   var sv=document.getElementById('sum-v');if(sv)sv.textContent=tot.toLocaleString('cs-CZ')+' Kč';
   var sn=document.getElementById('sum-n');if(sn)sn.textContent=es.length+' záznamy';
-  var vyr=parseFloat(DAT[CUR+'_v']||0);
-  var sz=document.getElementById('sum-zust');
-  if(sz){if(vyr>0){var zust=vyr-tot;sz.textContent=zust.toLocaleString('cs-CZ')+' Kč';sz.className='sum-zust'+(zust<0?' minus':'');}else{sz.textContent='—';sz.className='sum-zust';}}
-  var fv=document.getElementById('fi-vyr');if(fv&&vyr>0)fv.value=vyr;
   var el=document.getElementById('elist');if(!el)return;
   el.innerHTML='';
   if(!es.length){el.innerHTML='<div class="empty">// žádné záznamy</div>';return;}
@@ -8396,12 +8391,10 @@ if(ba)ba.onclick=function(){
   var amt=parseFloat(document.getElementById('fi-amt').value);
   var note=document.getElementById('fi-note').value.trim();
   if(!date){alert('Zadej datum!');return;}
-  if(isNaN(amt)||amt<=0){alert('Zadej částku!');return;}
+  if(isNaN(amt)||amt===0){alert('Zadej částku!');return;}
   var ym=date.substring(0,7);
   if(!DAT[ym])DAT[ym]=[];
   DAT[ym].push({id:Date.now(),d:date,a:amt,n:note});
-  var vyrVal=parseFloat(document.getElementById('fi-vyr').value)||0;
-  if(vyrVal>0)DAT[ym+'_v']=vyrVal;
   document.getElementById('fi-amt').value='';
   document.getElementById('fi-note').value='';
   CUR=ym;SAVE();RL();
