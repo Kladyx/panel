@@ -167,6 +167,27 @@
     </div>
   </div>
 
+  <div class="box" style="margin-top:20px">
+    <div class="icon">📥</div>
+    <div class="desc">Vyber soubor v prohlížeči na PC - objeví se ke stažení na mobilu</div>
+    <div class="desc2">Max. velikost cca 4 MB</div>
+
+    <label class="pickbtn" for="fileInputToMobile">📁 Vybrat soubor</label>
+    <input type="file" id="fileInputToMobile" onchange="onFileSelectedToMobile()">
+    <div class="filename" id="fileNameToMobile">Žádný soubor nevybrán</div>
+
+    <div>
+      <button class="sendbtn" id="sendBtnToMobile" onclick="sendFileToMobile()" disabled>🚀 Odeslat na mobil</button>
+    </div>
+
+    <div class="status" id="statusToMobile"></div>
+
+    <div class="queue-wrap" id="mobileQueueWrap">
+      <div class="queue-title">📥 Soubory z PC ke stažení</div>
+      <div id="mobileQueueList"><div class="pifile-empty">Načítám...</div></div>
+    </div>
+  </div>
+
   <div class="footer">přes Firebase Realtime Database</div>
 </div>
 
@@ -427,6 +448,139 @@ function loadPiQueue() {
 }
 
 loadPiQueue();
+
+// === PC -> Mobil: odeslání a stažení souborů ===
+var DB_BASE_TO_MOBILE = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/transfer_to_mobile';
+var MOBILE_POLL_INTERVAL = 5000;
+var selectedFileToMobile = null;
+
+function onFileSelectedToMobile() {
+  var input = document.getElementById('fileInputToMobile');
+  var f = input.files[0];
+  selectedFileToMobile = f;
+  var nameEl = document.getElementById('fileNameToMobile');
+  var btn = document.getElementById('sendBtnToMobile');
+  var status = document.getElementById('statusToMobile');
+  status.textContent = '';
+  if (f) {
+    var sizeMB = (f.size / 1e6).toFixed(2);
+    nameEl.textContent = f.name + ' (' + sizeMB + ' MB)';
+    if (f.size > MAX_SIZE) {
+      status.textContent = '⚠️ Soubor je příliš velký (max 4 MB)';
+      btn.disabled = true;
+    } else {
+      btn.disabled = false;
+    }
+  } else {
+    nameEl.textContent = 'Žádný soubor nevybrán';
+    btn.disabled = true;
+  }
+}
+
+function sendFileToMobile() {
+  if (!selectedFileToMobile) return;
+  var btn = document.getElementById('sendBtnToMobile');
+  var status = document.getElementById('statusToMobile');
+  btn.disabled = true;
+  status.textContent = '📤 Čtu soubor...';
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var dataUrl = e.target.result;
+    var base64 = dataUrl.split(',')[1];
+    var safeName = String(Date.now()) + '_' + selectedFileToMobile.name.replace(/[^a-zA-Z0-9_.-]/g, '_');
+    var payload = {
+      name: selectedFileToMobile.name,
+      type: selectedFileToMobile.type || 'application/octet-stream',
+      data: base64,
+      size: selectedFileToMobile.size,
+      ts: Date.now()
+    };
+
+    status.textContent = '📡 Odesílám do databáze...';
+    var url = DB_BASE_TO_MOBILE + '/' + encodeURIComponent(safeName) + '.json';
+    var xhr = new XMLHttpRequest();
+    xhr.open('PUT', url);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        status.textContent = '✅ Odesláno! Čeká na stažení mobilem.';
+        playDing();
+      } else {
+        status.textContent = '❌ Chyba (' + xhr.status + '): ' + xhr.responseText;
+      }
+      btn.disabled = false;
+    };
+    xhr.onerror = function() {
+      status.textContent = '❌ Chyba sítě';
+      btn.disabled = false;
+    };
+    xhr.send(JSON.stringify(payload));
+  };
+  reader.onerror = function() {
+    status.textContent = '❌ Chyba při čtení souboru';
+    btn.disabled = false;
+  };
+  reader.readAsDataURL(selectedFileToMobile);
+}
+
+function loadMobileQueue() {
+  var listEl = document.getElementById('mobileQueueList');
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', DB_BASE_TO_MOBILE + '.json');
+  xhr.onload = function() {
+    if (xhr.status < 200 || xhr.status >= 300) {
+      setTimeout(loadMobileQueue, MOBILE_POLL_INTERVAL);
+      return;
+    }
+    var data = null;
+    try { data = JSON.parse(xhr.responseText); } catch (e) {}
+    if (!data) {
+      listEl.innerHTML = '<div class="pifile-empty">Žádné soubory nečekají</div>';
+    } else {
+      var html = '';
+      for (var key in data) {
+        var f = data[key];
+        html += '<div class="pifile-item">';
+        html += '<div class="pifile-name">' + escapeHtml(f.name) + '</div>';
+        html += '<div class="pifile-meta">' + formatSize(f.size || 0) + ' · ' + formatAgo(f.ts) + '</div>';
+        html += '<button class="pickbtn" style="margin-top:6px;font-size:.8rem;padding:6px 16px" onclick="downloadMobileFile(\'' + key.replace(/'/g, "\\'") + '\')">⬇️ Stáhnout</button>';
+        html += '</div>';
+      }
+      listEl.innerHTML = html;
+    }
+    setTimeout(loadMobileQueue, MOBILE_POLL_INTERVAL);
+  };
+  xhr.onerror = function() {
+    setTimeout(loadMobileQueue, MOBILE_POLL_INTERVAL);
+  };
+  xhr.send();
+}
+
+function downloadMobileFile(key) {
+  var url = DB_BASE_TO_MOBILE + '/' + encodeURIComponent(key) + '.json';
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url);
+  xhr.onload = function() {
+    if (xhr.status < 200 || xhr.status >= 300) return;
+    var data = null;
+    try { data = JSON.parse(xhr.responseText); } catch (e) {}
+    if (!data) return;
+    var a = document.createElement('a');
+    a.href = 'data:' + (data.type || 'application/octet-stream') + ';base64,' + data.data;
+    a.download = data.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    // smaž záznam po stažení
+    var delXhr = new XMLHttpRequest();
+    delXhr.open('DELETE', url);
+    delXhr.send();
+  };
+  xhr.send();
+}
+
+loadMobileQueue();
 </script>
 </body>
 </html>
