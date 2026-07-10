@@ -451,7 +451,7 @@ loadPiQueue();
 
 // === PC -> Mobil: odeslání a stažení souborů ===
 var DB_BASE_TO_MOBILE = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/transfer_to_mobile';
-var MOBILE_POLL_INTERVAL = 5000;
+var MOBILE_POLL_INTERVAL = 20000;
 var selectedFileToMobile = null;
 
 function onFileSelectedToMobile() {
@@ -525,6 +525,10 @@ function sendFileToMobile() {
 }
 
 function loadMobileQueue() {
+  if (document.hidden) {
+    setTimeout(loadMobileQueue, MOBILE_POLL_INTERVAL);
+    return;
+  }
   var listEl = document.getElementById('mobileQueueList');
   var xhr = new XMLHttpRequest();
   xhr.open('GET', DB_BASE_TO_MOBILE + '.json');
