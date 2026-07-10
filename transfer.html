@@ -488,7 +488,7 @@ function sendFileToMobile() {
   reader.onload = function(e) {
     var dataUrl = e.target.result;
     var base64 = dataUrl.split(',')[1];
-    var safeName = String(Date.now()) + '_' + selectedFileToMobile.name.replace(/[^a-zA-Z0-9_.-]/g, '_');
+    var safeName = String(Date.now()) + '_' + selectedFileToMobile.name.replace(/[^a-zA-Z0-9_-]/g, '_');
     var payload = {
       name: selectedFileToMobile.name,
       type: selectedFileToMobile.type || 'application/octet-stream',
