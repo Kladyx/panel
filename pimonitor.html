@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.10.Kl">
-<title>Pi Monitor v2.10.Kl</title>
+<meta name="version" content="v2.11.Kl">
+<title>Pi Monitor v2.11.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -83,7 +83,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v2.10.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v2.11.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -264,6 +264,7 @@ function loadStats(){
     if(sb&&sb.classList.contains('pulsing')){
       sb.classList.remove('pulsing');
       sb.textContent='🔴 VYPNOUT RPi';
+      localStorage.removeItem('pi_shutdown');
     }
     // RAM
     var ram=Math.round(d.ram_pct||0);
@@ -358,12 +359,19 @@ document.getElementById('btn-shutdown').onclick=function(){
   var b=document.getElementById('btn-shutdown');
   b.textContent='🔴 RPi VYPNUTO';
   b.classList.add('pulsing');
+  localStorage.setItem('pi_shutdown','1');
   showOffline();
   var w=window.open('http://192.168.0.50:5050/shutdown','_blank');
   setTimeout(function(){if(w)w.close();},1000);
 };
 loadStats();
 loadHistory();
+// Obnov shutdown stav po znovuotevření appky
+if(localStorage.getItem('pi_shutdown')==='1'){
+  var sb=document.getElementById('btn-shutdown');
+  if(sb){sb.textContent='🔴 RPi VYPNUTO';sb.classList.add('pulsing');}
+  showOffline();
+}
 setInterval(loadStats,30000);
 setInterval(loadHistory,60000);
 </script>
