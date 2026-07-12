@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.15.Kl">
-<title>Pi Monitor v2.15.Kl</title>
+<meta name="version" content="v2.16.Kl">
+<title>Pi Monitor v2.16.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -77,17 +77,27 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 @keyframes pulse-shutdown{0%{background:rgba(180,0,0,0.12);border-color:rgba(200,0,0,0.4);box-shadow:none;}50%{background:rgba(200,0,0,0.45);border-color:rgba(255,0,0,0.9);box-shadow:0 0 14px rgba(255,0,0,0.6);}100%{background:rgba(180,0,0,0.12);border-color:rgba(200,0,0,0.4);box-shadow:none;}}
 .shutdown-btn.pulsing{animation:pulse-shutdown 2s infinite;}
 .restart-btn:active{background:rgba(255,170,0,0.15);}
+/* PI ON/OFF INDIKÁTORY */
+.pistate{display:flex;gap:8px;margin-bottom:10px;}
+.pistate-box{flex:1;padding:8px;border-radius:8px;text-align:center;font-family:'Courier New',monospace;font-size:0.65rem;letter-spacing:2px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:var(--muted);transition:all 0.3s;}
+.pistate-box.on-active{border-color:var(--green);background:rgba(0,255,136,0.12);color:var(--green);text-shadow:0 0 8px var(--green);box-shadow:0 0 12px rgba(0,255,136,0.3);animation:pulse-green 1.5s infinite;}
+.pistate-box.off-active{border-color:var(--red);background:rgba(255,60,90,0.12);color:var(--red);text-shadow:0 0 8px var(--red);box-shadow:0 0 12px rgba(255,60,90,0.3);animation:pulse-red 1.5s infinite;}
 .footer{text-align:center;font-size:0.45rem;color:rgba(90,100,136,0.4);letter-spacing:2px;margin-top:6px;}
 </style>
 </head>
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.23 · v2.15.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v2.16.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
 <button class="shutdown-btn" id="btn-shutdown">🔴 VYPNOUT RPi</button>
+
+<div class="pistate">
+  <div class="pistate-box" id="pistate-on">🟢 Pi ON</div>
+  <div class="pistate-box" id="pistate-off">🔴 Pi OFF</div>
+</div>
 
 <div class="grid">
   <div class="card"><div class="lbl">CPU</div><div class="val" id="val-cpu">—</div><div class="unit">%</div><div class="bar-wrap"><div class="bar bar-ok" id="bar-cpu" style="width:0%"></div></div><canvas class="spark" id="spark-cpu" height="28"></canvas></div>
@@ -217,14 +227,25 @@ function fmtAge(ms){
   return Math.floor(s/3600)+'h zpět';
 }
 
-function setSvc(id,ok){
+function setSvc(id,ok,isPC){
   var d=document.getElementById('d-'+id);
   var s=document.getElementById('s-'+id);
+  if(isPC){
+    if(d)d.className='dot dot-ok';
+    if(s){s.textContent='CONNECTED ON - PC';s.className='svc-stat on';}
+    return;
+  }
   if(d)d.className='dot '+(ok?'dot-ok':'dot-err');
   if(s){
     s.textContent=ok?'CONNECTED ON':'CONNECTED OFF';
     s.className='svc-stat '+(ok?'on':'off');
   }
+}
+function setPiState(online){
+  var on=document.getElementById('pistate-on');
+  var off=document.getElementById('pistate-off');
+  if(on)on.className='pistate-box'+(online?' on-active':'');
+  if(off)off.className='pistate-box'+(online?'':' off-active');
 }
 
 function showOffline(fromFirebase){
@@ -234,12 +255,19 @@ function showOffline(fromFirebase){
     setBar('bar-'+k,0);
   });
   document.getElementById('val-uptime').textContent='—';
-  ['tapo','transfer','upload','nextsync','obs','prijate','eq','irbridge'].forEach(function(id){
+  // Pi služby (běží na Pi) - když je Pi offline, jsou nedostupné
+  ['tapo','prijate','irbridge'].forEach(function(id){
     var d=document.getElementById('d-'+id);
     if(d)d.className='dot dot-wait';
     var s=document.getElementById('s-'+id);
     if(s)s.textContent='?';
   });
+  // PC služby (běží na PC nezávisle) - stále zeleně "ON - PC"
+  ['transfer','upload','obs','nextsync','eq'].forEach(function(id){
+    setSvc(id,null,true);
+  });
+  // Pi OFF (data nepřišla → Pi je vypnutý)
+  setPiState(false);
   if(fromFirebase){
     var b=document.getElementById('btn-shutdown');
     if(b)b.classList.remove('pulsing');
@@ -291,18 +319,20 @@ function loadStats(){
     var rx=d.net_rx_mb,tx=d.net_tx_mb;
     if(rx!==undefined)document.getElementById('net-rx').textContent=rx>=1024?(rx/1024).toFixed(1)+' GB':rx+' MB';
     if(tx!==undefined)document.getElementById('net-tx').textContent=tx>=1024?(tx/1024).toFixed(1)+' GB':tx+' MB';
-    // Services
+    // Services BĚŽÍCÍ NA PI (tapo, prijate)
     if(d.services){
-      ['tapo','transfer','upload','prijate'].forEach(function(k){
+      ['tapo','prijate'].forEach(function(k){
         if(d.services[k]!==undefined)setSvc(k,d.services[k]===true||d.services[k]==='active');
       });
     }
-    // OBS na PC (samostatný zdroj pravdy: d.obs_pc)
-    setSvc('obs',d.obs_pc===true);
-    // ZX Next (samostatný zdroj pravdy: d.next_pc)
-    setSvc('nextsync',d.next_pc===true);
-    // Equalizer na PC (samostatný zdroj pravdy: d.eq_pc)
-    setSvc('eq',d.eq_pc===true);
+    // Služby BĚŽÍCÍ NA PC (natvrdo zeleně "CONNECTED ON - PC")
+    setSvc('transfer',null,true);
+    setSvc('upload',null,true);
+    setSvc('obs',null,true);
+    setSvc('nextsync',null,true);
+    setSvc('eq',null,true);
+    // Pi ON (data přišla → Pi běží)
+    setPiState(true);
     // Procesy
     if(d.processes) document.getElementById('net-proc').textContent=d.processes;
   })
