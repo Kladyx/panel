@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v1.9Kl</title>
+<title>KladyxTransfer v2.0Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -50,96 +50,104 @@
     75%  { border-image-source: linear-gradient(270deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
     100% { border-image-source: linear-gradient(360deg, #ff00ff, #00ffff, #ffff00, #ff00ff); }
   }
-
-  .icon { font-size:3.5rem; margin-bottom:10px; }
-  .desc { font-size:1rem; color:rgba(255,255,255,.6); margin-bottom:6px; }
-  .desc2 { font-size:.8rem; color:rgba(255,255,255,.4); margin-bottom:20px; }
-
+  .icon { font-size:3rem; margin-bottom:8px; }
+  .desc { color:rgba(255,255,255,.85); font-size:1rem; margin-bottom:6px; }
+  .desc2 { color:rgba(255,255,255,.55); font-size:.85rem; margin-bottom:16px; }
+  .pickbtn {
+    display:inline-block;
+    background: linear-gradient(135deg, #ff00ff, #00ffff);
+    color:#fff; font-weight:700;
+    padding:10px 22px; border-radius:10px;
+    cursor:pointer; user-select:none;
+    box-shadow:0 4px 12px rgba(0,255,255,.3);
+  }
   input[type=file] { display:none; }
-  .pickbtn, .sendbtn {
-    font-family:'Times New Roman', Times, serif;
-    font-size:1.2rem; font-weight:bold;
-    padding:12px 30px; border-radius:30px;
-    border:2px solid #00ffff;
-    background: linear-gradient(135deg, rgba(0,255,255,.15), rgba(255,0,255,.15));
-    color:#fff; cursor:pointer;
-    box-shadow: 0 0 15px rgba(0,255,255,.3);
-    margin:8px;
-  }
-  .sendbtn { border-color:#00ff66; box-shadow:0 0 15px rgba(0,255,102,.3); }
-  .sendbtn:disabled { opacity:.4; }
-
   .filename {
-    margin-top:14px; font-size:.95rem; color:#ffff66;
-    word-break:break-all; min-height:1.4em;
+    margin:14px 0;
+    color:#00ffff;
+    font-size:.95rem;
+    word-break:break-all;
+    min-height:1.2em;
   }
-
-  .status { font-size:1rem; margin-top:18px; min-height:2.4em; color:#00ffff; }
-  .status.waiting { color:#ff4444; }
-  .status.done { color:#00ff66; }
-  .footer { margin-top:30px; font-size:.8rem; color:rgba(255,255,255,.3); }
-
-  .queue-wrap { margin-top:20px; width:100%; }
-  .queue-title { font-size:.85rem; color:rgba(255,255,255,.5); margin-bottom:8px; letter-spacing:1px; }
-  .queue-item {
-    display:flex; align-items:center; gap:8px;
-    padding:8px 12px; border-radius:8px;
-    background:rgba(255,255,255,.04);
-    margin-bottom:6px; font-size:.85rem;
-    text-align:left;
+  .sendbtn {
+    display:inline-block;
+    background: linear-gradient(135deg, #ffff00, #ff00ff);
+    color:#000; font-weight:900;
+    padding:12px 26px; border-radius:12px;
+    border:none; cursor:pointer;
+    font-size:1rem;
+    box-shadow:0 4px 12px rgba(255,255,0,.3);
+    margin-top:6px;
   }
-  .queue-dot {
-    width:10px; height:10px; border-radius:50%;
-    flex-shrink:0;
+  .sendbtn:disabled { opacity:.4; cursor:not-allowed; }
+  .status {
+    margin-top:18px; min-height:1.4em;
+    font-size:.95rem;
+    color:#ffff88;
   }
-  .queue-dot.waiting { background:#ff4444; box-shadow:0 0 6px #ff4444; }
-  .queue-dot.done { background:#00ff66; box-shadow:0 0 6px #00ff66; }
-  .queue-name { flex:1; word-break:break-all; }
-  .queue-state { font-size:.75rem; opacity:.7; flex-shrink:0; }
+  .status.done   { color:#00ff88; }
+  .status.waiting{ color:#ffaa00; }
 
   .progress-wrap {
-    margin-top:14px; width:100%;
+    width:100%;
     background:rgba(255,255,255,.08);
-    border-radius:8px; height:22px;
-    overflow:hidden; position:relative;
-    border:1px solid rgba(0,255,255,.2);
-    display:none;
+    border-radius:8px; overflow:hidden;
+    margin-top:14px; height:22px;
+    position:relative; display:none;
   }
   .progress-bar {
-    height:100%; width:0%;
-    background:linear-gradient(90deg, #00ffff, #00ff66);
-    border-radius:8px;
-    transition:width 0.2s ease;
-    box-shadow:0 0 12px rgba(0,255,255,.5);
+    height:100%;
+    background:linear-gradient(90deg,#ff00ff,#00ffff,#ffff00);
+    width:0%; transition:width .2s;
   }
   .progress-text {
-    position:absolute; top:0; left:0; right:0; bottom:0;
+    position:absolute; inset:0;
     display:flex; align-items:center; justify-content:center;
-    font-size:.8rem; font-weight:bold; color:#fff;
-    text-shadow:0 0 4px #000;
-    font-family:monospace;
+    font-size:.85rem; font-weight:700; color:#fff;
+    text-shadow:0 0 4px rgba(0,0,0,.6);
   }
 
-  .pifile-item {
-    padding:8px 12px; border-radius:8px;
-    background:rgba(255,255,255,.04);
-    margin-bottom:6px; font-size:.85rem;
-    text-align:left;
+  .queue-wrap { margin-top:20px; text-align:left; }
+  .queue-title {
+    font-size:.95rem; font-weight:700;
+    color:#00ffff; margin-bottom:8px; text-align:center;
   }
-  .pifile-name { word-break:break-all; color:#fff; }
-  .pifile-meta { font-size:.75rem; color:rgba(255,255,255,.5); margin-top:2px; }
-  .pifile-empty { font-size:.8rem; color:rgba(255,255,255,.4); text-align:left; }
+  .queue-item {
+    display:flex; align-items:center; gap:10px;
+    padding:8px 10px; margin-bottom:6px;
+    background:rgba(255,255,255,.05);
+    border-radius:8px;
+    font-size:.9rem;
+  }
+  .queue-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+  .queue-dot.waiting { background:#ff3355; box-shadow:0 0 6px #ff3355; animation:pulse 1.2s infinite; }
+  .queue-dot.done    { background:#00ff88; box-shadow:0 0 6px #00ff88; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.4; } }
+  .queue-name { flex:1; word-break:break-all; }
+  .queue-state { font-size:.8rem; color:rgba(255,255,255,.6); }
+
+  .pifile-item {
+    padding:8px 10px; margin-bottom:6px;
+    background:rgba(0,255,255,.06);
+    border-radius:8px;
+    font-size:.9rem;
+  }
+  .pifile-name { font-weight:700; color:#fff; word-break:break-all; }
+  .pifile-meta { font-size:.78rem; color:rgba(255,255,255,.6); margin-top:2px; }
+  .pifile-empty { text-align:center; color:rgba(255,255,255,.4); font-size:.85rem; padding:6px; }
+
+  .footer { color:rgba(255,255,255,.35); font-size:.8rem; margin-top:22px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="title">KLADYXTRANSFER</div>
-  <div class="version">v1.9 Kl</div>
+  <div class="title">KladyxTransfer</div>
+  <div class="version">v2.0Kl • Firebase only</div>
 
   <div class="box">
     <div class="icon">📤</div>
-    <div class="desc">Vyber soubor na mobilu - objeví se na PC ve složce <b>prijate</b></div>
-    <div class="desc2">Max. velikost cca 4 MB (foto, dokument, krátký text)</div>
+    <div class="desc">Vyber soubor v mobilu - uloží se do PC složky <b>C:\nextsync\prijate</b></div>
+    <div class="desc2">Max. velikost cca 4 MB</div>
 
     <label class="pickbtn" for="fileInput">📁 Vybrat soubor</label>
     <input type="file" id="fileInput" onchange="onFileSelected()">
@@ -159,11 +167,6 @@
     <div class="queue-wrap" id="queueWrap" style="display:none">
       <div class="queue-title">📋 Stav odeslaných souborů</div>
       <div id="queueList"></div>
-    </div>
-
-    <div class="queue-wrap" id="piQueueWrap">
-      <div class="queue-title">📥 Soubory čekající na Pi4</div>
-      <div id="piQueueList"><div class="pifile-empty">Načítám...</div></div>
     </div>
   </div>
 
@@ -192,13 +195,15 @@
 </div>
 
 <script>
-var DB_BASE = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/transfer';
-var PC_UPLOAD_URL = 'http://192.168.0.23:8766/upload';
+var DB_TO_PC     = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/transfer_to_pc';
+var DB_TO_MOBILE = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/transfer_to_mobile';
 var MAX_SIZE = 4 * 1024 * 1024; // 4 MB
+var MOBILE_POLL_INTERVAL = 20000;
 var selectedFile = null;
+var selectedFileToMobile = null;
 var audioCtx = null;
 
-// Zvukové cinknutí přes Web Audio API (bez externího souboru)
+// ─── Zvukové cinknutí ────────────────────────────────
 function playDing() {
   try {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -220,6 +225,25 @@ function playDing() {
   } catch(e) {}
 }
 
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+}
+function formatAgo(ts) {
+  if (!ts) return '';
+  var diff = Math.floor((Date.now() - ts) / 1000);
+  if (diff < 60) return 'před ' + diff + ' s';
+  if (diff < 3600) return 'před ' + Math.floor(diff / 60) + ' min';
+  return 'před ' + Math.floor(diff / 3600) + ' h';
+}
+
+// ─── MOBIL → PC (přes Firebase, base64) ──────────────
 function onFileSelected() {
   var input = document.getElementById('fileInput');
   var f = input.files[0];
@@ -227,7 +251,7 @@ function onFileSelected() {
   var nameEl = document.getElementById('fileName');
   var btn = document.getElementById('sendBtn');
   var status = document.getElementById('status');
-  status.textContent = '';
+  status.textContent = ''; status.className = 'status';
   if (f) {
     var sizeMB = (f.size / 1e6).toFixed(2);
     nameEl.textContent = f.name + ' (' + sizeMB + ' MB)';
@@ -242,84 +266,6 @@ function onFileSelected() {
     btn.disabled = true;
   }
 }
-
-function sendFile() {
-  if (!selectedFile) return;
-  var btn = document.getElementById('sendBtn');
-  var status = document.getElementById('status');
-  btn.disabled = true;
-  status.textContent = '📤 Čtu soubor...';
-
-  // Aktivuj AudioContext na user gesture (Android Chrome to vyžaduje)
-  try {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-  } catch(e) {}
-
-  var safeName = selectedFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-
-  // multipart/form-data pro PC endpoint /upload
-  // server prijatereceiver.py ocekava pole 'file' (binarni obsah) a 'filename' (nazev)
-  var formData = new FormData();
-  formData.append('file', selectedFile, safeName);
-  formData.append('filename', safeName);
-
-  status.textContent = '📡 Odesílám na PC (lokální síť)...';
-
-  // Zobraz progress bar
-  var pWrap = document.getElementById('progressWrap');
-  var pBar = document.getElementById('progressBar');
-  var pText = document.getElementById('progressText');
-  pWrap.style.display = 'block';
-  pBar.style.width = '0%';
-  pText.textContent = '0%';
-
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', PC_UPLOAD_URL);
-  xhr.timeout = 60000; // 60s timeout pro velke soubory
-
-  // Sledovani prubehu uploadu
-  xhr.upload.onprogress = function(e) {
-    if (e.lengthComputable) {
-      var pct = Math.round((e.loaded / e.total) * 100);
-      pBar.style.width = pct + '%';
-      pText.textContent = pct + '%';
-    }
-  };
-
-  xhr.onload = function() {
-    if (xhr.status >= 200 && xhr.status < 300) {
-      pBar.style.width = '100%';
-      pText.textContent = '100% ✓';
-      setTimeout(function(){ pWrap.style.display = 'none'; }, 1500);
-      status.textContent = '✅ Uloženo na PC (C:\\nextsync\\prijate)';
-      status.className = 'status done';
-      addQueueItem(safeName, selectedFile.name);
-      setQueueItemDone(safeName);
-    } else {
-      pWrap.style.display = 'none';
-      status.textContent = '❌ PC vrátil chybu: ' + xhr.status + ' ' + xhr.responseText;
-    }
-    btn.disabled = false;
-  };
-
-  xhr.onerror = function() {
-    pWrap.style.display = 'none';
-    status.textContent = '❌ Nelze se připojit na PC (192.168.0.23:8766). Zkontroluj: mobil na stejné WiFi, PC zapnuté, prijatereceiver.py běží, povol "Nezabezpečený obsah" v nastavení stránky.';
-    btn.disabled = false;
-  };
-
-  xhr.ontimeout = function() {
-    pWrap.style.display = 'none';
-    status.textContent = '⏱️ Timeout — PC neodpovídá do 60s';
-    btn.disabled = false;
-  };
-
-  xhr.send(formData);
-};
-
-// ─── Sledování stavu přenosu (čekající/odesláno) ───────────────
-var POLL_INTERVAL = 3000; // 3 sekundy
 
 function addQueueItem(safeName, displayName) {
   var queueWrap = document.getElementById('queueWrap');
@@ -357,8 +303,101 @@ function setQueueItemDone(safeName) {
   playDing();
 }
 
+function sendFile() {
+  if (!selectedFile) return;
+  var btn = document.getElementById('sendBtn');
+  var status = document.getElementById('status');
+  btn.disabled = true;
+  status.textContent = '📤 Čtu soubor...';
+  status.className = 'status';
+
+  // aktivace AudioContext na user gesture
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  } catch(e) {}
+
+  var pWrap = document.getElementById('progressWrap');
+  var pBar = document.getElementById('progressBar');
+  var pText = document.getElementById('progressText');
+  pWrap.style.display = 'block';
+  pBar.style.width = '0%';
+  pText.textContent = '0%';
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var dataUrl = e.target.result;
+    var base64 = dataUrl.split(',')[1];
+    var safeName = String(Date.now()) + '_' + selectedFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    var displayName = selectedFile.name;
+    var payload = {
+      name: selectedFile.name,
+      type: selectedFile.type || 'application/octet-stream',
+      data: base64,
+      size: selectedFile.size,
+      ts: Date.now()
+    };
+
+    addQueueItem(safeName, displayName);
+    status.textContent = '📡 Odesílám do Firebase...';
+
+    var url = DB_TO_PC + '/' + encodeURIComponent(safeName) + '.json';
+    var xhr = new XMLHttpRequest();
+    xhr.open('PUT', url);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.timeout = 60000;
+
+    xhr.upload.onprogress = function(ev) {
+      if (ev.lengthComputable) {
+        var pct = Math.round((ev.loaded / ev.total) * 100);
+        pBar.style.width = pct + '%';
+        pText.textContent = pct + '%';
+      }
+    };
+
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        pBar.style.width = '100%';
+        pText.textContent = '100% ✓';
+        setTimeout(function(){ pWrap.style.display = 'none'; }, 1500);
+        status.textContent = '✅ Odesláno. Čekám, až PC stáhne...';
+        status.className = 'status waiting';
+        startPolling(safeName);
+      } else {
+        pWrap.style.display = 'none';
+        status.textContent = '❌ Firebase vrátil chybu: ' + xhr.status + ' ' + xhr.responseText;
+        status.className = 'status';
+      }
+      btn.disabled = false;
+    };
+    xhr.onerror = function() {
+      pWrap.style.display = 'none';
+      status.textContent = '❌ Chyba sítě při odesílání do Firebase.';
+      status.className = 'status';
+      btn.disabled = false;
+    };
+    xhr.ontimeout = function() {
+      pWrap.style.display = 'none';
+      status.textContent = '⏱️ Timeout — Firebase neodpovídá do 60 s.';
+      status.className = 'status';
+      btn.disabled = false;
+    };
+
+    xhr.send(JSON.stringify(payload));
+  };
+  reader.onerror = function() {
+    document.getElementById('progressWrap').style.display = 'none';
+    status.textContent = '❌ Chyba při čtení souboru';
+    btn.disabled = false;
+  };
+  reader.readAsDataURL(selectedFile);
+}
+
+// ─── Sledování, jestli PC už soubor stáhlo ───────────
+var POLL_INTERVAL = 3000;
+
 function startPolling(safeName) {
-  var checkUrl = DB_BASE + '/' + encodeURIComponent(safeName) + '.json';
+  var checkUrl = DB_TO_PC + '/' + encodeURIComponent(safeName) + '.json?shallow=true';
   var status = document.getElementById('status');
 
   var poll = function() {
@@ -368,85 +407,21 @@ function startPolling(safeName) {
       if (xhr.status >= 200 && xhr.status < 300) {
         var result = xhr.responseText;
         if (result === 'null' || result === '') {
-          // záznam zmizel = PC stáhlo soubor
           setQueueItemDone(safeName);
-          status.textContent = '✅ Soubor byl stažen do PC (složka přijaté)';
+          status.textContent = '✅ Soubor byl stažen do PC (C:\\nextsync\\prijate)';
           status.className = 'status done';
-          return; // konec pollingu
+          return;
         }
       }
-      // ještě existuje, čekáme dál
       setTimeout(poll, POLL_INTERVAL);
     };
-    xhr.onerror = function() {
-      setTimeout(poll, POLL_INTERVAL);
-    };
+    xhr.onerror = function() { setTimeout(poll, POLL_INTERVAL); };
     xhr.send();
   };
-
-  status.className = 'status waiting';
   poll();
 }
 
-// ─── Soubory čekající na Pi4 (z prijate_lister.py, aktualizace každých 30s) ───
-var PI_LIST_URL = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/prijate_list.json';
-var PI_POLL_INTERVAL = 15000; // 15 sekund
-
-function formatSize(bytes) {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / 1024 / 1024).toFixed(2) + ' MB';
-}
-
-function formatAgo(ts) {
-  var sec = Math.floor((Date.now() - ts) / 1000);
-  if (sec < 5) return 'právě teď';
-  if (sec < 60) return 'před ' + sec + ' s';
-  var min = Math.floor(sec / 60);
-  if (min < 60) return 'před ' + min + ' min';
-  var hod = Math.floor(min / 60);
-  return 'před ' + hod + ' h';
-}
-
-function escapeHtml(s) {
-  var div = document.createElement('div');
-  div.textContent = s;
-  return div.innerHTML;
-}
-
-function loadPiQueue() {
-  var listEl = document.getElementById('piQueueList');
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', PI_LIST_URL);
-  xhr.onload = function() {
-    if (xhr.status < 200 || xhr.status >= 300) return;
-    var data = null;
-    try { data = JSON.parse(xhr.responseText); } catch (e) {}
-    if (!data || !data.files || data.files.length === 0) {
-      listEl.innerHTML = '<div class="pifile-empty">Žádné soubory nečekají</div>';
-      return;
-    }
-    var html = '';
-    for (var i = 0; i < data.files.length; i++) {
-      var f = data.files[i];
-      html += '<div class="pifile-item">';
-      html += '<div class="pifile-name">' + escapeHtml(f.name) + '</div>';
-      html += '<div class="pifile-meta">' + formatSize(f.size) + ' · ' + formatAgo(f.ts) + '</div>';
-      html += '</div>';
-    }
-    listEl.innerHTML = html;
-  };
-  setTimeout(loadPiQueue, PI_POLL_INTERVAL);
-  xhr.send();
-}
-
-loadPiQueue();
-
-// === PC -> Mobil: odeslání a stažení souborů ===
-var DB_BASE_TO_MOBILE = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/transfer_to_mobile';
-var MOBILE_POLL_INTERVAL = 20000;
-var selectedFileToMobile = null;
-
+// ─── PC → MOBIL (beze změny, přes Firebase) ──────────
 function onFileSelectedToMobile() {
   var input = document.getElementById('fileInputToMobile');
   var f = input.files[0];
@@ -491,7 +466,7 @@ function sendFileToMobile() {
     };
 
     status.textContent = '📡 Odesílám do databáze...';
-    var url = DB_BASE_TO_MOBILE + '/' + encodeURIComponent(safeName) + '.json';
+    var url = DB_TO_MOBILE + '/' + encodeURIComponent(safeName) + '.json';
     var xhr = new XMLHttpRequest();
     xhr.open('PUT', url);
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -524,7 +499,7 @@ function loadMobileQueue() {
   }
   var listEl = document.getElementById('mobileQueueList');
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', DB_BASE_TO_MOBILE + '.json');
+  xhr.open('GET', DB_TO_MOBILE + '.json');
   xhr.onload = function() {
     if (xhr.status < 200 || xhr.status >= 300) {
       setTimeout(loadMobileQueue, MOBILE_POLL_INTERVAL);
@@ -555,7 +530,7 @@ function loadMobileQueue() {
 }
 
 function downloadMobileFile(key) {
-  var url = DB_BASE_TO_MOBILE + '/' + encodeURIComponent(key) + '.json';
+  var url = DB_TO_MOBILE + '/' + encodeURIComponent(key) + '.json';
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url);
   xhr.onload = function() {
@@ -569,7 +544,6 @@ function downloadMobileFile(key) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    // smaž záznam po stažení
     var delXhr = new XMLHttpRequest();
     delXhr.open('DELETE', url);
     delXhr.send();
