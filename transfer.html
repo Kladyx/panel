@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v2.0Kl</title>
+<title>KladyxTransfer v2.1Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -142,7 +142,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v2.0Kl • Firebase only</div>
+  <div class="version">v2.1Kl • Firebase only</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -328,7 +328,7 @@ function sendFile() {
   reader.onload = function(e) {
     var dataUrl = e.target.result;
     var base64 = dataUrl.split(',')[1];
-    var safeName = String(Date.now()) + '_' + selectedFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    var safeName = String(Date.now()) + '_' + selectedFile.name.replace(/[^a-zA-Z0-9_-]/g, '_');
     var displayName = selectedFile.name;
     var payload = {
       name: selectedFile.name,
