@@ -18870,7 +18870,7 @@ document.getElementById('file-input').addEventListener('change',function(e){
 getS();getF();renderFiles();log('NextSync v3.7.9.Pro - 2026 Kladyx OK ('+(isHttp?'PC':'GitHub')+' mode)','ok');
 loadHeartbeat();
 loadPCFiles(curFolder);
-setInterval(loadHeartbeat,15000);
+setInterval(loadHeartbeat,60000);
 // Adaptive interval - zpomalí při nečinnosti
 var _pcFilesInterval = null;
 function _startPCFilesInterval() {
@@ -19179,7 +19179,7 @@ async function wsocketToggle(){
 }
 
 wsocketRefresh();
-setInterval(wsocketRefresh,10000);
+setInterval(wsocketRefresh,30000);
 
 
 // ── GOOGLE LOGIN GATE ──
@@ -19217,7 +19217,7 @@ function gateInit() {
         } catch(e) { console.warn('[Tapo] poll error:', e); }
       }
       pollTapo();
-      setInterval(pollTapo, 15000);
+      setInterval(pollTapo, 60000);
     } catch(dbErr) { console.warn('tapoDb sync:', dbErr); }
     _gateAuth.onAuthStateChanged(function(user) { if(user){unlockPanel(user);}else{lockPanel();} });
   } catch(e) { document.getElementById('gate-status').textContent='Chyba: '+e.message; document.getElementById('gate-status').className='gate-status gate-err'; }
