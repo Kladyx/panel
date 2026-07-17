@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.17.Kl">
-<title>Pi Monitor v2.17.Kl</title>
+<meta name="version" content="v2.18.Kl">
+<title>Pi Monitor v2.18.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -89,7 +89,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v2.17.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v2.18.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -150,6 +150,11 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 
 <script>
 var FB='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
+var _authToken='';
+function fbUrl(path){
+  var sep=path.indexOf('?')>=0?'&':'?';
+  return FB+path+(_authToken?sep+'auth='+_authToken:'');
+}
 var avgCpuFromHistory=4.5; // výchozí: 4.5% průměru (idle + trocha zátěže)
 
 function drawSpark(id,values,color){
@@ -173,7 +178,7 @@ function drawSpark(id,values,color){
 }
 
 function loadHistory(){
-  fetch(FB+'/piHistory.json?orderBy="$key"&limitToLast=40',{signal:AbortSignal.timeout(8000)})
+  fetch(fbUrl('/piHistory.json?orderBy="$key"&limitToLast=40'),{signal:AbortSignal.timeout(8000)})
   .then(function(r){return r.json();})
   .then(function(d){
     if(!d)return;
@@ -283,7 +288,7 @@ function showOffline(fromFirebase){
 function loadStats(){
   document.getElementById('offline-msg').style.display='none';
   // Zkus piStats node
-  fetch(FB+'/piStats.json',{signal:AbortSignal.timeout(8000)})
+  fetch(fbUrl('/piStats.json'),{signal:AbortSignal.timeout(8000)})
   .then(function(r){return r.json();})
   .then(function(d){
     if(!d){showOffline(true);loadFallback();return;}
@@ -349,7 +354,7 @@ function loadStats(){
   })
   .catch(function(){showOffline(true);loadFallback();});
   // IR Bridge - čte heartbeat přímo z irDb/lastSeen
-  fetch(FB+'/irDb/lastSeen.json',{signal:AbortSignal.timeout(5000)})
+  fetch(fbUrl('/irDb/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(ts){
     setSvc('irbridge',ts&&(Date.now()-ts<60000));
@@ -359,7 +364,7 @@ function loadStats(){
 
 function loadFallback(){
   // Fallback: nextsync/status pro základní info
-  fetch(FB+'/nextsync/status.json',{signal:AbortSignal.timeout(5000)})
+  fetch(fbUrl('/nextsync/status.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(d){
     if(!d||!d.lastSeen)return;
@@ -385,7 +390,7 @@ document.getElementById('btn-restart').onclick=function(){
   if(!confirm('Opravdu restartovat Pi4?'))return;
   var b=document.getElementById('btn-restart');
   var orig=b.textContent;
-  var url=FB+'/nextsync/piReboot.json';
+  var url=fbUrl('/nextsync/piReboot.json');
   fetch(url,{method:'PUT',body:JSON.stringify({ts:Date.now()}),headers:{'Content-Type':'application/json'}})
   .then(function(){
     b.textContent='✓ RESTARTOVÁNO';
@@ -399,13 +404,41 @@ document.getElementById('btn-shutdown').onclick=function(){
   var b=document.getElementById('btn-shutdown');
   b.textContent='🔴 RPi VYPNUTO';
   b.classList.add('pulsing');
-  fetch(FB+'/piShutdown.json',{method:'PUT',body:JSON.stringify({ts:Date.now()}),headers:{'Content-Type':'application/json'}});
+  fetch(fbUrl('/piShutdown.json'),{method:'PUT',body:JSON.stringify({ts:Date.now()}),headers:{'Content-Type':'application/json'}});
   showOffline();
 };
-loadStats();
-loadHistory();
-setInterval(loadStats,30000);
-setInterval(loadHistory,60000);
+(function(){
+  function startPolling(){
+    loadStats();
+    loadHistory();
+    setInterval(loadStats,30000);
+    setInterval(loadHistory,60000);
+  }
+  var s1=document.createElement('script');
+  s1.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
+  s1.onload=function(){
+    var s2=document.createElement('script');
+    s2.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js';
+    s2.onload=function(){
+      try{
+        var app;
+        try{app=firebase.app('pimon');}catch(e){app=firebase.initializeApp({apiKey:'AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8',authDomain:'kladyxland.firebaseapp.com',projectId:'kladyxland',appId:'1:178078059030:web:8d8a0271b23a7aca2b4337'},'pimon');}
+        var auth=app.auth();
+        auth.signInAnonymously().then(function(r){
+          return r.user.getIdToken();
+        }).then(function(t){
+          _authToken=t;
+          auth.onIdTokenChanged(function(u){if(u)u.getIdToken().then(function(t2){_authToken=t2;});});
+          startPolling();
+        }).catch(function(){startPolling();});
+      }catch(e){startPolling();}
+    };
+    s2.onerror=function(){startPolling();};
+    document.head.appendChild(s2);
+  };
+  s1.onerror=function(){startPolling();};
+  document.head.appendChild(s1);
+})();
 </script>
 </body>
 </html>
