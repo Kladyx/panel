@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scripty</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;font-family:'Orbitron',monospace;color:#e0e0e0;overflow:hidden;}
+body{
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(0,180,255,.25) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 90%, rgba(80,120,255,.18) 0%, transparent 60%),
+    linear-gradient(180deg,#0a2a5c 0%,#1e4a8c 50%,#2a5aa0 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;
+  position:relative;
+}
+/* EQUALIZERY po stranách */
+.eq{position:absolute;top:50%;transform:translateY(-50%);display:flex;gap:4px;height:60%;align-items:flex-end;pointer-events:none;z-index:0;}
+.eq.left{left:12px;}
+.eq.right{right:12px;}
+.eq .bar{
+  width:6px;height:100%;border-radius:3px;transform-origin:bottom;
+  background:linear-gradient(to top,#ff0033 0%,#ff8800 20%,#ffee00 40%,#00ff44 60%,#00c8ff 80%,#0044ff 100%);
+  box-shadow:0 0 6px rgba(255,255,255,.15);
+  animation:eqBar 1s ease-in-out infinite;
+}
+.eq .bar:nth-child(1){animation-duration:.7s;animation-delay:-.1s;}
+.eq .bar:nth-child(2){animation-duration:.9s;animation-delay:-.3s;}
+.eq .bar:nth-child(3){animation-duration:.6s;animation-delay:-.5s;}
+.eq .bar:nth-child(4){animation-duration:1.1s;animation-delay:-.2s;}
+.eq .bar:nth-child(5){animation-duration:.8s;animation-delay:-.4s;}
+@keyframes eqBar{
+  0%,100%{transform:scaleY(.25);}
+  50%{transform:scaleY(1);}
+}
+.head,.sub,.btns,.stav,.info{position:relative;z-index:1;}
+/* HLAVIČKA */
+.head{display:flex;align-items:center;gap:14px;margin-bottom:8px;}
+.gear{font-size:1.6rem;filter:drop-shadow(0 0 8px rgba(0,245,255,.6));}
+.gear.on{animation:spin 4s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.title{color:#00f5ff;font-size:1.15rem;letter-spacing:.25em;font-weight:900;text-shadow:0 0 12px rgba(0,245,255,.5),0 0 24px rgba(0,245,255,.2);}
+.sub{color:#4a5060;font-size:.55rem;letter-spacing:.2em;margin-bottom:36px;font-weight:500;}
+/* TLAČÍTKA */
+.btns{display:flex;gap:16px;width:100%;max-width:340px;}
+button{
+  flex:1;padding:28px 0;border-radius:14px;font-family:'Orbitron',monospace;
+  font-size:.95rem;letter-spacing:.15em;font-weight:700;cursor:pointer;
+  transition:transform .15s,background .25s,border-color .25s;
+  background:rgba(255,255,255,.02);position:relative;overflow:hidden;
+}
+#bon{border:1.5px solid rgba(0,255,136,.28);color:#00ff88;}
+#boff{border:1.5px solid rgba(255,60,90,.28);color:#ff3c5a;}
+#bon:active,#boff:active{transform:scale(.95);}
+/* AKTIVNÍ STAV — pulsace */
+.on-active{
+  background:rgba(0,255,136,.15)!important;
+  border-color:rgba(0,255,136,.9)!important;
+  animation:pulsOn 1.6s ease-in-out infinite;
+}
+.off-active{
+  background:rgba(255,60,90,.12)!important;
+  border-color:rgba(255,60,90,.9)!important;
+  animation:pulsOff 1.6s ease-in-out infinite;
+}
+@keyframes pulsOn{
+  0%,100%{box-shadow:0 0 10px rgba(0,255,136,.5),inset 0 0 12px rgba(0,255,136,.15);}
+  50%{box-shadow:0 0 28px rgba(0,255,136,.9),0 0 45px rgba(0,255,136,.3),inset 0 0 20px rgba(0,255,136,.25);}
+}
+@keyframes pulsOff{
+  0%,100%{box-shadow:0 0 10px rgba(255,60,90,.5),inset 0 0 12px rgba(255,60,90,.15);}
+  50%{box-shadow:0 0 24px rgba(255,60,90,.85),0 0 40px rgba(255,60,90,.25),inset 0 0 18px rgba(255,60,90,.22);}
+}
+/* NEAKTIVNÍ STAV — ztlumené */
+.dim{opacity:.35;filter:saturate(.5);}
+/* STAV DOLE */
+.stav{margin-top:32px;font-size:.75rem;letter-spacing:.15em;font-weight:700;text-align:center;min-height:20px;display:flex;align-items:center;gap:10px;}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+.dot.on{background:#00ff88;box-shadow:0 0 10px #00ff88,0 0 20px rgba(0,255,136,.5);animation:dotP 1.2s ease-in-out infinite;}
+.dot.off{background:#ff3c5a;box-shadow:0 0 6px rgba(255,60,90,.6);}
+@keyframes dotP{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.4);opacity:.7;}}
+.info{margin-top:28px;font-size:.5rem;letter-spacing:.1em;color:#3a4050;text-align:center;line-height:1.7;}
+</style>
+</head>
+<body>
+  <div class="eq left"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+  <div class="eq right"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+  <div class="head">
+    <div class="gear" id="gear">⚙️</div>
+    <div class="title">SCRIPTY</div>
+  </div>
+  <div class="sub">PC · DÁLKOVÉ OVLÁDÁNÍ</div>
+  <div class="btns">
+    <button id="bon">▶ ZAP</button>
+    <button id="boff">⏹ VYP</button>
+  </div>
+  <div class="stav" id="stav"><span class="dot"></span><span id="stavtxt">Načítám…</span></div>
+  <div class="info">Přepnutí zapíše stav do Firebase.<br>PC watcher reaguje okamžitě.</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+(function(){
+  var cfg={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
+  var bon=document.getElementById('bon'),boff=document.getElementById('boff');
+  var stavtxt=document.getElementById('stavtxt'),stav=document.getElementById('stav');
+  var gear=document.getElementById('gear'),dot=stav.querySelector('.dot');
+  var ref=null;
+  try{ if(!firebase.apps.length)firebase.initializeApp(cfg); ref=firebase.database().ref('/control/scripts'); }
+  catch(e){ stavtxt.textContent='⚠ Firebase chyba'; }
+
+  function vykresli(s){
+    if(s==='on'){
+      bon.classList.add('on-active'); bon.classList.remove('dim');
+      boff.classList.remove('off-active'); boff.classList.add('dim');
+      gear.classList.add('on');
+      dot.classList.remove('off'); dot.classList.add('on');
+      stavtxt.textContent='SCRIPTY BĚŽÍ'; stavtxt.style.color='#00ff88';
+    }else{
+      bon.classList.remove('on-active'); bon.classList.add('dim');
+      boff.classList.add('off-active'); boff.classList.remove('dim');
+      gear.classList.remove('on');
+      dot.classList.remove('on'); dot.classList.add('off');
+      stavtxt.textContent='SCRIPTY VYPNUTY'; stavtxt.style.color='#ff3c5a';
+    }
+  }
+
+  if(ref){
+    ref.child('state').once('value').then(function(snap){
+      vykresli(snap.val()==='on'?'on':'off');
+    }).catch(function(){ stavtxt.textContent='⚠ Nelze načíst stav'; });
+
+    function nastav(s){
+      vykresli(s);
+      ref.set({state:s,ts:Date.now()}).catch(function(){ stavtxt.textContent='⚠ Zápis selhal'; });
+    }
+    bon.onclick=function(){ nastav('on'); };
+    boff.onclick=function(){ nastav('off'); };
+  }
+})();
+</script>
+</body>
+</html>
