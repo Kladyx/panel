@@ -16,26 +16,70 @@ body{
   display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;
   position:relative;
 }
-/* EQUALIZERY po stranách */
-.eq{position:absolute;top:50%;transform:translateY(-50%);display:flex;gap:4px;height:60%;align-items:flex-end;pointer-events:none;z-index:0;}
-.eq.left{left:12px;}
-.eq.right{right:12px;}
+/* EQUALIZERY po stranách - klasický LED VU meter */
+.eq{position:absolute;bottom:20px;display:flex;gap:5px;height:120px;align-items:flex-end;pointer-events:none;z-index:1;}
+.eq.left{left:10px;}
+.eq.right{right:10px;}
 .eq .bar{
-  width:6px;height:100%;border-radius:3px;transform-origin:bottom;
-  background:linear-gradient(to top,#ff0033 0%,#ff8800 20%,#ffee00 40%,#00ff44 60%,#00c8ff 80%,#0044ff 100%);
-  box-shadow:0 0 6px rgba(255,255,255,.15);
-  animation:eqBar 1s ease-in-out infinite;
+  width:10px;height:100%;position:relative;
+  background:
+    repeating-linear-gradient(to top,
+      transparent 0px, transparent 2px,
+      rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 12px);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:2px;
+  overflow:hidden;
 }
-.eq .bar:nth-child(1){animation-duration:.7s;animation-delay:-.1s;}
-.eq .bar:nth-child(2){animation-duration:.9s;animation-delay:-.3s;}
-.eq .bar:nth-child(3){animation-duration:.6s;animation-delay:-.5s;}
-.eq .bar:nth-child(4){animation-duration:1.1s;animation-delay:-.2s;}
-.eq .bar:nth-child(5){animation-duration:.8s;animation-delay:-.4s;}
-@keyframes eqBar{
-  0%,100%{transform:scaleY(.25);}
+.eq .bar::before{
+  content:"";position:absolute;left:0;right:0;bottom:0;
+  height:100%;transform-origin:bottom;
+  background:linear-gradient(to top,
+    #00ff44 0%,
+    #00ff44 60%,
+    #ffee00 70%,
+    #ffee00 80%,
+    #ff2233 85%,
+    #ff2233 100%);
+  animation:vuFill 1s ease-in-out infinite;
+}
+.eq .bar::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to top,
+    #0a1418 0px, #0a1418 2px,
+    transparent 2px, transparent 12px);
+}
+.eq .bar:nth-child(1)::before{animation-duration:.7s;animation-delay:-.1s;}
+.eq .bar:nth-child(2)::before{animation-duration:.9s;animation-delay:-.3s;}
+.eq .bar:nth-child(3)::before{animation-duration:.6s;animation-delay:-.5s;}
+.eq .bar:nth-child(4)::before{animation-duration:1.1s;animation-delay:-.2s;}
+.eq .bar:nth-child(5)::before{animation-duration:.8s;animation-delay:-.4s;}
+@keyframes vuFill{
+  0%,100%{transform:scaleY(.2);}
   50%{transform:scaleY(1);}
 }
-.head,.sub,.btns,.stav,.info{position:relative;z-index:1;}
+/* BLIKAJÍCÍ HVĚZDIČKY v pozadí */
+.stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+.star{position:absolute;color:#fff;font-size:10px;opacity:0;animation:twinkle 3s infinite;text-shadow:0 0 4px rgba(255,255,255,.8);}
+@keyframes twinkle{
+  0%,100%{opacity:0;transform:scale(.5);}
+  50%{opacity:.9;transform:scale(1);}
+}
+.star.s1{top:8%;left:18%;font-size:12px;animation-duration:2.5s;animation-delay:0s;color:#fff;}
+.star.s2{top:15%;left:78%;font-size:8px;animation-duration:3.2s;animation-delay:.4s;color:#00ffee;}
+.star.s3{top:25%;left:35%;font-size:10px;animation-duration:2.8s;animation-delay:1.1s;color:#ffee00;}
+.star.s4{top:12%;left:55%;font-size:14px;animation-duration:3.5s;animation-delay:.7s;color:#fff;}
+.star.s5{top:32%;left:88%;font-size:9px;animation-duration:2.2s;animation-delay:1.5s;color:#ff88ff;}
+.star.s6{top:45%;left:8%;font-size:11px;animation-duration:2.9s;animation-delay:.2s;color:#88ffaa;}
+.star.s7{top:38%;left:70%;font-size:8px;animation-duration:3.1s;animation-delay:1.8s;color:#fff;}
+.star.s8{top:62%;left:22%;font-size:10px;animation-duration:2.6s;animation-delay:.9s;color:#00c8ff;}
+.star.s9{top:68%;left:82%;font-size:12px;animation-duration:3.3s;animation-delay:1.3s;color:#ffaa00;}
+.star.s10{top:78%;left:45%;font-size:9px;animation-duration:2.4s;animation-delay:.5s;color:#fff;}
+.star.s11{top:85%;left:15%;font-size:11px;animation-duration:2.7s;animation-delay:1.6s;color:#ff88aa;}
+.star.s12{top:88%;left:72%;font-size:8px;animation-duration:3.4s;animation-delay:.3s;color:#88ffff;}
+.star.s13{top:55%;left:50%;font-size:10px;animation-duration:3s;animation-delay:2s;color:#fff;}
+.star.s14{top:20%;left:5%;font-size:9px;animation-duration:2.3s;animation-delay:1.2s;color:#ffff88;}
+.star.s15{top:72%;left:60%;font-size:11px;animation-duration:2.8s;animation-delay:.6s;color:#ff44ff;}
+.head,.sub,.btns,.stav,.info{position:relative;z-index:2;}
 /* HLAVIČKA */
 .head{display:flex;align-items:center;gap:14px;margin-bottom:8px;}
 .gear{font-size:1.6rem;filter:drop-shadow(0 0 8px rgba(0,245,255,.6));}
@@ -85,6 +129,13 @@ button{
 </style>
 </head>
 <body>
+  <div class="stars">
+    <span class="star s1">✦</span><span class="star s2">✧</span><span class="star s3">✦</span>
+    <span class="star s4">✧</span><span class="star s5">✦</span><span class="star s6">✧</span>
+    <span class="star s7">✦</span><span class="star s8">✧</span><span class="star s9">✦</span>
+    <span class="star s10">✧</span><span class="star s11">✦</span><span class="star s12">✧</span>
+    <span class="star s13">✦</span><span class="star s14">✧</span><span class="star s15">✦</span>
+  </div>
   <div class="eq left"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
   <div class="eq right"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
   <div class="head">
