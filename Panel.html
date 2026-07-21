@@ -9274,53 +9274,65 @@ if(bt)bt.onclick=function(){
   setTimeout(function(){URL.revokeObjectURL(url);},5000);
 };
 
-// Download Gluco
+// Download Gluco - stejný kód jako btn-tisk
 var bd=document.getElementById('btn-download-gluco');
 if(bd)bd.onclick=function(){
   var selOd=document.getElementById('tisk-od');
   var selDo=document.getElementById('tisk-do');
-  var allK=Object.keys(DAT).filter(function(k){return /^\d{4}-\d{2}$/.test(k);}).sort();
-  if(!allK.length){alert('Žádná data k uložení.');return;}
-  var ymOd=(selOd&&/^\d{4}-\d{2}$/.test(selOd.value))?selOd.value:allK[0];
-  var ymDo=(selDo&&/^\d{4}-\d{2}$/.test(selDo.value))?selDo.value:allK[allK.length-1];
-  var mesi=allK.filter(function(ym){return ym>=ymOd&&ym<=ymDo;});
+  var ymOd=selOd?selOd.value:CUR;
+  var ymDo=selDo?selDo.value:CUR;
+  if(!ymOd||!ymDo){alert('Vyber rozsah měsíců.');return;}
+  var allMonths=[];
+  var mesi=Object.keys(DAT).filter(function(ym){
+    return ym>=ymOd&&ym<=ymDo;
+  }).sort();
   if(!mesi.length){alert('Žádná data v tomto rozsahu.');return;}
   var allMonths=mesi;
   var cnt=allMonths.length;
   var fsize=cnt<=1?13:cnt<=3?11:cnt<=6?9:8;
   var tpad=cnt<=1?'6px 9px':cnt<=3?'4px 7px':'3px 5px';
   var blocksHTML='';
-  var KEYS=['l','s','o','v'];
   allMonths.forEach(function(ym){
     var monthDat=DAT[ym]||{};
     var days=Object.keys(monthDat).sort();
     if(!days.length)return;
-    var title=ym;var rows='';var sums=[0,0,0,0];var cnts=[0,0,0,0];
+    var moParts=ym.split('-');
+    var title=MN[parseInt(moParts[1])-1]+' '+moParts[0];
+    var sums=[0,0,0,0];var cnts=[0,0,0,0];
     var sumSys=0,cntSys=0,sumDia=0,cntDia=0,sumPuls=0,cntPuls=0;
-    days.forEach(function(dt,i){
-      var d=monthDat[dt]||{};
-      rows+='<tr>';
-      rows+='<td>'+(i+1)+'</td>';
-      rows+='<td>'+dt+'</td>';
-      KEYS.forEach(function(k,ki){var v=d[k];rows+='<td>'+(v!=null&&!isNaN(v)?v:'—')+'</td>';if(v!=null&&!isNaN(v)){sums[ki]+=parseFloat(v);cnts[ki]++;}});
-      var sys=d.sys,dia=d.dia,puls=d.puls;
-      rows+='<td>'+(sys!=null&&!isNaN(sys)?sys:'—')+'</td>';
-      rows+='<td>'+(dia!=null&&!isNaN(dia)?dia:'—')+'</td>';
-      rows+='<td>'+(puls!=null&&!isNaN(puls)?puls:'—')+'</td>';
+    var rows='';
+    var rowNum=0;
+    days.forEach(function(dt){
+      rowNum++;
+      var d=monthDat[dt];
+      var dtp=dt.split('-');var dp=dtp[2]+'.'+dtp[1]+'.'+dtp[0];
+      rows+='<tr><td>'+rowNum+'</td><td>'+dp+'</td>';
+      KEYS.forEach(function(k,i){
+        var v=parseFloat(d[k]);
+        var vstr=(!isNaN(v))?v.toFixed(1):'—';
+        if(!isNaN(v)){sums[i]+=v;cnts[i]++;}
+        rows+='<td>'+vstr+'</td>';
+      });
+      var sys=parseFloat(d.sys);var dia=parseFloat(d.dia);var puls=parseFloat(d.puls);
+      if(!isNaN(sys)){sumSys+=sys;cntSys++;}
+      if(!isNaN(dia)){sumDia+=dia;cntDia++;}
+      if(!isNaN(puls)){sumPuls+=puls;cntPuls++;}
+      rows+='<td>'+(isNaN(sys)?'—':Math.round(sys))+'</td>';
+      rows+='<td>'+(isNaN(dia)?'—':Math.round(dia))+'</td>';
+      rows+='<td>'+(isNaN(puls)?'—':Math.round(puls))+'</td>';
       rows+='</tr>';
-      if(sys!=null&&!isNaN(sys)){sumSys+=parseFloat(sys);cntSys++;}
-      if(dia!=null&&!isNaN(dia)){sumDia+=parseFloat(dia);cntDia++;}
-      if(puls!=null&&!isNaN(puls)){sumPuls+=parseFloat(puls);cntPuls++;}
     });
-    var avgRow='<tr class=\"avgrow\"><td colspan=\"2\">Průměr</td>';
+    var avgRow='<tr class=\"avgrow\"><td></td><td>PRŮMĚR</td>';
     KEYS.forEach(function(k,i){avgRow+='<td>'+(cnts[i]?(sums[i]/cnts[i]).toFixed(1):'—')+'</td>';});
     avgRow+='<td>'+(cntSys?Math.round(sumSys/cntSys):'—')+'</td>';
     avgRow+='<td>'+(cntDia?Math.round(sumDia/cntDia):'—')+'</td>';
     avgRow+='<td>'+(cntPuls?Math.round(sumPuls/cntPuls):'—')+'</td>';
     avgRow+='</tr>';
-    blocksHTML+='<div class=\"mblock\"><div class=\"mhead\">'+title+'<span class=\"mhead-cnt\">'+days.length+' záznamů</span></div>'+
+    blocksHTML+='<div class=\"mblock\">'+
+      '<div class=\"mhead\">'+title+'<span class=\"mhead-cnt\">'+days.length+' záznamů</span></div>'+
       '<table><thead><tr><th>č.</th><th>Datum</th><th>Lačno</th><th>Snídaně</th><th>Oběd</th><th>Večeře</th><th>SYS</th><th>DIA</th><th>Puls</th></tr></thead>'+
-      '<tbody>'+rows+avgRow+'</tbody></table></div>';
+      '<tbody>'+rows+avgRow+'</tbody></table>'+
+      '</div>';
   });
   if(!blocksHTML){alert('Žádná data k uložení.');return;}
   var printHTML='<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>Glukóza + Tlak</title>'+
@@ -9341,7 +9353,7 @@ if(bd)bd.onclick=function(){
     '@media print{button{display:none;}}'+
     '</style></head><body>'+
     '<h2>Glukóza + Krevní tlak</h2>'+
-    '<div class=\"sub\">Staženo: '+new Date().toLocaleDateString('cs-CZ')+' | '+allMonths.length+' měsíců</div>'+
+    '<div class=\"sub\">Uloženo: '+new Date().toLocaleDateString('cs-CZ')+' &nbsp;|&nbsp; '+allMonths.length+' měsíců'+'</div>'+
     blocksHTML+
     '<button onclick=\"window.print()\" style=\"margin-top:12px;padding:8px 20px;font-size:13px;\">🖨 Tisknout</button>'+
     '</body></html>';
