@@ -21,7 +21,7 @@ jobs:
           VERSION=$(grep -oP "var CURRENT='\K[^']+" Panel.html | head -1)
           echo "Extracted version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-
+ 
       - name: Update version.json
         env:
           VERSION: ${{ steps.extract.outputs.version }}
