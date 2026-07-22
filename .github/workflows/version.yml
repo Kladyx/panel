@@ -18,4 +18,25 @@ jobs:
       - name: Extract version from Panel.html
         id: extract
         run: |
-          VERSION=$(grep
+          VERSION=$(grep -oP "var CURRENT='\K[^']+" Panel.html | head -1)
+          echo "Extracted version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update version.json
+        env:
+          VERSION: ${{ steps.extract.outputs.version }}
+        run: |
+          printf '{"panel":"%s"}\n' "$VERSION" > version.json
+          cat version.json
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add version.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-update version.json"
+            git push
+          fi
