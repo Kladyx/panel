@@ -1,0 +1,40 @@
+name: Auto-update version.json
+
+on:
+  push:
+    paths:
+      - 'Panel.html'
+
+permissions:
+  contents: write
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Extract version from Panel.html
+        id: extract
+        run: |
+          VERSION=$(grep -oP "var CURRENT='\K[^']+" Panel.html | head -1)
+          echo "Extracted version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update version.json
+        run: |
+          echo "{\"panel\"😕"${{ steps.extract.outputs.version }}\"}" > version.json
+          cat version.json
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add version.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-update version.json to ${{ steps.extract.outputs.version }}"
+            git push
+          fi
