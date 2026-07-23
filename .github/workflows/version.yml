@@ -7,7 +7,7 @@ on:
 
 permissions:
   contents: write
-
+ 
 jobs:
   update-version:
     runs-on: ubuntu-latest
@@ -21,10 +21,12 @@ jobs:
           VERSION=$(grep -oP "var CURRENT='\K[^']+" Panel.html | head -1)
           echo "Extracted version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-
+ 
       - name: Update version.json
+        env:
+          VERSION: ${{ steps.extract.outputs.version }}
         run: |
-          echo "{\"panel\"😕"${{ steps.extract.outputs.version }}\"}" > version.json
+          printf '{"panel":"%s"}\n' "$VERSION" > version.json
           cat version.json
 
       - name: Commit if changed
@@ -35,6 +37,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Auto-update version.json to ${{ steps.extract.outputs.version }}"
+            git commit -m "Auto-update version.json"
             git push
           fi
