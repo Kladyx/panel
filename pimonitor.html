@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.20.Kl">
-<title>Pi Monitor v2.20.Kl</title>
+<meta name="version" content="v2.21.Kl">
+<title>Pi Monitor v2.21.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -89,7 +89,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v2.20.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v2.21.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -444,6 +444,12 @@ document.getElementById('btn-shutdown').onclick=function(){
     loadHistory();
     setInterval(loadStats,30000);
     setInterval(loadHistory,60000);
+    // Mobilni prohlizec zmrazi setInterval kdyz je stranka na pozadi (zamceny
+    // telefon / prepnuta zalozka). Pri navratu bychom videli zastaraly stav,
+    // proto nacteme data hned. Jen loadStats (~450 B), historii ne - je tezsi.
+    document.addEventListener('visibilitychange',function(){
+      if(!document.hidden)loadStats();
+    });
   }
   var s1=document.createElement('script');
   s1.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
