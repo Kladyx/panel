@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.19.Kl">
-<title>Pi Monitor v2.19.Kl</title>
+<meta name="version" content="v2.20.Kl">
+<title>Pi Monitor v2.20.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -89,7 +89,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v2.19.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v2.20.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -238,8 +238,14 @@ function setSvc(id,ok,isPC){
   var d=document.getElementById('d-'+id);
   var s=document.getElementById('s-'+id);
   if(isPC){
-    if(d)d.className='dot dot-ok';
-    if(s){s.textContent='CONNECTED ON - PC';s.className='svc-stat on';}
+    // ok===null/undefined => natvrdo zelene (equalizer, nema zdroj dat)
+    // ok true/false       => realny stav z nextsync/status heartbeatu
+    var pcOn=(ok===null||ok===undefined)?true:!!ok;
+    if(d)d.className='dot '+(pcOn?'dot-ok':'dot-err');
+    if(s){
+      s.textContent='CONNECTED '+(pcOn?'ON':'OFF')+' - PC';
+      s.className='svc-stat '+(pcOn?'on':'off');
+    }
     return;
   }
   if(d)d.className='dot '+(ok?'dot-ok':'dot-err');
@@ -248,6 +254,25 @@ function setSvc(id,ok,isPC){
     s.className='svc-stat '+(ok?'on':'off');
   }
 }
+// PC SLUZBY - Pi4 o nich NEVI (bezi jako .bat na PC, ne jako systemd na Pi4),
+// proto piStats.services u nich vzdy hlasi false. Jediny spolehlivy zdroj je
+// heartbeat nextsync/status/lastSeen, ktery zapisuje PC.
+// POZOR: pole "online" je NESPOLEHLIVE - PC ho pri vypnuti nestihne prepsat na false.
+var PC_SVC=['transfer','upload','nextsync','obs'];
+function setPCAll(on){
+  PC_SVC.forEach(function(id){setSvc(id,on,true);});
+}
+function checkPC(){
+  // cteme JEN lastSeen (male cislo), ne cely status objekt - setri download
+  fetch(fbUrl('/nextsync/status/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
+  .then(function(r){return r.json();})
+  .then(function(ts){
+    // PC heartbeat ~90s -> tolerance 180s = 2 zmeskane
+    setPCAll(!!ts&&(Date.now()-ts<180000));
+  })
+  .catch(function(){setPCAll(false);});
+}
+
 function setPiState(online){
   var on=document.getElementById('pistate-on');
   var off=document.getElementById('pistate-off');
@@ -267,8 +292,9 @@ function showOffline(fromFirebase){
     var el=document.getElementById(id);
     if(el){el.textContent='—';el.classList.remove('net-active');}
   });
-  // Pi4 offline = nemame data o zadne sluzbe (piStats posila Pi4) -> nelzeme, ukazeme ?
-  ['tapo','tapopy','prijate','irbridge','transfer','upload','obs','nextsync'].forEach(function(id){
+  // Pi4 offline = nemame data z piStats -> u techto sluzeb nelzeme, ukazeme ?
+  // tapopy a irbridge maji vlastni fetch (tapoDb/irDb lastSeen), PC sluzby resi checkPC()
+  ['tapo','prijate'].forEach(function(id){
     var d=document.getElementById('d-'+id);
     if(d)d.className='dot dot-wait';
     var s=document.getElementById('s-'+id);
@@ -334,9 +360,10 @@ function loadStats(){
     var rx=d.net_rx_mb,tx=d.net_tx_mb;
     if(rx!==undefined){var el=document.getElementById('net-rx');el.textContent=rx>=1024?(rx/1024).toFixed(1)+' GB':rx+' MB';el.classList.remove('net-active');}
     if(tx!==undefined){var el=document.getElementById('net-tx');el.textContent=tx>=1024?(tx/1024).toFixed(1)+' GB':tx+' MB';el.classList.remove('net-active');}
-    // Services - Pi4 posila SKUTECNE stavy vsech sluzeb (Pi4 i PC) v piStats.services
+    // Services z piStats - POUZE sluzby ktere skutecne bezi na Pi4 jako systemd.
+    // transfer/upload/nextsync/obs jsou .bat na PC, Pi4 je nevidi -> resi checkPC()
     if(d.services){
-      ['tapo','prijate','transfer','upload','nextsync','obs'].forEach(function(k){
+      ['tapo','prijate'].forEach(function(k){
         if(d.services[k]!==undefined)setSvc(k,d.services[k]===true||d.services[k]==='active');
       });
     }
@@ -363,6 +390,8 @@ function loadStats(){
     setSvc('tapopy',ts&&(Date.now()-ts<150000));
   })
   .catch(function(){setSvc('tapopy',false);});
+  // PC sluzby - nezavisle na piStats (funguje i kdyz je Pi4 vypnuty)
+  checkPC();
 }
 
 function loadFallback(){
@@ -376,8 +405,7 @@ function loadFallback(){
       document.getElementById('net-ip').textContent=d.ip||'—';
       document.getElementById('net-hb').textContent=new Date(d.lastSeen).toLocaleTimeString('cs-CZ');
       document.getElementById('net-age').textContent=fmtAge(age);
-      // Alespoň upload server běží (posílá heartbeat)
-      setSvc('upload',true);
+      // POZN: stav upload serveru zde uz nenastavujeme - resi checkPC() s prahem 180s
     }
   }).catch(function(){});
 }
