@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.22.Kl">
-<title>Pi Monitor v2.22.Kl</title>
+<meta name="version" content="v2.23.Kl">
+<title>Pi Monitor v2.23.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -89,7 +89,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v2.22.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v2.23.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -370,7 +370,7 @@ function loadStats(){
     // Pi ON (data přišla → Pi běží)
     setPiState(true);
     // Procesy (pokud Pi posle realna data, prepise ACTIVE ON)
-    if(d.processes){var el=document.getElementById('net-proc');el.textContent=d.processes;el.classList.remove('net-active');}
+    if(d.proc_count!==undefined){var el=document.getElementById('net-proc');el.textContent=d.proc_count;el.classList.remove('net-active');}
   })
   .catch(function(){showOffline(true);loadFallback();});
   // IR Bridge - čte heartbeat přímo z irDb/lastSeen
