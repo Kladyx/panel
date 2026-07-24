@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KladyxAmp v1.27Kl</title>
+<title>KladyxAmp v1.28Kl</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -191,19 +191,53 @@
     color: rgba(255,255,255,0.5);
   }
 
-  /* Spectrum analyzer canvas */
+  /* Spectrum analyzer - 8 pasem L + 8 pasem R (prevzato z Equalizer v3.20.Kl) */
   .spectrum-wrap {
-    height: 60px;
+    height: 120px;
     margin-bottom: 12px;
     background: rgba(0,0,0,0.4);
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    gap: 8px;
+    padding: 6px 8px;
+    box-sizing: border-box;
   }
-  canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
+  .sp-ch { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .sp-lbl {
+    font-size: 9px; letter-spacing: 2px; text-align: center;
+    margin-bottom: 3px; font-weight: 600; color: #00f5ff;
+  }
+  .sp-lbl.r { color: #ffdd00; }
+  .sp-bars {
+    display: grid; grid-template-columns: repeat(8, 1fr);
+    gap: 2px; flex: 1; min-height: 0;
+  }
+  .sp-col {
+    position: relative; height: 100%;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    overflow: hidden;
+  }
+  .sp-fill {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 0%;
+    background: linear-gradient(to top, #00ff7e 0%, #00ff7e 80%, #ffdd00 100%);
+    transition: height 40ms linear;
+    box-shadow: 0 0 8px rgba(0,255,126,0.4);
+  }
+  .sp-peak {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: #fff; box-shadow: 0 0 4px #fff;
+    transition: bottom 60ms linear; opacity: 0.9;
+  }
+  .sp-freq {
+    display: grid; grid-template-columns: repeat(8, 1fr);
+    gap: 2px; margin-top: 3px;
+  }
+  .sp-freq span {
+    font-size: 7px; color: rgba(255,255,255,0.4);
+    text-align: center; overflow: hidden;
   }
 
   /* Progress bar */
@@ -568,7 +602,7 @@
 
 <div class="app">
   <div class="logo">KLADYXAMP</div>
-  <div class="version">v 1.23 Kl</div>
+  <div class="version">v 1.28 Kl</div>
 
   <div class="topbar">
     <div class="clock" id="clock">--:--:--</div>
@@ -587,7 +621,22 @@
   </div>
 
   <div class="spectrum-wrap">
-    <canvas id="spectrum"></canvas>
+    <div class="sp-ch">
+      <div class="sp-lbl">&#9668; L</div>
+      <div class="sp-bars" id="sp-bars-l"></div>
+      <div class="sp-freq">
+        <span>60</span><span>150</span><span>400</span><span>1k</span>
+        <span>2.4k</span><span>6k</span><span>12k</span><span>16k</span>
+      </div>
+    </div>
+    <div class="sp-ch">
+      <div class="sp-lbl r">R &#9658;</div>
+      <div class="sp-bars" id="sp-bars-r"></div>
+      <div class="sp-freq">
+        <span>60</span><span>150</span><span>400</span><span>1k</span>
+        <span>2.4k</span><span>6k</span><span>12k</span><span>16k</span>
+      </div>
+    </div>
   </div>
 
   <div class="progress-wrap">
@@ -675,17 +724,21 @@ let isPlaying = false;
 let shuffleOn = false;
 let repeatOn = false;
 let audioCtx = null;
-let analyser = null;
-let dataArray = null;
-let sourceNode = null;
-let canvasRect = null;
+let analyserL = null;
+let analyserR = null;
+let dataL = null;
+let dataR = null;
+let srcNodes = new Map();   // media element -> MediaElementSourceNode (lze vytvorit jen 1x!)
+let spectrumStarted = false;
 let _justUploadedName = null; // jméno souboru nahraného přes upload - po loadTracks se nastaví jako aktuální
 let _activePodkres = null; // jméno aktivně vybraného podkresu
 
 const audio = document.getElementById('audio');
 const audioVideo = document.getElementById('audioVideo');
-const canvas = document.getElementById('spectrum');
-const ctx = canvas.getContext('2d');
+// CORS povoleni - bez nej neni mozne cist frekvence z Firebase Storage.
+// MUSI byt nastaveno DRIV nez se priradi src.
+audio.crossOrigin = 'anonymous';
+audioVideo.crossOrigin = 'anonymous';
 
 // Vrátí správný media element podle přípony
 function getMediaEl(url) {
@@ -895,127 +948,143 @@ function escapeHtml(s) {
   })[c]);
 }
 
-// === Web Audio setup (jen poprvé) ===
+// === Web Audio setup — SKUTECNY analyzer (CORS povolen na Storage bucketu) ===
+// Pozor: createMediaElementSource lze na jednom <audio>/<video> zavolat JEN JEDNOU,
+// proto si uzly drzime v Map. A pozor 2: po pripojeni do grafu uz zvuk NEJDE
+// automaticky do reproduktoru - musi se rucne pripojit na audioCtx.destination!
+const SP_BANDS = 8;
+const SP_FREQ = [40, 100, 200, 500, 1200, 3000, 7000, 14000, 22050];
+const SP_FFT = 1024;
+const SP_UP = 0.75, SP_DOWN = 0.35;
+const SP_HOLD_MS = 400, SP_DECAY = 0.88;
+
+let spSmL = new Array(SP_BANDS).fill(0);
+let spSmR = new Array(SP_BANDS).fill(0);
+let spHoldL = new Array(SP_BANDS).fill(0);
+let spHoldR = new Array(SP_BANDS).fill(0);
+let spTimeL = new Array(SP_BANDS).fill(0);
+let spTimeR = new Array(SP_BANDS).fill(0);
+
+// Postavi sloupce do obou kanalu
+function buildSpBars(id) {
+  const c = document.getElementById(id);
+  if (!c) return;
+  c.innerHTML = '';
+  for (let b = 0; b < SP_BANDS; b++) {
+    const col = document.createElement('div');
+    col.className = 'sp-col';
+    const fill = document.createElement('div');
+    fill.className = 'sp-fill';
+    fill.id = id + '-f-' + b;
+    const peak = document.createElement('div');
+    peak.className = 'sp-peak';
+    peak.id = id + '-p-' + b;
+    peak.style.bottom = '0%';
+    col.appendChild(fill);
+    col.appendChild(peak);
+    c.appendChild(col);
+  }
+}
+buildSpBars('sp-bars-l');
+buildSpBars('sp-bars-r');
+
 function setupAudio() {
   if (audioCtx) return;
   try {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 64;
-    analyser.smoothingTimeConstant = 0.75;
-    dataArray = new Uint8Array(analyser.frequencyBinCount);
-    // Bez crossorigin se sourceNode nedá vytvořit z Firebase URL,
-    // takže spectrum bude jen ozdoba (random hodnoty řízené isPlaying)
-  } catch(e) {
+    analyserL = audioCtx.createAnalyser();
+    analyserR = audioCtx.createAnalyser();
+    [analyserL, analyserR].forEach(a => {
+      a.fftSize = SP_FFT;
+      a.smoothingTimeConstant = 0.1;
+      a.minDecibels = -70;
+      a.maxDecibels = -10;
+    });
+    dataL = new Uint8Array(analyserL.frequencyBinCount);
+    dataR = new Uint8Array(analyserR.frequencyBinCount);
+  } catch (e) {
     console.warn('Audio context error:', e);
+    audioCtx = null;
   }
 }
 
-// === Spectrum analyzer kreslení ===
-// Bez crossorigin nemůžeme číst frekvence z audio, takže
-// generujeme animaci řízenou isPlaying (rytmické pruhy)
-let fakeBars = new Array(16).fill(0);
-let fakeTargets = new Array(16).fill(0);
-let peakHolds = new Array(16).fill(0);
-let peakDecay = new Array(16).fill(0);
+// Pripoji dany media element do grafu (jen poprve pro dany element)
+function connectMedia(el) {
+  if (!audioCtx || srcNodes.has(el)) return;
+  try {
+    const src = audioCtx.createMediaElementSource(el);
+    const splitter = audioCtx.createChannelSplitter(2);
+    src.connect(splitter);
+    splitter.connect(analyserL, 0);
+    splitter.connect(analyserR, 1);
+    // KLICOVE: zvuk musi jit i do reproduktoru, jinak by prehravac ztichl
+    src.connect(audioCtx.destination);
+    srcNodes.set(el, src);
+  } catch (e) {
+    console.warn('connectMedia:', e);
+  }
+}
+
+// Energie jednoho frekvencniho pasma (stejny vypocet jako Equalizer v3.20.Kl)
+function spBandEnergy(arr, sampleRate, fLow, fHigh) {
+  const binSize = sampleRate / SP_FFT;
+  let lo = Math.max(1, Math.round(fLow / binSize));
+  let hi = Math.min(Math.round(fHigh / binSize), arr.length - 1);
+  if (hi < lo) hi = lo;
+  let sum = 0;
+  for (let i = lo; i <= hi; i++) {
+    const v = arr[i] / 255.0;
+    sum += v * v;
+  }
+  return Math.sqrt(sum / (hi - lo + 1));
+}
+
+function spSetBar(id, b, val, peak) {
+  const f = document.getElementById(id + '-f-' + b);
+  const p = document.getElementById(id + '-p-' + b);
+  if (f) f.style.height = val.toFixed(1) + '%';
+  if (p) p.style.bottom = peak.toFixed(1) + '%';
+}
 
 function drawSpectrum() {
-  if (!canvasRect) {
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = canvas.clientWidth * dpr;
-    canvas.height = canvas.clientHeight * dpr;
-    ctx.scale(dpr, dpr);
-    canvasRect = { w: canvas.clientWidth, h: canvas.clientHeight };
-  }
-
-  ctx.clearRect(0, 0, canvasRect.w, canvasRect.h);
-
-  const bars = 16;
-  const barWidth = canvasRect.w / bars;
-  const gap = 2;
-  // LED segmenty - 12 kostiček na sloupec
-  const segments = 12;
-  const segGap = 1;
-  const segHeight = (canvasRect.h - (segments + 1) * segGap) / segments;
-
-  for (let i = 0; i < bars; i++) {
-    if (isPlaying) {
-      if (Math.abs(fakeBars[i] - fakeTargets[i]) < 0.05 || Math.random() < 0.05) {
-        fakeTargets[i] = Math.random() * 0.9 + 0.1;
-      }
-      fakeBars[i] += (fakeTargets[i] - fakeBars[i]) * 0.3;
-    } else {
-      fakeBars[i] = 0.18 + 0.22 * Math.abs(Math.sin(Date.now() / 600 + i * 0.7));
-    }
-
-    const v = Math.max(0, Math.min(1, fakeBars[i]));
-    const litSegments = Math.floor(v * segments);
-
-    // Peak hold - "značka" co padá dolů pomalu
-    if (litSegments > peakHolds[i]) {
-      peakHolds[i] = litSegments;
-      peakDecay[i] = 0;
-    } else {
-      peakDecay[i]++;
-      if (peakDecay[i] > 20) {
-        peakHolds[i] = Math.max(litSegments, peakHolds[i] - 0.3);
-      }
-    }
-
-    const x = i * barWidth + gap/2;
-    const w = barWidth - gap;
-
-    // Kresli každý LED segment zdola nahoru
-    for (let s = 0; s < segments; s++) {
-      const segY = canvasRect.h - (s + 1) * (segHeight + segGap);
-      const isLit = s < litSegments;
-      const isPeak = Math.floor(peakHolds[i]) === s && s >= litSegments;
-
-      // Určit barvu segmentu podle pozice (zdola: zelená -> žlutá)
-      let color, dimColor;
-      if (s < segments * 0.6) {
-        // Spodních 60% = zelená
-        color = '#00ff44';
-        dimColor = 'rgba(0,80,20,0.5)';
-      } else if (s < segments * 0.85) {
-        // Středních 25% = žlutá
-        color = '#ffdd00';
-        dimColor = 'rgba(80,60,0,0.5)';
-      } else {
-        // Horních 15% = oranžovo-žlutá (lehký peak indicator)
-        color = '#ffaa00';
-        dimColor = 'rgba(80,40,0,0.5)';
-      }
-
-      if (isLit) {
-        // Rozsvícený segment s glow efektem
-        ctx.shadowColor = color;
-        ctx.shadowBlur = 8;
-        ctx.fillStyle = color;
-        ctx.fillRect(x, segY, w, segHeight);
-        ctx.shadowBlur = 0;
-
-        // Vnitřní lesk
-        ctx.fillStyle = 'rgba(255,255,255,0.25)';
-        ctx.fillRect(x, segY, w, segHeight * 0.3);
-      } else if (isPeak) {
-        // Peak indicator - zářivá čárka
-        ctx.shadowColor = color;
-        ctx.shadowBlur = 10;
-        ctx.fillStyle = color;
-        ctx.fillRect(x, segY, w, segHeight);
-        ctx.shadowBlur = 0;
-      } else {
-        // Zhasnutý segment - tmavá kostka
-        ctx.fillStyle = dimColor;
-        ctx.fillRect(x, segY, w, segHeight);
-      }
-    }
-  }
-
   requestAnimationFrame(drawSpectrum);
+  if (!audioCtx || !analyserL || !analyserR) return;
+
+  // Kdyz nic nehraje, pruhy plynule padaji k nule
+  if (!isPlaying) {
+    for (let b = 0; b < SP_BANDS; b++) {
+      spSmL[b] *= 0.85; spSmR[b] *= 0.85;
+      spHoldL[b] *= 0.85; spHoldR[b] *= 0.85;
+      spSetBar('sp-bars-l', b, spSmL[b], spHoldL[b]);
+      spSetBar('sp-bars-r', b, spSmR[b], spHoldR[b]);
+    }
+    return;
+  }
+
+  analyserL.getByteFrequencyData(dataL);
+  analyserR.getByteFrequencyData(dataR);
+
+  const sr = audioCtx.sampleRate;
+  const now = Date.now();
+
+  for (let b = 0; b < SP_BANDS; b++) {
+    let lRaw = Math.min(100, spBandEnergy(dataL, sr, SP_FREQ[b], SP_FREQ[b+1]) * 100 * 1.6);
+    let rRaw = Math.min(100, spBandEnergy(dataR, sr, SP_FREQ[b], SP_FREQ[b+1]) * 100 * 1.6);
+
+    spSmL[b] += (lRaw > spSmL[b] ? SP_UP : SP_DOWN) * (lRaw - spSmL[b]);
+    spSmR[b] += (rRaw > spSmR[b] ? SP_UP : SP_DOWN) * (rRaw - spSmR[b]);
+
+    if (spSmL[b] >= spHoldL[b]) { spHoldL[b] = spSmL[b]; spTimeL[b] = now; }
+    else if (now - spTimeL[b] > SP_HOLD_MS) { spHoldL[b] *= SP_DECAY; }
+    if (spSmR[b] >= spHoldR[b]) { spHoldR[b] = spSmR[b]; spTimeR[b] = now; }
+    else if (now - spTimeR[b] > SP_HOLD_MS) { spHoldR[b] *= SP_DECAY; }
+
+    spSetBar('sp-bars-l', b, spSmL[b], spHoldL[b]);
+    spSetBar('sp-bars-r', b, spSmR[b], spHoldR[b]);
+  }
 }
 drawSpectrum();
+
 
 // === Přehrávání ===
 function playTrack(idx) {
@@ -1024,13 +1093,14 @@ function playTrack(idx) {
   const t = tracks[idx];
 
   setupAudio();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 
   // Zastav oba elementy
   audio.pause(); audio.src = '';
   audioVideo.pause(); audioVideo.src = '';
 
   const media = getMediaEl(t.url);
+  connectMedia(media);   // napoji do grafu (jen poprve pro dany element)
   media.src = t.url;
   media.play().then(() => {
     isPlaying = true;
@@ -1222,8 +1292,8 @@ document.addEventListener('keydown', (e) => {
   else if (e.code === 'ArrowLeft') prevTrack();
 });
 
-// === Resize canvas ===
-window.addEventListener('resize', () => { canvasRect = null; });
+// Nove spektrum jsou DOM elementy (CSS grid) - prizpusobi se velikosti samo,
+// zadny resize handler neni potreba.
 
 // === Upload nového songu do Firebase Storage /kladyxamp/ ===
 document.getElementById('uploadInput').addEventListener('change', (e) => {
