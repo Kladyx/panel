@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.21.Kl">
-<title>Pi Monitor v2.21.Kl</title>
+<meta name="version" content="v2.22.Kl">
+<title>Pi Monitor v2.22.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -89,7 +89,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v2.21.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v2.22.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -258,7 +258,7 @@ function setSvc(id,ok,isPC){
 // proto piStats.services u nich vzdy hlasi false. Jediny spolehlivy zdroj je
 // heartbeat nextsync/status/lastSeen, ktery zapisuje PC.
 // POZOR: pole "online" je NESPOLEHLIVE - PC ho pri vypnuti nestihne prepsat na false.
-var PC_SVC=['transfer','upload','nextsync','obs'];
+var PC_SVC=['transfer','upload','nextsync','obs','eq'];
 function setPCAll(on){
   PC_SVC.forEach(function(id){setSvc(id,on,true);});
 }
@@ -300,8 +300,7 @@ function showOffline(fromFirebase){
     var s=document.getElementById('s-'+id);
     if(s){s.textContent='?';s.className='svc-st';}
   });
-  // Equalizer - zustava natvrdo zelene (dle zadani)
-  setSvc('eq',null,true);
+  // Equalizer je nyni soucasti PC_SVC -> resi ho checkPC() spolu s ostatnimi PC sluzbami
   // Pi OFF (data nepřišla → Pi je vypnutý)
   setPiState(false);
   if(fromFirebase){
@@ -367,8 +366,7 @@ function loadStats(){
         if(d.services[k]!==undefined)setSvc(k,d.services[k]===true||d.services[k]==='active');
       });
     }
-    // Equalizer - neni v piStats.services, zustava natvrdo zelene (dle zadani)
-    setSvc('eq',null,true);
+    // Equalizer (audio_analyzer.py) bezi na PC -> je v PC_SVC, resi ho checkPC()
     // Pi ON (data přišla → Pi běží)
     setPiState(true);
     // Procesy (pokud Pi posle realna data, prepise ACTIVE ON)
