@@ -235,7 +235,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v3.9.1.Pro - 2026 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v3.8.8.Pro - 2026 Kladyx</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -15650,11 +15650,6 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
     <div style="flex:1"><div class="name" id="n-firebase">Firebase Realtime DB</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">kladyxland-default-rtdb</div></div>
     <div class="st checking" id="s-firebase">Checking…</div>
   </div>
-  <div class="item ok" id="i-openapp">
-    <div class="dot ok" id="d-openapp"></div>
-    <div style="flex:1"><div class="name">📂 Právě otevřeno</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">aktivní appka v panelu</div></div>
-    <div class="st ok" id="s-openapp">…</div>
-  </div>
 </div>
 
 <div class="section">
@@ -15838,34 +15833,6 @@ function checkFirebase() {
     });
 }
 
-// Právě otevřená appka — čte window.parent._activeAppId. Panel drží vždy
-// jednu načtenou apku (openApp unloaduje předchozí). Žádný Firebase traffic.
-var APP_NAMES = {odecty:'⚡💧🔥 Odečty',cd:'💿 CD databáze',hardware:'🎛️ Hardware',lp:'🎵 LP Desky',
-  platby:'💳 Platby',jidlo:'🍽️ Jídlo',gluco:'🩸 Glukóza',notes:'📝 Poznámky',kalendar:'📅 Kalendář',
-  arch:'🏛️ Architektura',zxnext:'💾 ZXNext',wordmaster:'🇬🇧 WordMaster',password:'🔑 Hesla',
-  manualy:'📖 Manuály',zxgames:'🕹️ ZX Games',worldtime:'🌍 World Time',user:'👤 Moje apky',
-  scripty:'⚙️ Scripty',nextsync:'📡 NextSync',kladyxhome:'🏠 KladyxHome',pimonitor:'🍓 Pi Monitor',
-  equalizer:'🚨 Equalizer',multitrack:'🎚️ Multitrack',housetime:'🎧 HouseTime',obs:'🔴 OBS Status',
-  status:'⬡ Status Checker',pocasi:'🌤️ Počasí',mixcloud:'☁️ Mixcloud',reader:'📚 Čtečka',
-  cotoje:'📸 Co to je???',kladyxamp:'🎵 KladyxAmp',speedtest:'🚀 Speedtest',transfer:'🚚 Transfer',
-  prekladac:'🌐 Překladač',radio:'📻 Rádio'};
-
-function checkActiveApp() {
-  var id=null;
-  try { id = window.parent._activeAppId; } catch(e) {}
-  var d=document.getElementById('d-openapp');
-  var s=document.getElementById('s-openapp');
-  var i=document.getElementById('i-openapp');
-  if(!d||!s||!i) return;
-  if(id){
-    d.className='dot ok'; s.className='st ok'; i.className='item ok';
-    s.textContent=APP_NAMES[id]||id;
-  } else {
-    d.className='dot err'; s.className='st err'; i.className='item err';
-    s.textContent='Nic (Home)';
-  }
-}
-
 // ── no-cors ping (radio, external pages) ──
 function checkNoCors(id, url) {
   return withTimeout(fetch(url,{method:'HEAD',mode:'no-cors',cache:'no-store'}),7000)
@@ -15978,9 +15945,8 @@ function checkOBS() {
 function runAll() {
   document.getElementById('last-check').textContent='Kontroluji…';
 
-  // Firebase DB dostupnost + aktivní apka
+  // Firebase (+ cascade FB apps)
   checkFirebase();
-  checkActiveApp();
   checkOBS();
 
   // Externí appky
@@ -16024,8 +15990,6 @@ function runAll() {
 
 runAll();
 setInterval(runAll, 60000);
-// Aktivní apka obnovuje rychleji — jen čtení JS proměnné, 0 traffic
-setInterval(checkActiveApp, 2000);
 <\/script>
 </body></html>`;
 
@@ -20011,7 +19975,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='3.9.1.Pro';
+  var CURRENT='3.8.8.Pro';
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
     if(!j||!j.panel)return;
