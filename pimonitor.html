@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.26.Kl">
-<title>Pi Monitor v2.26.Kl</title>
+<meta name="version" content="v2.27.Kl">
+<title>Pi Monitor v2.27.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -89,7 +89,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v2.26.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v2.27.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -165,12 +165,12 @@ function fmtBytes(b){
 }
 function fbFetch(url,opts){
   return fetch(url,opts).then(function(r){
-    var clone=r.clone();
-    clone.blob().then(function(bl){
-      _fbDlBytes+=bl.size;
+    var len=parseInt(r.headers.get('content-length')||'0');
+    if(len>0){
+      _fbDlBytes+=len;
       var el=document.getElementById('net-fbdl');
       if(el)el.textContent=fmtBytes(_fbDlBytes);
-    });
+    }
     return r;
   });
 }
@@ -197,7 +197,7 @@ function drawSpark(id,values,color){
 }
 
 function loadHistory(){
-  fetch(fbUrl('/piHistory.json?orderBy="$key"&limitToLast=20'),{signal:AbortSignal.timeout(8000)})
+  fbFetch(fbUrl('/piHistory.json?orderBy="$key"&limitToLast=20'),{signal:AbortSignal.timeout(8000)})
   .then(function(r){return r.json();})
   .then(function(d){
     if(!d)return;
@@ -282,7 +282,7 @@ function setPCAll(on){
 }
 function checkPC(){
   // cteme JEN lastSeen (male cislo), ne cely status objekt - setri download
-  fetch(fbUrl('/nextsync/status/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
+  fbFetch(fbUrl('/nextsync/status/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(ts){
     // PC heartbeat ~90s -> tolerance 180s = 2 zmeskane
@@ -331,7 +331,7 @@ function showOffline(fromFirebase){
 function loadStats(){
   document.getElementById('offline-msg').style.display='none';
   // Zkus piStats node
-  fetch(fbUrl('/piStats.json'),{signal:AbortSignal.timeout(8000)})
+  fbFetch(fbUrl('/piStats.json'),{signal:AbortSignal.timeout(8000)})
   .then(function(r){return r.json();})
   .then(function(d){
     if(!d){showOffline(true);loadFallback();return;}
@@ -398,7 +398,7 @@ function loadStats(){
   })
   .catch(function(){showOffline(true);loadFallback();});
   // IR Bridge - čte heartbeat přímo z irDb/lastSeen
-  fetch(fbUrl('/irDb/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
+  fbFetch(fbUrl('/irDb/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(ts){
     setSvc('irbridge',ts&&(Date.now()-ts<60000));
@@ -406,7 +406,7 @@ function loadStats(){
   .catch(function(){setSvc('irbridge',false);});
   // Tapo Python bridge (kladyx-tapo-py na Pi4) - cte heartbeat z tapoDb/lastSeen
   // Skript zapisuje kazdych 60s -> tolerance 150s = 2 zmeskane heartbeaty
-  fetch(fbUrl('/tapoDb/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
+  fbFetch(fbUrl('/tapoDb/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(ts){
     setSvc('tapopy',ts&&(Date.now()-ts<150000));
@@ -418,7 +418,7 @@ function loadStats(){
 
 function loadFallback(){
   // Fallback: cte jen lastSeen (male cislo) - setri download
-  fetch(fbUrl('/nextsync/status/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
+  fbFetch(fbUrl('/nextsync/status/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(ts){
     if(!ts)return;
