@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.27.Kl">
-<title>Pi Monitor v2.27.Kl</title>
+<meta name="version" content="v2.26.Kl">
+<title>Pi Monitor v2.26.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -89,7 +89,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v2.27.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v2.26.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -138,9 +138,8 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="net-row"><div class="net-lbl">IP adresa</div><div class="net-val" id="net-ip">—</div></div>
   <div class="net-row"><div class="net-lbl">Poslední data</div><div class="net-val" id="net-hb">—</div></div>
   <div class="net-row"><div class="net-lbl">Stáří dat</div><div class="net-val" id="net-age">—</div></div>
-  <div class="net-row"><div class="net-lbl">Staženo (od bootu)</div><div class="net-val net-active" id="net-rx">—</div></div>
-  <div class="net-row"><div class="net-lbl">Odesláno (od bootu)</div><div class="net-val net-active" id="net-tx">—</div></div>
-  <div class="net-row"><div class="net-lbl">Celkem (od bootu)</div><div class="net-val net-active" id="net-rxtx">ACTIVE ON</div></div>
+  <div class="net-row"><div class="net-lbl">Provoz (od bootu)</div><div class="net-val net-active" id="net-rxtx">ACTIVE ON</div></div>
+  <div class="net-row"><div class="net-lbl">Firebase DL (session)</div><div class="net-val" id="net-fbdl">0 B</div></div>
   <div class="net-row"><div class="net-lbl">Procesy</div><div class="net-val net-active" id="net-proc">ACTIVE ON</div></div>
 </div>
 
@@ -154,9 +153,26 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <script>
 var FB='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
 var _authToken='';
+var _fbDlBytes=0;
 function fbUrl(path){
   var sep=path.indexOf('?')>=0?'&':'?';
   return FB+path+(_authToken?sep+'auth='+_authToken:'');
+}
+function fmtBytes(b){
+  if(b>=1048576)return (b/1048576).toFixed(2)+' MB';
+  if(b>=1024)return (b/1024).toFixed(1)+' kB';
+  return b+' B';
+}
+function fbFetch(url,opts){
+  return fetch(url,opts).then(function(r){
+    var clone=r.clone();
+    clone.blob().then(function(bl){
+      _fbDlBytes+=bl.size;
+      var el=document.getElementById('net-fbdl');
+      if(el)el.textContent=fmtBytes(_fbDlBytes);
+    });
+    return r;
+  });
 }
 var avgCpuFromHistory=4.5; // výchozí: 4.5% průměru (idle + trocha zátěže)
 
@@ -181,7 +197,7 @@ function drawSpark(id,values,color){
 }
 
 function loadHistory(){
-  fetch(fbUrl('/piHistory.json?orderBy="$key"&limitToLast=40'),{signal:AbortSignal.timeout(8000)})
+  fetch(fbUrl('/piHistory.json?orderBy="$key"&limitToLast=20'),{signal:AbortSignal.timeout(8000)})
   .then(function(r){return r.json();})
   .then(function(d){
     if(!d)return;
@@ -289,8 +305,8 @@ function showOffline(fromFirebase){
     setBar('bar-'+k,0);
   });
   document.getElementById('val-uptime').textContent='—';
-  // Pi vypnuty - net-rx/tx/rxtx/proc: pomlcka a odstranit zelenou aktivaci
-  ['net-rx','net-tx','net-rxtx','net-proc'].forEach(function(id){
+  // Pi vypnuty - net-rx/tx/proc: pomlcka a odstranit zelenou aktivaci
+  ['net-rx','net-tx','net-proc'].forEach(function(id){
     var el=document.getElementById(id);
     if(el){el.textContent='—';el.classList.remove('net-active');}
   });
@@ -320,7 +336,7 @@ function loadStats(){
   .then(function(d){
     if(!d){showOffline(true);loadFallback();return;}
     var age=Date.now()-(d.ts||0);
-    if(age>90000){showOffline(true);loadFallback();return;}
+    if(age>45000){showOffline(true);loadFallback();return;}
     // CPU
     var cpu=Math.round(d.cpu_pct||0);
     document.getElementById('val-cpu').textContent=cpu;
@@ -354,21 +370,17 @@ function loadStats(){
     document.getElementById('net-hb').textContent=new Date(d.ts).toLocaleTimeString('cs-CZ');
     document.getElementById('net-age').textContent=fmtAge(age);
     // Pi je online → default zeleny ACTIVE ON pro net-rx/tx/proc
-    ['net-rx','net-tx','net-rxtx','net-proc'].forEach(function(id){
+    ['net-rxtx','net-proc'].forEach(function(id){
       var el=document.getElementById(id);
       if(el){el.textContent='ACTIVE ON';el.classList.add('net-active');}
     });
-    // Provoz od bootu: rx, tx zvlast + celkovy soucet
+    // Provoz celkem (rx+tx součet od bootu)
     var rx=d.net_rx_mb,tx=d.net_tx_mb;
     if(rx!==undefined&&tx!==undefined){
       var total=rx+tx;
-      var fmtMB=function(v){return v>=1024?(v/1024).toFixed(1)+' GB':v.toFixed(1)+' MB';};
-      var erx=document.getElementById('net-rx');
-      var etx=document.getElementById('net-tx');
-      var etot=document.getElementById('net-rxtx');
-      if(erx){erx.textContent=fmtMB(rx);erx.classList.remove('net-active');}
-      if(etx){etx.textContent=fmtMB(tx);etx.classList.remove('net-active');}
-      if(etot){etot.textContent=fmtMB(total);etot.classList.remove('net-active');}
+      var el=document.getElementById('net-rxtx');
+      el.textContent=total>=1024?(total/1024).toFixed(1)+' GB':total.toFixed(1)+' MB';
+      el.classList.remove('net-active');
     }
     // Services z piStats - POUZE sluzby ktere skutecne bezi na Pi4 jako systemd.
     // transfer/upload/nextsync/obs jsou .bat na PC, Pi4 je nevidi -> resi checkPC()
@@ -405,17 +417,15 @@ function loadStats(){
 }
 
 function loadFallback(){
-  // Fallback: nextsync/status pro základní info
-  fetch(fbUrl('/nextsync/status.json'),{signal:AbortSignal.timeout(5000)})
+  // Fallback: cte jen lastSeen (male cislo) - setri download
+  fetch(fbUrl('/nextsync/status/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
-  .then(function(d){
-    if(!d||!d.lastSeen)return;
-    var age=Date.now()-d.lastSeen;
+  .then(function(ts){
+    if(!ts)return;
+    var age=Date.now()-ts;
     if(age<120000){
-      document.getElementById('net-ip').textContent=d.ip||'—';
-      document.getElementById('net-hb').textContent=new Date(d.lastSeen).toLocaleTimeString('cs-CZ');
+      document.getElementById('net-hb').textContent=new Date(ts).toLocaleTimeString('cs-CZ');
       document.getElementById('net-age').textContent=fmtAge(age);
-      // POZN: stav upload serveru zde uz nenastavujeme - resi checkPC() s prahem 180s
     }
   }).catch(function(){});
 }
@@ -453,7 +463,7 @@ document.getElementById('btn-shutdown').onclick=function(){
     loadStats();
     loadHistory();
     setInterval(loadStats,30000);
-    setInterval(loadHistory,60000);
+    setInterval(loadHistory,120000);
     // Mobilni prohlizec zmrazi setInterval kdyz je stranka na pozadi (zamceny
     // telefon / prepnuta zalozka). Pri navratu bychom videli zastaraly stav,
     // proto nacteme data hned. Jen loadStats (~450 B), historii ne - je tezsi.
