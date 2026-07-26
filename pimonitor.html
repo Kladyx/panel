@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.27.Kl">
-<title>Pi Monitor v2.27.Kl</title>
+<meta name="version" content="v2.28.Kl">
+<title>Pi Monitor v2.28.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -66,6 +66,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .net-lbl{font-size:0.55rem;color:var(--muted);}
 .net-val{font-size:0.65rem;color:var(--cyan);}
 .net-val.net-active{color:var(--green);text-shadow:0 0 8px var(--green);animation:pulse-green 1.5s infinite;}
+.net-val.net-scripts{color:#ffdd00;font-size:0.58rem;text-align:right;max-width:68%;word-break:break-word;}
 /* OFFLINE */
 .offline{text-align:center;padding:14px;color:var(--red);font-size:0.7rem;letter-spacing:2px;opacity:.7;display:none;}
 .offline span{font-size:0.5rem;color:var(--muted);display:block;margin-top:4px;}
@@ -89,7 +90,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v2.27.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v2.28.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -141,6 +142,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="net-row"><div class="net-lbl">Provoz (od bootu)</div><div class="net-val net-active" id="net-rxtx">ACTIVE ON</div></div>
   <div class="net-row"><div class="net-lbl">Firebase DL (session)</div><div class="net-val" id="net-fbdl">0 B</div></div>
   <div class="net-row"><div class="net-lbl">Procesy</div><div class="net-val net-active" id="net-proc">ACTIVE ON</div></div>
+  <div class="net-row"><div class="net-lbl">Aktivní skripty</div><div class="net-val net-scripts" id="net-scripts">—</div></div>
 </div>
 
 <div class="offline" id="offline-msg">
@@ -395,6 +397,19 @@ function loadStats(){
     setSvc('rpi',true);
     // Procesy (pokud Pi posle realna data, prepise ACTIVE ON)
     if(d.proc_count!==undefined){var el=document.getElementById('net-proc');el.textContent=d.proc_count;el.classList.remove('net-active');}
+    // Aktivní skripty - ze services pole, jen ty co jsou true/active na Pi
+    var svcMap={tapo:'tapobridge',tapopy:'tapo-py',prijate:'prijatelister',irbridge:'irbridge',rpi:'rpi'};
+    var activeList=[];
+    if(d.services){
+      Object.keys(svcMap).forEach(function(k){
+        if(d.services[k]===true||d.services[k]==='active')activeList.push(svcMap[k]);
+      });
+    }
+    // irbridge a rpi přidáme vždy pokud jsou data čerstvá (Pi je ON)
+    if(activeList.indexOf('irbridge')<0)activeList.push('irbridge');
+    if(activeList.indexOf('rpi')<0)activeList.push('rpi');
+    var scrEl=document.getElementById('net-scripts');
+    if(scrEl)scrEl.textContent=activeList.length?activeList.join(', '):'—';
   })
   .catch(function(){showOffline(true);loadFallback();});
   // IR Bridge - čte heartbeat přímo z irDb/lastSeen
