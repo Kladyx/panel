@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.25.Kl">
-<title>Pi Monitor v2.25.Kl</title>
+<meta name="version" content="v2.26.Kl">
+<title>Pi Monitor v2.26.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -89,7 +89,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · v2.25.Kl</div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · v2.26.Kl</div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -138,7 +138,9 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="net-row"><div class="net-lbl">IP adresa</div><div class="net-val" id="net-ip">—</div></div>
   <div class="net-row"><div class="net-lbl">Poslední data</div><div class="net-val" id="net-hb">—</div></div>
   <div class="net-row"><div class="net-lbl">Stáří dat</div><div class="net-val" id="net-age">—</div></div>
-  <div class="net-row"><div class="net-lbl">Provoz (od bootu)</div><div class="net-val net-active" id="net-rxtx">ACTIVE ON</div></div>
+  <div class="net-row"><div class="net-lbl">Staženo (od bootu)</div><div class="net-val net-active" id="net-rx">—</div></div>
+  <div class="net-row"><div class="net-lbl">Odesláno (od bootu)</div><div class="net-val net-active" id="net-tx">—</div></div>
+  <div class="net-row"><div class="net-lbl">Celkem (od bootu)</div><div class="net-val net-active" id="net-rxtx">ACTIVE ON</div></div>
   <div class="net-row"><div class="net-lbl">Procesy</div><div class="net-val net-active" id="net-proc">ACTIVE ON</div></div>
 </div>
 
@@ -287,8 +289,8 @@ function showOffline(fromFirebase){
     setBar('bar-'+k,0);
   });
   document.getElementById('val-uptime').textContent='—';
-  // Pi vypnuty - net-rx/tx/proc: pomlcka a odstranit zelenou aktivaci
-  ['net-rx','net-tx','net-proc'].forEach(function(id){
+  // Pi vypnuty - net-rx/tx/rxtx/proc: pomlcka a odstranit zelenou aktivaci
+  ['net-rx','net-tx','net-rxtx','net-proc'].forEach(function(id){
     var el=document.getElementById(id);
     if(el){el.textContent='—';el.classList.remove('net-active');}
   });
@@ -352,17 +354,21 @@ function loadStats(){
     document.getElementById('net-hb').textContent=new Date(d.ts).toLocaleTimeString('cs-CZ');
     document.getElementById('net-age').textContent=fmtAge(age);
     // Pi je online → default zeleny ACTIVE ON pro net-rx/tx/proc
-    ['net-rxtx','net-proc'].forEach(function(id){
+    ['net-rx','net-tx','net-rxtx','net-proc'].forEach(function(id){
       var el=document.getElementById(id);
       if(el){el.textContent='ACTIVE ON';el.classList.add('net-active');}
     });
-    // Provoz celkem (rx+tx součet od bootu)
+    // Provoz od bootu: rx, tx zvlast + celkovy soucet
     var rx=d.net_rx_mb,tx=d.net_tx_mb;
     if(rx!==undefined&&tx!==undefined){
       var total=rx+tx;
-      var el=document.getElementById('net-rxtx');
-      el.textContent=total>=1024?(total/1024).toFixed(1)+' GB':total.toFixed(1)+' MB';
-      el.classList.remove('net-active');
+      var fmtMB=function(v){return v>=1024?(v/1024).toFixed(1)+' GB':v.toFixed(1)+' MB';};
+      var erx=document.getElementById('net-rx');
+      var etx=document.getElementById('net-tx');
+      var etot=document.getElementById('net-rxtx');
+      if(erx){erx.textContent=fmtMB(rx);erx.classList.remove('net-active');}
+      if(etx){etx.textContent=fmtMB(tx);etx.classList.remove('net-active');}
+      if(etot){etot.textContent=fmtMB(total);etot.classList.remove('net-active');}
     }
     // Services z piStats - POUZE sluzby ktere skutecne bezi na Pi4 jako systemd.
     // transfer/upload/nextsync/obs jsou .bat na PC, Pi4 je nevidi -> resi checkPC()
