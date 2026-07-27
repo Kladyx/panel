@@ -171,32 +171,35 @@ button{
     bon.onclick=function(){ nastav('on'); };
     boff.onclick=function(){ nastav('off'); };
   }
+})();
 
-  // POZNÁMKA - Firebase persistence
-  if(ref){
-    var noteRef = firebase.database().ref('/scriptyNote');
+</script>
+<script>
+  // POZNÁMKA - Firebase persistence (mimo IIFE, přímý addEventListener)
+  (function(){
     var noteTa = document.getElementById('note-ta');
-    if(noteTa){
-      noteRef.once('value').then(function(snap){
-        if(snap.val()) noteTa.value = snap.val();
-      });
-      window.saveNote = function() {
-        var el = document.getElementById('note-saved');
-        el.textContent = '⏳ Ukládám...';
-        noteRef.set(noteTa.value).then(function(){
-          el.textContent = '✓ ULOŽENO';
-          setTimeout(function(){ el.textContent = ''; }, 3000);
-        }).catch(function(err){
-          el.textContent = '✗ ' + (err.code || 'CHYBA');
-          setTimeout(function(){ el.textContent = ''; }, 4000);
-        });
-      };
-      noteTa.addEventListener('keydown', function(e){
-        if(e.ctrlKey && e.key === 's'){ e.preventDefault(); window.saveNote(); }
+    var saveBtn = document.getElementById('note-save-btn');
+    if(!noteTa || typeof firebase === 'undefined') return;
+    var noteRef = firebase.database().ref('/scriptyNote');
+    noteRef.once('value').then(function(snap){
+      if(snap.val()) noteTa.value = snap.val();
+    });
+    function doSave(){
+      var el = document.getElementById('note-saved');
+      el.textContent = '⏳ Ukládám...';
+      noteRef.set(noteTa.value).then(function(){
+        el.textContent = '✓ ULOŽENO';
+        setTimeout(function(){ el.textContent = ''; }, 3000);
+      }).catch(function(err){
+        el.textContent = '✗ ' + (err.code || 'CHYBA');
+        setTimeout(function(){ el.textContent = ''; }, 4000);
       });
     }
-  }
-})();
+    if(saveBtn) saveBtn.addEventListener('click', doSave);
+    noteTa.addEventListener('keydown', function(e){
+      if(e.ctrlKey && e.key === 's'){ e.preventDefault(); doSave(); }
+    });
+  })();
 </script>
 
   <div style="margin-top:24px;width:90%;max-width:360px;position:relative;z-index:1;">
@@ -244,7 +247,7 @@ button{
 
   <div class="note-box">
     <textarea id="note-ta" placeholder="📝 Poznámka..."></textarea>
-    <button class="note-save" onclick="saveNote()">💾 ULOŽIT POZNÁMKU</button>
+    <button class="note-save" id="note-save-btn">💾 ULOŽIT POZNÁMKU</button>
     <div class="note-saved" id="note-saved"></div>
   </div>
 
