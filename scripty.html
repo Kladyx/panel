@@ -121,6 +121,7 @@ button{
   <div class="head">
     <div class="gear" id="gear">⚙️</div>
     <div class="title">SCRIPTY</div>
+  <div style="font-size:.38rem;color:#4a5060;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v2.0</div>
   </div>
   <div class="sub">PC · DÁLKOVÉ OVLÁDÁNÍ</div>
   <div class="btns">
@@ -181,12 +182,13 @@ button{
     });
     window.saveNote = function() {
       var el = document.getElementById('note-saved');
+      el.textContent = '⏳ Ukládám...';
       noteRef.set(noteTa.value).then(function(){
         el.textContent = '✓ ULOŽENO';
-        setTimeout(function(){ el.textContent = ''; }, 2000);
-      }).catch(function(){
-        el.textContent = '✗ CHYBA';
-        setTimeout(function(){ el.textContent = ''; }, 2000);
+        setTimeout(function(){ el.textContent = ''; }, 3000);
+      }).catch(function(err){
+        el.textContent = '✗ ' + (err.code || 'CHYBA');
+        setTimeout(function(){ el.textContent = ''; }, 4000);
       });
     };
     noteTa.addEventListener('keydown', function(e){
