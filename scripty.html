@@ -171,12 +171,34 @@ button{
     boff.onclick=function(){ nastav('off'); };
   }
 })();
+
+  // POZNÁMKA - Firebase persistence
+  var noteTa = document.getElementById('note-ta');
+  if(noteTa && typeof firebase !== 'undefined'){
+    var noteRef = firebase.database().ref('/scriptyNote');
+    noteRef.once('value').then(function(snap){
+      if(snap.val()) noteTa.value = snap.val();
+    });
+    window.saveNote = function() {
+      var el = document.getElementById('note-saved');
+      noteRef.set(noteTa.value).then(function(){
+        el.textContent = '✓ ULOŽENO';
+        setTimeout(function(){ el.textContent = ''; }, 2000);
+      }).catch(function(){
+        el.textContent = '✗ CHYBA';
+        setTimeout(function(){ el.textContent = ''; }, 2000);
+      });
+    };
+    noteTa.addEventListener('keydown', function(e){
+      if(e.ctrlKey && e.key === 's'){ e.preventDefault(); window.saveNote(); }
+    });
+  }
 </script>
 
   <div style="margin-top:24px;width:90%;max-width:360px;position:relative;z-index:1;">
     <div style="font-size:.45rem;letter-spacing:.2em;color:#00f5ff;margin-bottom:10px;text-align:center;">⚡ FIREBASE ŽROUTI · PŘIŠKRCENO</div>
     <table style="width:100%;border-collapse:collapse;font-size:.42rem;letter-spacing:.05em;">
-      <tr style="color:#4a5060;border-bottom:1px solid rgba(255,255,255,.06);">
+      <tr style="color:#00f5ff;border-bottom:1px solid rgba(0,245,255,.3);font-weight:700;font-size:.44rem;">
         <td style="padding:4px 6px;">SCRIPT</td>
         <td style="padding:4px 6px;text-align:center;">PŘED</td>
         <td style="padding:4px 6px;text-align:center;">PO</td>
