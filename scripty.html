@@ -121,7 +121,7 @@ button{
   <div class="head">
     <div class="gear" id="gear">⚙️</div>
     <div class="title">SCRIPTY</div>
-  <div style="font-size:.38rem;color:#4a5060;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v2.0</div>
+  <div style="font-size:.38rem;color:#4a5060;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v2.1</div>
   </div>
   <div class="sub">PC · DÁLKOVÉ OVLÁDÁNÍ</div>
   <div class="btns">
@@ -171,30 +171,32 @@ button{
     bon.onclick=function(){ nastav('on'); };
     boff.onclick=function(){ nastav('off'); };
   }
-})();
 
   // POZNÁMKA - Firebase persistence
-  var noteTa = document.getElementById('note-ta');
-  if(noteTa && typeof firebase !== 'undefined'){
+  if(ref){
     var noteRef = firebase.database().ref('/scriptyNote');
-    noteRef.once('value').then(function(snap){
-      if(snap.val()) noteTa.value = snap.val();
-    });
-    window.saveNote = function() {
-      var el = document.getElementById('note-saved');
-      el.textContent = '⏳ Ukládám...';
-      noteRef.set(noteTa.value).then(function(){
-        el.textContent = '✓ ULOŽENO';
-        setTimeout(function(){ el.textContent = ''; }, 3000);
-      }).catch(function(err){
-        el.textContent = '✗ ' + (err.code || 'CHYBA');
-        setTimeout(function(){ el.textContent = ''; }, 4000);
+    var noteTa = document.getElementById('note-ta');
+    if(noteTa){
+      noteRef.once('value').then(function(snap){
+        if(snap.val()) noteTa.value = snap.val();
       });
-    };
-    noteTa.addEventListener('keydown', function(e){
-      if(e.ctrlKey && e.key === 's'){ e.preventDefault(); window.saveNote(); }
-    });
+      window.saveNote = function() {
+        var el = document.getElementById('note-saved');
+        el.textContent = '⏳ Ukládám...';
+        noteRef.set(noteTa.value).then(function(){
+          el.textContent = '✓ ULOŽENO';
+          setTimeout(function(){ el.textContent = ''; }, 3000);
+        }).catch(function(err){
+          el.textContent = '✗ ' + (err.code || 'CHYBA');
+          setTimeout(function(){ el.textContent = ''; }, 4000);
+        });
+      };
+      noteTa.addEventListener('keydown', function(e){
+        if(e.ctrlKey && e.key === 's'){ e.preventDefault(); window.saveNote(); }
+      });
+    }
   }
+})();
 </script>
 
   <div style="margin-top:24px;width:90%;max-width:360px;position:relative;z-index:1;">
