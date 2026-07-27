@@ -90,6 +90,24 @@ button{
 .dot.off{background:#ff3c5a;box-shadow:0 0 6px rgba(255,60,90,.6);}
 @keyframes dotP{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.4);opacity:.7;}}
 .info{margin-top:28px;font-size:.5rem;letter-spacing:.1em;color:#3a4050;text-align:center;line-height:1.7;}
+
+.note-box{margin-top:20px;width:90%;max-width:360px;position:relative;z-index:2;}
+.note-box textarea{
+  width:100%;height:80px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(0,245,255,.2);border-radius:8px;
+  color:#c0d0e0;font-family:'Orbitron',monospace;font-size:.45rem;
+  letter-spacing:.05em;padding:10px;resize:none;outline:none;
+  line-height:1.6;
+}
+.note-box textarea:focus{border-color:rgba(0,245,255,.5);}
+.note-save{
+  margin-top:6px;width:100%;padding:8px;border-radius:6px;
+  background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.25);
+  color:#00f5ff;font-family:'Orbitron',monospace;font-size:.4rem;
+  letter-spacing:.1em;cursor:pointer;font-weight:700;
+}
+.note-save:active{background:rgba(0,245,255,.2);}
+.note-saved{color:#00ff88;font-size:.38rem;letter-spacing:.1em;margin-top:4px;text-align:center;min-height:14px;}
 </style>
 </head>
 <body>
@@ -197,5 +215,12 @@ button{
     </table>
     <div style="margin-top:10px;text-align:center;font-size:.4rem;color:#00ff88;letter-spacing:.1em;">CELKEM: ~400MB → &lt;20MB / den</div>
   </div>
+
+  <div class="note-box">
+    <textarea id="note-ta" placeholder="📝 Poznámka..."></textarea>
+    <button class="note-save" onclick="saveNote()">💾 ULOŽIT POZNÁMKU</button>
+    <div class="note-saved" id="note-saved"></div>
+  </div>
+
 </body>
 </html>
