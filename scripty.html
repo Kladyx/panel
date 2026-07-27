@@ -108,8 +108,6 @@ button{
 }
 .note-save:active{background:rgba(0,245,255,.2);}
 .note-saved{color:#00ff88;font-size:.38rem;letter-spacing:.1em;margin-top:4px;text-align:center;min-height:14px;}
-.note-clear{margin-top:6px;width:100%;padding:8px;border-radius:6px;background:rgba(255,60,90,.08);border:1px solid rgba(255,60,90,.25);color:#ff3c5a;font-family:'Orbitron',monospace;font-size:.4rem;letter-spacing:.1em;cursor:pointer;font-weight:700;}
-.note-clear:active{background:rgba(255,60,90,.2);}
 </style>
 </head>
 <body>
@@ -123,7 +121,7 @@ button{
   <div class="head">
     <div class="gear" id="gear">⚙️</div>
     <div class="title">SCRIPTY</div>
-  <div style="font-size:.38rem;color:#4a5060;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v2.0</div>
+  <div style="font-size:.38rem;color:#4a5060;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v2.4</div>
   </div>
   <div class="sub">PC · DÁLKOVÉ OVLÁDÁNÍ</div>
   <div class="btns">
@@ -175,29 +173,7 @@ button{
   }
 })();
 
-  // POZNÁMKA - localStorage
-  var noteTa = document.getElementById('note-ta');
-  if(noteTa){
-    noteTa.value = localStorage.getItem('scripty_note') || '';
-    window.saveNote = function() {
-      localStorage.setItem('scripty_note', noteTa.value);
-      var el = document.getElementById('note-saved');
-      el.textContent = '✓ ULOŽENO';
-      setTimeout(function(){ el.textContent = ''; }, 2000);
-    };
-    window.clearNote = function() {
-      noteTa.value = '';
-      localStorage.removeItem('scripty_note');
-      var el = document.getElementById('note-saved');
-      el.textContent = '🗑 SMAZÁNO';
-      setTimeout(function(){ el.textContent = ''; }, 2000);
-    };
-    noteTa.addEventListener('keydown', function(e){
-      if(e.ctrlKey && e.key === 's'){ e.preventDefault(); window.saveNote(); }
-    });
-  }
 </script>
-
   <div style="margin-top:24px;width:90%;max-width:360px;position:relative;z-index:1;">
     <div style="font-size:.45rem;letter-spacing:.2em;color:#00f5ff;margin-bottom:10px;text-align:center;">⚡ FIREBASE ŽROUTI · PŘIŠKRCENO</div>
     <table style="width:100%;border-collapse:collapse;font-size:.42rem;letter-spacing:.05em;">
@@ -243,10 +219,38 @@ button{
 
   <div class="note-box">
     <textarea id="note-ta" placeholder="📝 Poznámka..."></textarea>
-    <button class="note-save" onclick="saveNote()">💾 ULOŽIT POZNÁMKU</button>
-    <button class="note-clear" onclick="clearNote()">🗑 SMAZAT POZNÁMKU</button>
+    <button type="button" class="note-save" id="note-save-btn">💾 ULOŽIT POZNÁMKU</button>
     <div class="note-saved" id="note-saved"></div>
   </div>
+
+<script>
+  // POZNÁMKA - Firebase persistence
+  (function(){
+    var noteTa = document.getElementById('note-ta');
+    var saveBtn = document.getElementById('note-save-btn');
+    if(!noteTa || typeof firebase === 'undefined') return;
+    var noteRef = firebase.database().ref('/scriptyNote');
+    noteRef.once('value').then(function(snap){
+      if(snap.val()) noteTa.value = snap.val();
+    });
+    function doSave(){
+      var el = document.getElementById('note-saved');
+      el.textContent = '⏳ Ukládám...';
+      noteRef.set(noteTa.value).then(function(){
+        el.textContent = '✓ ULOŽENO';
+        alert('Uloženo');
+        setTimeout(function(){ el.textContent = ''; }, 3000);
+      }).catch(function(err){
+        el.textContent = '✗ ' + (err.code || 'CHYBA');
+        setTimeout(function(){ el.textContent = ''; }, 4000);
+      });
+    }
+    if(saveBtn) saveBtn.addEventListener('click', doSave);
+    noteTa.addEventListener('keydown', function(e){
+      if(e.ctrlKey && e.key === 's'){ e.preventDefault(); doSave(); }
+    });
+  })();
+</script>
 
 </body>
 </html>
