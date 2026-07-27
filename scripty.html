@@ -121,7 +121,7 @@ button{
   <div class="head">
     <div class="gear" id="gear">⚙️</div>
     <div class="title">SCRIPTY</div>
-  <div style="font-size:.38rem;color:#4a5060;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v2.2</div>
+  <div style="font-size:.38rem;color:#4a5060;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v2.0</div>
   </div>
   <div class="sub">PC · DÁLKOVÉ OVLÁDÁNÍ</div>
   <div class="btns">
@@ -173,18 +173,14 @@ button{
   }
 })();
 
-</script>
-<script>
-  // POZNÁMKA - Firebase persistence (mimo IIFE, přímý addEventListener)
-  (function(){
-    var noteTa = document.getElementById('note-ta');
-    var saveBtn = document.getElementById('note-save-btn');
-    if(!noteTa || typeof firebase === 'undefined') return;
+  // POZNÁMKA - Firebase persistence
+  var noteTa = document.getElementById('note-ta');
+  if(noteTa && typeof firebase !== 'undefined'){
     var noteRef = firebase.database().ref('/scriptyNote');
     noteRef.once('value').then(function(snap){
       if(snap.val()) noteTa.value = snap.val();
     });
-    function doSave(){
+    window.saveNote = function() {
       var el = document.getElementById('note-saved');
       el.textContent = '⏳ Ukládám...';
       noteRef.set(noteTa.value).then(function(){
@@ -194,12 +190,11 @@ button{
         el.textContent = '✗ ' + (err.code || 'CHYBA');
         setTimeout(function(){ el.textContent = ''; }, 4000);
       });
-    }
-    if(saveBtn) saveBtn.addEventListener('click', doSave);
+    };
     noteTa.addEventListener('keydown', function(e){
-      if(e.ctrlKey && e.key === 's'){ e.preventDefault(); doSave(); }
+      if(e.ctrlKey && e.key === 's'){ e.preventDefault(); window.saveNote(); }
     });
-  })();
+  }
 </script>
 
   <div style="margin-top:24px;width:90%;max-width:360px;position:relative;z-index:1;">
@@ -247,7 +242,7 @@ button{
 
   <div class="note-box">
     <textarea id="note-ta" placeholder="📝 Poznámka..."></textarea>
-    <button type="button" class="note-save" id="note-save-btn">💾 ULOŽIT POZNÁMKU</button>
+    <button class="note-save" onclick="saveNote()">💾 ULOŽIT POZNÁMKU</button>
     <div class="note-saved" id="note-saved"></div>
   </div>
 
