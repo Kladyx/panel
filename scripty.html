@@ -92,22 +92,32 @@ button{
 .info{margin-top:28px;font-size:.5rem;letter-spacing:.1em;color:#3a4050;text-align:center;line-height:1.7;}
 
 .note-box{margin-top:20px;width:90%;max-width:360px;position:relative;z-index:2;}
-.note-box textarea{
-  width:100%;height:80px;background:rgba(255,255,255,.04);
+.note-item{margin-bottom:14px;}
+.note-item textarea{
+  width:100%;height:70px;background:rgba(255,255,255,.04);
   border:1px solid rgba(0,245,255,.2);border-radius:8px;
   color:#c0d0e0;font-family:'Orbitron',monospace;font-size:.45rem;
   letter-spacing:.05em;padding:10px;resize:none;outline:none;
   line-height:1.6;
 }
-.note-box textarea:focus{border-color:rgba(0,245,255,.5);}
+.note-item textarea:focus{border-color:rgba(0,245,255,.5);}
+.note-btns{display:flex;gap:6px;margin-top:5px;}
 .note-save{
-  margin-top:6px;width:100%;padding:8px;border-radius:6px;
+  flex:1;padding:7px 0;border-radius:6px;
   background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.25);
-  color:#00f5ff;font-family:'Orbitron',monospace;font-size:.4rem;
+  color:#00f5ff;font-family:'Orbitron',monospace;font-size:.38rem;
   letter-spacing:.1em;cursor:pointer;font-weight:700;
 }
 .note-save:active{background:rgba(0,245,255,.2);}
-.note-saved{color:#00ff88;font-size:.38rem;letter-spacing:.1em;margin-top:4px;text-align:center;min-height:14px;}
+.note-del{
+  flex:1;padding:7px 0;border-radius:6px;
+  background:rgba(255,60,90,.06);border:1px solid rgba(255,60,90,.25);
+  color:#ff3c5a;font-family:'Orbitron',monospace;font-size:.38rem;
+  letter-spacing:.1em;cursor:pointer;font-weight:700;
+}
+.note-del:active{background:rgba(255,60,90,.2);}
+.note-saved{color:#00ff88;font-size:.35rem;letter-spacing:.1em;margin-top:3px;text-align:center;min-height:12px;}
+.note-label{font-size:.35rem;letter-spacing:.15em;color:#4a5060;margin-bottom:3px;}
 </style>
 </head>
 <body>
@@ -121,7 +131,7 @@ button{
   <div class="head">
     <div class="gear" id="gear">⚙️</div>
     <div class="title">SCRIPTY</div>
-  <div style="font-size:.38rem;color:#4a5060;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v2.4</div>
+  <div style="font-size:.38rem;color:#4a5060;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v2.5</div>
   </div>
   <div class="sub">PC · DÁLKOVÉ OVLÁDÁNÍ</div>
   <div class="btns">
@@ -218,37 +228,98 @@ button{
   </div>
 
   <div class="note-box">
-    <textarea id="note-ta" placeholder="📝 Poznámka..."></textarea>
-    <button type="button" class="note-save" id="note-save-btn">💾 ULOŽIT POZNÁMKU</button>
-    <div class="note-saved" id="note-saved"></div>
+    <div class="note-item">
+      <div class="note-label">📝 POZNÁMKA 1</div>
+      <textarea id="note-ta-1" placeholder="Poznámka 1..."></textarea>
+      <div class="note-btns">
+        <button type="button" class="note-save" id="note-save-1">💾 ULOŽIT</button>
+        <button type="button" class="note-del" id="note-del-1">🗑 SMAZAT</button>
+      </div>
+      <div class="note-saved" id="note-saved-1"></div>
+    </div>
+    <div class="note-item">
+      <div class="note-label">📝 POZNÁMKA 2</div>
+      <textarea id="note-ta-2" placeholder="Poznámka 2..."></textarea>
+      <div class="note-btns">
+        <button type="button" class="note-save" id="note-save-2">💾 ULOŽIT</button>
+        <button type="button" class="note-del" id="note-del-2">🗑 SMAZAT</button>
+      </div>
+      <div class="note-saved" id="note-saved-2"></div>
+    </div>
+    <div class="note-item">
+      <div class="note-label">📝 POZNÁMKA 3</div>
+      <textarea id="note-ta-3" placeholder="Poznámka 3..."></textarea>
+      <div class="note-btns">
+        <button type="button" class="note-save" id="note-save-3">💾 ULOŽIT</button>
+        <button type="button" class="note-del" id="note-del-3">🗑 SMAZAT</button>
+      </div>
+      <div class="note-saved" id="note-saved-3"></div>
+    </div>
+    <div class="note-item">
+      <div class="note-label">📝 POZNÁMKA 4</div>
+      <textarea id="note-ta-4" placeholder="Poznámka 4..."></textarea>
+      <div class="note-btns">
+        <button type="button" class="note-save" id="note-save-4">💾 ULOŽIT</button>
+        <button type="button" class="note-del" id="note-del-4">🗑 SMAZAT</button>
+      </div>
+      <div class="note-saved" id="note-saved-4"></div>
+    </div>
+    <div class="note-item">
+      <div class="note-label">📝 POZNÁMKA 5</div>
+      <textarea id="note-ta-5" placeholder="Poznámka 5..."></textarea>
+      <div class="note-btns">
+        <button type="button" class="note-save" id="note-save-5">💾 ULOŽIT</button>
+        <button type="button" class="note-del" id="note-del-5">🗑 SMAZAT</button>
+      </div>
+      <div class="note-saved" id="note-saved-5"></div>
+    </div>
   </div>
 
 <script>
-  // POZNÁMKA - Firebase persistence
+  // POZNÁMKY 1-5 - Firebase persistence
   (function(){
-    var noteTa = document.getElementById('note-ta');
-    var saveBtn = document.getElementById('note-save-btn');
-    if(!noteTa || typeof firebase === 'undefined') return;
-    var noteRef = firebase.database().ref('/scriptyNote');
-    noteRef.once('value').then(function(snap){
-      if(snap.val()) noteTa.value = snap.val();
-    });
-    function doSave(){
-      var el = document.getElementById('note-saved');
-      el.textContent = '⏳ Ukládám...';
-      noteRef.set(noteTa.value).then(function(){
-        el.textContent = '✓ ULOŽENO';
-        alert('Uloženo');
-        setTimeout(function(){ el.textContent = ''; }, 3000);
-      }).catch(function(err){
-        el.textContent = '✗ ' + (err.code || 'CHYBA');
-        setTimeout(function(){ el.textContent = ''; }, 4000);
-      });
+    if(typeof firebase === 'undefined') return;
+    for(var i=1;i<=5;i++){
+      (function(n){
+        var ta = document.getElementById('note-ta-'+n);
+        var saveBtn = document.getElementById('note-save-'+n);
+        var delBtn = document.getElementById('note-del-'+n);
+        var statusEl = document.getElementById('note-saved-'+n);
+        if(!ta) return;
+        var ref = firebase.database().ref('/scriptyNote/'+n);
+        ref.once('value').then(function(snap){
+          if(snap.val()) ta.value = snap.val();
+        });
+        function showStatus(msg, color){
+          statusEl.style.color = color || '#00ff88';
+          statusEl.textContent = msg;
+          setTimeout(function(){ statusEl.textContent=''; }, 3000);
+        }
+        function doSave(){
+          statusEl.textContent = '⏳ Ukládám...';
+          ref.set(ta.value).then(function(){
+            showStatus('✓ ULOŽENO','#00ff88');
+            alert('Uloženo');
+          }).catch(function(err){
+            showStatus('✗ '+(err.code||'CHYBA'),'#ff3c5a');
+          });
+        }
+        function doDelete(){
+          if(!confirm('Smazat poznámku '+n+'?')) return;
+          ref.remove().then(function(){
+            ta.value='';
+            showStatus('🗑 SMAZÁNO','#ff3c5a');
+          }).catch(function(err){
+            showStatus('✗ '+(err.code||'CHYBA'),'#ff3c5a');
+          });
+        }
+        saveBtn.addEventListener('click', doSave);
+        delBtn.addEventListener('click', doDelete);
+        ta.addEventListener('keydown', function(e){
+          if(e.ctrlKey && e.key==='s'){ e.preventDefault(); doSave(); }
+        });
+      })(i);
     }
-    if(saveBtn) saveBtn.addEventListener('click', doSave);
-    noteTa.addEventListener('keydown', function(e){
-      if(e.ctrlKey && e.key === 's'){ e.preventDefault(); doSave(); }
-    });
   })();
 </script>
 
