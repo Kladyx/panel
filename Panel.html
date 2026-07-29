@@ -235,7 +235,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.0.3.Pro - 2026 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.0.5.Pro - 2026 Kladyx</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -263,8 +263,6 @@
       <div id="update-label" style="font-family:'Courier New',monospace;font-size:0.55rem;font-weight:bold;color:#00ff88;letter-spacing:1px;text-shadow:0 0 6px rgba(0,255,136,0.5);">OK</div>
     </div>
     <style>@keyframes updatePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(0.7);}}</style>
-    <div class="tdiv"></div>
-    <a href="https://console.firebase.google.com/u/1/project/kladyxland/usage" target="_blank" rel="noopener noreferrer" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 10px;border:1.5px solid rgba(0,150,255,0.7);border-radius:8px;background:rgba(0,150,255,0.12);color:#00aaff;font-family:'Courier New',monospace;font-size:0.55rem;font-weight:bold;letter-spacing:1px;text-decoration:none;box-shadow:0 0 8px rgba(0,150,255,0.3);cursor:pointer;">🔥<span>FIREBASE</span></a>
     <div class="tdiv"></div>
     <button class="tapo-btn unknown" id="tapo-btn" onclick="tapoToggle()" title="Tapo P110 – WiFi zásuvka">
       <div class="tapo-icon">🔌</div>
@@ -3247,6 +3245,7 @@ APP_HTML["hardware"] = `<!DOCTYPE html>
     <button class="tab" onclick="switchTab('prislusenstvi', this)">Příslušenství</button>
     <button class="tab" onclick="switchTab('statistiky', this)">Statistiky</button>
     <button class="tab" onclick="switchTab('seznam', this)">Seznam</button>
+    <button class="tab" onclick="switchTab('prikazy', this)">📋 Příkazy</button>
   </div>
 </header>
 
@@ -3399,14 +3398,106 @@ APP_HTML["hardware"] = `<!DOCTYPE html>
     currentTab = tab;
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
-    document.getElementById('searchBar').style.display = (tab==='statistiky'||tab==='seznam') ? 'none' : 'block';
+    document.getElementById('searchBar').style.display = (tab==='statistiky'||tab==='seznam'||tab==='prikazy') ? 'none' : 'block';
     render();
   }
 
   function render() {
     if (currentTab === 'statistiky') renderStats();
     else if (currentTab === 'seznam') renderSeznam();
+    else if (currentTab === 'prikazy') renderPrikazy();
     else renderList();
+  }
+
+  function renderPrikazy() {
+    var secs = [
+      {t:'PI4 SLUZBY',cmds:[
+        {c:'sudo systemctl status kladyx-*',d:'Stav VSECH sluzeb'},
+        {c:"sudo journalctl -u 'kladyx-*' -n 5",d:'Poslednich 5 radku ze vsech'},
+        {c:'sudo journalctl -b -1 -p err',d:'Chyby od posledniho bootu'}
+      ]},
+      {t:'TAPO BRIDGE (kladyx-tapo-py)',cmds:[
+        {c:'sudo systemctl restart kladyx-tapo-py',d:'Restart Tapo bridge'},
+        {c:'sudo systemctl status kladyx-tapo-py',d:'Stav sluzby'},
+        {c:'sudo journalctl -u kladyx-tapo-py -n 30 --no-pager',d:'Poslednich 30 radku logu'},
+        {c:'sudo journalctl -u kladyx-tapo-py -f',d:'Log zive (CTRL+C konci)'}
+      ]},
+      {t:'TUYA BRIDGE (kladyx-tapobridge)',cmds:[
+        {c:'sudo systemctl restart kladyx-tapobridge',d:'Restart Tuya bridge'},
+        {c:'sudo systemctl status kladyx-tapobridge',d:'Stav sluzby'}
+      ]},
+      {t:'IR BRIDGE (kladyx-irbridge)',cmds:[
+        {c:'sudo systemctl restart kladyx-irbridge',d:'Restart IR bridge'},
+        {c:'sudo systemctl status kladyx-irbridge',d:'Stav sluzby'}
+      ]},
+      {t:'DALSI SLUZBY',cmds:[
+        {c:'sudo systemctl restart kladyx-pimonitor',d:'Restart Pi Monitor'},
+        {c:'sudo systemctl restart kladyx-prijatelister',d:'Restart Prijate Lister'},
+        {c:'sudo systemctl restart kladyx-uploadserver',d:'Restart Upload Server'}
+      ]},
+      {t:'UNIVERZALNI (nahrad <nazev>)',cmds:[
+        {c:'sudo systemctl start <nazev>',d:'Spusti sluzbu'},
+        {c:'sudo systemctl stop <nazev>',d:'Zastavi sluzbu'},
+        {c:'sudo systemctl enable <nazev>',d:'Zapne autostart'},
+        {c:'sudo systemctl disable <nazev>',d:'Vypne autostart'}
+      ]},
+      {t:'PYTHON / PIP',cmds:[
+        {c:'pip3 show python-kasa',d:'Verze python-kasa (Tapo)'},
+        {c:'pip3 show tinytuya',d:'Verze tinytuya (Tuya)'},
+        {c:'pip3 show firebase-admin',d:'Verze firebase-admin (musi byt v13!)'},
+        {c:'pip3 install python-kasa --upgrade --break-system-packages',d:'Aktualizace python-kasa'},
+        {c:'python3 /home/pi/tapo/tapo-bridge.py',d:'Rucni spusteni pro debug'}
+      ]},
+      {t:'DIAGNOSTIKA SITE',cmds:[
+        {c:'ping 192.168.0.106',d:'P115 DJ Studio'},
+        {c:'ping 192.168.0.25',d:'P100 Lavova lampa'},
+        {c:'ping 192.168.0.238',d:'Tuya Blow (TV Sharp)'},
+        {c:'ping 192.168.0.147',d:'IR hub S08'},
+        {c:'ping 192.168.0.124',d:'ZX Spectrum Next'},
+        {c:'ping 192.168.0.23',d:'PC (Fujitsu E559)'}
+      ]},
+      {t:'SYSTEM PI4',cmds:[
+        {c:'uptime',d:'Jak dlouho Pi bezi'},
+        {c:'df -h',d:'Volne misto na disku'},
+        {c:'free -h',d:'Vyuziti RAM'},
+        {c:'vcgencmd measure_temp',d:'Teplota CPU'},
+        {c:'crontab -l',d:'Vsechny crony'}
+      ]},
+      {t:'SOUBORY',cmds:[
+        {c:'ls /home/pi/tapo/',d:'Obsah slozky tapo'},
+        {c:'cat /home/pi/tapo/tapo-bridge.py',d:'Cely Tapo skript'},
+        {c:'head -30 /home/pi/tapo/tapo-bridge.py',d:'Prvnich 30 radku'},
+        {c:'ls /home/pi/nextsync/',d:'Obsah slozky nextsync'}
+      ]}
+    ];
+    var h='<div style="padding:16px 12px;">';
+    h+='<div style="text-align:center;color:var(--accent);font-family:Orbitron,monospace;font-size:14px;font-weight:700;margin-bottom:16px;letter-spacing:2px;">SSH PRIKAZY PI4</div>';
+    secs.forEach(function(s){
+      h+='<div style="margin-bottom:14px;">';
+      h+='<div style="color:var(--orange);font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:6px;padding:4px 0;border-bottom:1px solid var(--border);">'+s.t+'</div>';
+      s.cmds.forEach(function(cmd){
+        h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">';
+        h+='<div style="flex:1;background:var(--groove);border:1px solid var(--border);border-radius:6px;padding:8px 10px;cursor:pointer;" onclick="hwCopyCmd(this)">';
+        h+='<div style="color:var(--green);font-size:11px;font-family:monospace;word-break:break-all;">'+cmd.c+'</div>';
+        h+='<div style="color:var(--muted);font-size:9px;margin-top:3px;">'+cmd.d+'</div>';
+        h+='</div>';
+        h+='<button style="background:var(--accent2);border:1px solid var(--accent);color:#fff;border-radius:6px;padding:6px 8px;cursor:pointer;font-size:12px;flex-shrink:0;" onclick="hwCopyCmd(this.previousElementSibling)">📋</button>';
+        h+='</div>';
+      });
+      h+='</div>';
+    });
+    h+='</div>';
+    document.getElementById('mainContent').innerHTML=h;
+  }
+
+  function hwCopyCmd(el){
+    var t=el.querySelector('div').textContent;
+    if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){hwCopyFlash(el);});}
+    else{var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);hwCopyFlash(el);}
+  }
+  function hwCopyFlash(el){
+    el.style.borderColor='var(--green)';el.style.boxShadow='0 0 8px rgba(46,204,113,0.4)';
+    setTimeout(function(){el.style.borderColor='';el.style.boxShadow='';},800);
   }
 
   function renderList() {
@@ -20099,7 +20190,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='4.0.3.Pro';
+  var CURRENT='4.0.5.Pro';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
