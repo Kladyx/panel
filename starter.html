@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="version" content="v1.0.Kl">
+<title>Starter v1.0.Kl</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;min-height:100%;font-family:'Orbitron',monospace;color:#e0e0e0;overflow-y:auto;}
+body{
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(0,180,255,.25) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 90%, rgba(80,120,255,.18) 0%, transparent 60%),
+    linear-gradient(180deg,#0a2a5c 0%,#1e4a8c 50%,#2a5aa0 100%);
+  display:flex;flex-direction:column;align-items:center;padding:20px;
+  position:relative;
+}
+.stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+.star{position:absolute;color:#fff;font-size:10px;opacity:0;animation:twinkle 3s infinite;text-shadow:0 0 4px rgba(255,255,255,.8);}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.5);}50%{opacity:.9;transform:scale(1);}}
+.star.s1{top:8%;left:18%;font-size:12px;animation-duration:2.5s;color:#fff;}
+.star.s2{top:15%;left:78%;font-size:8px;animation-duration:3.2s;animation-delay:.4s;color:#00ffee;}
+.star.s3{top:25%;left:35%;font-size:10px;animation-duration:2.8s;animation-delay:1.1s;color:#ffee00;}
+.star.s4{top:12%;left:55%;font-size:14px;animation-duration:3.5s;animation-delay:.7s;color:#fff;}
+.star.s5{top:32%;left:88%;font-size:9px;animation-duration:2.2s;animation-delay:1.5s;color:#ff88ff;}
+.star.s6{top:45%;left:8%;font-size:11px;animation-duration:2.9s;animation-delay:.2s;color:#88ffaa;}
+.star.s7{top:55%;left:70%;font-size:8px;animation-duration:3.1s;animation-delay:1.8s;color:#fff;}
+.star.s8{top:68%;left:22%;font-size:10px;animation-duration:2.6s;animation-delay:.9s;color:#00c8ff;}
+.head{position:relative;z-index:2;text-align:center;margin-bottom:20px;}
+.title{color:#00f5ff;font-size:1.15rem;letter-spacing:.25em;font-weight:900;text-shadow:0 0 12px rgba(0,245,255,.5),0 0 24px rgba(0,245,255,.2);}
+.ver{font-size:.38rem;color:rgba(255,255,255,.3);letter-spacing:.15em;margin-top:2px;}
+.sub{color:#4a5060;font-size:.55rem;letter-spacing:.2em;margin-top:4px;font-weight:500;}
+.grid{
+  position:relative;z-index:2;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  width:100%;max-width:380px;
+}
+.app-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;padding:18px 8px;
+  border-radius:14px;
+  border:1.5px solid rgba(0,245,255,.2);
+  background:rgba(255,255,255,.03);
+  cursor:pointer;
+  transition:transform .15s,border-color .25s,box-shadow .25s;
+  text-decoration:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.app-btn:active{transform:scale(.93);}
+.app-btn:hover{
+  border-color:rgba(0,245,255,.6);
+  box-shadow:0 0 16px rgba(0,245,255,.2);
+}
+.app-icon{font-size:1.8rem;line-height:1;}
+.app-name{
+  font-family:'Orbitron',monospace;
+  font-size:.42rem;font-weight:700;
+  letter-spacing:.1em;
+  color:#e0e8ff;
+  text-align:center;
+  line-height:1.3;
+}
+.app-btn[data-color="orange"]{border-color:rgba(255,165,0,.25);}
+.app-btn[data-color="orange"]:hover{border-color:rgba(255,165,0,.6);box-shadow:0 0 16px rgba(255,165,0,.2);}
+.app-btn[data-color="green"]{border-color:rgba(0,255,136,.25);}
+.app-btn[data-color="green"]:hover{border-color:rgba(0,255,136,.6);box-shadow:0 0 16px rgba(0,255,136,.2);}
+.app-btn[data-color="purple"]{border-color:rgba(167,139,250,.25);}
+.app-btn[data-color="purple"]:hover{border-color:rgba(167,139,250,.6);box-shadow:0 0 16px rgba(167,139,250,.2);}
+.app-btn[data-color="red"]{border-color:rgba(255,60,90,.25);}
+.app-btn[data-color="red"]:hover{border-color:rgba(255,60,90,.6);box-shadow:0 0 16px rgba(255,60,90,.2);}
+.app-btn[data-color="cyan"]{border-color:rgba(0,245,255,.25);}
+.app-btn[data-color="cyan"]:hover{border-color:rgba(0,245,255,.6);box-shadow:0 0 16px rgba(0,245,255,.2);}
+.app-btn[data-color="blue"]{border-color:rgba(0,136,255,.25);}
+.app-btn[data-color="blue"]:hover{border-color:rgba(0,136,255,.6);box-shadow:0 0 16px rgba(0,136,255,.2);}
+.info{
+  position:relative;z-index:2;
+  margin-top:16px;
+  font-size:.4rem;letter-spacing:.12em;
+  color:rgba(255,255,255,.3);
+  text-align:center;
+}
+</style>
+</head>
+<body>
+<div class="stars">
+  <div class="star s1">✦</div><div class="star s2">✦</div>
+  <div class="star s3">✦</div><div class="star s4">✦</div>
+  <div class="star s5">✦</div><div class="star s6">✦</div>
+  <div class="star s7">✦</div><div class="star s8">✦</div>
+</div>
+
+<div class="head">
+  <div style="font-size:1.8rem;margin-bottom:4px;">🚀</div>
+  <div class="title">STARTER</div>
+  <div class="ver">v1.0.Kl</div>
+  <div class="sub">ANDROID · APP LAUNCHER</div>
+</div>
+
+<div class="grid">
+  <a class="app-btn" data-color="cyan" onclick="launch('org.connectbot')">
+    <div class="app-icon">🖥</div>
+    <div class="app-name">CONNECT<br>BOT</div>
+  </a>
+  <a class="app-btn" data-color="green" onclick="launch('com.github.android')">
+    <div class="app-icon">🐙</div>
+    <div class="app-name">GITHUB</div>
+  </a>
+  <a class="app-btn" data-color="purple" onclick="launch('com.obsproject.obs_remote')">
+    <div class="app-icon">📡</div>
+    <div class="app-name">OBS<br>REMOTE</div>
+  </a>
+  <a class="app-btn" data-color="blue" onclick="launch('com.mixcloud.player')">
+    <div class="app-icon">☁️</div>
+    <div class="app-name">MIXCLOUD</div>
+  </a>
+  <a class="app-btn" data-color="orange" onclick="launch('com.google.firebase.invites')">
+    <div class="app-icon">🔥</div>
+    <div class="app-name">FIREBASE</div>
+  </a>
+  <a class="app-btn" data-color="cyan" onclick="launch('com.presonus.uc')">
+    <div class="app-icon">🎛</div>
+    <div class="app-name">UNIVERSAL<br>CONTROL</div>
+  </a>
+  <a class="app-btn" data-color="blue" onclick="launch('com.presonus.mypresonus')">
+    <div class="app-icon">🎚</div>
+    <div class="app-name">MY<br>PRESONUS</div>
+  </a>
+  <a class="app-btn" data-color="green" onclick="launch('com.jacksoftw.webcam')">
+    <div class="app-icon">📷</div>
+    <div class="app-name">IRIUN<br>WEBCAM</div>
+  </a>
+  <a class="app-btn" data-color="red" onclick="launch('io.heckel.ntfy')">
+    <div class="app-icon">🔔</div>
+    <div class="app-name">NTFY</div>
+  </a>
+</div>
+
+<div class="info">Funguje pouze na Android · Otevře nainstalovanou appku</div>
+
+<script>
+function launch(pkg) {
+  try {
+    (window.top || window).location.href = 'intent://#Intent;package=' + pkg + ';end';
+  } catch(e) {
+    alert('Nelze otevřít: ' + pkg);
+  }
+}
+</script>
+</body>
+</html>
