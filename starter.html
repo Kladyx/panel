@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="version" content="v1.0.Kl">
-<title>Starter v1.0.Kl</title>
+<meta name="version" content="v1.4.Kl">
+<title>Starter v1.4.Kl</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -96,7 +96,7 @@ body{
 <div class="head">
   <div style="font-size:1.8rem;margin-bottom:4px;">🚀</div>
   <div class="title">STARTER</div>
-  <div class="ver">v1.0.Kl</div>
+  <div class="ver">v1.4.Kl</div>
   <div class="sub">ANDROID · APP LAUNCHER</div>
 </div>
 
@@ -109,7 +109,7 @@ body{
     <div class="app-icon">🐙</div>
     <div class="app-name">GITHUB</div>
   </a>
-  <a class="app-btn" data-color="purple" onclick="launch('com.obsproject.obs_remote')">
+  <a class="app-btn" data-color="purple" onclick="(window.top||window).open('https://obs-web.niek.tv/','_blank')">
     <div class="app-icon">📡</div>
     <div class="app-name">OBS<br>REMOTE</div>
   </a>
@@ -117,12 +117,8 @@ body{
     <div class="app-icon">☁️</div>
     <div class="app-name">MIXCLOUD</div>
   </a>
-  <a class="app-btn" data-color="orange" onclick="launch('com.google.firebase.invites')">
-    <div class="app-icon">🔥</div>
-    <div class="app-name">FIREBASE</div>
-  </a>
-  <a class="app-btn" data-color="cyan" onclick="launch('com.presonus.uc')">
-    <div class="app-icon">🎛</div>
+  <a class="app-btn" data-color="cyan" onclick="launch('com.presonus.ucremote')">
+    <div class="app-icon"><img src="data:image/png;base64,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" style="width:2.2rem;height:2.2rem;object-fit:contain;border-radius:6px;"></div>
     <div class="app-name">UNIVERSAL<br>CONTROL</div>
   </a>
   <a class="app-btn" data-color="blue" onclick="launch('com.presonus.mypresonus')">
