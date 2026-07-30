@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v2.5Kl</title>
+<title>KladyxTransfer v2.6Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -165,12 +165,36 @@
   }
   .gh-saved { color:#00ff88; font-size:.8rem; margin-bottom:8px; }
   .footer { color:rgba(255,255,255,.35); font-size:.8rem; margin-top:22px; }
+  .gh-history-title {
+    font-size:.95rem; font-weight:700;
+    color:#00ffff; margin-bottom:8px; text-align:center;
+  }
+  .gh-history-item {
+    display:flex; align-items:center; gap:8px;
+    padding:6px 10px; margin-bottom:4px;
+    background:rgba(255,255,255,.05);
+    border-radius:8px;
+    font-size:.82rem;
+  }
+  .gh-history-item .hi-dot { color:#00ff88; }
+  .gh-history-item .hi-target { color:#ffaa00; flex-shrink:0; }
+  .gh-history-item .hi-file { color:#fff; flex:1; word-break:break-all; }
+  .gh-history-item .hi-time { color:rgba(255,255,255,.5); flex-shrink:0; }
+  .gh-history-empty { text-align:center; color:rgba(255,255,255,.4); font-size:.85rem; padding:6px; }
+  .gh-clear-btn {
+    display:inline-block; margin-top:8px;
+    padding:4px 12px; border-radius:6px;
+    border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.05);
+    color:rgba(255,255,255,.5); font-size:.75rem;
+    cursor:pointer; text-align:center;
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v2.5Kl • Firebase + GitHub</div>
+  <div class="version">v2.6Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -262,6 +286,12 @@
         <input class="gh-input" id="ghToken" type="password" placeholder="ghp_xxxx..." style="margin-bottom:0">
         <button class="gh-save-btn" onclick="saveGhToken()">Uložit</button>
       </div>
+    </div>
+
+    <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
+      <div class="gh-history-title">📋 Historie commitů</div>
+      <div id="ghHistoryList"><div class="gh-history-empty">Zatím žádné commity</div></div>
+      <div style="text-align:center"><button class="gh-clear-btn" onclick="clearGhHistory()">Smazat historii</button></div>
     </div>
   </div>
 
@@ -759,6 +789,7 @@ function sendToGithub() {
           status.textContent = '✅ Commitnuto! ' + (sha ? '(přepsáno)' : '(nový soubor)');
           status.className = 'status done';
           playDing();
+          saveGhCommit(selectedGhFile.name, document.getElementById('ghTarget').selectedOptions[0].textContent);
           setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
         } else {
           pWrap.style.display = 'none';
@@ -821,6 +852,56 @@ function loadPendingQueue() {
   xhr.send();
 }
 loadPendingQueue();
+
+// ─── GitHub Commit Historie (localStorage) ──────────
+var GH_HISTORY_KEY = 'gh_commit_history';
+var GH_HISTORY_MAX = 20;
+
+function getGhHistory() {
+  try {
+    var data = getStorage().getItem(GH_HISTORY_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch(e) { return []; }
+}
+
+function saveGhCommit(fileName, targetLabel) {
+  var history = getGhHistory();
+  history.unshift({
+    file: fileName,
+    target: targetLabel,
+    ts: Date.now()
+  });
+  if (history.length > GH_HISTORY_MAX) history = history.slice(0, GH_HISTORY_MAX);
+  try { getStorage().setItem(GH_HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
+  renderGhHistory();
+}
+
+function renderGhHistory() {
+  var list = document.getElementById('ghHistoryList');
+  var history = getGhHistory();
+  if (!history.length) {
+    list.innerHTML = '<div class="gh-history-empty">Zatím žádné commity</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < history.length; i++) {
+    var h = history[i];
+    html += '<div class="gh-history-item">';
+    html += '<span class="hi-dot">✓</span>';
+    html += '<span class="hi-target">' + escapeHtml(h.target) + '</span>';
+    html += '<span class="hi-file">' + escapeHtml(h.file) + '</span>';
+    html += '<span class="hi-time">' + formatAgo(h.ts) + '</span>';
+    html += '</div>';
+  }
+  list.innerHTML = html;
+}
+
+function clearGhHistory() {
+  try { getStorage().removeItem(GH_HISTORY_KEY); } catch(e) {}
+  renderGhHistory();
+}
+
+renderGhHistory();
 </script>
 </body>
 </html>
