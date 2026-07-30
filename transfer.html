@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v2.9Kl</title>
+<title>KladyxTransfer v3.0Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -194,7 +194,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v2.9Kl • Firebase + GitHub</div>
+  <div class="version">v3.0Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -876,8 +876,13 @@ function checkPagesStatus(repo, token, statusEl) {
     xhr.setRequestHeader('Authorization', 'token ' + token);
     xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
     xhr.onload = function() {
+      if (xhr.status === 403 || xhr.status === 401) {
+        statusEl.textContent = '✅ Commitnuto! ⚠️ Token nemá oprávnění pro Actions';
+        statusEl.className = 'status';
+        return;
+      }
       if (xhr.status !== 200) {
-        statusEl.textContent = '✅ Commitnuto! ⚠️ Deploy status nedostupný';
+        statusEl.textContent = '✅ Commitnuto! ⚠️ Actions API chyba: ' + xhr.status;
         statusEl.className = 'status';
         return;
       }
