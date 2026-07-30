@@ -220,17 +220,10 @@
     <div class="desc">Odeslat soubor na <b>GitHub</b> a commitnout</div>
     <div class="desc2">Přímo z mobilu do repa</div>
 
-    <select class="gh-select" id="ghRepo" onchange="updateGhPaths()">
-      <option value="kladyxland">kladyxland</option>
-      <option value="panel">panel</option>
+    <select class="gh-select" id="ghTarget">
+      <option value="index">kladyxland web - index.html</option>
+      <option value="panel">panel - Panel.html</option>
     </select>
-
-    <select class="gh-select" id="ghPath">
-      <option value="kladyxhome.html">kladyxhome.html</option>
-      <option value="scripty.html">scripty.html</option>
-    </select>
-
-    <input class="gh-input" id="ghMsg" placeholder="Commit message (volitelné)">
 
     <label class="pickbtn" for="fileInputGh">📁 Vybrat soubor</label>
     <input type="file" id="fileInputGh" onchange="onGhFileSelected()">
@@ -622,23 +615,10 @@ loadMobileQueue();
 // ─── GitHub Upload ──────────────────────────────────
 var GH_OWNER = 'kladyx';
 var selectedGhFile = null;
-var GH_PATHS = {
-  kladyxland: ['kladyxhome.html', 'scripty.html'],
-  panel: ['Panel.html', 'pimonitor.html', 'transfer.html']
+var GH_TARGETS = {
+  index: { repo: 'kladyxland', path: 'index.html', msg: 'Update index' },
+  panel: { repo: 'panel', path: 'Panel.html', msg: 'Update panel' }
 };
-
-function updateGhPaths() {
-  var repo = document.getElementById('ghRepo').value;
-  var sel = document.getElementById('ghPath');
-  var paths = GH_PATHS[repo] || [];
-  sel.innerHTML = '';
-  for (var i = 0; i < paths.length; i++) {
-    var o = document.createElement('option');
-    o.value = paths[i];
-    o.textContent = paths[i];
-    sel.appendChild(o);
-  }
-}
 
 function getStorage() {
   try { var s = window.parent.localStorage; s.getItem('__test__'); return s; }
@@ -690,16 +670,10 @@ function sendToGithub() {
     document.getElementById('statusGh').textContent = '⚠️ Nejdřív zadej a ulož GitHub Token';
     return;
   }
-  var repo = document.getElementById('ghRepo').value;
-  var path = document.getElementById('ghPath').value.trim();
-  if (!path) {
-    document.getElementById('statusGh').textContent = '⚠️ Zadej cestu v repu';
-    return;
-  }
-  // remove leading slash
-  if (path.charAt(0) === '/') path = path.substring(1);
-
-  var msg = document.getElementById('ghMsg').value.trim() || ('Update ' + path);
+  var target = GH_TARGETS[document.getElementById('ghTarget').value];
+  var repo = target.repo;
+  var path = target.path;
+  var msg = target.msg;
   var btn = document.getElementById('sendBtnGh');
   var status = document.getElementById('statusGh');
   var pWrap = document.getElementById('progressWrapGh');
