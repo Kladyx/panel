@@ -131,7 +131,7 @@ button{
   <div class="head">
     <div class="gear" id="gear">⚙️</div>
     <div class="title">SCRIPTY</div>
-  <div style="font-size:.38rem;color:#000000;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v2.8</div>
+  <div style="font-size:.38rem;color:#000000;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v2.9</div>
   </div>
   <div style="position:relative;z-index:2;margin-bottom:12px;">
     <button onclick="(window.top||window).open('https://console.firebase.google.com/u/1/project/kladyxland/usage','_blank','noopener,noreferrer')" style="display:inline-block;padding:6px 16px;border:1.5px solid rgba(255,165,0,.6);border-radius:8px;background:rgba(255,165,0,.08);color:#ffa500;font-family:'Orbitron',monospace;font-size:.38rem;letter-spacing:.12em;font-weight:700;cursor:pointer;box-shadow:0 0 8px rgba(255,165,0,.2);">
@@ -230,21 +230,21 @@ button{
       </tr>
       <tr style="border-bottom:1px solid rgba(255,255,255,.04);">
         <td style="padding:5px 6px;color:#ff3c5a;">hardwareDb</td>
-        <td style="padding:5px 6px;text-align:center;color:#ff3c5a;">onValue</td>
-        <td style="padding:5px 6px;text-align:center;color:#00ff88;">get()</td>
-        <td style="padding:5px 6px;text-align:right;color:#00ff88;">~877KB×visit</td>
+        <td style="padding:5px 6px;text-align:center;color:#ff3c5a;">on(live)</td>
+        <td style="padding:5px 6px;text-align:center;color:#00ff88;">once/get</td>
+        <td style="padding:5px 6px;text-align:right;color:#00ff88;">web+panel</td>
       </tr>
       <tr style="border-bottom:1px solid rgba(255,255,255,.04);">
         <td style="padding:5px 6px;color:#ff3c5a;">lpRecordsDb</td>
-        <td style="padding:5px 6px;text-align:center;color:#ff3c5a;">onValue</td>
-        <td style="padding:5px 6px;text-align:center;color:#00ff88;">get()</td>
-        <td style="padding:5px 6px;text-align:right;color:#00ff88;">live→1×</td>
+        <td style="padding:5px 6px;text-align:center;color:#ff3c5a;">on(live)</td>
+        <td style="padding:5px 6px;text-align:center;color:#00ff88;">once/get</td>
+        <td style="padding:5px 6px;text-align:right;color:#00ff88;">web+panel</td>
       </tr>
       <tr style="border-bottom:1px solid rgba(255,255,255,.04);">
         <td style="padding:5px 6px;color:#ff3c5a;">cdRecordsDb</td>
-        <td style="padding:5px 6px;text-align:center;color:#ff3c5a;">onValue</td>
-        <td style="padding:5px 6px;text-align:center;color:#00ff88;">get()</td>
-        <td style="padding:5px 6px;text-align:right;color:#00ff88;">live→1×</td>
+        <td style="padding:5px 6px;text-align:center;color:#ff3c5a;">on(live)</td>
+        <td style="padding:5px 6px;text-align:center;color:#00ff88;">once/get</td>
+        <td style="padding:5px 6px;text-align:right;color:#00ff88;">web+panel</td>
       </tr>
       <tr style="border-bottom:1px solid rgba(255,255,255,.04);">
         <td style="padding:5px 6px;color:#ff3c5a;">galleryRef</td>
@@ -317,7 +317,9 @@ button{
       {c:'df -h',d:'Místo na disku'},
       {c:'free -h',d:'RAM'},
       {c:'vcgencmd measure_temp',d:'Teplota CPU'},
-      {c:'crontab -l',d:'Crony'}
+      {c:'crontab -l',d:'Crony'},
+      {c:'cat /home/pi/uptime_total.txt',d:'Celkový uptime Pi4'},
+      {c:'python3 /home/pi/uptime_tracker.py',d:'Aktualizuj uptime teď'}
     ]}
   ];
   var t=document.getElementById('cmd-table');
