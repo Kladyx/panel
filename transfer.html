@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v2.7Kl</title>
+<title>KladyxTransfer v2.8Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -194,7 +194,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v2.7Kl • Firebase + GitHub</div>
+  <div class="version">v2.8Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -854,7 +854,7 @@ function loadPendingQueue() {
 }
 loadPendingQueue();
 
-// ─── GitHub Pages Build Status ──────────────────────
+// ─── GitHub Actions Deploy Status ───────────────────
 function checkPagesStatus(repo, token, statusEl) {
   var delay = 5000;
   var maxAttempts = 24;
@@ -872,33 +872,38 @@ function checkPagesStatus(repo, token, statusEl) {
       return;
     }
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://api.github.com/repos/' + GH_OWNER + '/' + repo + '/pages/builds/latest');
+    xhr.open('GET', 'https://api.github.com/repos/' + GH_OWNER + '/' + repo + '/actions/runs?event=push&per_page=1');
     xhr.setRequestHeader('Authorization', 'token ' + token);
     xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
     xhr.onload = function() {
       if (xhr.status !== 200) {
-        statusEl.textContent = '✅ Commitnuto! ⚠️ Pages status nedostupný';
+        statusEl.textContent = '✅ Commitnuto! ⚠️ Deploy status nedostupný';
         statusEl.className = 'status';
         return;
       }
       try {
         var data = JSON.parse(xhr.responseText);
-        var buildTs = new Date(data.updated_at).getTime();
-        if (buildTs < commitTime) {
+        if (!data.workflow_runs || !data.workflow_runs.length) {
           setTimeout(poll, delay);
           return;
         }
-        if (data.status === 'built') {
+        var run = data.workflow_runs[0];
+        var runTs = new Date(run.created_at).getTime();
+        if (runTs < commitTime - 10000) {
+          setTimeout(poll, delay);
+          return;
+        }
+        if (run.status === 'completed' && run.conclusion === 'success') {
           statusEl.textContent = '✅ Commitnuto! 🟢 Live na webu';
           statusEl.className = 'status done';
           playDing();
-        } else if (data.status === 'building') {
-          statusEl.textContent = '✅ Commitnuto! ⏳ Build probíhá...';
+        } else if (run.status === 'completed' && run.conclusion === 'failure') {
+          statusEl.textContent = '✅ Commitnuto! ❌ Deploy selhal';
+          statusEl.className = 'status';
+        } else if (run.status === 'in_progress' || run.status === 'queued') {
+          statusEl.textContent = '✅ Commitnuto! ⏳ Deploy probíhá...';
           statusEl.className = 'status waiting';
           setTimeout(poll, delay);
-        } else if (data.status === 'errored') {
-          statusEl.textContent = '✅ Commitnuto! ❌ Build selhal: ' + (data.error && data.error.message || 'neznámá chyba');
-          statusEl.className = 'status';
         } else {
           setTimeout(poll, delay);
         }
