@@ -131,7 +131,7 @@ button{
   <div class="head">
     <div class="gear" id="gear">⚙️</div>
     <div class="title">SCRIPTY</div>
-  <div style="font-size:.38rem;color:#000000;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v2.6</div>
+  <div style="font-size:.38rem;color:#000000;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v2.8</div>
   </div>
   <div style="position:relative;z-index:2;margin-bottom:12px;">
     <button onclick="(window.top||window).open('https://console.firebase.google.com/u/1/project/kladyxland/usage','_blank','noopener,noreferrer')" style="display:inline-block;padding:6px 16px;border:1.5px solid rgba(255,165,0,.6);border-radius:8px;background:rgba(255,165,0,.08);color:#ffa500;font-family:'Orbitron',monospace;font-size:.38rem;letter-spacing:.12em;font-weight:700;cursor:pointer;box-shadow:0 0 8px rgba(255,165,0,.2);">
@@ -228,9 +228,119 @@ button{
         <td style="padding:5px 6px;text-align:center;color:#00ff88;">60s</td>
         <td style="padding:5px 6px;text-align:right;color:#00ff88;">4× méně</td>
       </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,.04);">
+        <td style="padding:5px 6px;color:#ff3c5a;">hardwareDb</td>
+        <td style="padding:5px 6px;text-align:center;color:#ff3c5a;">onValue</td>
+        <td style="padding:5px 6px;text-align:center;color:#00ff88;">get()</td>
+        <td style="padding:5px 6px;text-align:right;color:#00ff88;">~877KB×visit</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,.04);">
+        <td style="padding:5px 6px;color:#ff3c5a;">lpRecordsDb</td>
+        <td style="padding:5px 6px;text-align:center;color:#ff3c5a;">onValue</td>
+        <td style="padding:5px 6px;text-align:center;color:#00ff88;">get()</td>
+        <td style="padding:5px 6px;text-align:right;color:#00ff88;">live→1×</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,.04);">
+        <td style="padding:5px 6px;color:#ff3c5a;">cdRecordsDb</td>
+        <td style="padding:5px 6px;text-align:center;color:#ff3c5a;">onValue</td>
+        <td style="padding:5px 6px;text-align:center;color:#00ff88;">get()</td>
+        <td style="padding:5px 6px;text-align:right;color:#00ff88;">live→1×</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,.04);">
+        <td style="padding:5px 6px;color:#ff3c5a;">galleryRef</td>
+        <td style="padding:5px 6px;text-align:center;color:#ff3c5a;">onValue</td>
+        <td style="padding:5px 6px;text-align:center;color:#00ff88;">get()</td>
+        <td style="padding:5px 6px;text-align:right;color:#00ff88;">live→1×</td>
+      </tr>
+      <tr>
+        <td style="padding:5px 6px;color:#ff8800;">chatRef</td>
+        <td style="padding:5px 6px;text-align:center;color:#ff3c5a;">vše</td>
+        <td style="padding:5px 6px;text-align:center;color:#00ff88;">last 50</td>
+        <td style="padding:5px 6px;text-align:right;color:#00ff88;">méně dat</td>
+      </tr>
     </table>
     <div style="margin-top:10px;text-align:center;font-size:.4rem;color:#00ff88;letter-spacing:.1em;">CELKEM: ~400MB → &lt;20MB / den</div>
   </div>
+
+  <div style="margin-top:20px;width:90%;max-width:360px;position:relative;z-index:1;">
+    <div style="font-size:.45rem;letter-spacing:.2em;color:#00f5ff;margin-bottom:10px;text-align:center;">📋 SSH PŘÍKAZY PI4</div>
+    <table id="cmd-table" style="width:100%;border-collapse:collapse;font-size:.38rem;letter-spacing:.03em;">
+      <tr style="color:#00f5ff;border-bottom:1px solid rgba(0,245,255,.3);font-weight:700;font-size:.4rem;">
+        <td style="padding:4px 6px;">PŘÍKAZ</td>
+        <td style="padding:4px 6px;text-align:right;">POPIS</td>
+        <td style="padding:4px 2px;width:28px;"></td>
+      </tr>
+    </table>
+  </div>
+
+<script>
+(function(){
+  var cmds=[
+    {s:'HROMADNÉ',cmds:[
+      {c:'sudo systemctl status kladyx-*',d:'Stav všech služeb'},
+      {c:"sudo journalctl -u 'kladyx-*' -n 5",d:'Posledních 5 řádků'},
+      {c:'sudo journalctl -b -1 -p err',d:'Chyby od bootu'}
+    ]},
+    {s:'TAPO (kladyx-tapo-py)',cmds:[
+      {c:'sudo systemctl restart kladyx-tapo-py',d:'Restart'},
+      {c:'sudo systemctl status kladyx-tapo-py',d:'Stav'},
+      {c:'sudo journalctl -u kladyx-tapo-py -n 30 --no-pager',d:'Log 30 řádků'},
+      {c:'sudo journalctl -u kladyx-tapo-py -f',d:'Log živě'}
+    ]},
+    {s:'TUYA (kladyx-tapobridge)',cmds:[
+      {c:'sudo systemctl restart kladyx-tapobridge',d:'Restart'},
+      {c:'sudo systemctl status kladyx-tapobridge',d:'Stav'}
+    ]},
+    {s:'IR (kladyx-irbridge)',cmds:[
+      {c:'sudo systemctl restart kladyx-irbridge',d:'Restart'},
+      {c:'sudo systemctl status kladyx-irbridge',d:'Stav'}
+    ]},
+    {s:'DALŠÍ SLUŽBY',cmds:[
+      {c:'sudo systemctl restart kladyx-pimonitor',d:'Pi Monitor'},
+      {c:'sudo systemctl restart kladyx-prijatelister',d:'Prijate Lister'},
+      {c:'sudo systemctl restart kladyx-uploadserver',d:'Upload Server'}
+    ]},
+    {s:'PYTHON / PIP',cmds:[
+      {c:'pip3 show python-kasa',d:'Verze kasa'},
+      {c:'pip3 show firebase-admin',d:'Verze firebase (v13!)'},
+      {c:'pip3 install python-kasa --upgrade --break-system-packages',d:'Aktualizace'}
+    ]},
+    {s:'PING',cmds:[
+      {c:'ping 192.168.0.106',d:'P115 DJ Studio'},
+      {c:'ping 192.168.0.25',d:'P100 Lampa'},
+      {c:'ping 192.168.0.238',d:'Tuya Blow TV'},
+      {c:'ping 192.168.0.147',d:'IR hub S08'},
+      {c:'ping 192.168.0.23',d:'PC'}
+    ]},
+    {s:'SYSTÉM',cmds:[
+      {c:'uptime',d:'Doba běhu'},
+      {c:'df -h',d:'Místo na disku'},
+      {c:'free -h',d:'RAM'},
+      {c:'vcgencmd measure_temp',d:'Teplota CPU'},
+      {c:'crontab -l',d:'Crony'}
+    ]}
+  ];
+  var t=document.getElementById('cmd-table');
+  cmds.forEach(function(sec){
+    var hr=document.createElement('tr');
+    hr.innerHTML='<td colspan="3" style="padding:8px 6px 3px;color:#ff8800;font-weight:700;font-size:.4rem;letter-spacing:.1em;border-bottom:1px solid rgba(255,136,0,.2);">'+sec.s+'</td>';
+    t.appendChild(hr);
+    sec.cmds.forEach(function(cmd){
+      var r=document.createElement('tr');
+      r.style.borderBottom='1px solid rgba(255,255,255,.04)';
+      r.innerHTML='<td style="padding:5px 6px;color:#00ff88;font-family:monospace;word-break:break-all;">'+cmd.c+'</td>'
+        +'<td style="padding:5px 6px;text-align:right;color:#8899aa;">'+cmd.d+'</td>'
+        +'<td style="padding:5px 2px;text-align:center;"><button onclick="kCopy(this)" data-c="'+cmd.c.replace(/"/g,'&quot;')+'" style="background:none;border:1px solid rgba(0,245,255,.3);color:#00f5ff;border-radius:4px;padding:3px 5px;cursor:pointer;font-size:10px;">📋</button></td>';
+      t.appendChild(r);
+    });
+  });
+})();
+function kCopy(btn){
+  var t=btn.getAttribute('data-c');
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){btn.textContent='✓';setTimeout(function(){btn.textContent='📋';},800);});}
+  else{var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);btn.textContent='✓';setTimeout(function(){btn.textContent='📋';},800);}
+}
+</script>
 
   <div class="note-box">
     <div class="note-item">
