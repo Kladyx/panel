@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v2.1Kl</title>
+<title>KladyxTransfer v2.3Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -136,13 +136,37 @@
   .pifile-meta { font-size:.78rem; color:rgba(255,255,255,.6); margin-top:2px; }
   .pifile-empty { text-align:center; color:rgba(255,255,255,.4); font-size:.85rem; padding:6px; }
 
+  .gh-select {
+    width:100%; padding:10px; border-radius:8px;
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2);
+    color:#fff; font-size:.95rem; font-family:inherit;
+    margin-bottom:10px; appearance:auto;
+  }
+  .gh-input {
+    width:100%; padding:10px; border-radius:8px;
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2);
+    color:#fff; font-size:.9rem; font-family:inherit;
+    margin-bottom:10px;
+  }
+  .gh-input::placeholder { color:rgba(255,255,255,.35); }
+  .gh-token-row {
+    display:flex; gap:8px; align-items:center; margin-bottom:10px;
+  }
+  .gh-token-row input { flex:1; }
+  .gh-save-btn {
+    padding:8px 14px; border-radius:8px; border:1px solid #ffaa00;
+    background:rgba(255,170,0,.15); color:#ffaa00;
+    font-size:.8rem; font-weight:700; cursor:pointer;
+    white-space:nowrap;
+  }
+  .gh-saved { color:#00ff88; font-size:.8rem; margin-bottom:8px; }
   .footer { color:rgba(255,255,255,.35); font-size:.8rem; margin-top:22px; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v2.1Kl • Firebase only</div>
+  <div class="version">v2.3Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -191,7 +215,47 @@
     </div>
   </div>
 
-  <div class="footer">přes Firebase Realtime Database</div>
+  <div class="box" style="margin-top:20px">
+    <div class="icon">🐙</div>
+    <div class="desc">Odeslat soubor na <b>GitHub</b> a commitnout</div>
+    <div class="desc2">Přímo z mobilu do repa</div>
+
+    <select class="gh-select" id="ghRepo">
+      <option value="kladyxland">kladyxland</option>
+      <option value="web">web</option>
+      <option value="panel">panel</option>
+    </select>
+
+    <input class="gh-input" id="ghPath" placeholder="Cesta v repu, např. panel/Panel.html">
+
+    <input class="gh-input" id="ghMsg" placeholder="Commit message (volitelné)">
+
+    <label class="pickbtn" for="fileInputGh">📁 Vybrat soubor</label>
+    <input type="file" id="fileInputGh" onchange="onGhFileSelected()">
+    <div class="filename" id="fileNameGh">Žádný soubor nevybrán</div>
+
+    <div>
+      <button class="sendbtn" id="sendBtnGh" onclick="sendToGithub()" disabled>🐙 Commitnout na GitHub</button>
+    </div>
+
+    <div class="status" id="statusGh"></div>
+
+    <div class="progress-wrap" id="progressWrapGh">
+      <div class="progress-bar" id="progressBarGh"></div>
+      <div class="progress-text" id="progressTextGh">0%</div>
+    </div>
+
+    <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
+      <div class="desc2">GitHub Personal Access Token</div>
+      <div id="ghSavedMsg"></div>
+      <div class="gh-token-row">
+        <input class="gh-input" id="ghToken" type="password" placeholder="ghp_xxxx..." style="margin-bottom:0">
+        <button class="gh-save-btn" onclick="saveGhToken()">Uložit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">přes Firebase Realtime Database + GitHub API</div>
 </div>
 
 <script>
@@ -552,6 +616,195 @@ function downloadMobileFile(key) {
 }
 
 loadMobileQueue();
+
+// ─── GitHub Upload ──────────────────────────────────
+var GH_OWNER = 'kladyx';
+var selectedGhFile = null;
+
+function getStorage() {
+  try { var s = window.parent.localStorage; s.getItem('__test__'); return s; }
+  catch(e) { return localStorage; }
+}
+
+function getGhToken() {
+  return getStorage().getItem('gh_pat') || '';
+}
+
+function saveGhToken() {
+  var t = document.getElementById('ghToken').value.trim();
+  if (!t) return;
+  getStorage().setItem('gh_pat', t);
+  document.getElementById('ghToken').value = '';
+  var msg = document.getElementById('ghSavedMsg');
+  msg.innerHTML = '<span class="gh-saved">Token uložen</span>';
+  setTimeout(function() { msg.innerHTML = ''; }, 3000);
+}
+
+(function() {
+  if (getGhToken()) {
+    var msg = document.getElementById('ghSavedMsg');
+    msg.innerHTML = '<span class="gh-saved">Token uložen</span>';
+  }
+})();
+
+function onGhFileSelected() {
+  var input = document.getElementById('fileInputGh');
+  selectedGhFile = input.files[0] || null;
+  var nameEl = document.getElementById('fileNameGh');
+  var btn = document.getElementById('sendBtnGh');
+  var status = document.getElementById('statusGh');
+  status.textContent = '';
+  if (selectedGhFile) {
+    var sizeMB = (selectedGhFile.size / 1e6).toFixed(2);
+    nameEl.textContent = selectedGhFile.name + ' (' + sizeMB + ' MB)';
+    btn.disabled = false;
+    // auto-fill path if empty
+    var pathEl = document.getElementById('ghPath');
+    if (!pathEl.value.trim()) pathEl.value = selectedGhFile.name;
+  } else {
+    nameEl.textContent = 'Žádný soubor nevybrán';
+    btn.disabled = true;
+  }
+}
+
+function sendToGithub() {
+  if (!selectedGhFile) return;
+  var token = getGhToken();
+  if (!token) {
+    document.getElementById('statusGh').textContent = '⚠️ Nejdřív zadej a ulož GitHub Token';
+    return;
+  }
+  var repo = document.getElementById('ghRepo').value;
+  var path = document.getElementById('ghPath').value.trim();
+  if (!path) {
+    document.getElementById('statusGh').textContent = '⚠️ Zadej cestu v repu';
+    return;
+  }
+  // remove leading slash
+  if (path.charAt(0) === '/') path = path.substring(1);
+
+  var msg = document.getElementById('ghMsg').value.trim() || ('Update ' + path);
+  var btn = document.getElementById('sendBtnGh');
+  var status = document.getElementById('statusGh');
+  var pWrap = document.getElementById('progressWrapGh');
+  var pBar = document.getElementById('progressBarGh');
+  var pText = document.getElementById('progressTextGh');
+
+  btn.disabled = true;
+  status.textContent = '📤 Čtu soubor...';
+  pWrap.style.display = 'block';
+  pBar.style.width = '0%';
+  pText.textContent = '0%';
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var base64 = e.target.result.split(',')[1];
+    pBar.style.width = '30%';
+    pText.textContent = '30%';
+    status.textContent = '🔍 Kontroluji existující soubor...';
+
+    // Step 1: check if file exists (get SHA)
+    var apiUrl = 'https://api.github.com/repos/' + GH_OWNER + '/' + repo + '/contents/' + path;
+    var xhrGet = new XMLHttpRequest();
+    xhrGet.open('GET', apiUrl);
+    xhrGet.setRequestHeader('Authorization', 'token ' + token);
+    xhrGet.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+    xhrGet.onload = function() {
+      var sha = null;
+      if (xhrGet.status === 200) {
+        try { sha = JSON.parse(xhrGet.responseText).sha; } catch(ex) {}
+      }
+      pBar.style.width = '50%';
+      pText.textContent = '50%';
+      status.textContent = '📡 Odesílám na GitHub...';
+
+      // Step 2: PUT file
+      var payload = { message: msg, content: base64 };
+      if (sha) payload.sha = sha;
+
+      var xhrPut = new XMLHttpRequest();
+      xhrPut.open('PUT', apiUrl);
+      xhrPut.setRequestHeader('Authorization', 'token ' + token);
+      xhrPut.setRequestHeader('Content-Type', 'application/json');
+      xhrPut.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+
+      xhrPut.upload.onprogress = function(ev) {
+        if (ev.lengthComputable) {
+          var pct = 50 + Math.round((ev.loaded / ev.total) * 50);
+          pBar.style.width = pct + '%';
+          pText.textContent = pct + '%';
+        }
+      };
+
+      xhrPut.onload = function() {
+        if (xhrPut.status === 200 || xhrPut.status === 201) {
+          pBar.style.width = '100%';
+          pText.textContent = '100% ✓';
+          status.textContent = '✅ Commitnuto! ' + (sha ? '(přepsáno)' : '(nový soubor)');
+          status.className = 'status done';
+          playDing();
+          setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
+        } else {
+          pWrap.style.display = 'none';
+          var errMsg = '';
+          try { errMsg = JSON.parse(xhrPut.responseText).message || ''; } catch(ex) {}
+          status.textContent = '❌ GitHub chyba ' + xhrPut.status + ': ' + errMsg;
+          status.className = 'status';
+        }
+        btn.disabled = false;
+      };
+      xhrPut.onerror = function() {
+        pWrap.style.display = 'none';
+        status.textContent = '❌ Chyba sítě';
+        status.className = 'status';
+        btn.disabled = false;
+      };
+      xhrPut.send(JSON.stringify(payload));
+    };
+    xhrGet.onerror = function() {
+      pWrap.style.display = 'none';
+      status.textContent = '❌ Chyba sítě při kontrole souboru';
+      status.className = 'status';
+      btn.disabled = false;
+    };
+    xhrGet.send();
+  };
+  reader.onerror = function() {
+    pWrap.style.display = 'none';
+    status.textContent = '❌ Chyba při čtení souboru';
+    btn.disabled = false;
+  };
+  reader.readAsDataURL(selectedGhFile);
+}
+
+// ─── Načti čekající soubory Mobil→PC po refreshi ────
+function loadPendingQueue() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', DB_TO_PC + '.json?shallow=true');
+  xhr.onload = function() {
+    if (xhr.status < 200 || xhr.status >= 300) return;
+    var keys = null;
+    try { keys = JSON.parse(xhr.responseText); } catch(e) {}
+    if (!keys) return;
+    for (var k in keys) {
+      (function(key) {
+        var xn = new XMLHttpRequest();
+        xn.open('GET', DB_TO_PC + '/' + encodeURIComponent(key) + '/name.json');
+        xn.onload = function() {
+          if (xn.status < 200 || xn.status >= 300) return;
+          var name = null;
+          try { name = JSON.parse(xn.responseText); } catch(e) {}
+          if (!name) return;
+          addQueueItem(key, name);
+          startPolling(key);
+        };
+        xn.send();
+      })(k);
+    }
+  };
+  xhr.send();
+}
+loadPendingQueue();
 </script>
 </body>
 </html>
