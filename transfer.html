@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v2.6Kl</title>
+<title>KladyxTransfer v2.7Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -194,7 +194,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v2.6Kl • Firebase + GitHub</div>
+  <div class="version">v2.7Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -791,6 +791,7 @@ function sendToGithub() {
           playDing();
           saveGhCommit(selectedGhFile.name, document.getElementById('ghTarget').selectedOptions[0].textContent);
           setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
+          checkPagesStatus(repo, token, status);
         } else {
           pWrap.style.display = 'none';
           var errMsg = '';
@@ -852,6 +853,66 @@ function loadPendingQueue() {
   xhr.send();
 }
 loadPendingQueue();
+
+// ─── GitHub Pages Build Status ──────────────────────
+function checkPagesStatus(repo, token, statusEl) {
+  var delay = 5000;
+  var maxAttempts = 24;
+  var attempt = 0;
+  var commitTime = Date.now();
+
+  statusEl.textContent = '✅ Commitnuto! ⏳ Čekám na deploy...';
+  statusEl.className = 'status waiting';
+
+  var poll = function() {
+    attempt++;
+    if (attempt > maxAttempts) {
+      statusEl.textContent = '✅ Commitnuto! ⚠️ Deploy trvá déle než obvykle';
+      statusEl.className = 'status';
+      return;
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://api.github.com/repos/' + GH_OWNER + '/' + repo + '/pages/builds/latest');
+    xhr.setRequestHeader('Authorization', 'token ' + token);
+    xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+    xhr.onload = function() {
+      if (xhr.status !== 200) {
+        statusEl.textContent = '✅ Commitnuto! ⚠️ Pages status nedostupný';
+        statusEl.className = 'status';
+        return;
+      }
+      try {
+        var data = JSON.parse(xhr.responseText);
+        var buildTs = new Date(data.updated_at).getTime();
+        if (buildTs < commitTime) {
+          setTimeout(poll, delay);
+          return;
+        }
+        if (data.status === 'built') {
+          statusEl.textContent = '✅ Commitnuto! 🟢 Live na webu';
+          statusEl.className = 'status done';
+          playDing();
+        } else if (data.status === 'building') {
+          statusEl.textContent = '✅ Commitnuto! ⏳ Build probíhá...';
+          statusEl.className = 'status waiting';
+          setTimeout(poll, delay);
+        } else if (data.status === 'errored') {
+          statusEl.textContent = '✅ Commitnuto! ❌ Build selhal: ' + (data.error && data.error.message || 'neznámá chyba');
+          statusEl.className = 'status';
+        } else {
+          setTimeout(poll, delay);
+        }
+      } catch(e) {
+        setTimeout(poll, delay);
+      }
+    };
+    xhr.onerror = function() {
+      setTimeout(poll, delay);
+    };
+    xhr.send();
+  };
+  setTimeout(poll, delay);
+}
 
 // ─── GitHub Commit Historie (localStorage) ──────────
 var GH_HISTORY_KEY = 'gh_commit_history';
