@@ -220,12 +220,15 @@
     <div class="desc">Odeslat soubor na <b>GitHub</b> a commitnout</div>
     <div class="desc2">Přímo z mobilu do repa</div>
 
-    <select class="gh-select" id="ghRepo">
+    <select class="gh-select" id="ghRepo" onchange="updateGhPaths()">
       <option value="kladyxland">kladyxland</option>
       <option value="panel">panel</option>
     </select>
 
-    <input class="gh-input" id="ghPath" placeholder="Cesta v repu, např. panel/Panel.html">
+    <select class="gh-select" id="ghPath">
+      <option value="kladyxhome.html">kladyxhome.html</option>
+      <option value="scripty.html">scripty.html</option>
+    </select>
 
     <input class="gh-input" id="ghMsg" placeholder="Commit message (volitelné)">
 
@@ -619,6 +622,23 @@ loadMobileQueue();
 // ─── GitHub Upload ──────────────────────────────────
 var GH_OWNER = 'kladyx';
 var selectedGhFile = null;
+var GH_PATHS = {
+  kladyxland: ['kladyxhome.html', 'scripty.html'],
+  panel: ['Panel.html', 'pimonitor.html', 'transfer.html']
+};
+
+function updateGhPaths() {
+  var repo = document.getElementById('ghRepo').value;
+  var sel = document.getElementById('ghPath');
+  var paths = GH_PATHS[repo] || [];
+  sel.innerHTML = '';
+  for (var i = 0; i < paths.length; i++) {
+    var o = document.createElement('option');
+    o.value = paths[i];
+    o.textContent = paths[i];
+    sel.appendChild(o);
+  }
+}
 
 function getStorage() {
   try { var s = window.parent.localStorage; s.getItem('__test__'); return s; }
@@ -657,9 +677,6 @@ function onGhFileSelected() {
     var sizeMB = (selectedGhFile.size / 1e6).toFixed(2);
     nameEl.textContent = selectedGhFile.name + ' (' + sizeMB + ' MB)';
     btn.disabled = false;
-    // auto-fill path if empty
-    var pathEl = document.getElementById('ghPath');
-    if (!pathEl.value.trim()) pathEl.value = selectedGhFile.name;
   } else {
     nameEl.textContent = 'Žádný soubor nevybrán';
     btn.disabled = true;
