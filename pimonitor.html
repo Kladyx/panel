@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.33.Kl">
-<title>Pi Monitor v2.33.Kl</title>
+<meta name="version" content="v2.34.Kl">
+<title>Pi Monitor v2.34.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -92,7 +92,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v2.33.Kl</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v2.34.Kl</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -145,6 +145,12 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="net-row"><div class="net-lbl">Firebase DL (session)</div><div class="net-val" id="net-fbdl">0 B</div></div>
   <div class="net-row"><div class="net-lbl">Procesy</div><div class="net-val net-active" id="net-proc">ACTIVE ON</div></div>
   <div class="net-row"><div class="net-lbl">Aktivní skripty</div><div class="net-val net-scripts" id="net-scripts"><span class="net-scripts-inner" id="net-scripts-inner">—</span></div></div>
+</div>
+
+<div class="section" style="margin-top:10px;">
+  <div class="sec-title">☁️ CLOUD</div>
+  <div class="net-row"><div class="net-lbl">GitHub</div><div class="net-val" id="cloud-github"><span class="dot dot-wait"></span> ...</div></div>
+  <div class="net-row"><div class="net-lbl">Firebase RTDB</div><div class="net-val" id="cloud-firebase"><span class="dot dot-wait"></span> ...</div></div>
 </div>
 
 <div class="offline" id="offline-msg">
@@ -528,6 +534,49 @@ document.getElementById('btn-shutdown').onclick=function(){
   s1.onerror=function(){startPolling();};
   document.head.appendChild(s1);
 })();
+
+// ─── CLOUD STATUS ────────────────────────────────────
+function checkCloudStatus() {
+  // GitHub status - veřejné API, nulový Firebase download
+  var ghEl = document.getElementById('cloud-github');
+  var xg = new XMLHttpRequest();
+  xg.open('GET', 'https://www.githubstatus.com/api/v2/status.json');
+  xg.timeout = 8000;
+  xg.onload = function() {
+    if (xg.status === 200) {
+      try {
+        var d = JSON.parse(xg.responseText);
+        var st = d.status.indicator;
+        if (st === 'none') {
+          ghEl.innerHTML = '<span class="dot dot-ok"></span> ONLINE';
+        } else {
+          ghEl.innerHTML = '<span class="dot dot-err"></span> ' + d.status.description.toUpperCase();
+        }
+      } catch(e) { ghEl.innerHTML = '<span class="dot dot-err"></span> PARSE ERR'; }
+    } else { ghEl.innerHTML = '<span class="dot dot-err"></span> HTTP ' + xg.status; }
+  };
+  xg.onerror = function() { ghEl.innerHTML = '<span class="dot dot-err"></span> NEDOSTUPNÝ'; };
+  xg.ontimeout = function() { ghEl.innerHTML = '<span class="dot dot-err"></span> TIMEOUT'; };
+  xg.send();
+
+  // Firebase RTDB - HEAD request na root, nulový download dat
+  var fbEl = document.getElementById('cloud-firebase');
+  var xf = new XMLHttpRequest();
+  xf.open('HEAD', FB + '/.json?shallow=true');
+  xf.timeout = 8000;
+  xf.onload = function() {
+    if (xf.status === 200 || xf.status === 401) {
+      fbEl.innerHTML = '<span class="dot dot-ok"></span> ONLINE';
+    } else {
+      fbEl.innerHTML = '<span class="dot dot-err"></span> HTTP ' + xf.status;
+    }
+  };
+  xf.onerror = function() { fbEl.innerHTML = '<span class="dot dot-err"></span> NEDOSTUPNÝ'; };
+  xf.ontimeout = function() { fbEl.innerHTML = '<span class="dot dot-err"></span> TIMEOUT'; };
+  xf.send();
+}
+checkCloudStatus();
+setInterval(checkCloudStatus, 120000);
 </script>
 </body>
 </html>
