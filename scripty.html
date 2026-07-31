@@ -131,7 +131,7 @@ button{
   <div class="head">
     <div class="gear" id="gear">⚙️</div>
     <div class="title">SCRIPTY</div>
-  <div style="font-size:.38rem;color:#000000;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v3.0</div>
+  <div style="font-size:.38rem;color:#000000;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v3.1</div>
   </div>
   <div style="position:relative;z-index:2;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
     <button onclick="(window.top||window).open('https://console.firebase.google.com/u/1/project/kladyxland/usage','_blank','noopener,noreferrer')" style="display:inline-block;padding:6px 16px;border:1.5px solid rgba(255,165,0,.6);border-radius:8px;background:rgba(255,165,0,.08);color:#ffa500;font-family:'Orbitron',monospace;font-size:.38rem;letter-spacing:.12em;font-weight:700;cursor:pointer;box-shadow:0 0 8px rgba(255,165,0,.2);">
@@ -323,6 +323,9 @@ button{
       {c:'crontab -l',d:'Crony'},
       {c:'cat /home/pi/uptime_total.txt',d:'Celkový uptime Pi4'},
       {c:'python3 /home/pi/uptime_tracker.py',d:'Aktualizuj uptime teď'}
+    ]},
+    {s:'FIREBASE RULES',cmds:[
+      {c:'cd /home/pi/tapo && python3 -c "import firebase_admin;from firebase_admin import credentials;import urllib.request,glob;cred=credentials.Certificate([f for f in glob.glob(\'*.json\') if \'firebase\' in f.lower()][0]);app=firebase_admin.initialize_app(cred,{\'databaseURL\':\'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app\'});token=app.credential.get_access_token().access_token;req=urllib.request.Request(\'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/.settings/rules.json\',headers={\'Authorization\':\'Bearer \'+token});print(urllib.request.urlopen(req).read().decode());firebase_admin.delete_app(app)"',d:'RTDB Rules'}
     ]}
   ];
   var t=document.getElementById('cmd-table');
