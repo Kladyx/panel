@@ -854,8 +854,9 @@ function renderGhHistory() {
     var icon = h.type === 'commit' ? '🐙 ↑' : '⬇️ ↓';
     var color = h.type === 'commit' ? '#ffaa00' : '#00ccff';
     html += '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;">';
-    html += '<span style="color:' + color + ';">' + icon + ' ' + h.file + '</span>';
-    html += '<span style="color:rgba(255,255,255,.35);font-size:.75rem;">' + h.ts + '</span>';
+    html += '<span style="color:' + color + ';flex:1;">' + icon + ' ' + h.file + '</span>';
+    html += '<span style="color:rgba(255,255,255,.35);font-size:.75rem;margin-right:8px;">' + h.ts + '</span>';
+    html += '<span onclick="deleteGhHistoryItem(' + i + ')" style="cursor:pointer;font-size:.85rem;color:#ff4444;padding:2px 6px;">✕</span>';
     html += '</div>';
   }
   el.innerHTML = html;
@@ -863,6 +864,15 @@ function renderGhHistory() {
 
 function clearGhHistory() {
   getStorage().removeItem('gh_history');
+  renderGhHistory();
+}
+
+function deleteGhHistoryItem(idx) {
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('gh_history') || '[]'); } catch(e) {}
+  hist.splice(idx, 1);
+  store.setItem('gh_history', JSON.stringify(hist));
   renderGhHistory();
 }
 
