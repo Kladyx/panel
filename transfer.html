@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v2.5Kl</title>
+<title>KladyxTransfer v2.6Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -166,7 +166,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v2.5Kl • Firebase + GitHub</div>
+  <div class="version">v2.6Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -296,6 +296,25 @@
     <div class="desc">Historie GitHub</div>
     <div id="ghHistory" style="margin-top:10px;font-size:.85rem;color:rgba(255,255,255,.7);max-height:300px;overflow-y:auto;"></div>
     <button class="sendbtn" onclick="clearGhHistory()" style="margin-top:10px;font-size:.75rem;padding:8px;background:rgba(255,0,0,.15);border-color:rgba(255,0,0,.4);color:#ff6666;">🗑 Smazat historii</button>
+  </div>
+
+  <div class="box" style="margin-top:20px">
+    <div class="icon">🔒</div>
+    <div class="desc">Firebase Rules (read-only)</div>
+    <div class="desc2">Otevře Firebase konzoli — zkopíruj a pošli</div>
+    <div style="display:flex;gap:10px;margin-top:12px;">
+      <a href="https://console.firebase.google.com/project/kladyxland/database/kladyxland-default-rtdb/rules" target="_blank" class="sendbtn" style="flex:1;text-align:center;text-decoration:none;font-size:.8rem;">📋 RTDB Rules</a>
+      <a href="https://console.firebase.google.com/project/kladyxland/storage/kladyxland.firebasestorage.app/rules" target="_blank" class="sendbtn" style="flex:1;text-align:center;text-decoration:none;font-size:.8rem;">📋 Storage Rules</a>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:20px;">
+    <a href="https://kladyx.github.io/kladyxland/" target="_blank" style="
+      display:inline-block;padding:14px 28px;border-radius:10px;
+      background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(0,100,200,.1));
+      border:1.5px solid rgba(0,212,255,.4);color:#00d4ff;
+      font-size:.9rem;font-weight:700;text-decoration:none;
+      letter-spacing:.1em;">🌐 KLADYX WEB</a>
   </div>
 
   <div class="footer">přes Firebase Realtime Database + GitHub API</div>
