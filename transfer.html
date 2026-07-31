@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v3.2Kl</title>
+<title>KladyxTransfer v2.4Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -142,10 +142,6 @@
     color:#fff; font-size:.95rem; font-family:inherit;
     margin-bottom:10px; appearance:auto;
   }
-  .gh-select option {
-    background:#1a0a2a;
-    color:#fff;
-  }
   .gh-input {
     width:100%; padding:10px; border-radius:8px;
     background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2);
@@ -165,36 +161,12 @@
   }
   .gh-saved { color:#00ff88; font-size:.8rem; margin-bottom:8px; }
   .footer { color:rgba(255,255,255,.35); font-size:.8rem; margin-top:22px; }
-  .gh-history-title {
-    font-size:.95rem; font-weight:700;
-    color:#00ffff; margin-bottom:8px; text-align:center;
-  }
-  .gh-history-item {
-    display:flex; align-items:center; gap:8px;
-    padding:6px 10px; margin-bottom:4px;
-    background:rgba(255,255,255,.05);
-    border-radius:8px;
-    font-size:.82rem;
-  }
-  .gh-history-item .hi-dot { color:#00ff88; }
-  .gh-history-item .hi-target { color:#ffaa00; flex-shrink:0; }
-  .gh-history-item .hi-file { color:#fff; flex:1; word-break:break-all; }
-  .gh-history-item .hi-time { color:rgba(255,255,255,.5); flex-shrink:0; }
-  .gh-history-empty { text-align:center; color:rgba(255,255,255,.4); font-size:.85rem; padding:6px; }
-  .gh-clear-btn {
-    display:inline-block; margin-top:8px;
-    padding:4px 12px; border-radius:6px;
-    border:1px solid rgba(255,255,255,.15);
-    background:rgba(255,255,255,.05);
-    color:rgba(255,255,255,.5); font-size:.75rem;
-    cursor:pointer; text-align:center;
-  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v3.2Kl • Firebase + GitHub</div>
+  <div class="version">v2.4Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -249,7 +221,7 @@
     <div class="desc2">Přímo z mobilu do repa</div>
 
     <select class="gh-select" id="ghTarget">
-      <option value="index">kladyxland web - index.html</option>
+      <option value="index">kladyxland - index.html</option>
       <option value="panel">panel - Panel.html</option>
       <option value="cotoje">panel - cotoje.html</option>
       <option value="equalizer">panel - equalizer.html</option>
@@ -288,12 +260,35 @@
         <button class="gh-save-btn" onclick="saveGhToken()">Uložit</button>
       </div>
     </div>
+  </div>
 
-    <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
-      <div class="gh-history-title">📋 Historie commitů</div>
-      <div id="ghHistoryList"><div class="gh-history-empty">Zatím žádné commity</div></div>
-      <div style="text-align:center"><button class="gh-clear-btn" onclick="clearGhHistory()">Smazat historii</button></div>
+  <div class="box" style="margin-top:20px">
+    <div class="icon">⬇️</div>
+    <div class="desc">Stáhnout soubor z <b>GitHubu</b></div>
+    <div class="desc2">Přímo do mobilu z repa</div>
+
+    <select class="gh-select" id="ghDownTarget">
+      <option value="kladyxland/index.html">kladyxland - index.html</option>
+      <option value="panel/Panel.html">panel - Panel.html</option>
+      <option value="panel/cotoje.html">panel - cotoje.html</option>
+      <option value="panel/equalizer.html">panel - equalizer.html</option>
+      <option value="panel/italstina.html">panel - italstina.html</option>
+      <option value="panel/kladyxamp.html">panel - kladyxamp.html</option>
+      <option value="panel/kladyxhome.html">panel - kladyxhome.html</option>
+      <option value="panel/pimonitor.html">panel - pimonitor.html</option>
+      <option value="panel/reader.html">panel - reader.html</option>
+      <option value="panel/scripty.html">panel - scripty.html</option>
+      <option value="panel/songup.html">panel - songup.html</option>
+      <option value="panel/speedtest.html">panel - speedtest.html</option>
+      <option value="panel/transfer.html">panel - transfer.html</option>
+      <option value="panel/starter.html">panel - starter.html</option>
+    </select>
+
+    <div>
+      <button class="sendbtn" id="sendBtnDl" onclick="downloadFromGithub()">⬇️ Stáhnout</button>
     </div>
+
+    <div class="status" id="statusDl"></div>
   </div>
 
   <div class="footer">přes Firebase Realtime Database + GitHub API</div>
@@ -664,18 +659,18 @@ var selectedGhFile = null;
 var GH_TARGETS = {
   index: { repo: 'kladyxland', path: 'index.html', msg: 'Update index' },
   panel: { repo: 'panel', path: 'Panel.html', msg: 'Update panel' },
-  cotoje: { repo: 'panel', path: 'cotoje.html', msg: 'Update cotoje.html' },
-  equalizer: { repo: 'panel', path: 'equalizer.html', msg: 'Update equalizer.html' },
-  italstina: { repo: 'panel', path: 'italstina.html', msg: 'Update italstina.html' },
-  kladyxamp: { repo: 'panel', path: 'kladyxamp.html', msg: 'Update kladyxamp.html' },
-  kladyxhome: { repo: 'panel', path: 'kladyxhome.html', msg: 'Update kladyxhome.html' },
-  pimonitor: { repo: 'panel', path: 'pimonitor.html', msg: 'Update pimonitor.html' },
-  reader: { repo: 'panel', path: 'reader.html', msg: 'Update reader.html' },
-  scripty: { repo: 'panel', path: 'scripty.html', msg: 'Update scripty.html' },
-  songup: { repo: 'panel', path: 'songup.html', msg: 'Update songup.html' },
-  speedtest: { repo: 'panel', path: 'speedtest.html', msg: 'Update speedtest.html' },
-  transfer: { repo: 'panel', path: 'transfer.html', msg: 'Update transfer.html' },
-  starter: { repo: 'panel', path: 'starter.html', msg: 'Update starter.html' }
+  cotoje: { repo: 'panel', path: 'cotoje.html', msg: 'Update panel' },
+  equalizer: { repo: 'panel', path: 'equalizer.html', msg: 'Update panel' },
+  italstina: { repo: 'panel', path: 'italstina.html', msg: 'Update panel' },
+  kladyxamp: { repo: 'panel', path: 'kladyxamp.html', msg: 'Update panel' },
+  kladyxhome: { repo: 'panel', path: 'kladyxhome.html', msg: 'Update panel' },
+  pimonitor: { repo: 'panel', path: 'pimonitor.html', msg: 'Update panel' },
+  reader: { repo: 'panel', path: 'reader.html', msg: 'Update panel' },
+  scripty: { repo: 'panel', path: 'scripty.html', msg: 'Update panel' },
+  songup: { repo: 'panel', path: 'songup.html', msg: 'Update panel' },
+  speedtest: { repo: 'panel', path: 'speedtest.html', msg: 'Update panel' },
+  transfer: { repo: 'panel', path: 'transfer.html', msg: 'Update panel' },
+  starter: { repo: 'panel', path: 'starter.html', msg: 'Update panel' }
 };
 
 function getStorage() {
@@ -791,7 +786,6 @@ function sendToGithub() {
           status.textContent = '✅ Commitnuto! ' + (sha ? '(přepsáno)' : '(nový soubor)');
           status.className = 'status done';
           playDing();
-          saveGhCommit(selectedGhFile.name, document.getElementById('ghTarget').selectedOptions[0].textContent);
           setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
         } else {
           pWrap.style.display = 'none';
@@ -826,6 +820,42 @@ function sendToGithub() {
   reader.readAsDataURL(selectedGhFile);
 }
 
+// ─── GitHub Download ─────────────────────────────────
+function downloadFromGithub() {
+  var sel = document.getElementById('ghDownTarget');
+  var val = sel.value;
+  if (!val) { document.getElementById('statusDl').textContent = '⚠️ Vyber soubor'; return; }
+  var parts = val.split('/');
+  var repo = parts[0];
+  var file = parts[1];
+  var status = document.getElementById('statusDl');
+  status.textContent = '📡 Stahuji...';
+  var url = 'https://raw.githubusercontent.com/kladyx/' + repo + '/main/' + file;
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url);
+  xhr.responseType = 'blob';
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(xhr.response);
+      a.download = file;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      status.textContent = '✅ Staženo: ' + file;
+      status.className = 'status done';
+      playDing();
+    } else {
+      status.textContent = '❌ Chyba ' + xhr.status;
+      status.className = 'status';
+    }
+  };
+  xhr.onerror = function() {
+    status.textContent = '❌ Chyba sítě';
+    status.className = 'status';
+  };
+  xhr.send();
+}
+
 // ─── Načti čekající soubory Mobil→PC po refreshi ────
 function loadPendingQueue() {
   var xhr = new XMLHttpRequest();
@@ -854,56 +884,6 @@ function loadPendingQueue() {
   xhr.send();
 }
 loadPendingQueue();
-
-// ─── GitHub Commit Historie (localStorage) ──────────
-var GH_HISTORY_KEY = 'gh_commit_history';
-var GH_HISTORY_MAX = 20;
-
-function getGhHistory() {
-  try {
-    var data = getStorage().getItem(GH_HISTORY_KEY);
-    return data ? JSON.parse(data) : [];
-  } catch(e) { return []; }
-}
-
-function saveGhCommit(fileName, targetLabel) {
-  var history = getGhHistory();
-  history.unshift({
-    file: fileName,
-    target: targetLabel,
-    ts: Date.now()
-  });
-  if (history.length > GH_HISTORY_MAX) history = history.slice(0, GH_HISTORY_MAX);
-  try { getStorage().setItem(GH_HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
-  renderGhHistory();
-}
-
-function renderGhHistory() {
-  var list = document.getElementById('ghHistoryList');
-  var history = getGhHistory();
-  if (!history.length) {
-    list.innerHTML = '<div class="gh-history-empty">Zatím žádné commity</div>';
-    return;
-  }
-  var html = '';
-  for (var i = 0; i < history.length; i++) {
-    var h = history[i];
-    html += '<div class="gh-history-item">';
-    html += '<span class="hi-dot">✓</span>';
-    html += '<span class="hi-target">' + escapeHtml(h.target) + '</span>';
-    html += '<span class="hi-file">' + escapeHtml(h.file) + '</span>';
-    html += '<span class="hi-time">' + formatAgo(h.ts) + '</span>';
-    html += '</div>';
-  }
-  list.innerHTML = html;
-}
-
-function clearGhHistory() {
-  try { getStorage().removeItem(GH_HISTORY_KEY); } catch(e) {}
-  renderGhHistory();
-}
-
-renderGhHistory();
 </script>
 </body>
 </html>
