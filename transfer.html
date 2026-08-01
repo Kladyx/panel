@@ -213,6 +213,8 @@
       <div class="progress-bar" id="progressBarPi"></div>
       <div class="progress-text" id="progressTextPi">0%</div>
     </div>
+
+    <div id="piSentList" style="margin-top:12px;"></div>
   </div>
 
   <div class="box" style="margin-top:20px">
@@ -394,6 +396,7 @@ function sendFileToPi() {
         status.textContent = '✅ Odesláno na Pi4! Čeká na stažení.';
         status.className = 'status done';
         playDing();
+        addPiSentItem(selectedFilePi.name);
         setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
       } else {
         pWrap.style.display = 'none';
@@ -767,6 +770,55 @@ function downloadMobileFile(key) {
 }
 
 loadMobileQueue();
+
+// ─── Pi4 Sent History ─────────────────────────────────
+function addPiSentItem(name) {
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('pi_sent') || '[]'); } catch(e) {}
+  hist.unshift({ name: name, ts: Date.now() });
+  if (hist.length > 20) hist = hist.slice(0, 20);
+  store.setItem('pi_sent', JSON.stringify(hist));
+  renderPiSent();
+}
+
+function renderPiSent() {
+  var el = document.getElementById('piSentList');
+  if (!el) return;
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('pi_sent') || '[]'); } catch(e) {}
+  if (hist.length === 0) { el.innerHTML = ''; return; }
+  var html = '<div style="font-size:.85rem;color:rgba(255,255,255,.5);margin-bottom:6px;">📋 Odesláno na Pi4:</div>';
+  for (var i = 0; i < hist.length; i++) {
+    var h = hist[i];
+    var d = new Date(h.ts);
+    var ts = d.getDate() + '.' + (d.getMonth()+1) + '. ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
+    html += '<div style="padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;">';
+    html += '<span style="color:#00ccff;flex:1;">🍓 ' + h.name + '</span>';
+    html += '<span style="color:rgba(255,255,255,.35);font-size:.75rem;margin-right:8px;">' + ts + '</span>';
+    html += '<span onclick="deletePiFile(' + i + ',\'' + h.name.replace(/'/g, "\\'") + '\')" style="cursor:pointer;font-size:.85rem;color:#ff4444;padding:2px 6px;">✕</span>';
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function deletePiFile(idx, name) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('PUT', DB_TO_PI.replace('transfer_to_pi', 'piTransfer/delete') + '.json');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onload = function() {
+    var store = getStorage();
+    var hist = [];
+    try { hist = JSON.parse(store.getItem('pi_sent') || '[]'); } catch(e) {}
+    hist.splice(idx, 1);
+    store.setItem('pi_sent', JSON.stringify(hist));
+    renderPiSent();
+  };
+  xhr.send(JSON.stringify(name));
+}
+
+renderPiSent();
 
 // ─── GitHub Upload ──────────────────────────────────
 var GH_OWNER = 'kladyx';
