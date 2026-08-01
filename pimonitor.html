@@ -154,6 +154,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="sec-title">☁️ CLOUD</div>
   <div class="net-row"><div class="net-lbl">GitHub</div><div class="net-val" id="cloud-github"><span class="dot dot-wait"></span> ...</div></div>
   <div class="net-row"><div class="net-lbl">Firebase RTDB</div><div class="net-val" id="cloud-firebase"><span class="dot dot-wait"></span> ...</div></div>
+  <div class="net-row"><div class="net-lbl">Pi Transfer</div><div class="net-val" id="cloud-pitransfer"><span class="dot dot-wait"></span> ...</div></div>
 </div>
 
 <div class="offline" id="offline-msg">
@@ -587,6 +588,27 @@ function checkCloudStatus() {
   xf.onerror = function() { fbEl.innerHTML = '<span class="dot dot-err"></span> NEDOSTUPNÝ'; };
   xf.ontimeout = function() { fbEl.innerHTML = '<span class="dot dot-err"></span> TIMEOUT'; };
   xf.send();
+  // Pi Transfer - posledni přijatý soubor
+  var ptEl = document.getElementById('cloud-pitransfer');
+  var xp = new XMLHttpRequest();
+  xp.open('GET', FB + '/piTransfer/lastReceived.json');
+  xp.timeout = 8000;
+  xp.onload = function() {
+    if (xp.status === 200) {
+      try {
+        var d = JSON.parse(xp.responseText);
+        if (d && d.name) {
+          var ago = Math.round((Date.now() - d.ts) / 60000);
+          var agoStr = ago < 60 ? ago + 'm' : Math.round(ago/60) + 'h';
+          ptEl.innerHTML = '<span class="dot dot-ok"></span> ' + d.name + ' <span style="color:rgba(255,255,255,.35);font-size:.7rem;">' + agoStr + '</span>';
+        } else {
+          ptEl.innerHTML = '<span style="color:rgba(255,255,255,.35);">žádný soubor</span>';
+        }
+      } catch(e) { ptEl.innerHTML = '<span style="color:rgba(255,255,255,.35);">—</span>'; }
+    }
+  };
+  xp.onerror = function() { ptEl.innerHTML = '—'; };
+  xp.send();
 }
 checkCloudStatus();
 setInterval(checkCloudStatus, 120000);
