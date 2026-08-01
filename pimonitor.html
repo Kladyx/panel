@@ -408,8 +408,9 @@ function loadStats(){
       var el=document.getElementById('net-rxtx');
       el.textContent=total>=1024?(total/1024).toFixed(1)+' GB':total.toFixed(1)+' MB';
       el.classList.remove('net-active','net-warn','net-danger');
-      if(total>=150){el.classList.add('net-danger');}
-      else if(total>=100){el.classList.add('net-warn');}
+      if(total>=350){el.classList.add('net-danger');}
+      else if(total>=200){el.classList.add('net-warn');}
+      else{el.classList.add('net-active');}
     }
     // Services z piStats - POUZE sluzby ktere skutecne bezi na Pi4 jako systemd.
     // transfer/upload/nextsync/obs jsou .bat na PC, Pi4 je nevidi -> resi checkPC()
