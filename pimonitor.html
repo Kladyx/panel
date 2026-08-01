@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.34.Kl">
-<title>Pi Monitor v2.34.Kl</title>
+<meta name="version" content="v2.35.Kl">
+<title>Pi Monitor v2.35.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -56,6 +56,9 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 @keyframes pulse{from{opacity:.3}to{opacity:1}}
 @keyframes pulse-green{0%{color:var(--green);text-shadow:0 0 8px var(--green)}50%{color:rgba(0,255,136,0.5)}100%{color:var(--green);text-shadow:0 0 8px var(--green)}}
 @keyframes pulse-red{0%{color:var(--red);text-shadow:0 0 8px var(--red)}50%{color:rgba(255,60,90,0.5)}100%{color:var(--red);text-shadow:0 0 8px var(--red)}}
+@keyframes pulse-yellow{0%{color:#ffdd00;text-shadow:0 0 8px #ffdd00}50%{color:rgba(255,221,0,0.4)}100%{color:#ffdd00;text-shadow:0 0 8px #ffdd00}}
+.net-val.net-warn{color:#ffdd00;text-shadow:0 0 8px #ffdd00;animation:pulse-yellow 2s infinite;}
+.net-val.net-danger{color:var(--red);text-shadow:0 0 8px var(--red);animation:pulse-red 1.5s infinite;}
 .svc-stat.on{animation:pulse-green 1.2s infinite;}
 .svc-stat.off{animation:pulse-red 1.2s infinite;}
 .svc-name{flex:1;font-size:0.65rem;color:#c0cce0;}
@@ -92,7 +95,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v2.34.Kl</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v2.35.Kl</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -404,7 +407,9 @@ function loadStats(){
       var total=rx+tx;
       var el=document.getElementById('net-rxtx');
       el.textContent=total>=1024?(total/1024).toFixed(1)+' GB':total.toFixed(1)+' MB';
-      el.classList.remove('net-active');
+      el.classList.remove('net-active','net-warn','net-danger');
+      if(total>=150){el.classList.add('net-danger');}
+      else if(total>=100){el.classList.add('net-warn');}
     }
     // Services z piStats - POUZE sluzby ktere skutecne bezi na Pi4 jako systemd.
     // transfer/upload/nextsync/obs jsou .bat na PC, Pi4 je nevidi -> resi checkPC()
