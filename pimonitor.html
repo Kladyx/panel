@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.35.Kl">
-<title>Pi Monitor v2.35.Kl</title>
+<meta name="version" content="v2.36.Kl">
+<title>Pi Monitor v2.36.Kl</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -95,7 +95,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v2.35.Kl</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v2.36.Kl</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -508,11 +508,18 @@ document.getElementById('btn-shutdown').onclick=function(){
     // Mobilni prohlizec zmrazi setInterval kdyz je stranka na pozadi (zamceny
     // telefon / prepnuta zalozka). Pri navratu bychom videli zastaraly stav,
     // proto nacteme data hned. Jen loadStats (~450 B), historii ne - je tezsi.
+    var _lastLoadTs=0;
+    function smartReload(){
+      var now=Date.now();
+      if(now-_lastLoadTs>25000){_lastLoadTs=now;loadStats();}
+    }
     document.addEventListener('visibilitychange',function(){
-      if(!document.hidden)loadStats();
+      if(!document.hidden)smartReload();
     });
-    // Zaloha pro Android/Chrome kde visibilitychange nefunguje spolehlive
-    window.addEventListener('focus',function(){loadStats();});
+    window.addEventListener('focus',function(){smartReload();});
+    window.addEventListener('pageshow',function(e){
+      if(e.persisted)smartReload();
+    });
   }
   var s1=document.createElement('script');
   s1.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
