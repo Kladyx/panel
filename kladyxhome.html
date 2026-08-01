@@ -344,6 +344,17 @@ h1 {
   </div>
 </div>
 
+<div class="device unknown" id="dev-tuya-lampa">
+  <div class="device-header">
+    <div class="device-name">Lávová Lampa (TUYA)</div>
+    <div class="device-status" id="status-tuya-lampa">...</div>
+  </div>
+  <div class="buttons">
+    <button class="btn btn-on" id="btn-on-tuya-lampa">Zapni Lampu</button>
+    <button class="btn btn-off" id="btn-off-tuya-lampa">Vypni Lampu</button>
+  </div>
+</div>
+
 <div class="device-card" id="dev-ir">
   <div class="device-header">
     <div class="device-name">IR Dálkový ovladač (Tuya)</div>
@@ -461,6 +472,7 @@ try {
   setupDevice('tapoDb', 'p115');
   setupDevice('tapoDbP100', 'p100');
   setupDevice('tapoDbP110', 'p110');
+  setupDevice('tuyaDb', 'tuya-lampa');
 
 } catch(e) {
   log('FATAL: ' + (e.message || e), 'err');
