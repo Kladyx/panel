@@ -371,11 +371,12 @@ function sendFileToPi() {
   reader.onload = function(e) {
     var base64 = e.target.result;
     var safeName = selectedFilePi.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    var safeKey = safeName.replace(/\./g, '_');
     pBar.style.width = '30%';
     pText.textContent = '30%';
     status.textContent = '📡 Odesílám na Pi4...';
     var payload = JSON.stringify({ name: selectedFilePi.name, data: base64, ts: Date.now() });
-    var url = DB_TO_PI + '/' + encodeURIComponent(safeName) + '.json';
+    var url = DB_TO_PI + '/' + encodeURIComponent(safeKey) + '.json';
     var xhr = new XMLHttpRequest();
     xhr.open('PUT', url);
     xhr.setRequestHeader('Content-Type', 'application/json');
