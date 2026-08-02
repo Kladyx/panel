@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v2.8Kl</title>
+<title>KladyxTransfer v2.9Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -161,7 +161,7 @@
   }
   .gh-saved { color:#00ff88; font-size:.8rem; margin-bottom:8px; }
 
-  /* --- Expirace tokenu (v2.8Kl) --- */
+  /* --- Expirace tokenu (v2.9Kl) --- */
   .gh-exp-row { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
   .gh-exp-row label {
     color:rgba(255,255,255,.55); font-size:.75rem; white-space:nowrap;
@@ -201,7 +201,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v2.8Kl • Firebase + GitHub</div>
+  <div class="version">v2.9Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -292,6 +292,7 @@
       <option value="songup">panel - songup.html</option>
       <option value="speedtest">panel - speedtest.html</option>
       <option value="transfer">panel - transfer.html</option>
+      <option value="mictest">panel - mictest.html</option>
       <option value="starter">panel - starter.html</option>
     </select>
 
@@ -344,6 +345,7 @@
       <option value="panel/songup.html">panel - songup.html</option>
       <option value="panel/speedtest.html">panel - speedtest.html</option>
       <option value="panel/transfer.html">panel - transfer.html</option>
+      <option value="panel/mictest.html">panel - mictest.html</option>
       <option value="panel/starter.html">panel - starter.html</option>
     </select>
 
@@ -877,6 +879,7 @@ var GH_TARGETS = {
   songup: { repo: 'panel', path: 'songup.html', msg: 'Update panel' },
   speedtest: { repo: 'panel', path: 'speedtest.html', msg: 'Update panel' },
   transfer: { repo: 'panel', path: 'transfer.html', msg: 'Update panel' },
+  mictest: { repo: 'panel', path: 'mictest.html', msg: 'Update panel' },
   starter: { repo: 'panel', path: 'starter.html', msg: 'Update panel' }
 };
 
@@ -899,7 +902,7 @@ function saveGhToken() {
   setTimeout(function() { msg.innerHTML = ''; }, 3000);
 }
 
-// --- Expirace tokenu (v2.8Kl) ---
+// --- Expirace tokenu (v2.9Kl) ---
 function getGhExp() {
   return getStorage().getItem('gh_pat_exp') || '';
 }
