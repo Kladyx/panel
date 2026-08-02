@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v2.7Kl</title>
+<title>KladyxTransfer v2.8Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -160,13 +160,48 @@
     white-space:nowrap;
   }
   .gh-saved { color:#00ff88; font-size:.8rem; margin-bottom:8px; }
+
+  /* --- Expirace tokenu (v2.8Kl) --- */
+  .gh-exp-row { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
+  .gh-exp-row label {
+    color:rgba(255,255,255,.55); font-size:.75rem; white-space:nowrap;
+  }
+  .gh-exp-row input {
+    flex:1; padding:7px 10px; border-radius:8px;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(255,255,255,.05); color:#fff;
+    font-size:.8rem; font-family:inherit;
+  }
+  .gh-exp-info {
+    font-size:.78rem; font-weight:700; letter-spacing:.02em;
+    margin-bottom:10px; min-height:1em;
+  }
+  .gh-exp-ok {
+    color:#00ff88;
+    text-shadow:0 0 8px rgba(0,255,136,.55);
+    animation: ghExpPulse 2s ease-in-out infinite;
+  }
+  .gh-exp-warn {
+    color:#ffaa00;
+    text-shadow:0 0 8px rgba(255,170,0,.6);
+    animation: ghExpPulse 1s ease-in-out infinite;
+  }
+  .gh-exp-dead {
+    color:#ff4444;
+    text-shadow:0 0 8px rgba(255,68,68,.6);
+    animation: ghExpPulse .8s ease-in-out infinite;
+  }
+  @keyframes ghExpPulse {
+    0%,100% { opacity:1; }
+    50%     { opacity:.35; }
+  }
   .footer { color:rgba(255,255,255,.35); font-size:.8rem; margin-top:22px; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v2.7Kl • Firebase + GitHub</div>
+  <div class="version">v2.8Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -282,6 +317,11 @@
         <input class="gh-input" id="ghToken" type="password" placeholder="ghp_xxxx..." style="margin-bottom:0">
         <button class="gh-save-btn" onclick="saveGhToken()">Uložit</button>
       </div>
+      <div class="gh-exp-row">
+        <label for="ghExp">Platnost do:</label>
+        <input id="ghExp" type="date" onchange="saveGhExp()">
+      </div>
+      <div class="gh-exp-info" id="ghExpInfo"></div>
     </div>
   </div>
 
@@ -859,11 +899,61 @@ function saveGhToken() {
   setTimeout(function() { msg.innerHTML = ''; }, 3000);
 }
 
+// --- Expirace tokenu (v2.8Kl) ---
+function getGhExp() {
+  return getStorage().getItem('gh_pat_exp') || '';
+}
+
+function saveGhExp() {
+  var v = document.getElementById('ghExp').value;
+  if (v) { getStorage().setItem('gh_pat_exp', v); }
+  else { getStorage().removeItem('gh_pat_exp'); }
+  renderGhExp();
+}
+
+function renderGhExp() {
+  var el = document.getElementById('ghExpInfo');
+  if (!el) return;
+  var v = getGhExp();
+  if (!v) {
+    el.className = 'gh-exp-info';
+    el.textContent = 'Datum expirace nenastaveno';
+    el.style.color = 'rgba(255,255,255,.35)';
+    return;
+  }
+  el.style.color = '';
+  var parts = v.split('-');
+  var exp = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  var days = Math.round((exp - today) / 86400000);
+  var d = ('0' + exp.getDate()).slice(-2) + '.' +
+          ('0' + (exp.getMonth() + 1)).slice(-2) + '.' +
+          exp.getFullYear();
+
+  if (days < 0) {
+    el.className = 'gh-exp-info gh-exp-dead';
+    el.textContent = '\u274C Token vypršel ' + d;
+  } else if (days === 0) {
+    el.className = 'gh-exp-info gh-exp-warn';
+    el.textContent = '\u26A0\uFE0F Token vyprší DNES (' + d + ')';
+  } else if (days <= 7) {
+    el.className = 'gh-exp-info gh-exp-warn';
+    el.textContent = '\u26A0\uFE0F Token platí do ' + d + ' \u00B7 zbývá ' + days + (days === 1 ? ' den' : (days < 5 ? ' dny' : ' dní'));
+  } else {
+    el.className = 'gh-exp-info gh-exp-ok';
+    el.textContent = '\uD83D\uDFE2 Token platí do ' + d + ' \u00B7 zbývá ' + days + (days < 5 ? ' dny' : ' dní');
+  }
+}
+
 (function() {
   if (getGhToken()) {
     var msg = document.getElementById('ghSavedMsg');
     msg.innerHTML = '<span class="gh-saved">Token uložen</span>';
   }
+  var expEl = document.getElementById('ghExp');
+  if (expEl) { expEl.value = getGhExp(); }
+  renderGhExp();
 })();
 
 function onGhFileSelected() {
