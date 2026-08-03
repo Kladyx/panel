@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SpeakUp v5.0Kl</title>
+<title>SpeakUp v5.1Kl</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
@@ -125,6 +125,7 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 .feedback.ok  { background:rgba(0,255,136,.1); border:1px solid rgba(0,255,136,.4); color:#00ff88; }
 .feedback.bad { background:rgba(255,68,102,.1); border:1px solid rgba(255,68,102,.4); color:#ff6688; }
 .feedback .heard { font-size:.78rem; color:rgba(255,255,255,.5); margin-top:6px; }
+.feedback .mic-score { font-size:.82rem; color:#00ff88; margin-top:8px; line-height:1.5; }
 
 /* NEXT BUTTON */
 .btn-next {
@@ -200,7 +201,7 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 
 <div class="hdr">
   <h1>SPEAKUP</h1>
-  <span class="ver">v5.0Kl</span>
+  <span class="ver">v5.1Kl</span>
 </div>
 <div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
 
@@ -1099,6 +1100,30 @@ let mode = 'opt'; // opt | mic | both
 let currentLevel = 1; // 1 | 2 | 3 | 4 | 0=all
 let recRunning = false, recObj = null;
 let ttsLang = 'en-GB';
+let micTotal = 0, micScoreSum = 0; // pro % srozumitelnosti
+
+/* ===== LEVENSHTEIN ===== */
+function levenshtein(a, b){
+  const m=a.length, n=b.length;
+  const dp=[];
+  for(let i=0;i<=m;i++){ dp[i]=[i]; }
+  for(let j=0;j<=n;j++){ dp[0][j]=j; }
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+    }
+  }
+  return dp[m][n];
+}
+
+function similarityPct(heard, target){
+  heard=heard.toLowerCase().trim();
+  target=target.toLowerCase().trim();
+  const maxLen=Math.max(heard.length, target.length);
+  if(maxLen===0) return 100;
+  const dist=levenshtein(heard, target);
+  return Math.round((1 - dist/maxLen)*100);
+}
 
 /* ===== LEVEL ===== */
 function setLevel(lvl){
@@ -1121,6 +1146,7 @@ function init(){
   else src = DB.concat(DB_L2).concat(DB_L3).concat(DB_L4);
   queue = shuffle([...src]);
   idx = 0; score = 0; answered = false;
+  micTotal = 0; micScoreSum = 0;
   document.getElementById('lvlBadge').textContent = currentLevel===0 ? 'VŠE' : 'LVL '+currentLevel;
   updateScore(); showQ();
 }
@@ -1245,9 +1271,13 @@ function startMic(){
   recObj.onstart=function(){ recRunning=true; btn.textContent='⏹ Zastavit'; btn.classList.add('listening'); document.getElementById('status').textContent='🎤 Poslouchám…'; };
   recObj.onresult=function(ev){
     let heard='';
-    for(let i=0;i<ev.results[0].length;i++) heard+=ev.results[0][i].transcript+' ';
+    let conf=0;
+    for(let i=0;i<ev.results[0].length;i++){
+      heard+=ev.results[0][i].transcript+' ';
+      if(ev.results[0][i].confidence>conf) conf=ev.results[0][i].confidence;
+    }
     heard=heard.trim().toLowerCase();
-    evalMic(heard);
+    evalMic(heard, conf);
   };
   recObj.onerror=function(ev){
     if(ev.error==='no-speech'){ document.getElementById('status').textContent='Nic neslyšeno, zkus znovu.'; }
@@ -1261,35 +1291,56 @@ function startMic(){
 
 function stopMic(){ if(recObj&&recRunning) recObj.stop(); }
 
-function evalMic(heard){
+function evalMic(heard, confidence){
   if(answered) return;
   const q=queue[idx];
   const correct=q.answers.some(function(a){ return heard.includes(a); });
   answered=true;
   document.getElementById('btnMic').disabled=true;
-  // disable opts if shown
   document.querySelectorAll('.opt').forEach(function(b){ b.disabled=true; });
+
+  // Výpočet srozumitelnosti: nejlepší shoda s některou ze správných odpovědí
+  const bestSim = q.answers.reduce(function(best, ans){
+    return Math.max(best, similarityPct(heard, ans));
+  }, 0);
+  // Kombinace: 50% confidence API + 50% textová podobnost
+  const confPct = Math.round((confidence||0)*100);
+  const combined = Math.round(confPct*0.5 + bestSim*0.5);
+  micTotal++;
+  micScoreSum += combined;
+
   if(correct){
     score++; updateScore();
-    showFeedback(true, heard, null);
+    showFeedback(true, heard, null, combined);
   } else {
-    showFeedback(false, heard, q.opts[0]);
+    showFeedback(false, heard, q.opts[0], combined);
   }
   idx++;
   document.getElementById('btnNext').classList.add('show');
 }
 
 /* ===== FEEDBACK ===== */
-function showFeedback(ok, heard, suggestion){
+function showFeedback(ok, heard, suggestion, micPct){
   const fb=document.getElementById('feedback');
+  let micLine='';
+  if(micPct !== undefined && micPct !== null){
+    let label='';
+    if(micPct>=90) label='Perfektní výslovnost 🏆';
+    else if(micPct>=75) label='Angličan by ti rozuměl ✅';
+    else if(micPct>=55) label='Celkem srozumitelné, ale pracuj na výslovnosti ⚠️';
+    else label='Angličan by měl problém porozumět ❌';
+    const avg = micTotal>0 ? Math.round(micScoreSum/micTotal) : micPct;
+    micLine='<div class="mic-score">🎙 Srozumitelnost: <b>'+micPct+'%</b> — '+label+'<br>'
+            +'<span style="font-size:.72rem;opacity:.7">Průměr relace: '+avg+'%</span></div>';
+  }
   if(ok){
     fb.className='feedback ok show';
-    fb.innerHTML='✅ Správně!<div class="heard">Slyšeno: '+escHtml(heard)+'</div>';
+    fb.innerHTML='✅ Správně!<div class="heard">Slyšeno: '+escHtml(heard)+'</div>'+micLine;
   } else {
     fb.className='feedback bad show';
     let s='❌ Zkus jinak.';
     if(suggestion) s+=' Zkus: <b>'+escHtml(suggestion)+'</b>';
-    s+='<div class="heard">Slyšeno/vybráno: '+escHtml(heard)+'</div>';
+    s+='<div class="heard">Slyšeno/vybráno: '+escHtml(heard)+'</div>'+micLine;
     fb.innerHTML=s;
   }
 }
