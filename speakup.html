@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SpeakUp v5.4Kl</title>
+<title>SpeakUp v5.5Kl</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
@@ -213,13 +213,31 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 .mode-btn.active {
   border-color:#00d4ff; background:rgba(0,212,255,.14); color:#00d4ff;
 }
+
+/* CUSTOM PHRASES */
+.cu-btn{width:100%;padding:11px;border-radius:8px;border:1.5px solid rgba(0,212,255,.35);background:rgba(0,212,255,.07);color:#00d4ff;font-size:.78rem;font-weight:700;letter-spacing:.1em;cursor:pointer;margin-bottom:14px;}
+.cu-btn:hover{background:rgba(0,212,255,.15);}
+.cu-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;justify-content:center;padding:16px;overflow-y:auto;}
+.cu-overlay.show{display:flex;}
+.cu-modal{background:#0d1525;border:1px solid rgba(0,212,255,.3);border-radius:12px;padding:18px;width:100%;max-width:480px;margin:auto;}
+.cu-modal h3{color:#00d4ff;font-size:.95rem;letter-spacing:2px;margin-bottom:14px;}
+.cu-input{width:100%;padding:9px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#e8f0ff;font-size:.8rem;margin-bottom:8px;box-sizing:border-box;}
+.cu-input::placeholder{color:rgba(255,255,255,.3);}
+.cu-label{font-size:.7rem;color:rgba(255,255,255,.4);margin-bottom:3px;letter-spacing:.05em;display:block;}
+.cu-save{padding:10px 18px;border-radius:7px;border:none;background:#00d4ff;color:#000;font-weight:700;font-size:.8rem;cursor:pointer;}
+.cu-close{padding:10px 18px;border-radius:7px;border:1px solid rgba(255,255,255,.2);background:transparent;color:#aaa;font-size:.8rem;cursor:pointer;margin-left:8px;}
+.cu-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:7px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);margin-bottom:6px;}
+.cu-item-q{font-size:.78rem;color:#e8f0ff;flex:1;}
+.cu-item-cz{font-size:.7rem;color:rgba(255,255,255,.4);}
+.cu-del{background:transparent;border:none;color:#ff4466;font-size:.9rem;cursor:pointer;padding:2px 6px;}
+.cu-count{font-size:.68rem;color:rgba(0,212,255,.6);margin-bottom:10px;}
 </style>
 </head>
 <body>
 
 <div class="hdr">
   <h1>SPEAKUP</h1>
-  <span class="ver">v5.4Kl</span>
+  <span class="ver">v5.5Kl</span>
 </div>
 <div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
 
@@ -272,6 +290,43 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 
 <!-- FEEDBACK -->
 <div class="feedback" id="feedback"></div>
+
+
+<!-- CUSTOM PHRASES BUTTON -->
+<button class="cu-btn" onclick="openCuModal()">➕ Přidat vlastní frázi</button>
+
+<!-- CUSTOM PHRASES MODAL -->
+<div class="cu-overlay" id="cuOverlay">
+  <div class="cu-modal">
+    <h3>🎤 VLASTNÍ FRÁZE</h3>
+    <div class="cu-count" id="cuCount">Uloženo: 0 frází</div>
+
+    <label class="cu-label">Anglická fráze (otázka)</label>
+    <input class="cu-input" id="cuQ" placeholder="What's your favorite music?" />
+
+    <label class="cu-label">Český překlad</label>
+    <input class="cu-input" id="cuCz" placeholder="Co máš nejraději za hudbu?" />
+
+    <label class="cu-label">Správná odpověď</label>
+    <input class="cu-input" id="cuA1" placeholder="I love electronic music." />
+
+    <label class="cu-label">Špatná možnost 2</label>
+    <input class="cu-input" id="cuA2" placeholder="I play the drums." />
+
+    <label class="cu-label">Špatná možnost 3</label>
+    <input class="cu-input" id="cuA3" placeholder="Music is boring." />
+
+    <label class="cu-label">Klíčová slova pro hlas (oddělte čárkou)</label>
+    <input class="cu-input" id="cuKw" placeholder="love electronic music" />
+
+    <div>
+      <button class="cu-save" onclick="saveCuPhrase()">💾 Uložit</button>
+      <button class="cu-close" onclick="closeCuModal()">✕ Zavřít</button>
+    </div>
+
+    <div class="cu-list" id="cuList"></div>
+  </div>
+</div>
 
 <!-- NEXT -->
 <button class="btn-next" id="btnNext" onclick="nextQ()">Další otázka →</button>
@@ -1222,6 +1277,63 @@ function setLevel(lvl){
   init();
 }
 
+
+/* ===== CUSTOM PHRASES ===== */
+var CU_KEY = 'su_custom_phrases';
+
+function loadCuPhrases(){
+  try { return JSON.parse(localStorage.getItem(CU_KEY) || '[]'); } catch(e){ return []; }
+}
+function saveCuPhrases(arr){
+  try { localStorage.setItem(CU_KEY, JSON.stringify(arr)); } catch(e){}
+}
+function openCuModal(){
+  document.getElementById('cuOverlay').classList.add('show');
+  renderCuList();
+}
+function closeCuModal(){
+  document.getElementById('cuOverlay').classList.remove('show');
+}
+function saveCuPhrase(){
+  var q = document.getElementById('cuQ').value.trim();
+  var cz = document.getElementById('cuCz').value.trim();
+  var a1 = document.getElementById('cuA1').value.trim();
+  var a2 = document.getElementById('cuA2').value.trim();
+  var a3 = document.getElementById('cuA3').value.trim();
+  var kw = document.getElementById('cuKw').value.trim();
+  if(!q || !cz || !a1){ alert('Vyplň anglickou frázi, překlad a správnou odpověď.'); return; }
+  var opts = [a1];
+  if(a2) opts.push(a2);
+  if(a3) opts.push(a3);
+  var answers = kw ? kw.split(',').map(function(s){ return s.trim(); }) : [a1];
+  var phrase = { q:q, cz:cz, opts:opts, answers:answers };
+  var arr = loadCuPhrases();
+  arr.push(phrase);
+  saveCuPhrases(arr);
+  document.getElementById('cuQ').value='';
+  document.getElementById('cuCz').value='';
+  document.getElementById('cuA1').value='';
+  document.getElementById('cuA2').value='';
+  document.getElementById('cuA3').value='';
+  document.getElementById('cuKw').value='';
+  renderCuList();
+}
+function deleteCuPhrase(i){
+  var arr = loadCuPhrases();
+  arr.splice(i,1);
+  saveCuPhrases(arr);
+  renderCuList();
+}
+function renderCuList(){
+  var arr = loadCuPhrases();
+  document.getElementById('cuCount').textContent = 'Uloženo: ' + arr.length + ' frází';
+  var html = '';
+  arr.forEach(function(p,i){
+    html += '<div class="cu-item"><div><div class="cu-item-q">'+p.q+'</div><div class="cu-item-cz">'+p.cz+'</div></div><button class="cu-del" onclick="deleteCuPhrase('+i+')">🗑</button></div>';
+  });
+  document.getElementById('cuList').innerHTML = html;
+}
+
 /* ===== INIT ===== */
 function init(){
   let src;
@@ -1230,6 +1342,8 @@ function init(){
   else if(currentLevel===3) src = DB_L3;
   else if(currentLevel===4) src = DB_L4;
   else src = DB.concat(DB_L2).concat(DB_L3).concat(DB_L4);
+  var custom = loadCuPhrases();
+  if(custom.length) src = src.concat(custom);
   queue = buildQueue(src);
   idx = 0; score = 0; answered = false;
   micTotal = 0; micScoreSum = 0;
