@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SpeakUp v6.2Kl</title>
+<title>SpeakUp v6.3Kl</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
@@ -214,6 +214,30 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
   border-color:#00d4ff; background:rgba(0,212,255,.14); color:#00d4ff;
 }
 
+/* NAUČENO TLAČÍTKO */
+.btn-voc-learned {
+  width:100%; padding:13px;
+  border-radius:12px; border:1.5px solid #00ff88;
+  background:rgba(0,255,136,.15); color:#00ff88;
+  font-size:.88rem; font-weight:700; font-family:inherit;
+  cursor:pointer; margin-bottom:8px; display:none;
+}
+.btn-voc-learned.show { display:block; }
+.btn-voc-reset {
+  width:100%; padding:10px;
+  border-radius:10px; border:1px solid rgba(255,68,102,.3);
+  background:rgba(255,68,102,.07); color:rgba(255,68,102,.7);
+  font-size:.75rem; font-weight:700; font-family:inherit;
+  cursor:pointer; margin-top:6px;
+}
+.voc-learned-badge {
+  font-size:.68rem; color:#00ff88;
+  background:rgba(0,255,136,.1);
+  border:1px solid rgba(0,255,136,.25);
+  border-radius:6px; padding:3px 8px;
+  margin-left:6px;
+}
+
 /* TAB SWITCHER */
 .tab-bar {
   display:flex; gap:6px; margin-bottom:14px;
@@ -381,7 +405,7 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 
 <div class="hdr">
   <h1>SPEAKUP</h1>
-  <span class="ver">v6.2Kl</span>
+  <span class="ver">v6.3Kl</span>
 </div>
 <div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
 
@@ -503,12 +527,12 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
     <div class="voc-stat-lbl">procvičeno</div>
   </div>
   <div class="voc-stat-box">
-    <div class="voc-stat-num" id="vocCorrect">0</div>
-    <div class="voc-stat-lbl">správně</div>
-  </div>
-  <div class="voc-stat-box">
     <div class="voc-stat-num" id="vocAvgPct">—</div>
     <div class="voc-stat-lbl">průměr %</div>
+  </div>
+  <div class="voc-stat-box" style="border-color:rgba(0,255,136,.3);">
+    <div class="voc-stat-num" id="vocLearnedCount" style="color:#00ff88;">0</div>
+    <div class="voc-stat-lbl">naučeno</div>
   </div>
   <div class="voc-stat-box">
     <div class="voc-stat-num" id="vocTotal">0</div>
@@ -536,7 +560,9 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 
 <div class="voc-result" id="vocResult"></div>
 
+<button class="btn-voc-learned" id="btnVocLearned" onclick="vocMarkLearned()" style="display:none;">✅ Naučeno — přeskočit příště</button>
 <button class="voc-next show" id="vocNext" onclick="vocNextWord()">Další slovo →</button>
+<button class="btn-voc-reset" onclick="vocResetLearned()">🔄 Reset naučených</button>
 
 </div><!-- end sectionVoc -->
 
@@ -2215,12 +2241,218 @@ const VOC = [
   {w:'schedule',cz:'rozvrh / plán',ph:'/ˈʃɛdjuːl/',cat:'Život'},
   {w:'deadline',cz:'termín',ph:'/ˈdɛdlaɪn/',cat:'Život'},
   {w:'solution',cz:'řešení',ph:'/səˈluːʃən/',cat:'Život'},
+  // ===== SLOVESA =====
+  {w:'listen',cz:'poslouchat',ph:'/ˈlɪsən/',cat:'Slovesa'},
+  {w:'speak',cz:'mluvit',ph:'/spiːk/',cat:'Slovesa'},
+  {w:'write',cz:'psát',ph:'/raɪt/',cat:'Slovesa'},
+  {w:'read',cz:'číst',ph:'/riːd/',cat:'Slovesa'},
+  {w:'learn',cz:'učit se',ph:'/lɜːrn/',cat:'Slovesa'},
+  {w:'teach',cz:'učit (někoho)',ph:'/tiːtʃ/',cat:'Slovesa'},
+  {w:'understand',cz:'rozumět',ph:'/ˌʌndəˈstænd/',cat:'Slovesa'},
+  {w:'explain',cz:'vysvětlit',ph:'/ɪkˈspleɪn/',cat:'Slovesa'},
+  {w:'ask',cz:'ptát se',ph:'/ɑːsk/',cat:'Slovesa'},
+  {w:'answer',cz:'odpovědět',ph:'/ˈɑːnsər/',cat:'Slovesa'},
+  {w:'think',cz:'myslet',ph:'/θɪŋk/',cat:'Slovesa'},
+  {w:'know',cz:'vědět / znát',ph:'/noʊ/',cat:'Slovesa'},
+  {w:'remember',cz:'pamatovat si',ph:'/rɪˈmɛmbər/',cat:'Slovesa'},
+  {w:'forget',cz:'zapomenout',ph:'/fəˈɡɛt/',cat:'Slovesa'},
+  {w:'find',cz:'najít',ph:'/faɪnd/',cat:'Slovesa'},
+  {w:'lose',cz:'ztratit',ph:'/luːz/',cat:'Slovesa'},
+  {w:'start',cz:'začít',ph:'/stɑːrt/',cat:'Slovesa'},
+  {w:'stop',cz:'zastavit',ph:'/stɒp/',cat:'Slovesa'},
+  {w:'finish',cz:'dokončit',ph:'/ˈfɪnɪʃ/',cat:'Slovesa'},
+  {w:'continue',cz:'pokračovat',ph:'/kənˈtɪnjuː/',cat:'Slovesa'},
+  {w:'try',cz:'zkusit',ph:'/traɪ/',cat:'Slovesa'},
+  {w:'need',cz:'potřebovat',ph:'/niːd/',cat:'Slovesa'},
+  {w:'want',cz:'chtít',ph:'/wɒnt/',cat:'Slovesa'},
+  {w:'like',cz:'mít rád',ph:'/laɪk/',cat:'Slovesa'},
+  {w:'love',cz:'milovat',ph:'/lʌv/',cat:'Slovesa'},
+  {w:'hate',cz:'nenávidět',ph:'/heɪt/',cat:'Slovesa'},
+  {w:'prefer',cz:'preferovat',ph:'/prɪˈfɜːr/',cat:'Slovesa'},
+  {w:'choose',cz:'vybrat',ph:'/tʃuːz/',cat:'Slovesa'},
+  {w:'build',cz:'stavět / budovat',ph:'/bɪld/',cat:'Slovesa'},
+  {w:'fix',cz:'opravit',ph:'/fɪks/',cat:'Slovesa'},
+  {w:'connect',cz:'připojit',ph:'/kəˈnɛkt/',cat:'Slovesa'},
+  {w:'install',cz:'nainstalovat',ph:'/ɪnˈstɔːl/',cat:'Slovesa'},
+  {w:'run',cz:'spustit / běžet',ph:'/rʌn/',cat:'Slovesa'},
+  {w:'save',cz:'uložit',ph:'/seɪv/',cat:'Slovesa'},
+  {w:'send',cz:'poslat',ph:'/sɛnd/',cat:'Slovesa'},
+  {w:'receive',cz:'přijmout',ph:'/rɪˈsiːv/',cat:'Slovesa'},
+  {w:'check',cz:'zkontrolovat',ph:'/tʃɛk/',cat:'Slovesa'},
+  {w:'change',cz:'změnit',ph:'/tʃeɪndʒ/',cat:'Slovesa'},
+  {w:'add',cz:'přidat',ph:'/æd/',cat:'Slovesa'},
+  {w:'remove',cz:'odstranit',ph:'/rɪˈmuːv/',cat:'Slovesa'},
+
+  // ===== PŘÍDAVNÁ JMÉNA =====
+  {w:'happy',cz:'šťastný',ph:'/ˈhæpi/',cat:'Přídavná jména'},
+  {w:'sad',cz:'smutný',ph:'/sæd/',cat:'Přídavná jména'},
+  {w:'tired',cz:'unavený',ph:'/ˈtaɪərd/',cat:'Přídavná jména'},
+  {w:'excited',cz:'nadšený',ph:'/ɪkˈsaɪtɪd/',cat:'Přídavná jména'},
+  {w:'nervous',cz:'nervózní',ph:'/ˈnɜːrvəs/',cat:'Přídavná jména'},
+  {w:'confident',cz:'sebejistý',ph:'/ˈkɒnfɪdənt/',cat:'Přídavná jména'},
+  {w:'patient',cz:'trpělivý',ph:'/ˈpeɪʃənt/',cat:'Přídavná jména'},
+  {w:'busy',cz:'zaneprázdněný',ph:'/ˈbɪzi/',cat:'Přídavná jména'},
+  {w:'creative',cz:'kreativní',ph:'/kriˈeɪtɪv/',cat:'Přídavná jména'},
+  {w:'professional',cz:'profesionální',ph:'/prəˈfɛʃənəl/',cat:'Přídavná jména'},
+  {w:'technical',cz:'technický',ph:'/ˈtɛknɪkəl/',cat:'Přídavná jména'},
+  {w:'digital',cz:'digitální',ph:'/ˈdɪdʒɪtəl/',cat:'Přídavná jména'},
+  {w:'analogue',cz:'analogový',ph:'/ˈænəlɒɡ/',cat:'Přídavná jména'},
+  {w:'automatic',cz:'automatický',ph:'/ˌɔːtəˈmætɪk/',cat:'Přídavná jména'},
+  {w:'manual',cz:'manuální / ruční',ph:'/ˈmænjuəl/',cat:'Přídavná jména'},
+  {w:'stable',cz:'stabilní',ph:'/ˈsteɪbəl/',cat:'Přídavná jména'},
+  {w:'reliable',cz:'spolehlivý',ph:'/rɪˈlaɪəbəl/',cat:'Přídavná jména'},
+  {w:'compatible',cz:'kompatibilní',ph:'/kəmˈpætɪbəl/',cat:'Přídavná jména'},
+  {w:'portable',cz:'přenosný',ph:'/ˈpɔːrtəbəl/',cat:'Přídavná jména'},
+  {w:'powerful',cz:'výkonný',ph:'/ˈpaʊərfəl/',cat:'Přídavná jména'},
+  {w:'efficient',cz:'efektivní',ph:'/ɪˈfɪʃənt/',cat:'Přídavná jména'},
+  {w:'precise',cz:'přesný',ph:'/prɪˈsaɪs/',cat:'Přídavná jména'},
+  {w:'sharp',cz:'ostrý / přesný',ph:'/ʃɑːrp/',cat:'Přídavná jména'},
+  {w:'warm',cz:'teplý',ph:'/wɔːrm/',cat:'Přídavná jména'},
+  {w:'cool',cz:'chladný / skvělý',ph:'/kuːl/',cat:'Přídavná jména'},
+
+  // ===== CESTOVÁNÍ =====
+  {w:'airport',cz:'letiště',ph:'/ˈɛrpɔːrt/',cat:'Cestování'},
+  {w:'passport',cz:'cestovní pas',ph:'/ˈpæspɔːrt/',cat:'Cestování'},
+  {w:'ticket',cz:'jízdenka / letenka',ph:'/ˈtɪkɪt/',cat:'Cestování'},
+  {w:'hotel',cz:'hotel',ph:'/hoʊˈtɛl/',cat:'Cestování'},
+  {w:'reservation',cz:'rezervace',ph:'/ˌrɛzərˈveɪʃən/',cat:'Cestování'},
+  {w:'departure',cz:'odlet / odjezd',ph:'/dɪˈpɑːrtʃər/',cat:'Cestování'},
+  {w:'arrival',cz:'přílet / příjezd',ph:'/əˈraɪvəl/',cat:'Cestování'},
+  {w:'luggage',cz:'zavazadla',ph:'/ˈlʌɡɪdʒ/',cat:'Cestování'},
+  {w:'border',cz:'hranice',ph:'/ˈbɔːrdər/',cat:'Cestování'},
+  {w:'currency',cz:'měna',ph:'/ˈkʌrənsi/',cat:'Cestování'},
+  {w:'exchange',cz:'výměna / směnárna',ph:'/ɪksˈtʃeɪndʒ/',cat:'Cestování'},
+  {w:'destination',cz:'cíl cesty',ph:'/ˌdɛstɪˈneɪʃən/',cat:'Cestování'},
+  {w:'journey',cz:'cesta / cestování',ph:'/ˈdʒɜːrni/',cat:'Cestování'},
+  {w:'map',cz:'mapa',ph:'/mæp/',cat:'Cestování'},
+  {w:'direction',cz:'směr / pokyn',ph:'/dɪˈrɛkʃən/',cat:'Cestování'},
+  {w:'straight',cz:'rovně',ph:'/streɪt/',cat:'Cestování'},
+  {w:'left',cz:'vlevo',ph:'/lɛft/',cat:'Cestování'},
+  {w:'right',cz:'vpravo',ph:'/raɪt/',cat:'Cestování'},
+  {w:'near',cz:'blízko',ph:'/nɪər/',cat:'Cestování'},
+  {w:'far',cz:'daleko',ph:'/fɑːr/',cat:'Cestování'},
+
+  // ===== JÍDLO =====
+  {w:'hungry',cz:'hladový',ph:'/ˈhʌŋɡri/',cat:'Jídlo'},
+  {w:'thirsty',cz:'žíznivý',ph:'/ˈθɜːrsti/',cat:'Jídlo'},
+  {w:'delicious',cz:'lahodný / výborný',ph:'/dɪˈlɪʃəs/',cat:'Jídlo'},
+  {w:'spicy',cz:'pikantní',ph:'/ˈspaɪsi/',cat:'Jídlo'},
+  {w:'sweet',cz:'sladký',ph:'/swiːt/',cat:'Jídlo'},
+  {w:'sour',cz:'kyselý',ph:'/ˈsaʊər/',cat:'Jídlo'},
+  {w:'bitter',cz:'hořký',ph:'/ˈbɪtər/',cat:'Jídlo'},
+  {w:'salty',cz:'slaný',ph:'/ˈsɔːlti/',cat:'Jídlo'},
+  {w:'meat',cz:'maso',ph:'/miːt/',cat:'Jídlo'},
+  {w:'bread',cz:'chléb',ph:'/brɛd/',cat:'Jídlo'},
+  {w:'soup',cz:'polévka',ph:'/suːp/',cat:'Jídlo'},
+  {w:'salad',cz:'salát',ph:'/ˈsæləd/',cat:'Jídlo'},
+  {w:'dessert',cz:'dezert',ph:'/dɪˈzɜːrt/',cat:'Jídlo'},
+  {w:'beer',cz:'pivo',ph:'/bɪər/',cat:'Jídlo'},
+  {w:'wine',cz:'víno',ph:'/waɪn/',cat:'Jídlo'},
+  {w:'juice',cz:'džus',ph:'/dʒuːs/',cat:'Jídlo'},
+  {w:'menu',cz:'jídelní lístek',ph:'/ˈmɛnjuː/',cat:'Jídlo'},
+  {w:'recipe',cz:'recept',ph:'/ˈrɛsɪpi/',cat:'Jídlo'},
+  {w:'ingredient',cz:'ingredience',ph:'/ɪnˈɡriːdiənt/',cat:'Jídlo'},
+  {w:'portion',cz:'porce',ph:'/ˈpɔːrʃən/',cat:'Jídlo'},
+
+  // ===== TĚLO & ZDRAVÍ =====
+  {w:'head',cz:'hlava',ph:'/hɛd/',cat:'Tělo & Zdraví'},
+  {w:'hand',cz:'ruka',ph:'/hænd/',cat:'Tělo & Zdraví'},
+  {w:'eye',cz:'oko',ph:'/aɪ/',cat:'Tělo & Zdraví'},
+  {w:'ear',cz:'ucho',ph:'/ɪər/',cat:'Tělo & Zdraví'},
+  {w:'mouth',cz:'ústa',ph:'/maʊθ/',cat:'Tělo & Zdraví'},
+  {w:'back',cz:'záda',ph:'/bæk/',cat:'Tělo & Zdraví'},
+  {w:'heart',cz:'srdce',ph:'/hɑːrt/',cat:'Tělo & Zdraví'},
+  {w:'pain',cz:'bolest',ph:'/peɪn/',cat:'Tělo & Zdraví'},
+  {w:'doctor',cz:'lékař',ph:'/ˈdɒktər/',cat:'Tělo & Zdraví'},
+  {w:'hospital',cz:'nemocnice',ph:'/ˈhɒspɪtəl/',cat:'Tělo & Zdraví'},
+  {w:'medicine',cz:'lék',ph:'/ˈmɛdɪsɪn/',cat:'Tělo & Zdraví'},
+  {w:'tablet',cz:'tableta',ph:'/ˈtæblɪt/',cat:'Tělo & Zdraví'},
+  {w:'stroke',cz:'mrtvice',ph:'/stroʊk/',cat:'Tělo & Zdraví'},
+  {w:'recovery',cz:'zotavení',ph:'/rɪˈkʌvəri/',cat:'Tělo & Zdraví'},
+  {w:'exercise',cz:'cvičení',ph:'/ˈɛksəsaɪz/',cat:'Tělo & Zdraví'},
+  {w:'therapy',cz:'terapie',ph:'/ˈθɛrəpi/',cat:'Tělo & Zdraví'},
+  {w:'strength',cz:'síla',ph:'/strɛŋθ/',cat:'Tělo & Zdraví'},
+  {w:'progress',cz:'pokrok',ph:'/ˈprɒɡrɛs/',cat:'Tělo & Zdraví'},
+  {w:'determination',cz:'odhodlání',ph:'/dɪˌtɜːrmɪˈneɪʃən/',cat:'Tělo & Zdraví'},
+  {w:'left hand',cz:'levá ruka',ph:'/lɛft hænd/',cat:'Tělo & Zdraví'},
+
+  // ===== PŘÍRODA =====
+  {w:'sun',cz:'slunce',ph:'/sʌn/',cat:'Příroda'},
+  {w:'moon',cz:'měsíc',ph:'/muːn/',cat:'Příroda'},
+  {w:'sky',cz:'obloha',ph:'/skaɪ/',cat:'Příroda'},
+  {w:'rain',cz:'déšť',ph:'/reɪn/',cat:'Příroda'},
+  {w:'wind',cz:'vítr',ph:'/wɪnd/',cat:'Příroda'},
+  {w:'snow',cz:'sníh',ph:'/snoʊ/',cat:'Příroda'},
+  {w:'storm',cz:'bouřka',ph:'/stɔːrm/',cat:'Příroda'},
+  {w:'cloud',cz:'oblak',ph:'/klaʊd/',cat:'Příroda'},
+  {w:'river',cz:'řeka',ph:'/ˈrɪvər/',cat:'Příroda'},
+  {w:'mountain',cz:'hora',ph:'/ˈmaʊntɪn/',cat:'Příroda'},
+  {w:'forest',cz:'les',ph:'/ˈfɒrɪst/',cat:'Příroda'},
+  {w:'tree',cz:'strom',ph:'/triː/',cat:'Příroda'},
+  {w:'flower',cz:'květ',ph:'/ˈflaʊər/',cat:'Příroda'},
+  {w:'animal',cz:'zvíře',ph:'/ˈænɪməl/',cat:'Příroda'},
+  {w:'bird',cz:'pták',ph:'/bɜːrd/',cat:'Příroda'},
+  {w:'temperature',cz:'teplota',ph:'/ˈtɛmprɪtʃər/',cat:'Příroda'},
+  {w:'season',cz:'roční období',ph:'/ˈsiːzən/',cat:'Příroda'},
+  {w:'spring',cz:'jaro',ph:'/sprɪŋ/',cat:'Příroda'},
+  {w:'summer',cz:'léto',ph:'/ˈsʌmər/',cat:'Příroda'},
+  {w:'autumn',cz:'podzim',ph:'/ˈɔːtəm/',cat:'Příroda'},
+  {w:'winter',cz:'zima',ph:'/ˈwɪntər/',cat:'Příroda'},
+
+  // ===== EMOCE =====
+  {w:'joy',cz:'radost',ph:'/dʒɔɪ/',cat:'Emoce'},
+  {w:'anger',cz:'hněv',ph:'/ˈæŋɡər/',cat:'Emoce'},
+  {w:'fear',cz:'strach',ph:'/fɪər/',cat:'Emoce'},
+  {w:'surprise',cz:'překvapení',ph:'/səˈpraɪz/',cat:'Emoce'},
+  {w:'pride',cz:'hrdost',ph:'/praɪd/',cat:'Emoce'},
+  {w:'shame',cz:'stud',ph:'/ʃeɪm/',cat:'Emoce'},
+  {w:'hope',cz:'naděje',ph:'/hoʊp/',cat:'Emoce'},
+  {w:'worry',cz:'obava / starat se',ph:'/ˈwʌri/',cat:'Emoce'},
+  {w:'relief',cz:'úleva',ph:'/rɪˈliːf/',cat:'Emoce'},
+  {w:'frustration',cz:'frustrace',ph:'/frʌˈstreɪʃən/',cat:'Emoce'},
+  {w:'satisfaction',cz:'spokojenost',ph:'/ˌsætɪsˈfækʃən/',cat:'Emoce'},
+  {w:'motivation',cz:'motivace',ph:'/ˌmoʊtɪˈveɪʃən/',cat:'Emoce'},
+  {w:'passion',cz:'vášeň',ph:'/ˈpæʃən/',cat:'Emoce'},
+  {w:'patience',cz:'trpělivost',ph:'/ˈpeɪʃəns/',cat:'Emoce'},
+  {w:'courage',cz:'odvaha',ph:'/ˈkʌrɪdʒ/',cat:'Emoce'},
+  {w:'lonely',cz:'osamělý',ph:'/ˈloʊnli/',cat:'Emoce'},
+  {w:'grateful',cz:'vděčný',ph:'/ˈɡreɪtfəl/',cat:'Emoce'},
+  {w:'proud',cz:'hrdý',ph:'/praʊd/',cat:'Emoce'},
+  {w:'calm',cz:'klidný',ph:'/kɑːm/',cat:'Emoce'},
+  {w:'stressed',cz:'vystresovaný',ph:'/strɛst/',cat:'Emoce'},
 
 ];
 
 /* ===== SLOVÍČKA STATE ===== */
 let vocQueue=[], vocIdx=0, vocDone=0, vocCorrectCount=0, vocScoreSum=0;
 let vocCat='Vše', vocRecRunning=false, vocRecObj=null;
+
+// Naučená slovíčka — localStorage
+function vocGetLearned(){
+  try{ return JSON.parse(localStorage.getItem('su_voc_learned')||'[]'); }catch(e){ return []; }
+}
+function vocSaveLearned(arr){
+  try{ localStorage.setItem('su_voc_learned', JSON.stringify(arr)); }catch(e){}
+}
+function vocIsLearned(word){
+  return vocGetLearned().indexOf(word)!==-1;
+}
+function vocMarkLearned(){
+  if(vocIdx>=vocQueue.length) return;
+  const w=vocQueue[vocIdx];
+  const arr=vocGetLearned();
+  if(arr.indexOf(w.w)===-1){ arr.push(w.w); vocSaveLearned(arr); }
+  document.getElementById('btnVocLearned').style.display='none';
+  updateVocStats();
+  // Přejít na další po 400ms
+  setTimeout(vocNextWord, 400);
+}
+function vocResetLearned(){
+  if(!confirm('Opravdu resetovat všechna naučená slovíčka?')) return;
+  try{ localStorage.removeItem('su_voc_learned'); }catch(e){}
+  updateVocStats();
+  vocBuildQueue();
+}
 
 function vocInit(){
   // Kategorie tlačítka
@@ -2244,8 +2476,13 @@ function vocInit(){
 }
 
 function vocBuildQueue(){
+  const learned=vocGetLearned();
   const src=vocCat==='Vše'?VOC:VOC.filter(function(v){return v.cat===vocCat;});
-  vocQueue=shuffle([...src]);
+  // Oddělení: nenaučená + naučená (nenaučená první)
+  const notLearned=src.filter(function(v){ return learned.indexOf(v.w)===-1; });
+  const learnedSrc=src.filter(function(v){ return learned.indexOf(v.w)!==-1; });
+  vocQueue=shuffle([...notLearned]).concat(shuffle([...learnedSrc]));
+  if(vocQueue.length===0) vocQueue=shuffle([...src]);
   vocIdx=0; vocDone=0; vocCorrectCount=0; vocScoreSum=0;
   updateVocStats();
   vocShowWord();
@@ -2254,7 +2491,10 @@ function vocBuildQueue(){
 function vocShowWord(){
   if(vocIdx>=vocQueue.length) vocIdx=0;
   const w=vocQueue[vocIdx];
-  document.getElementById('vocCat').textContent=w.cat;
+  const learned=vocGetLearned();
+  const isLearned=learned.indexOf(w.w)!==-1;
+  const learnedBadge=isLearned?' <span class="voc-learned-badge">✅ naučeno</span>':'';
+  document.getElementById('vocCat').innerHTML=w.cat+learnedBadge;
   document.getElementById('vocEn').textContent=w.w;
   document.getElementById('vocPhonetic').textContent=w.ph||'';
   document.getElementById('vocCz').textContent=w.cz;
@@ -2263,6 +2503,7 @@ function vocShowWord(){
   document.getElementById('vocResult').classList.remove('show');
   document.getElementById('vocResult').className='voc-result';
   document.getElementById('vocNext').classList.add('show');
+  document.getElementById('btnVocLearned').style.display='none';
   document.getElementById('btnVocMic').textContent='🎤 Vyslovit';
   document.getElementById('btnVocMic').classList.remove('listening');
   document.getElementById('btnVocMic').disabled=false;
@@ -2278,6 +2519,13 @@ function vocPlay(){
 
 function vocShowCz(){
   document.getElementById('vocCz').classList.add('show');
+  // Zobrazit "Naučeno" tlačítko pokud pct >= 65
+  const lb=document.getElementById('btnVocLearned');
+  if(pct>=65 && !vocIsLearned(vocQueue[vocIdx].w)){
+    lb.style.display='block';
+  } else {
+    lb.style.display='none';
+  }
 }
 
 function vocNextWord(){
@@ -2288,11 +2536,13 @@ function vocNextWord(){
 }
 
 function updateVocStats(){
+  const learned=vocGetLearned();
+  const catSrc=vocCat==='Vše'?VOC:VOC.filter(function(v){return v.cat===vocCat;});
+  const learnedInCat=catSrc.filter(function(v){return learned.indexOf(v.w)!==-1;}).length;
   document.getElementById('vocDone').textContent=vocDone;
-  document.getElementById('vocCorrect').textContent=vocCorrectCount;
   document.getElementById('vocAvgPct').textContent=vocDone>0?Math.round(vocScoreSum/vocDone)+'%':'—';
-  document.getElementById('vocTotal').textContent=
-    vocCat==='Vše'?VOC.length:VOC.filter(function(v){return v.cat===vocCat;}).length;
+  document.getElementById('vocLearnedCount').textContent=learnedInCat+'/'+catSrc.length;
+  document.getElementById('vocTotal').textContent=catSrc.length;
 }
 
 function vocToggleMic(){
