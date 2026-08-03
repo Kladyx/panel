@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="2.15Kl">
+<meta name="version" content="2.16Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -312,7 +312,7 @@ h1 {
 <div class="container">
 <h1>KLADYX HOME</h1>
 <div class="subtitle">SMART HOME CONTROL</div>
-<div class="version-badge">v2.15Kl</div>
+<div class="version-badge">v2.16Kl</div>
 
 <div class="device unknown" id="dev-p115">
   <div class="device-header">
@@ -384,17 +384,24 @@ h1 {
 
 <div id="debug">Pripojuji k Firebase...</div>
 
-<div style="margin:16px auto;max-width:400px;padding:0 16px;">
+<div style="margin:16px auto;max-width:400px;padding:0 16px;display:flex;gap:10px;">
   <button id="btn-restart-bridge" onclick="restartBridge()" style="
-    width:100%;padding:14px;border-radius:10px;
+    flex:1;padding:14px;border-radius:10px;
     background:rgba(255,140,0,.1);border:1.5px solid rgba(255,140,0,.4);
     color:#ff8c00;font-family:'Orbitron',monospace;font-size:.6rem;
     letter-spacing:.15em;cursor:pointer;font-weight:700;">
-    🔄 RESTART TAPO BRIDGE
+    🔄 RESTART TAPO
+  </button>
+  <button id="btn-restart-tuya" onclick="restartTuya()" style="
+    flex:1;padding:14px;border-radius:10px;
+    background:rgba(0,212,255,.1);border:1.5px solid rgba(0,212,255,.4);
+    color:#00d4ff;font-family:'Orbitron',monospace;font-size:.6rem;
+    letter-spacing:.15em;cursor:pointer;font-weight:700;">
+    🔄 RESTART TUYA
   </button>
 </div>
 
-<div class="footer">KLADYXHOME v2.15Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v2.16Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -484,6 +491,27 @@ try {
 } catch(e) {
   log('FATAL: ' + (e.message || e), 'err');
 }
+
+  function restartTuya() {
+    var btn = document.getElementById('btn-restart-tuya');
+    btn.textContent = '⏳ RESTARTUJI...';
+    btn.style.pointerEvents = 'none';
+    db.ref('tuyaCmd/restart').set(Date.now())
+      .then(function() {
+        btn.textContent = '✓ PŘÍKAZ ODESLÁN';
+        setTimeout(function() {
+          btn.textContent = '🔄 RESTART TUYA';
+          btn.style.pointerEvents = '';
+        }, 5000);
+      })
+      .catch(function() {
+        btn.textContent = '✗ CHYBA';
+        setTimeout(function() {
+          btn.textContent = '🔄 RESTART TUYA';
+          btn.style.pointerEvents = '';
+        }, 3000);
+      });
+  }
 
   function restartBridge() {
     var btn = document.getElementById('btn-restart-bridge');
