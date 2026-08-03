@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SpeakUp v5.0Kl</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  background:#0a0e18; color:#e8f0ff;
+  font-family:'Segoe UI',system-ui,sans-serif;
+  padding:14px; min-height:100vh;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* HEADER */
+.hdr { display:flex; align-items:baseline; gap:10px; margin-bottom:4px; }
+h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
+.ver { font-size:.7rem; color:rgba(255,255,255,.3); }
+.subhdr { font-size:.72rem; color:rgba(255,255,255,.35); margin-bottom:18px; }
+
+/* SCORE BAR */
+.scorebar {
+  display:flex; align-items:center; gap:10px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:10px; padding:10px 14px;
+  margin-bottom:14px;
+}
+.score-num { font-size:1.4rem; font-weight:700; color:#00ff88; min-width:30px; }
+.score-lbl { font-size:.72rem; color:rgba(255,255,255,.4); line-height:1.3; }
+.lvl-badge {
+  margin-left:auto;
+  background:rgba(0,212,255,.15);
+  border:1px solid rgba(0,212,255,.4);
+  border-radius:20px; padding:4px 12px;
+  font-size:.72rem; color:#00d4ff; font-weight:700;
+}
+.prog-wrap {
+  background:rgba(255,255,255,.08);
+  border-radius:4px; height:4px; margin-top:6px; width:100%;
+}
+.prog-bar {
+  height:4px; border-radius:4px;
+  background:linear-gradient(90deg,#00d4ff,#00ff88);
+  transition:width .4s ease;
+  width:0%;
+}
+
+/* MAIN CARD */
+.card {
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px; padding:18px;
+  margin-bottom:14px;
+}
+.card-label {
+  font-size:.68rem; color:#00d4ff; letter-spacing:1.5px;
+  text-transform:uppercase; margin-bottom:8px;
+}
+.question-en {
+  font-size:1.15rem; font-weight:700; color:#e8f0ff;
+  line-height:1.4; margin-bottom:6px;
+}
+.question-cz {
+  font-size:.85rem; color:rgba(255,255,255,.45);
+  line-height:1.5; margin-bottom:0;
+  display:none;
+}
+.question-cz.show { display:block; }
+
+/* PLAY BUTTON */
+.btn-play {
+  width:100%; padding:16px;
+  border-radius:12px; border:1.5px solid #00d4ff;
+  background:rgba(0,212,255,.12); color:#00d4ff;
+  font-size:1rem; font-weight:700; font-family:inherit;
+  cursor:pointer; margin-bottom:14px;
+  transition:background .15s;
+}
+.btn-play:active { background:rgba(0,212,255,.3); }
+.btn-play:disabled { opacity:.4; cursor:not-allowed; }
+
+/* OPTIONS */
+.options { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+.opt {
+  width:100%; padding:16px 14px;
+  border-radius:12px; border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.05); color:#e8f0ff;
+  font-size:.92rem; font-family:inherit;
+  cursor:pointer; text-align:left; line-height:1.4;
+  transition:border-color .15s, background .15s;
+}
+.opt:active { background:rgba(255,255,255,.1); }
+.opt.correct { border-color:#00ff88; background:rgba(0,255,136,.12); color:#00ff88; }
+.opt.wrong   { border-color:#ff4466; background:rgba(255,68,102,.12); color:#ff6688; }
+.opt:disabled { cursor:not-allowed; }
+
+/* MIC BUTTON */
+.btn-mic {
+  width:100%; padding:20px;
+  border-radius:12px; border:1.5px solid #00d4ff;
+  background:rgba(0,212,255,.12); color:#00d4ff;
+  font-size:1.05rem; font-weight:700; font-family:inherit;
+  cursor:pointer; margin-bottom:14px;
+  transition:background .15s, border-color .15s;
+}
+.btn-mic.listening {
+  border-color:#ff4466; background:rgba(255,68,102,.18); color:#ff6688;
+  animation:pulse 1.2s infinite;
+}
+.btn-mic:disabled { opacity:.4; cursor:not-allowed; }
+@keyframes pulse {
+  0%,100% { opacity:1; }
+  50% { opacity:.6; }
+}
+
+/* FEEDBACK */
+.feedback {
+  border-radius:12px; padding:16px;
+  font-size:.9rem; font-weight:600; line-height:1.5;
+  margin-bottom:14px; display:none;
+}
+.feedback.show { display:block; }
+.feedback.ok  { background:rgba(0,255,136,.1); border:1px solid rgba(0,255,136,.4); color:#00ff88; }
+.feedback.bad { background:rgba(255,68,102,.1); border:1px solid rgba(255,68,102,.4); color:#ff6688; }
+.feedback .heard { font-size:.78rem; color:rgba(255,255,255,.5); margin-top:6px; }
+
+/* NEXT BUTTON */
+.btn-next {
+  width:100%; padding:18px;
+  border-radius:12px; border:1.5px solid #00ff88;
+  background:rgba(0,255,136,.12); color:#00ff88;
+  font-size:1rem; font-weight:700; font-family:inherit;
+  cursor:pointer; display:none;
+  transition:background .15s;
+}
+.btn-next.show { display:block; }
+.btn-next:active { background:rgba(0,255,136,.28); }
+
+/* STATUS */
+.status {
+  font-size:.75rem; color:rgba(255,255,255,.35);
+  text-align:center; min-height:20px;
+  margin-bottom:10px;
+}
+
+/* FINISH */
+.finish {
+  background:rgba(0,255,136,.06);
+  border:1px solid rgba(0,255,136,.3);
+  border-radius:14px; padding:24px; text-align:center;
+  display:none;
+}
+.finish.show { display:block; }
+.finish h2 { font-size:1.3rem; color:#00ff88; margin-bottom:8px; }
+.finish .fscore { font-size:2.5rem; font-weight:700; color:#00d4ff; margin:10px 0; }
+.finish p { font-size:.85rem; color:rgba(255,255,255,.5); margin-bottom:16px; }
+.btn-restart {
+  width:100%; padding:18px;
+  border-radius:12px; border:1.5px solid #00d4ff;
+  background:rgba(0,212,255,.12); color:#00d4ff;
+  font-size:1rem; font-weight:700; font-family:inherit;
+  cursor:pointer;
+}
+.btn-restart:active { background:rgba(0,212,255,.28); }
+
+/* LEVEL SELECTOR */
+.lvl-bar {
+  display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;
+}
+.lvl-btn {
+  flex:1; min-width:52px; padding:9px 4px;
+  border-radius:10px; border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.04); color:rgba(255,255,255,.45);
+  font-size:.75rem; font-weight:700; font-family:inherit;
+  cursor:pointer;
+}
+.lvl-btn.active {
+  border-color:#00ff88; background:rgba(0,255,136,.14); color:#00ff88;
+}
+
+/* MODE TOGGLE */
+.mode-bar {
+  display:flex; gap:8px; margin-bottom:14px;
+}
+.mode-btn {
+  flex:1; padding:10px 6px;
+  border-radius:10px; border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.04); color:rgba(255,255,255,.45);
+  font-size:.78rem; font-weight:700; font-family:inherit;
+  cursor:pointer;
+}
+.mode-btn.active {
+  border-color:#00d4ff; background:rgba(0,212,255,.14); color:#00d4ff;
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>SPEAKUP</h1>
+  <span class="ver">v5.0Kl</span>
+</div>
+<div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
+
+<!-- SCORE -->
+<div class="scorebar">
+  <div>
+    <div class="score-num" id="scoreNum">0</div>
+    <div class="score-lbl">správně<br>celkem</div>
+  </div>
+  <div style="flex:1;padding-left:8px;">
+    <div class="prog-wrap"><div class="prog-bar" id="progBar"></div></div>
+    <div style="font-size:.68rem;color:rgba(255,255,255,.3);margin-top:4px;" id="progLbl">0 / 40</div>
+  </div>
+  <div class="lvl-badge" id="lvlBadge">LVL 1</div>
+</div>
+
+<!-- LEVEL -->
+<div class="lvl-bar">
+  <button class="lvl-btn active" id="lbtn1" onclick="setLevel(1)">LVL 1</button>
+  <button class="lvl-btn" id="lbtn2" onclick="setLevel(2)">LVL 2</button>
+  <button class="lvl-btn" id="lbtn3" onclick="setLevel(3)">LVL 3</button>
+  <button class="lvl-btn" id="lbtn4" onclick="setLevel(4)">LVL 4</button>
+  <button class="lvl-btn" id="lbtnAll" onclick="setLevel(0)">VŠE</button>
+</div>
+
+<!-- MODE -->
+<div class="mode-bar">
+  <button class="mode-btn active" id="modeOpt" onclick="setMode('opt')">🎯 Výběr</button>
+  <button class="mode-btn" id="modeMic" onclick="setMode('mic')">🎤 Mluvit</button>
+  <button class="mode-btn" id="modeBoth" onclick="setMode('both')">⚡ Oboje</button>
+</div>
+
+<!-- MAIN CARD -->
+<div class="card" id="mainCard">
+  <div class="card-label">Otázka</div>
+  <div class="question-en" id="qEn">—</div>
+  <div class="question-cz" id="qCz">—</div>
+</div>
+
+<div class="status" id="status">Stiskni přehrát.</div>
+
+<button class="btn-play" id="btnPlay" onclick="playQuestion()">🔊 Přehrát otázku</button>
+
+<!-- OPTIONS (mode: opt / both) -->
+<div class="options" id="optArea"></div>
+
+<!-- MIC (mode: mic / both) -->
+<button class="btn-mic" id="btnMic" onclick="toggleMic()" style="display:none;">🎤 Odpovědět</button>
+
+<!-- FEEDBACK -->
+<div class="feedback" id="feedback"></div>
+
+<!-- NEXT -->
+<button class="btn-next" id="btnNext" onclick="nextQ()">Další otázka →</button>
+
+<!-- FINISH -->
+<div class="finish" id="finish">
+  <h2>✅ Hotovo!</h2>
+  <div class="fscore" id="finalScore">0/40</div>
+  <p id="finalMsg">—</p>
+  <button class="btn-restart" onclick="restart()">🔄 Znovu od začátku</button>
+</div>
+
+<script>
+/* ===== DATA — Úroveň 1: ~40 dvojic ===== */
+const DB = [
+  { q:"What's your name?", cz:"Jak se jmenuješ?",
+    opts:["My name is Micha.","I am fine, thanks.","Nice to meet you."],
+    answers:["my name","i am micha","micha","michal","my name is"] },
+
+  { q:"Where are you from?", cz:"Odkud pocházíš?",
+    opts:["I'm from the Czech Republic.","I'm from Prague.","I live in Czech Republic."],
+    answers:["czech","prague","from czech","czech republic"] },
+
+  { q:"How are you?", cz:"Jak se máš?",
+    opts:["I'm fine, thanks.","Pretty good, and you?","Not bad, thank you."],
+    answers:["fine","good","not bad","great","pretty good","i'm fine"] },
+
+  { q:"How old are you?", cz:"Kolik ti je let?",
+    opts:["I'm in my forties.","I'm forty something.","Age is just a number."],
+    answers:["forty","forties","forty something","age","years old"] },
+
+  { q:"What do you do for a living?", cz:"Čím se živíš?",
+    opts:["I'm a DJ.","I work in music.","I'm self-employed."],
+    answers:["dj","music","self","employed","work"] },
+
+  { q:"Do you speak English?", cz:"Mluvíš anglicky?",
+    opts:["A little bit.","I'm learning.","Yes, some English."],
+    answers:["little","learning","some","yes","speak","bit"] },
+
+  { q:"Can you repeat that, please?", cz:"Můžeš to zopakovat?",
+    opts:["Of course, no problem.","Sure, I'll repeat.","Yes, one moment."],
+    answers:["of course","sure","yes","repeat","no problem","moment"] },
+
+  { q:"Nice to meet you!", cz:"Těší mě!",
+    opts:["Nice to meet you too!","Likewise!","Great to meet you!"],
+    answers:["nice to meet","likewise","great","you too","meet you too"] },
+
+  { q:"What's the weather like today?", cz:"Jaké je dnes počasí?",
+    opts:["It's sunny and warm.","It's cloudy today.","It's a bit rainy."],
+    answers:["sunny","warm","cloudy","rainy","weather","today"] },
+
+  { q:"Where do you live?", cz:"Kde bydlíš?",
+    opts:["I live in Czech Republic.","In a small town.","Near Prague."],
+    answers:["czech","prague","small town","live","republic"] },
+
+  { q:"Do you have any hobbies?", cz:"Máš nějaké koníčky?",
+    opts:["Yes, I love DJing.","I collect vinyl records.","Music is my passion."],
+    answers:["dj","djing","vinyl","music","records","passion","hobby"] },
+
+  { q:"What's your favourite music?", cz:"Jaká je tvoje oblíbená hudba?",
+    opts:["I love electronic music.","House and techno.","All kinds of music."],
+    answers:["electronic","house","techno","music","dance","dj"] },
+
+  { q:"Do you like music?", cz:"Máš rád hudbu?",
+    opts:["Yes, I love it!","Music is my life.","Absolutely, always."],
+    answers:["yes","love","music","life","absolutely"] },
+
+  { q:"Can you help me, please?", cz:"Můžeš mi prosím pomoct?",
+    opts:["Of course, what do you need?","Sure, no problem.","Yes, how can I help?"],
+    answers:["of course","sure","yes","help","no problem","how can"] },
+
+  { q:"I don't understand. Could you explain?", cz:"Nerozumím. Mohl bys vysvětlit?",
+    opts:["Sure, let me explain.","No problem, I'll clarify.","Of course, step by step."],
+    answers:["sure","explain","clarify","step","no problem","let me"] },
+
+  { q:"What time is it?", cz:"Kolik je hodin?",
+    opts:["It's about noon.","I'm not sure, sorry.","Let me check my phone."],
+    answers:["noon","morning","afternoon","evening","time","check","sure"] },
+
+  { q:"How long have you been doing this?", cz:"Jak dlouho to děláš?",
+    opts:["For many years.","More than ten years.","Since I was young."],
+    answers:["years","long","many","ten","since","young"] },
+
+  { q:"Do you have a favourite movie?", cz:"Máš oblíbený film?",
+    opts:["Yes, I love sci-fi.","I prefer documentaries.","Too many to choose one."],
+    answers:["yes","sci","fi","documentary","movie","film","many","choose"] },
+
+  { q:"What are you doing this weekend?", cz:"Co děláš tento víkend?",
+    opts:["I'm playing music.","Just relaxing at home.","Working on a project."],
+    answers:["music","relaxing","home","project","work","playing","weekend"] },
+
+  { q:"Have you ever been abroad?", cz:"Byl jsi někdy v zahraničí?",
+    opts:["Yes, I've travelled a bit.","Not much, but some.","Yes, a few countries."],
+    answers:["yes","travel","countries","abroad","few","been"] },
+
+  { q:"What's your favourite food?", cz:"Jaké je tvoje oblíbené jídlo?",
+    opts:["I love Italian food.","Anything homemade.","Czech traditional food."],
+    answers:["italian","homemade","czech","food","traditional","love"] },
+
+  { q:"Are you married?", cz:"Jsi ženatý?",
+    opts:["No, I'm single.","Yes, happily married.","It's complicated."],
+    answers:["no","single","yes","married","complicated"] },
+
+  { q:"Do you have any pets?", cz:"Máš nějaké domácí zvíře?",
+    opts:["No, I don't.","I have a dog.","I have a cat."],
+    answers:["no","don't","dog","cat","pet","have"] },
+
+  { q:"What kind of music do you play?", cz:"Jaký druh hudby hraješ?",
+    opts:["House and techno mostly.","Electronic dance music.","Mixed styles."],
+    answers:["house","techno","electronic","dance","mixed","music","style"] },
+
+  { q:"Do you play any instruments?", cz:"Hraješ na nějaký nástroj?",
+    opts:["I DJ with turntables.","I use mixers and decks.","I'm more into production."],
+    answers:["dj","turntable","mixer","deck","production","instrument","play"] },
+
+  { q:"What do you think about that?", cz:"Co si o tom myslíš?",
+    opts:["I think it's a good idea.","Interesting point.","I'm not sure yet."],
+    answers:["good","idea","interesting","sure","think","point"] },
+
+  { q:"Could you speak more slowly, please?", cz:"Mohl bys mluvit pomaleji?",
+    opts:["Of course, sorry about that.","Sure, my apologies.","No problem at all."],
+    answers:["of course","sure","sorry","apologies","no problem","slowly"] },
+
+  { q:"What's your phone number?", cz:"Jaké je tvoje telefonní číslo?",
+    opts:["I'd rather not share it.","Let me write it down.","It's plus four two zero…"],
+    answers:["rather","not","share","write","number","zero","plus"] },
+
+  { q:"Can I ask you something?", cz:"Mohu se tě na něco zeptat?",
+    opts:["Yes, go ahead.","Of course, no problem.","Sure, what is it?"],
+    answers:["yes","go ahead","of course","sure","no problem","ask"] },
+
+  { q:"Thank you very much!", cz:"Mockrát děkuji!",
+    opts:["You're welcome!","No problem at all.","My pleasure!"],
+    answers:["welcome","no problem","pleasure","you're","my"] },
+
+  { q:"I'm sorry about that.", cz:"To mě mrzí.",
+    opts:["No worries, it's fine.","Don't worry about it.","That's okay."],
+    answers:["no worries","fine","don't worry","okay","that's"] },
+
+  { q:"What languages do you speak?", cz:"Jakými jazyky mluvíš?",
+    opts:["Czech and some English.","Czech is my native language.","Mainly Czech, learning English."],
+    answers:["czech","english","native","learning","language","speak"] },
+
+  { q:"Do you like travelling?", cz:"Rád cestuješ?",
+    opts:["Yes, when I have time.","Not really, I prefer home.","I love road trips."],
+    answers:["yes","time","home","prefer","love","travel","road","trip"] },
+
+  { q:"What's your job like?", cz:"Jak vypadá tvoje práce?",
+    opts:["It's creative and fun.","Busy but rewarding.","I work from home mostly."],
+    answers:["creative","fun","busy","rewarding","home","work","mostly"] },
+
+  { q:"Do you work from home?", cz:"Pracuješ z domova?",
+    opts:["Yes, most of the time.","Partly, yes.","Mostly from my home studio."],
+    answers:["yes","home","studio","mostly","partly","time"] },
+
+  { q:"What do you do in your free time?", cz:"Co děláš ve volném čase?",
+    opts:["I mix music in my studio.","I play records and relax.","Music and technology."],
+    answers:["music","studio","records","relax","technology","mix","free"] },
+
+  { q:"Do you prefer summer or winter?", cz:"Preferuješ léto nebo zimu?",
+    opts:["Summer, definitely.","Winter for sure.","I like both seasons."],
+    answers:["summer","winter","definitely","sure","both","season","prefer"] },
+
+  { q:"What's your biggest passion?", cz:"Co je tvoje největší vášeň?",
+    opts:["Music, without a doubt.","DJing and technology.","Sounds and electronics."],
+    answers:["music","dj","djing","technology","sound","electronic","passion","doubt"] },
+
+  { q:"Are you busy right now?", cz:"Jsi teď zaneprázdněný?",
+    opts:["A little bit, yes.","Not really, what's up?","Just finishing something."],
+    answers:["little","bit","yes","not really","finishing","something","busy"] },
+
+  { q:"Have a nice day!", cz:"Hezký den!",
+    opts:["You too, thanks!","Same to you!","Thank you, likewise!"],
+    answers:["you too","same","thanks","thank","likewise"] }
+];
+
+/* ===== DATA — Úroveň 2: ~60 dvojic — Život, rodina, novinky, koníčky ===== */
+const DB_L2 = [
+  { q:"Do you live alone or with family?", cz:"Bydlíš sám nebo s rodinou?",
+    opts:["I live alone.","With my family.","Just me and my partner."],
+    answers:["alone","family","partner","live","just me"] },
+
+  { q:"Do you have brothers or sisters?", cz:"Máš sourozence?",
+    opts:["No, I'm an only child.","I have one brother.","I have a sister."],
+    answers:["no","only child","brother","sister","have"] },
+
+  { q:"What did you do yesterday?", cz:"Co jsi dělal včera?",
+    opts:["I was working on my music.","I stayed at home.","I was at my studio."],
+    answers:["music","home","studio","work","stayed","yesterday"] },
+
+  { q:"Have you seen any good movies lately?", cz:"Viděl jsi poslední dobou nějaký dobrý film?",
+    opts:["Not recently, no.","Yes, a great documentary.","I prefer music over movies."],
+    answers:["not","recently","documentary","music","prefer","yes","great"] },
+
+  { q:"What's new with you?", cz:"Co je u tebe nového?",
+    opts:["Not much, just working.","I'm building a new project.","Same as usual."],
+    answers:["not much","working","project","building","same","usual"] },
+
+  { q:"How do you usually spend your evenings?", cz:"Jak obvykle trávíš večery?",
+    opts:["In my studio mixing music.","Relaxing at home.","Working on my projects."],
+    answers:["studio","music","relax","home","project","work","evening"] },
+
+  { q:"Do you cook your own meals?", cz:"Vaříš si sám?",
+    opts:["Yes, I enjoy cooking.","Sometimes, not always.","Mostly simple things."],
+    answers:["yes","cook","enjoy","sometimes","simple","meals"] },
+
+  { q:"What time do you usually wake up?", cz:"V kolik obvykle vstáváš?",
+    opts:["Around seven or eight.","Depends on the day.","Pretty late, I'm a night owl."],
+    answers:["seven","eight","late","night","depends","wake","owl"] },
+
+  { q:"Do you exercise regularly?", cz:"Cvičíš pravidelně?",
+    opts:["Not really, I should.","I walk a lot.","I try to stay active."],
+    answers:["not","walk","active","try","exercise","regularly"] },
+
+  { q:"What kind of books do you read?", cz:"Jaké knihy čteš?",
+    opts:["Technical books mostly.","I prefer magazines.","I don't read much."],
+    answers:["technical","magazine","don't","read","book","mostly","prefer"] },
+
+  { q:"Do you follow the news?", cz:"Sleduješ zprávy?",
+    opts:["Yes, mostly online.","Not really, too depressing.","Just the tech news."],
+    answers:["yes","online","not","depressing","tech","news","follow"] },
+
+  { q:"What's your morning routine like?", cz:"Jak vypadá tvoje ranní rutina?",
+    opts:["Coffee, then check the Pi.","Pretty simple, coffee first.","Music and coffee."],
+    answers:["coffee","pi","simple","music","morning","routine"] },
+
+  { q:"Do you prefer city or countryside?", cz:"Preferuješ město nebo venkov?",
+    opts:["City, for the energy.","Countryside, it's peaceful.","Both have their charm."],
+    answers:["city","country","peaceful","energy","both","charm","prefer"] },
+
+  { q:"What's the best thing about your day today?", cz:"Co bylo dnes nejlepší?",
+    opts:["Got some good work done.","Everything went smoothly.","My music session."],
+    answers:["work","smooth","music","session","good","done","best"] },
+
+  { q:"How do you deal with stress?", cz:"Jak zvládáš stres?",
+    opts:["Music helps a lot.","I focus on my work.","I try to stay calm."],
+    answers:["music","work","calm","focus","help","stress","deal"] },
+
+  { q:"Do you have a daily routine?", cz:"Máš každodenní rutinu?",
+    opts:["Yes, pretty structured.","Somewhat, yes.","Not really, I'm flexible."],
+    answers:["yes","structured","somewhat","flexible","routine","daily"] },
+
+  { q:"What was the last thing you bought?", cz:"Co bylo poslední co jsi koupil?",
+    opts:["Some audio gear.","A new cable.","I can't remember."],
+    answers:["audio","gear","cable","bought","remember","last"] },
+
+  { q:"Do you prefer coffee or tea?", cz:"Preferuješ kávu nebo čaj?",
+    opts:["Coffee, definitely.","Tea in the evening.","Both depending on mood."],
+    answers:["coffee","tea","definitely","evening","mood","both","prefer"] },
+
+  { q:"What's your favourite season?", cz:"Jaké je tvoje oblíbené roční období?",
+    opts:["Spring, fresh and warm.","Summer for the energy.","Autumn, I like the mood."],
+    answers:["spring","summer","autumn","warm","energy","mood","season","favourite"] },
+
+  { q:"Do you enjoy working with your hands?", cz:"Baví tě pracovat rukama?",
+    opts:["Yes, I love building things.","Wiring and electronics, yes.","Absolutely, always."],
+    answers:["yes","build","wiring","electronic","love","hands","absolutely"] },
+
+  { q:"What do you find most relaxing?", cz:"Co ti nejvíc pomáhá relaxovat?",
+    opts:["Listening to music.","Working in my studio.","Just sitting quietly."],
+    answers:["music","studio","quiet","listen","relax","sitting","work"] },
+
+  { q:"Are you a morning person or a night owl?", cz:"Jsi ranní ptáče nebo noční sova?",
+    opts:["Night owl, for sure.","Morning, I'm productive then.","Depends on the project."],
+    answers:["night","owl","morning","productive","depends","project","sure"] },
+
+  { q:"Have you learned any new skills recently?", cz:"Naučil ses nedávno něco nového?",
+    opts:["Yes, some Python scripting.","Always learning something.","Working on my English."],
+    answers:["python","script","learning","english","new","skill","always"] },
+
+  { q:"Do you like fixing things yourself?", cz:"Rád opravuješ věci sám?",
+    opts:["Yes, always try first.","Especially electronics.","I prefer to understand how things work."],
+    answers:["yes","always","electronic","understand","fix","repair","try"] },
+
+  { q:"What would your ideal weekend look like?", cz:"Jak by vypadal tvůj ideální víkend?",
+    opts:["Studio session and good music.","At home with my setup.","Mixing records all day."],
+    answers:["studio","music","home","setup","mixing","records","weekend","ideal"] },
+
+  { q:"Do you spend much time online?", cz:"Trávíš hodně času online?",
+    opts:["Yes, for work and projects.","Quite a lot, yes.","Mostly for technical stuff."],
+    answers:["yes","work","project","technical","online","lot","stuff"] },
+
+  { q:"What technology do you use every day?", cz:"Jakou techniku používáš každý den?",
+    opts:["My Raspberry Pi and mixer.","PC and audio interface.","Everything in my studio."],
+    answers:["raspberry","pi","mixer","pc","audio","interface","studio","tech"] },
+
+  { q:"Have you ever built something from scratch?", cz:"Postavil jsi někdy něco od nuly?",
+    opts:["Yes, my whole home system.","My studio setup.","Many times, yes."],
+    answers:["yes","home","system","studio","setup","built","scratch","times"] },
+
+  { q:"What makes you happy?", cz:"Co tě dělá šťastným?",
+    opts:["Music and technology.","When a project works.","My studio setup running smooth."],
+    answers:["music","tech","project","studio","smooth","happy","works","running"] },
+
+  { q:"Do you like meeting new people?", cz:"Rád poznáváš nové lidi?",
+    opts:["Yes, if we share interests.","It depends on the situation.","I prefer small groups."],
+    answers:["yes","interest","depend","situation","small","prefer","people","meet"] },
+
+  { q:"How do you prefer to communicate?", cz:"Jak raději komunikuješ?",
+    opts:["Text messages mostly.","Online, it's easier for me.","I'm better in writing."],
+    answers:["text","message","online","easier","writing","write","communicate","prefer"] },
+
+  { q:"What's something you're proud of?", cz:"Na co jsi hrdý?",
+    opts:["Building my studio myself.","My home automation system.","Learning everything on my own."],
+    answers:["studio","home","system","learn","own","myself","proud","built","automation"] },
+
+  { q:"Do you prefer working alone or in a team?", cz:"Raději pracuješ sám nebo v týmu?",
+    opts:["Alone, I'm more focused.","Solo, it's my style.","By myself mostly."],
+    answers:["alone","solo","myself","focused","style","prefer","team","work"] },
+
+  { q:"What's the most interesting thing you've done?", cz:"Co nejzajímavějšího jsi udělal?",
+    opts:["Built a smart home system.","Set up my DJ studio.","Created my own web apps."],
+    answers:["smart","home","dj","studio","web","app","built","system","interesting"] },
+
+  { q:"Do you keep in touch with old friends?", cz:"Udržuješ kontakt se starými přáteli?",
+    opts:["Not much, to be honest.","A few close ones, yes.","Mostly online."],
+    answers:["not","few","close","yes","online","honest","touch","friend"] },
+
+  { q:"What's your biggest challenge right now?", cz:"Jaká je teď tvoje největší výzva?",
+    opts:["Learning to speak English better.","Finishing my projects.","Staying organised."],
+    answers:["english","project","organised","speak","learn","finish","challenge","right"] },
+
+  { q:"Do you like trying new things?", cz:"Rád zkouší nové věci?",
+    opts:["Yes, especially in tech.","Always open to new ideas.","If it makes sense, yes."],
+    answers:["yes","tech","new","idea","open","sense","trying","always"] },
+
+  { q:"What's something you want to improve?", cz:"Co chceš zlepšit?",
+    opts:["My spoken English.","My coding skills.","My studio workflow."],
+    answers:["english","speak","coding","code","studio","workflow","improve","skill"] },
+
+  { q:"Do you listen to podcasts or audiobooks?", cz:"Posloucháš podcasty nebo audioknihy?",
+    opts:["Not really, I prefer music.","Sometimes tech podcasts.","Rarely, to be honest."],
+    answers:["not","music","tech","podcast","rarely","honest","sometimes","prefer"] },
+
+  { q:"What's one thing you can't live without?", cz:"Jedna věc, bez které bys nemohl žít?",
+    opts:["Music, definitely.","My studio setup.","Internet connection."],
+    answers:["music","studio","internet","definitely","connection","live","without"] },
+
+  { q:"How do you stay motivated?", cz:"Jak si udržuješ motivaci?",
+    opts:["I love what I do.","Seeing progress keeps me going.","My projects motivate me."],
+    answers:["love","progress","project","motivate","going","stay","motivated","do"] },
+
+  { q:"Do you plan things ahead or go with the flow?", cz:"Plánuješ dopředu nebo jdeš podle nálady?",
+    opts:["I mix both approaches.","Plan for big things, flow for small.","Mostly plan ahead."],
+    answers:["mix","both","plan","flow","ahead","approach","mostly","small","big"] },
+
+  { q:"What's your favourite way to learn something new?", cz:"Jak nejraději se učíš něco nového?",
+    opts:["By doing it hands-on.","Reading and experimenting.","Trial and error, mostly."],
+    answers:["hands","doing","reading","experiment","trial","error","learn","mostly"] },
+
+  { q:"Do you like DIY projects?", cz:"Máš rád kutilské projekty?",
+    opts:["Yes, I do almost everything myself.","Especially electronics and audio.","It's how I built my studio."],
+    answers:["yes","myself","electronic","audio","studio","built","diy","project"] },
+
+  { q:"How important is music in your life?", cz:"Jak důležitá je hudba ve tvém životě?",
+    opts:["It's everything to me.","Very important, always has been.","Music is my world."],
+    answers:["everything","important","always","world","music","life","central"] }
+];
+
+/* ===== DATA — Úroveň 3a: DJ technika a audio (~60 dvojic) ===== */
+const DB_L3 = [
+  { q:"What DJ controller do you use?", cz:"Jaký DJ kontroler používáš?",
+    opts:["I use the Pioneer DDJ-800.","A Pioneer DDJ-800 with rekordbox.","DDJ-800, it's a great controller."],
+    answers:["ddj","800","pioneer","controller","rekordbox"] },
+
+  { q:"What mixer are you running?", cz:"Jaký mixer používáš?",
+    opts:["A Pioneer DJM-300S.","The DJM-300S from Pioneer.","Pioneer DJM, the 300S model."],
+    answers:["djm","300","pioneer","mixer","300s"] },
+
+  { q:"Do you use CDJs or a controller?", cz:"Používáš CDJ nebo kontroler?",
+    opts:["Both — CDJ-800 MK2 and a DDJ-800.","I have CDJs and a controller.","Mainly my DDJ, but also CDJs."],
+    answers:["cdj","ddj","controller","both","800","mk2"] },
+
+  { q:"What turntable do you have?", cz:"Jaký gramofon máš?",
+    opts:["A Reloop RP-1000 MK2.","Reloop with a Concorde Black cartridge.","RP-1000 MK2 with Concorde Black."],
+    answers:["reloop","rp","1000","mk2","concorde","black","turntable","gramophone"] },
+
+  { q:"What cartridge do you use on your turntable?", cz:"Jakou přenosku používáš na gramofonu?",
+    opts:["A Ortofon Concorde Black.","Concorde Black by Ortofon.","The Concorde Black DJ cartridge."],
+    answers:["concorde","black","ortofon","cartridge","pickup"] },
+
+  { q:"What audio interface do you use?", cz:"Jaký audio interface používáš?",
+    opts:["A PreSonus Quantum ES4.","The Quantum ES4 from PreSonus.","PreSonus ES4, it's very clean."],
+    answers:["presonus","quantum","es4","interface","audio"] },
+
+  { q:"What monitor speakers do you have?", cz:"Jaké monitory máš?",
+    opts:["PreSonus Eris 4.5 BT.","Eris 4.5 BT nearfields.","PreSonus Eris monitors."],
+    answers:["presonus","eris","4.5","bt","monitor","speaker"] },
+
+  { q:"Do you have a subwoofer in your setup?", cz:"Máš v setu subwoofer?",
+    opts:["Yes, a PreSonus Eris Sub 8BT.","Sub 8BT from PreSonus.","Yes, the Sub 8 BT."],
+    answers:["sub","8","bt","presonus","eris","subwoofer","yes"] },
+
+  { q:"What headphones do you use for DJing?", cz:"Jaká sluchátka používáš pro DJing?",
+    opts:["Pioneer HDJ-X5 mostly.","Two pairs of Pioneer HDJ-X5.","Pioneer HDJ series."],
+    answers:["pioneer","hdj","x5","headphone","dj"] },
+
+  { q:"What software do you DJ with?", cz:"Jakým softwarem mixuješ?",
+    opts:["VirtualDJ Pro Infinity.","I use VirtualDJ Pro.","VirtualDJ, the Pro version."],
+    answers:["virtualdj","virtual","dj","pro","infinity","software"] },
+
+  { q:"What DAW do you use for production?", cz:"Jaký DAW používáš pro produkci?",
+    opts:["Studio One 7 from PreSonus.","PreSonus Studio One 7.","Studio One, version seven."],
+    answers:["studio","one","7","presonus","daw","production"] },
+
+  { q:"Do you also use Magix Music Maker?", cz:"Používáš také Magix Music Maker?",
+    opts:["Yes, the Premium version.","Magix Music Maker Premium, yes.","Sometimes, yes."],
+    answers:["magix","music","maker","premium","yes","sometimes"] },
+
+  { q:"What's your signal chain like?", cz:"Jaký je tvůj signálový řetězec?",
+    opts:["DDJ into AR8C, then into Quantum ES4.","Mixer to interface to monitors.","Sources into AR8C, then PreSonus."],
+    answers:["ddj","ar8c","quantum","es4","mixer","interface","chain","signal","presonus"] },
+
+  { q:"What kind of cables do you use?", cz:"Jaké kabely používáš?",
+    opts:["Adam Hall, Klotz and Cordial.","Mostly Adam Hall 4 Series.","Adam Hall, Klotz, Cordial and Hosa."],
+    answers:["adam","hall","klotz","cordial","hosa","cable","series"] },
+
+  { q:"Do you use XLR or jack cables mainly?", cz:"Používáš hlavně XLR nebo jack kabely?",
+    opts:["Both, depends on the connection.","XLR for balanced runs, jack for others.","Mix of XLR and TRS jacks."],
+    answers:["xlr","jack","trs","balanced","both","mix","cable"] },
+
+  { q:"What is a balanced connection?", cz:"Co je symetrické připojení?",
+    opts:["It cancels noise over long runs.","XLR or TRS with noise rejection.","Three conductors, rejects interference."],
+    answers:["noise","cancel","reject","xlr","trs","balanced","conductor","interference"] },
+
+  { q:"What does gain staging mean?", cz:"Co znamená nastavení zisku?",
+    opts:["Setting proper levels at each stage.","Optimising signal level through the chain.","Making sure nothing clips or is too quiet."],
+    answers:["gain","level","stage","clip","signal","optimis","proper","chain"] },
+
+  { q:"What is a DI box used for?", cz:"K čemu slouží DI box?",
+    opts:["Converting unbalanced to balanced signal.","For instrument to mixer connection.","Impedance matching and balancing."],
+    answers:["di","balanced","unbalanced","impedance","convert","instrument","match"] },
+
+  { q:"Do you have a Behringer DI20?", cz:"Máš Behringer DI20?",
+    opts:["Yes, a Behringer DI20.","Yes, I use it in my setup.","DI20 from Behringer, yes."],
+    answers:["behringer","di20","di","yes","have"] },
+
+  { q:"What is a VU meter used for?", cz:"K čemu slouží VU metr?",
+    opts:["To monitor audio signal levels.","Shows average signal strength.","Visual level monitoring."],
+    answers:["vu","meter","level","signal","monitor","average","visual"] },
+
+  { q:"Do you have VU meters in your studio?", cz:"Máš ve studiu VU metry?",
+    opts:["Yes, two Douk Audio VU56 PRO.","Two Douk VU meters.","Yes, Douk Audio units."],
+    answers:["douk","vu","56","pro","meter","two","yes","audio"] },
+
+  { q:"What is the Monitor Station V2?", cz:"Co je Monitor Station V2?",
+    opts:["A PreSonus monitor controller.","It controls monitor outputs and sources.","Source selector and volume control for monitors."],
+    answers:["presonus","monitor","station","v2","controller","source","volume","output"] },
+
+  { q:"How many studio monitor inputs do you switch between?", cz:"Mezi kolika vstupy monitorů přepínáš?",
+    opts:["Two — ST1 from ES4, ST2 from AR8C.","I have two stereo inputs on the Monitor Station.","ST1 and ST2 on the PreSonus V2."],
+    answers:["st1","st2","two","es4","ar8c","input","monitor","station","switch"] },
+
+  { q:"What is the TubePre V2?", cz:"Co je TubePre V2?",
+    opts:["A tube microphone preamp from PreSonus.","PreSonus valve preamp.","Tube preamp for mic or instrument."],
+    answers:["tube","pre","v2","presonus","preamp","mic","valve","microphone"] },
+
+  { q:"What microphone do you have?", cz:"Jaký mikrofon máš?",
+    opts:["A Rode NT1 and a PodMic.","NT1 condenser and Rode PodMic.","Rode NT1 plus PodMic."],
+    answers:["rode","nt1","podmic","pod","mic","microphone","condenser"] },
+
+  { q:"What's the Rode PSA1+ used for?", cz:"K čemu slouží Rode PSA1+?",
+    opts:["It's a studio mic boom arm.","A desk-mounted microphone arm.","Articulated mic arm from Rode."],
+    answers:["rode","psa","arm","boom","desk","mic","articulated","mount"] },
+
+  { q:"What recorder do you use for podcasting?", cz:"Jaký rekordér používáš pro podcast?",
+    opts:["A RodeCaster Duo.","The RodeCaster Duo from Rode.","Rode RodeCaster Duo."],
+    answers:["rode","rodecaster","duo","podcast","recorder"] },
+
+  { q:"What does latency mean in audio?", cz:"Co znamená latence v audiu?",
+    opts:["The delay between input and output.","Time for signal to travel through the system.","How fast the interface processes audio."],
+    answers:["latency","delay","input","output","time","signal","process","fast"] },
+
+  { q:"What is a sample rate?", cz:"Co je vzorkovací frekvence?",
+    opts:["How many samples per second are recorded.","44.1 or 48 kHz typically.","Number of audio snapshots per second."],
+    answers:["sample","rate","44","48","khz","second","snapshot","record"] },
+
+  { q:"What sample rate do you usually work at?", cz:"Na jaké vzorkovací frekvenci obvykle pracuješ?",
+    opts:["44.1 kHz for music, 48 for video.","Forty-four point one or forty-eight.","Standard 44.1 kHz mostly."],
+    answers:["44","48","khz","sample","rate","standard","44.1","48khz"] },
+
+  { q:"What is bit depth in audio?", cz:"Co je bitová hloubka v audiu?",
+    opts:["The resolution of each audio sample.","16 or 24 bit typically.","How much dynamic range you capture."],
+    answers:["bit","depth","16","24","resolution","sample","dynamic","range","capture"] },
+
+  { q:"What does EQ stand for?", cz:"Co znamená zkratka EQ?",
+    opts:["Equalizer.","It stands for equalization.","EQ means equalizer, for shaping tone."],
+    answers:["equalizer","equali","eq","tone","shape","frequency"] },
+
+  { q:"What does a compressor do in audio?", cz:"Co dělá kompresor v audiu?",
+    opts:["It reduces the dynamic range.","Controls peaks and evens out levels.","Makes loud parts quieter, quiet parts louder."],
+    answers:["compress","dynamic","range","peak","level","loud","quiet","control","reduce"] },
+
+  { q:"What is a crossfader on a DJ mixer?", cz:"Co je crossfader na DJ mixeru?",
+    opts:["It blends between two channels.","A fader to mix between deck A and B.","Smooth transition between two sources."],
+    answers:["crossfader","cross","fader","blend","channel","deck","transition","mix"] },
+
+  { q:"What does BPM stand for?", cz:"Co znamená zkratka BPM?",
+    opts:["Beats per minute.","It measures the tempo of music.","BPM is the speed of a track."],
+    answers:["beats","per","minute","bpm","tempo","speed","track"] },
+
+  { q:"How do you beatmatch two tracks?", cz:"Jak nabiješ dva tracky?",
+    opts:["Adjust tempo until beats align.","Match BPM and phase of both tracks.","Use pitch fader to sync the beats."],
+    answers:["bpm","tempo","sync","beat","match","pitch","fader","align","phase"] },
+
+  { q:"What is a loop in DJing?", cz:"Co je smyčka v DJingu?",
+    opts:["A section of audio repeated continuously.","Repeating a part of the track.","One or more bars played on repeat."],
+    answers:["loop","repeat","section","bar","continuous","audio","part"] },
+
+  { q:"What is cue point used for?", cz:"K čemu slouží cue bod?",
+    opts:["Marking a specific point in a track.","A saved start point for instant play.","Jump directly to a saved position."],
+    answers:["cue","mark","point","save","start","jump","position","instant"] },
+
+  { q:"Do you play vinyl or digital mostly?", cz:"Hraješ hlavně vinyl nebo digitálně?",
+    opts:["Both — vinyl on the Reloop, digital on DDJ.","Mix of vinyl and digital.","Digital mainly, but vinyl too."],
+    answers:["vinyl","digital","reloop","ddj","both","mix","mainly","turntable"] },
+
+  { q:"What genre of music do you mix?", cz:"Jaký žánr hudby mixuješ?",
+    opts:["Mostly electronic and house.","House, techno and electronic.","Electronic dance music mainly."],
+    answers:["electronic","house","techno","dance","genre","mix","edm","mainly"] },
+
+  { q:"What is a hot cue?", cz:"Co je hot cue?",
+    opts:["An instant trigger for a saved point.","Like a cue point but triggered instantly.","Jump to a saved position with one pad hit."],
+    answers:["hot","cue","instant","trigger","save","point","pad","jump"] },
+
+  { q:"What are performance pads used for?", cz:"K čemu slouží performance pady?",
+    opts:["Triggering loops, cues and samples.","Hot cues, loops and effects via pads.","For finger drumming and live remixing."],
+    answers:["pad","hot","cue","loop","sample","effect","trigger","drum","remix","performance"] },
+
+  { q:"Do you use the Reloop Neon in your setup?", cz:"Používáš Reloop Neon v setu?",
+    opts:["Yes, it's my pad controller.","Reloop Neon for performance pads.","Yes, for triggering pads and loops."],
+    answers:["reloop","neon","pad","controller","yes","loop","trigger"] },
+
+  { q:"What is the PreSonus ATOM used for?", cz:"K čemu slouží PreSonus ATOM?",
+    opts:["Pad controller for Studio One.","MIDI pad controller from PreSonus.","For drum programming and performance."],
+    answers:["atom","presonus","pad","controller","midi","drum","studio","one","performance"] },
+
+  { q:"What is gain on a mixer channel?", cz:"Co je gain na kanálu mixeru?",
+    opts:["The input sensitivity of the channel.","How much the input signal is amplified.","Sets the level before the channel fader."],
+    answers:["gain","input","sensitivity","amplify","level","channel","fader","signal"] },
+
+  { q:"What does the master output do?", cz:"Co dělá master výstup?",
+    opts:["Sends the final mix to speakers.","Main output of the mixer.","Controls overall output to the system."],
+    answers:["master","output","speaker","main","mix","overall","final","system"] },
+
+  { q:"What is a send and return effect?", cz:"Co je send a return efekt?",
+    opts:["Routing signal to an external effect unit.","Send audio out, process it, return it.","Parallel effect processing loop."],
+    answers:["send","return","effect","route","parallel","process","external","loop"] },
+
+  { q:"What is headroom in audio?", cz:"Co je headroom v audiu?",
+    opts:["Space between peak level and clipping.","How much louder you can go before distortion.","The buffer before the signal clips."],
+    answers:["headroom","peak","clip","distort","buffer","loud","space","signal"] },
+
+  { q:"What causes audio clipping?", cz:"Co způsobuje přebuzení audio signálu?",
+    opts:["Signal exceeding the maximum level.","Too much gain, signal goes into red.","Overdriving the input or output."],
+    answers:["clip","signal","maximum","gain","red","overdrive","input","output","exceed"] },
+
+  { q:"What is a phono input on a mixer?", cz:"Co je phono vstup na mixeru?",
+    opts:["For connecting turntables.","A low-level input with RIAA equalisation.","Used for turntables and gramophones."],
+    answers:["phono","turntable","gramophone","riaa","input","low","level","connect"] },
+
+  { q:"What does RIAA equalisation do?", cz:"Co dělá RIAA ekvalizace?",
+    opts:["Corrects the frequency curve of vinyl.","Reverses the recording curve of LPs.","Restores flat response from vinyl playback."],
+    answers:["riaa","frequency","curve","vinyl","lp","correct","reverse","restore","flat","response"] },
+
+  { q:"What is the difference between line and phono level?", cz:"Jaký je rozdíl mezi line a phono úrovní?",
+    opts:["Phono is much lower level than line.","Line is around minus ten dBV, phono is much weaker.","Phono needs a preamp, line does not."],
+    answers:["phono","line","level","preamp","lower","weaker","dBV","difference"] },
+
+  { q:"What does monitoring mean in a studio?", cz:"Co znamená monitoring ve studiu?",
+    opts:["Listening to audio through studio speakers.","Checking the mix on reference monitors.","Hearing what you are recording or mixing."],
+    answers:["monitor","listen","speaker","mix","reference","check","hear","studio"] },
+
+  { q:"What are nearfield monitors?", cz:"Co jsou nearfield monitory?",
+    opts:["Speakers placed close to the listener.","Studio monitors for close listening.","Short-distance reference speakers."],
+    answers:["nearfield","near","field","close","short","distance","speaker","monitor","listener"] },
+
+  { q:"What is the Nobsound L3-3 in your setup?", cz:"Co je Nobsound L3-3 v tvém setu?",
+    opts:["A headphone amplifier.","It's a small headphone amp.","Nobsound headphone amp for monitoring."],
+    answers:["nobsound","l3","headphone","amp","amplifier","monitor"] },
+
+  { q:"What is a headphone amp used for?", cz:"K čemu slouží sluchátkový zesilovač?",
+    opts:["Driving multiple headphones from one source.","Boosting headphone output level.","Sharing a monitor mix with several listeners."],
+    answers:["headphone","amp","amplifier","drive","multiple","output","boost","monitor","share"] },
+
+  { q:"What does stem mixing mean?", cz:"Co znamená stem mixing?",
+    opts:["Mixing grouped tracks together.","Processing instrument groups separately.","Drums, bass and synths mixed as groups."],
+    answers:["stem","mix","group","track","drum","bass","synth","separately","process"] },
+
+  { q:"What is sidechain compression?", cz:"Co je sidechain komprese?",
+    opts:["Compressing one signal triggered by another.","Kick drum ducking the bass.","Using one track to control compression on another."],
+    answers:["sidechain","side","chain","compress","trigger","kick","duck","bass","control"] },
+
+  { q:"What does dry and wet mean on an effect?", cz:"Co znamená dry a wet u efektu?",
+    opts:["Dry is unprocessed, wet is processed signal.","Original versus effected sound.","How much effect is blended in."],
+    answers:["dry","wet","process","effect","original","blend","signal","unprocess"] }
+];
+
+/* ===== DATA — Úroveň 4: ZX Spectrum Next, NextBASIC, programování, Raspberry Pi, síť ===== */
+const DB_L4 = [
+  { q:"What is the ZX Spectrum Next?", cz:"Co je ZX Spectrum Next?",
+    opts:["An enhanced ZX Spectrum with FPGA.","A modern reimagining of the ZX Spectrum.","FPGA-based Spectrum compatible computer."],
+    answers:["zx","spectrum","next","fpga","enhanced","reimagin","compatible","modern"] },
+
+  { q:"Which Kickstarter backer number are you?", cz:"Jaké máš číslo backera na Kickstarteru?",
+    opts:["I'm backer number two thousand and ninety one.","KS3 backer number 2091.","Two zero nine one on Kickstarter 3."],
+    answers:["2091","two thousand","ninety one","backer","kickstarter","ks3","number"] },
+
+  { q:"What colour is your ZX Spectrum Next?", cz:"Jaká je barva tvého ZX Spectrum Next?",
+    opts:["It's purple.","Mine is a purple unit.","Purple, from Kickstarter 2."],
+    answers:["purple","colour","color","unit","mine"] },
+
+  { q:"What does FPGA stand for?", cz:"Co znamená zkratka FPGA?",
+    opts:["Field Programmable Gate Array.","It's a reconfigurable chip.","Field Programmable Gate Array — a flexible chip."],
+    answers:["field","programmable","gate","array","fpga","chip","reconfig"] },
+
+  { q:"What is NextBASIC?", cz:"Co je NextBASIC?",
+    opts:["An enhanced BASIC for the ZX Spectrum Next.","Extended BASIC with new commands for the Next.","The built-in programming language of the ZX Next."],
+    answers:["nextbasic","next","basic","enhanced","extended","language","command","built"] },
+
+  { q:"What is a core on the ZX Spectrum Next?", cz:"Co je core na ZX Spectrum Next?",
+    opts:["An FPGA firmware defining the hardware.","Different hardware configurations via FPGA.","A selectable hardware profile on the Next."],
+    answers:["core","fpga","firmware","hardware","config","profile","selectable"] },
+
+  { q:"Which core version are you running?", cz:"Jakou verzi core používáš?",
+    opts:["The latest stable core.","Core three point oh eight.","I keep it on the latest release."],
+    answers:["core","version","latest","stable","three","08","running","release"] },
+
+  { q:"What is the IP address of your ZX Spectrum Next?", cz:"Jaká je IP adresa tvého ZX Spectrum Next?",
+    opts:["One nine two dot one six eight dot zero dot one two four.","It's 192.168.0.124 on my network.","Local IP is 192.168.0.124."],
+    answers:["192","168","124","ip","address","local","network"] },
+
+  { q:"What operating system does the ZX Next run?", cz:"Jaký operační systém běží na ZX Next?",
+    opts:["It runs NextZXOS.","NextZXOS, based on classic ZX Spectrum OS.","A custom OS called NextZXOS."],
+    answers:["nextzxos","nextzx","zxos","os","operating","system","custom","based"] },
+
+  { q:"What language is used for scripting on the Next?", cz:"Jaký jazyk se používá pro skripty na Next?",
+    opts:["NextBASIC for scripting.","Mainly NextBASIC and assembler.","BASIC and Z80 assembly."],
+    answers:["nextbasic","basic","assembler","assembly","z80","script","language"] },
+
+  { q:"What is Z80 assembly?", cz:"Co je Z80 assembler?",
+    opts:["Low level language for the Z80 processor.","Machine code instructions for the Z80 CPU.","Direct processor instructions for Z80."],
+    answers:["z80","assembly","assembler","machine","code","processor","cpu","low","level","instruction"] },
+
+  { q:"What is the Raspberry Pi 4?", cz:"Co je Raspberry Pi 4?",
+    opts:["A single board Linux computer.","A small ARM-based Linux computer.","Credit card sized Linux computer."],
+    answers:["raspberry","pi","4","single","board","linux","arm","computer","small"] },
+
+  { q:"What is the hostname of your Raspberry Pi?", cz:"Jaký je hostname tvého Raspberry Pi?",
+    opts:["DJsound.","My Pi's hostname is DJsound.","It's called DJsound on the network."],
+    answers:["djsound","hostname","pi","network","called"] },
+
+  { q:"What is the IP address of your Raspberry Pi?", cz:"Jaká je IP adresa tvého Raspberry Pi?",
+    opts:["192.168.0.50.","It's 192.168.0.50 on my LAN.","Local address is 192 168 0 50."],
+    answers:["192","168","50","ip","address","pi","local","lan"] },
+
+  { q:"What is systemd used for on Linux?", cz:"K čemu slouží systemd na Linuxu?",
+    opts:["Managing system services and processes.","Starting and controlling background services.","Service manager for Linux."],
+    answers:["systemd","service","process","manage","start","control","background","linux","manager"] },
+
+  { q:"How do you create a systemd service?", cz:"Jak vytvoříš systemd service?",
+    opts:["Write a unit file in /etc/systemd/system.","Create a dot service file and run systemctl enable.","Add a unit file then systemctl daemon-reload and enable."],
+    answers:["unit","file","systemd","system","systemctl","enable","service","daemon","reload"] },
+
+  { q:"What does systemctl enable do?", cz:"Co dělá příkaz systemctl enable?",
+    opts:["Makes a service start on boot.","Enables the service to run automatically.","Sets the service to start at system startup."],
+    answers:["enable","boot","start","auto","startup","systemctl","service"] },
+
+  { q:"What is SSH?", cz:"Co je SSH?",
+    opts:["Secure Shell for remote access.","Encrypted remote terminal connection.","Protocol for secure remote login."],
+    answers:["ssh","secure","shell","remote","access","encrypt","terminal","login","protocol"] },
+
+  { q:"How do you SSH into your Raspberry Pi?", cz:"Jak se připojíš přes SSH k Raspberry Pi?",
+    opts:["ssh pi at 192.168.0.50.","Type ssh pi@192.168.0.50 in terminal.","Connect with ssh pi@192.168.0.50."],
+    answers:["ssh","pi","192","168","50","terminal","connect","192.168.0.50"] },
+
+  { q:"What is Python used for in your setup?", cz:"K čemu používáš Python ve svém setu?",
+    opts:["Running bridges and automation scripts.","Tapo bridge, Firebase sync, monitor scripts.","Background services on the Pi."],
+    answers:["python","script","bridge","firebase","tapo","monitor","service","automation","pi"] },
+
+  { q:"What is a Python virtual environment?", cz:"Co je Python virtuální prostředí?",
+    opts:["An isolated Python installation for a project.","Keeps project dependencies separate.","Separate Python packages per project."],
+    answers:["virtual","environment","venv","isolate","depend","separate","package","project"] },
+
+  { q:"What does pip install do?", cz:"Co dělá příkaz pip install?",
+    opts:["Installs a Python package.","Downloads and installs a Python library.","Adds a package to your Python environment."],
+    answers:["pip","install","package","library","download","python","add"] },
+
+  { q:"What is Firebase Realtime Database?", cz:"Co je Firebase Realtime Database?",
+    opts:["A cloud JSON database by Google.","Real-time syncing cloud database from Firebase.","NoSQL cloud database with live sync."],
+    answers:["firebase","realtime","database","cloud","json","google","nosql","sync","live"] },
+
+  { q:"What is the daily download limit on Firebase free tier?", cz:"Jaký je denní download limit na Firebase free tier?",
+    opts:["Three hundred and sixty megabytes per day.","360 MB daily download limit.","The free tier allows 360 MB downloads per day."],
+    answers:["360","mb","megabyte","daily","limit","free","tier","download","per day"] },
+
+  { q:"What time does the Firebase quota reset?", cz:"V kolik se resetuje Firebase kvóta?",
+    opts:["At nine in the morning.","Nine AM every day.","The quota resets at 9:00 AM."],
+    answers:["nine","9","morning","am","reset","quota","daily","every"] },
+
+  { q:"What is a Firebase listener?", cz:"Co je Firebase listener?",
+    opts:["A function triggered by database changes.","Watches a database node for updates.","Fires when data at a path changes."],
+    answers:["listener","firebase","trigger","change","watch","node","update","fire","path","function"] },
+
+  { q:"What is a cron job?", cz:"Co je cron job?",
+    opts:["A scheduled task running automatically.","A command scheduled to run at a set time.","Automated task scheduler on Linux."],
+    answers:["cron","schedule","task","auto","time","command","linux","job","run"] },
+
+  { q:"How do you edit the crontab on Linux?", cz:"Jak upravíš crontab na Linuxu?",
+    opts:["Type crontab minus e in terminal.","Run crontab -e to edit your jobs.","Use crontab -e command."],
+    answers:["crontab","-e","edit","terminal","command","run","cron","job"] },
+
+  { q:"What does the cat command do on Linux?", cz:"Co dělá příkaz cat na Linuxu?",
+    opts:["Displays the content of a file.","Prints file contents to the terminal.","Reads and outputs a file."],
+    answers:["cat","file","content","display","print","terminal","read","output"] },
+
+  { q:"What does chmod do on Linux?", cz:"Co dělá příkaz chmod na Linuxu?",
+    opts:["Changes file permissions.","Sets read write execute rights on a file.","Modifies access permissions."],
+    answers:["chmod","permission","read","write","execute","access","modify","file","right"] },
+
+  { q:"What is a local IP address?", cz:"Co je lokální IP adresa?",
+    opts:["An address on your home network.","Private network address like 192.168.x.x.","Internal network identifier."],
+    answers:["local","ip","192","168","private","home","network","address","internal"] },
+
+  { q:"What is DHCP?", cz:"Co je DHCP?",
+    opts:["Automatic IP address assignment.","Protocol that assigns IPs on a network.","Dynamic Host Configuration Protocol."],
+    answers:["dhcp","dynamic","host","config","protocol","ip","assign","auto","address"] },
+
+  { q:"What is a DHCP reservation?", cz:"Co je DHCP rezervace?",
+    opts:["Assigning a fixed IP to a device by MAC.","Always giving the same IP to a device.","Static IP via router based on MAC address."],
+    answers:["dhcp","reservation","fixed","static","mac","ip","device","address","router","always"] },
+
+  { q:"What is a MAC address?", cz:"Co je MAC adresa?",
+    opts:["A unique hardware identifier for a network device.","Physical address of a network interface.","Unique identifier burned into a network chip."],
+    answers:["mac","address","hardware","unique","identifier","physical","network","interface","device"] },
+
+  { q:"What router do you use at home?", cz:"Jaký router máš doma?",
+    opts:["A TP-Link AX55.","TP-Link AX55 WiFi 6 router.","TP-Link AX55, it's a WiFi 6 router."],
+    answers:["tp-link","tplink","ax55","router","wifi","6","home"] },
+
+  { q:"What is WiFi 6?", cz:"Co je WiFi 6?",
+    opts:["The latest major WiFi standard, 802.11ax.","Faster and more efficient wireless standard.","802.11ax, improved speed and capacity."],
+    answers:["wifi","6","802","11ax","ax","standard","fast","efficient","wireless","capacity"] },
+
+  { q:"What is a REST API?", cz:"Co je REST API?",
+    opts:["An HTTP-based interface for web services.","A way to communicate between apps over HTTP.","Standard for web service communication."],
+    answers:["rest","api","http","web","service","interface","communicate","standard","app"] },
+
+  { q:"What is JSON?", cz:"Co je JSON?",
+    opts:["JavaScript Object Notation for data exchange.","A lightweight text data format.","Key-value data format used in web APIs."],
+    answers:["json","javascript","object","notation","data","format","key","value","lightweight","web"] },
+
+  { q:"What does async mean in programming?", cz:"Co znamená async v programování?",
+    opts:["Code that runs without blocking.","Asynchronous — runs in background.","Non-blocking execution of code."],
+    answers:["async","asynchronous","non-blocking","background","run","block","execution"] },
+
+  { q:"What is a GitHub repository?", cz:"Co je GitHub repozitář?",
+    opts:["A storage place for code on GitHub.","A project folder tracked by Git.","Version-controlled project on GitHub."],
+    answers:["github","repository","repo","code","storage","git","version","project","track"] },
+
+  { q:"What does git push do?", cz:"Co dělá příkaz git push?",
+    opts:["Uploads local commits to the remote repo.","Sends your changes to GitHub.","Pushes local code to the remote repository."],
+    answers:["push","git","upload","commit","remote","repo","github","change","send"] },
+
+  { q:"What does git pull do?", cz:"Co dělá příkaz git pull?",
+    opts:["Downloads changes from the remote repo.","Fetches and merges remote changes.","Gets the latest code from GitHub."],
+    answers:["pull","git","download","remote","change","fetch","merge","latest","github"] },
+
+  { q:"What is a Node.js script?", cz:"Co je Node.js skript?",
+    opts:["JavaScript running on the server side.","A server-side JS script using Node runtime.","JavaScript outside the browser using Node."],
+    answers:["node","nodejs","javascript","server","side","script","runtime","browser"] },
+
+  { q:"What is npm?", cz:"Co je npm?",
+    opts:["Node Package Manager for JavaScript.","Tool for installing Node.js packages.","Package manager for Node and JavaScript."],
+    answers:["npm","node","package","manager","javascript","install","tool"] },
+
+  { q:"What is a WebSocket?", cz:"Co je WebSocket?",
+    opts:["A persistent two-way connection over TCP.","Real-time bidirectional communication protocol.","Keep-alive connection between client and server."],
+    answers:["websocket","persistent","two-way","tcp","real-time","bidirectional","client","server","keep","alive"] },
+
+  { q:"What is localhost?", cz:"Co je localhost?",
+    opts:["The local machine address, 127.0.0.1.","Refers to the computer itself on the network.","Loopback address pointing to your own machine."],
+    answers:["localhost","127","0","local","machine","loopback","address","itself","own"] },
+
+  { q:"What is a port number in networking?", cz:"Co je číslo portu v sítích?",
+    opts:["A logical channel for network communication.","Identifies which service on a host to connect to.","Number like 80 or 8080 for different services."],
+    answers:["port","number","network","service","host","connect","channel","80","8080","logical"] },
+
+  { q:"What does ping do?", cz:"Co dělá příkaz ping?",
+    opts:["Tests network connectivity to a host.","Checks if a device is reachable on the network.","Sends packets and waits for a reply."],
+    answers:["ping","test","network","connectivity","host","reachable","packet","reply","check"] },
+
+  { q:"What is the difference between TCP and UDP?", cz:"Jaký je rozdíl mezi TCP a UDP?",
+    opts:["TCP is reliable, UDP is faster but lossy.","TCP confirms delivery, UDP does not.","TCP has error checking, UDP skips it."],
+    answers:["tcp","udp","reliable","fast","loss","confirm","delivery","error","check","difference"] },
+
+  { q:"What is a firewall?", cz:"Co je firewall?",
+    opts:["Software or hardware filtering network traffic.","Blocks unwanted network connections.","Security layer controlling network access."],
+    answers:["firewall","filter","network","traffic","block","security","access","control","connection"] },
+
+  { q:"What is an SSH key?", cz:"Co je SSH klíč?",
+    opts:["A cryptographic key pair for SSH login.","Used instead of a password for SSH access.","Public and private key for secure SSH."],
+    answers:["ssh","key","cryptographic","pair","login","password","public","private","secure"] },
+
+  { q:"What does SCP do?", cz:"Co dělá příkaz SCP?",
+    opts:["Copies files securely over SSH.","Secure file transfer between machines.","Transfers files via SSH connection."],
+    answers:["scp","copy","file","secure","ssh","transfer","machine","between"] },
+
+  { q:"What is a heredoc in Linux?", cz:"Co je heredoc v Linuxu?",
+    opts:["A way to pass multi-line input to a command.","Multi-line string input method in shell.","cat with EOF for writing multi-line files."],
+    answers:["heredoc","here","doc","eof","multi","line","input","shell","cat","file"] },
+
+  { q:"Why do you use heredoc instead of nano for scripts?", cz:"Proč používáš heredoc místo nano pro skripty?",
+    opts:["Mobile SSH corrupts multi-line text.","Termius breaks multi-line Python code.","Heredoc avoids corruption on mobile SSH."],
+    answers:["heredoc","nano","mobile","ssh","termius","corrupt","multi","line","python","break"] },
+
+  { q:"What is a Python bridge script?", cz:"Co je Python bridge skript?",
+    opts:["A script connecting two systems or services.","Relay between Firebase and a device.","Script that translates commands between services."],
+    answers:["bridge","script","python","connect","firebase","device","relay","translate","service","system"] },
+
+  { q:"What is the Tapo bridge used for?", cz:"K čemu slouží Tapo bridge?",
+    opts:["Controlling Tapo smart plugs from Firebase.","Reads Firebase commands and controls plugs.","Python script linking Firebase to Tapo devices."],
+    answers:["tapo","bridge","firebase","smart","plug","control","python","command","device","link"] },
+
+  { q:"What smart plugs do you have?", cz:"Jaké chytré zásuvky máš?",
+    opts:["P115, P100 and P110 from TP-Link Tapo.","Three Tapo plugs — P115, P100 and P110.","Tapo P115, P100 and P110."],
+    answers:["p115","p100","p110","tapo","plug","tp-link","three","smart"] },
+
+  { q:"What is the IR bridge used for?", cz:"K čemu slouží IR bridge?",
+    opts:["Sending infrared commands to devices.","Controls TV and other IR devices via Firebase.","Forwards Firebase commands to an IR hub."],
+    answers:["ir","infrared","bridge","command","device","tv","firebase","hub","control","forward"] },
+
+  { q:"What does the pi_monitor script do?", cz:"Co dělá skript pi_monitor?",
+    opts:["Monitors Raspberry Pi stats and sends to Firebase.","Tracks CPU, RAM, temperature and uptime.","Collects Pi metrics and writes to Firebase."],
+    answers:["pi","monitor","firebase","cpu","ram","temperature","uptime","stat","metric","collect"] },
+
+  { q:"What electricity rate do you use for cost calculations?", cz:"Jakou sazbu elektřiny používáš pro výpočty ceny?",
+    opts:["Six point five Czech crowns per kilowatt hour.","6.50 CZK per kWh, fixed contract.","Fixed rate of 6.50 CZK per kWh."],
+    answers:["6.50","6","50","czk","kWh","kilowatt","crown","fixed","rate","contract"] }
+];
+
+/* ===== STATE ===== */
+let queue = [], idx = 0, score = 0, answered = false;
+let mode = 'opt'; // opt | mic | both
+let currentLevel = 1; // 1 | 2 | 3 | 4 | 0=all
+let recRunning = false, recObj = null;
+let ttsLang = 'en-GB';
+
+/* ===== LEVEL ===== */
+function setLevel(lvl){
+  currentLevel = lvl;
+  ['lbtn1','lbtn2','lbtn3','lbtn4','lbtnAll'].forEach(function(id){ document.getElementById(id).classList.remove('active'); });
+  const map = {1:'lbtn1', 2:'lbtn2', 3:'lbtn3', 4:'lbtn4', 0:'lbtnAll'};
+  document.getElementById(map[lvl]).classList.add('active');
+  const names = {1:'Základy', 2:'Život & Koníčky', 3:'DJ & Audio', 4:'ZX Next & Tech', 0:'Všechny úrovně'};
+  document.getElementById('subhdr').textContent = 'Trénink anglické konverzace · ' + (lvl===0 ? 'Vše' : 'Úroveň '+lvl+' — '+names[lvl]);
+  init();
+}
+
+/* ===== INIT ===== */
+function init(){
+  let src;
+  if(currentLevel===1) src = DB;
+  else if(currentLevel===2) src = DB_L2;
+  else if(currentLevel===3) src = DB_L3;
+  else if(currentLevel===4) src = DB_L4;
+  else src = DB.concat(DB_L2).concat(DB_L3).concat(DB_L4);
+  queue = shuffle([...src]);
+  idx = 0; score = 0; answered = false;
+  document.getElementById('lvlBadge').textContent = currentLevel===0 ? 'VŠE' : 'LVL '+currentLevel;
+  updateScore(); showQ();
+}
+
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+/* ===== SHOW QUESTION ===== */
+function showQ(){
+  if(idx >= queue.length){ showFinish(); return; }
+  const q = queue[idx];
+  answered = false;
+
+  document.getElementById('finish').classList.remove('show');
+  document.getElementById('mainCard').style.display='';
+  document.getElementById('btnPlay').style.display='';
+  document.getElementById('status').textContent='Stiskni přehrát.';
+
+  document.getElementById('qEn').textContent = q.q;
+  const cz = document.getElementById('qCz');
+  cz.textContent = q.cz;
+  cz.classList.remove('show');
+
+  document.getElementById('feedback').classList.remove('show');
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('btnNext').classList.remove('show');
+  document.getElementById('btnPlay').disabled=false;
+
+  // options
+  const oa = document.getElementById('optArea');
+  oa.innerHTML='';
+  if(mode==='opt'||mode==='both'){
+    const opts = shuffle([...q.opts]);
+    opts.forEach(function(o){
+      const b=document.createElement('button');
+      b.className='opt'; b.textContent=o;
+      b.onclick=function(){ checkOpt(o, b, q); };
+      oa.appendChild(b);
+    });
+    oa.style.display='flex';
+  } else {
+    oa.style.display='none';
+  }
+
+  // mic
+  const bm = document.getElementById('btnMic');
+  if(mode==='mic'||mode==='both'){
+    bm.style.display='';
+    bm.textContent='🎤 Odpovědět';
+    bm.classList.remove('listening');
+    bm.disabled=true; // enable after play
+  } else {
+    bm.style.display='none';
+  }
+
+  updateProg();
+}
+
+/* ===== PLAY TTS ===== */
+function playQuestion(){
+  const q = queue[idx];
+  document.getElementById('btnPlay').disabled=true;
+  document.getElementById('status').textContent='▶ Přehrávám…';
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(q.q);
+  u.lang=ttsLang; u.rate=0.88;
+  u.onend=function(){
+    document.getElementById('status').textContent='Slyšel jsi to? Zvol odpověď.';
+    document.getElementById('qCz').classList.add('show');
+    if(mode==='mic'||mode==='both'){
+      document.getElementById('btnMic').disabled=false;
+    }
+  };
+  u.onerror=function(){
+    document.getElementById('status').textContent='⚠ TTS chyba — zkus znovu.';
+    document.getElementById('btnPlay').disabled=false;
+    document.getElementById('qCz').classList.add('show');
+    if(mode==='mic'||mode==='both') document.getElementById('btnMic').disabled=false;
+  };
+  window.speechSynthesis.speak(u);
+}
+
+/* ===== CHECK OPTION ===== */
+function checkOpt(chosen, btn, q){
+  if(answered) return;
+  answered=true;
+  // disable all opts
+  document.querySelectorAll('.opt').forEach(function(b){ b.disabled=true; });
+
+  const norm = chosen.toLowerCase();
+  const correct = q.answers.some(function(a){ return norm.includes(a); });
+
+  if(correct){
+    btn.classList.add('correct');
+    score++; updateScore();
+    showFeedback(true, chosen, null);
+  } else {
+    btn.classList.add('wrong');
+    showFeedback(false, chosen, q.opts[0]);
+  }
+  idx++;
+  document.getElementById('btnNext').classList.add('show');
+}
+
+/* ===== MIC ===== */
+function toggleMic(){
+  if(recRunning){ stopMic(); return; }
+  startMic();
+}
+
+function startMic(){
+  const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ document.getElementById('status').textContent='❌ Prohlížeč nepodporuje mikrofon.'; return; }
+  recObj=new SR();
+  recObj.lang='en-US'; recObj.interimResults=false; recObj.maxAlternatives=3;
+  const btn=document.getElementById('btnMic');
+  recObj.onstart=function(){ recRunning=true; btn.textContent='⏹ Zastavit'; btn.classList.add('listening'); document.getElementById('status').textContent='🎤 Poslouchám…'; };
+  recObj.onresult=function(ev){
+    let heard='';
+    for(let i=0;i<ev.results[0].length;i++) heard+=ev.results[0][i].transcript+' ';
+    heard=heard.trim().toLowerCase();
+    evalMic(heard);
+  };
+  recObj.onerror=function(ev){
+    if(ev.error==='no-speech'){ document.getElementById('status').textContent='Nic neslyšeno, zkus znovu.'; }
+    else { document.getElementById('status').textContent='❌ '+ev.error; }
+    recRunning=false;
+    btn.textContent='🎤 Odpovědět'; btn.classList.remove('listening');
+  };
+  recObj.onend=function(){ recRunning=false; btn.textContent='🎤 Odpovědět'; btn.classList.remove('listening'); };
+  recObj.start();
+}
+
+function stopMic(){ if(recObj&&recRunning) recObj.stop(); }
+
+function evalMic(heard){
+  if(answered) return;
+  const q=queue[idx];
+  const correct=q.answers.some(function(a){ return heard.includes(a); });
+  answered=true;
+  document.getElementById('btnMic').disabled=true;
+  // disable opts if shown
+  document.querySelectorAll('.opt').forEach(function(b){ b.disabled=true; });
+  if(correct){
+    score++; updateScore();
+    showFeedback(true, heard, null);
+  } else {
+    showFeedback(false, heard, q.opts[0]);
+  }
+  idx++;
+  document.getElementById('btnNext').classList.add('show');
+}
+
+/* ===== FEEDBACK ===== */
+function showFeedback(ok, heard, suggestion){
+  const fb=document.getElementById('feedback');
+  if(ok){
+    fb.className='feedback ok show';
+    fb.innerHTML='✅ Správně!<div class="heard">Slyšeno: '+escHtml(heard)+'</div>';
+  } else {
+    fb.className='feedback bad show';
+    let s='❌ Zkus jinak.';
+    if(suggestion) s+=' Zkus: <b>'+escHtml(suggestion)+'</b>';
+    s+='<div class="heard">Slyšeno/vybráno: '+escHtml(heard)+'</div>';
+    fb.innerHTML=s;
+  }
+}
+
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ===== NEXT ===== */
+function nextQ(){
+  if(recRunning) stopMic();
+  window.speechSynthesis.cancel();
+  showQ();
+}
+
+/* ===== SCORE & PROGRESS ===== */
+function updateScore(){
+  document.getElementById('scoreNum').textContent=score;
+}
+function updateProg(){
+  const pct=Math.round((idx/queue.length)*100);
+  document.getElementById('progBar').style.width=pct+'%';
+  document.getElementById('progLbl').textContent=idx+' / '+queue.length;
+}
+
+/* ===== FINISH ===== */
+function showFinish(){
+  document.getElementById('mainCard').style.display='none';
+  document.getElementById('btnPlay').style.display='none';
+  document.getElementById('optArea').style.display='none';
+  document.getElementById('btnMic').style.display='none';
+  document.getElementById('feedback').classList.remove('show');
+  document.getElementById('btnNext').classList.remove('show');
+  document.getElementById('status').textContent='';
+  const pct=Math.round((score/queue.length)*100);
+  let msg=pct>=80?'Výborně! 🎉':pct>=50?'Dobrá práce, pokračuj! 💪':'Nevzdávej to, zkus znovu! 🔁';
+  document.getElementById('finalScore').textContent=score+'/'+queue.length+' ('+pct+'%)';
+  document.getElementById('finalMsg').textContent=msg;
+  document.getElementById('finish').classList.add('show');
+  // save to localStorage
+  try {
+    var lkey='su_l'+currentLevel+'_best';
+    const best=parseInt(localStorage.getItem(lkey)||'0');
+    if(score>best) localStorage.setItem(lkey,score);
+    localStorage.setItem('su_l'+currentLevel+'_last',score);
+  } catch(e){}
+}
+
+/* ===== RESTART ===== */
+function restart(){
+  document.getElementById('finish').classList.remove('show');
+  init();
+}
+
+/* ===== MODE ===== */
+function setMode(m){
+  mode=m;
+  document.getElementById('modeOpt').classList.toggle('active',m==='opt');
+  document.getElementById('modeMic').classList.toggle('active',m==='mic');
+  document.getElementById('modeBoth').classList.toggle('active',m==='both');
+  showQ();
+}
+
+/* ===== START ===== */
+// TTS voice preference: en-GB → en-US
+if('speechSynthesis' in window){
+  window.speechSynthesis.onvoiceschanged=function(){
+    const vs=window.speechSynthesis.getVoices();
+    const gb=vs.find(function(v){ return v.lang==='en-GB'; });
+    const us=vs.find(function(v){ return v.lang==='en-US'; });
+    const any=vs.find(function(v){ return v.lang.startsWith('en'); });
+    if(gb) ttsLang='en-GB';
+    else if(us) ttsLang='en-US';
+    else if(any) ttsLang=any.lang;
+  };
+}
+
+init();
+</script>
+</body>
+</html>
