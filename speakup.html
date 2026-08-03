@@ -1417,6 +1417,7 @@ function playQuestion(){
   document.getElementById('btnPlay').disabled=true;
   document.getElementById('status').textContent='▶ Přehrávám…';
   window.speechSynthesis.cancel();
+  setTimeout(function(){
   const u = new SpeechSynthesisUtterance(q.q);
   u.lang=ttsLang; u.rate=0.88;
   u.onend=function(){
@@ -1433,6 +1434,7 @@ function playQuestion(){
     if(mode==='mic'||mode==='both') document.getElementById('btnMic').disabled=false;
   };
   window.speechSynthesis.speak(u);
+  },100);
 }
 
 /* ===== CHECK OPTION ===== */
