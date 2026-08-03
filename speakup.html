@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SpeakUp v5.2Kl</title>
+<title>SpeakUp v5.3Kl</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
@@ -46,6 +46,15 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
   transition:width .4s ease;
   width:0%;
 }
+.mastery-bar {
+  display:flex; gap:6px; margin-top:6px; align-items:center;
+  font-size:.68rem;
+}
+.mastery-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.mastery-dot.ok  { background:#00ff88; }
+.mastery-dot.mid { background:#ffcc00; }
+.mastery-dot.bad { background:#ff4466; }
+.mastery-dot.new { background:rgba(255,255,255,.25); }
 
 /* MAIN CARD */
 .card {
@@ -126,15 +135,6 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 .feedback.bad { background:rgba(255,68,102,.1); border:1px solid rgba(255,68,102,.4); color:#ff6688; }
 .feedback .heard { font-size:.78rem; color:rgba(255,255,255,.5); margin-top:6px; }
 .feedback .mic-score { font-size:.82rem; color:#00ff88; margin-top:8px; line-height:1.5; }
-.mic-legend {
-  margin-top:10px; border-top:1px solid rgba(0,255,136,.2);
-  padding-top:8px;
-}
-.mic-legend table { width:100%; border-collapse:collapse; font-size:.75rem; }
-.mic-legend td { padding:4px 6px; line-height:1.4; }
-.mic-legend td:first-child { color:#00d4ff; font-weight:700; white-space:nowrap; width:90px; }
-.mic-legend td:last-child { color:rgba(255,255,255,.6); }
-.mic-legend tr.active-row td { color:#00ff88 !important; font-weight:700; }
 
 /* NEXT BUTTON */
 .btn-next {
@@ -210,7 +210,7 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 
 <div class="hdr">
   <h1>SPEAKUP</h1>
-  <span class="ver">v5.2Kl</span>
+  <span class="ver">v5.3Kl</span>
 </div>
 <div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
 
@@ -223,6 +223,7 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
   <div style="flex:1;padding-left:8px;">
     <div class="prog-wrap"><div class="prog-bar" id="progBar"></div></div>
     <div style="font-size:.68rem;color:rgba(255,255,255,.3);margin-top:4px;" id="progLbl">0 / 40</div>
+    <div class="mastery-bar" id="masteryBar"></div>
   </div>
   <div class="lvl-badge" id="lvlBadge">LVL 1</div>
 </div>
@@ -1111,6 +1112,73 @@ let recRunning = false, recObj = null;
 let ttsLang = 'en-GB';
 let micTotal = 0, micScoreSum = 0; // pro % srozumitelnosti
 
+/* ===== MASTERY (localStorage) ===== */
+// Klíč: su_q_{hash} → {attempts, correct, avgPct}
+function qKey(q){ return 'su_q_'+Math.abs(hashStr(q.q)); }
+function hashStr(s){
+  let h=0;
+  for(let i=0;i<s.length;i++){ h=Math.imul(31,h)+s.charCodeAt(i)|0; }
+  return h;
+}
+function getMastery(q){
+  try{ return JSON.parse(localStorage.getItem(qKey(q)))||{attempts:0,correct:0,avgPct:50}; }
+  catch(e){ return {attempts:0,correct:0,avgPct:50}; }
+}
+function saveMastery(q, isCorrect, pct){
+  try{
+    const m=getMastery(q);
+    m.attempts++;
+    if(isCorrect) m.correct++;
+    // klouzavý průměr posledních výsledků
+    m.avgPct=Math.round((m.avgPct*(m.attempts-1)+(pct||( isCorrect?85:30)))/m.attempts);
+    localStorage.setItem(qKey(q), JSON.stringify(m));
+  }catch(e){}
+}
+function getPriority(q){
+  const m=getMastery(q);
+  if(m.attempts===0) return 2;        // nová — střední
+  if(m.avgPct<55)    return 4;        // špatná výslovnost — nejvyšší
+  if(m.avgPct<75)    return 3;        // pod cílem — vysoká
+  if(m.avgPct<90)    return 2;        // OK — normální
+  return 1;                           // zvládnuto — nízká
+}
+function buildQueue(src){
+  // Rozděl podle priority a zamíchej každou skupinu
+  const p4=[],p3=[],p2=[],p1=[];
+  src.forEach(function(q){
+    const p=getPriority(q);
+    if(p===4) p4.push(q);
+    else if(p===3) p3.push(q);
+    else if(p===2) p2.push(q);
+    else p1.push(q);
+  });
+  // Vysoce prioritní 2x, ostatní 1x, zvládnuté jen občas
+  const result=[];
+  shuffle(p4).forEach(function(q){ result.push(q); result.push(q); }); // 2x
+  shuffle(p3).forEach(function(q){ result.push(q); });
+  shuffle(p2).forEach(function(q){ result.push(q); });
+  // p1 (zvládnuté) — jen každá třetí
+  shuffle(p1).filter(function(_,i){ return i%3===0; }).forEach(function(q){ result.push(q); });
+  return result.length>0 ? result : shuffle([...src]);
+}
+function updateMasteryBar(src){
+  let ok=0,mid=0,bad=0,nw=0;
+  src.forEach(function(q){
+    const m=getMastery(q);
+    if(m.attempts===0) nw++;
+    else if(m.avgPct>=90) ok++;
+    else if(m.avgPct>=75) mid++;
+    else bad++;
+  });
+  const bar=document.getElementById('masteryBar');
+  if(!bar) return;
+  bar.innerHTML=
+    '<span class="mastery-dot ok"></span><span style="color:rgba(255,255,255,.4)">'+ok+'</span>'
+   +'<span class="mastery-dot mid" style="margin-left:6px"></span><span style="color:rgba(255,255,255,.4)">'+mid+'</span>'
+   +'<span class="mastery-dot bad" style="margin-left:6px"></span><span style="color:rgba(255,255,255,.4)">'+bad+'</span>'
+   +'<span class="mastery-dot new" style="margin-left:6px"></span><span style="color:rgba(255,255,255,.4)">'+nw+' nových</span>';
+}
+
 /* ===== LEVENSHTEIN ===== */
 function levenshtein(a, b){
   const m=a.length, n=b.length;
@@ -1153,10 +1221,11 @@ function init(){
   else if(currentLevel===3) src = DB_L3;
   else if(currentLevel===4) src = DB_L4;
   else src = DB.concat(DB_L2).concat(DB_L3).concat(DB_L4);
-  queue = shuffle([...src]);
+  queue = buildQueue(src);
   idx = 0; score = 0; answered = false;
   micTotal = 0; micScoreSum = 0;
   document.getElementById('lvlBadge').textContent = currentLevel===0 ? 'VŠE' : 'LVL '+currentLevel;
+  updateMasteryBar(src);
   updateScore(); showQ();
 }
 
@@ -1247,11 +1316,11 @@ function playQuestion(){
 function checkOpt(chosen, btn, q){
   if(answered) return;
   answered=true;
-  // disable all opts
   document.querySelectorAll('.opt').forEach(function(b){ b.disabled=true; });
 
   const norm = chosen.toLowerCase();
   const correct = q.answers.some(function(a){ return norm.includes(a); });
+  saveMastery(q, correct, correct?88:25);
 
   if(correct){
     btn.classList.add('correct');
@@ -1308,15 +1377,15 @@ function evalMic(heard, confidence){
   document.getElementById('btnMic').disabled=true;
   document.querySelectorAll('.opt').forEach(function(b){ b.disabled=true; });
 
-  // Výpočet srozumitelnosti: nejlepší shoda s některou ze správných odpovědí
+  // Výpočet srozumitelnosti
   const bestSim = q.answers.reduce(function(best, ans){
     return Math.max(best, similarityPct(heard, ans));
   }, 0);
-  // Kombinace: 50% confidence API + 50% textová podobnost
   const confPct = Math.round((confidence||0)*100);
   const combined = Math.round(confPct*0.5 + bestSim*0.5);
   micTotal++;
   micScoreSum += combined;
+  saveMastery(q, correct, combined);
 
   if(correct){
     score++; updateScore();
@@ -1339,27 +1408,8 @@ function showFeedback(ok, heard, suggestion, micPct){
     else if(micPct>=55) label='Celkem srozumitelné, ale pracuj na výslovnosti ⚠️';
     else label='Angličan by měl problém porozumět ❌';
     const avg = micTotal>0 ? Math.round(micScoreSum/micTotal) : micPct;
-    const rows=[
-      {range:'90–100%', desc:'Angličan rozumí bez problémů', min:90},
-      {range:'75–89%',  desc:'Rozumí, možná se zeptá jednou znovu', min:75},
-      {range:'55–74%',  desc:'Pochopí, ale musí se snažit', min:55},
-      {range:'0–54%',   desc:'Požádá tě o zopakování', min:0}
-    ];
-    let tableRows='';
-    rows.forEach(function(r){
-      const active=(micPct>=r.min && (r.min===90?micPct<=100:micPct<rows[rows.indexOf(r)-1]?rows[rows.indexOf(r)-1].min:101));
-      // jednodušší výpočet aktivního řádku
-      let isActive=false;
-      if(micPct>=90) isActive=(r.min===90);
-      else if(micPct>=75) isActive=(r.min===75);
-      else if(micPct>=55) isActive=(r.min===55);
-      else isActive=(r.min===0);
-      tableRows+='<tr'+(isActive?' class="active-row"':'')+'><td>'+r.range+'</td><td>'+r.desc+'</td></tr>';
-    });
     micLine='<div class="mic-score">🎙 Srozumitelnost: <b>'+micPct+'%</b> — '+label+'<br>'
-            +'<span style="font-size:.72rem;opacity:.7">Průměr relace: '+avg+'%</span>'
-            +'<div class="mic-legend"><table>'+tableRows+'</table></div>'
-            +'</div>';
+            +'<span style="font-size:.72rem;opacity:.7">Průměr relace: '+avg+'%</span></div>';
   }
   if(ok){
     fb.className='feedback ok show';
