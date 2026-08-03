@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SpeakUp v5.1Kl</title>
+<title>SpeakUp v5.2Kl</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
@@ -126,6 +126,15 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 .feedback.bad { background:rgba(255,68,102,.1); border:1px solid rgba(255,68,102,.4); color:#ff6688; }
 .feedback .heard { font-size:.78rem; color:rgba(255,255,255,.5); margin-top:6px; }
 .feedback .mic-score { font-size:.82rem; color:#00ff88; margin-top:8px; line-height:1.5; }
+.mic-legend {
+  margin-top:10px; border-top:1px solid rgba(0,255,136,.2);
+  padding-top:8px;
+}
+.mic-legend table { width:100%; border-collapse:collapse; font-size:.75rem; }
+.mic-legend td { padding:4px 6px; line-height:1.4; }
+.mic-legend td:first-child { color:#00d4ff; font-weight:700; white-space:nowrap; width:90px; }
+.mic-legend td:last-child { color:rgba(255,255,255,.6); }
+.mic-legend tr.active-row td { color:#00ff88 !important; font-weight:700; }
 
 /* NEXT BUTTON */
 .btn-next {
@@ -201,7 +210,7 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 
 <div class="hdr">
   <h1>SPEAKUP</h1>
-  <span class="ver">v5.1Kl</span>
+  <span class="ver">v5.2Kl</span>
 </div>
 <div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
 
@@ -1330,8 +1339,27 @@ function showFeedback(ok, heard, suggestion, micPct){
     else if(micPct>=55) label='Celkem srozumitelné, ale pracuj na výslovnosti ⚠️';
     else label='Angličan by měl problém porozumět ❌';
     const avg = micTotal>0 ? Math.round(micScoreSum/micTotal) : micPct;
+    const rows=[
+      {range:'90–100%', desc:'Angličan rozumí bez problémů', min:90},
+      {range:'75–89%',  desc:'Rozumí, možná se zeptá jednou znovu', min:75},
+      {range:'55–74%',  desc:'Pochopí, ale musí se snažit', min:55},
+      {range:'0–54%',   desc:'Požádá tě o zopakování', min:0}
+    ];
+    let tableRows='';
+    rows.forEach(function(r){
+      const active=(micPct>=r.min && (r.min===90?micPct<=100:micPct<rows[rows.indexOf(r)-1]?rows[rows.indexOf(r)-1].min:101));
+      // jednodušší výpočet aktivního řádku
+      let isActive=false;
+      if(micPct>=90) isActive=(r.min===90);
+      else if(micPct>=75) isActive=(r.min===75);
+      else if(micPct>=55) isActive=(r.min===55);
+      else isActive=(r.min===0);
+      tableRows+='<tr'+(isActive?' class="active-row"':'')+'><td>'+r.range+'</td><td>'+r.desc+'</td></tr>';
+    });
     micLine='<div class="mic-score">🎙 Srozumitelnost: <b>'+micPct+'%</b> — '+label+'<br>'
-            +'<span style="font-size:.72rem;opacity:.7">Průměr relace: '+avg+'%</span></div>';
+            +'<span style="font-size:.72rem;opacity:.7">Průměr relace: '+avg+'%</span>'
+            +'<div class="mic-legend"><table>'+tableRows+'</table></div>'
+            +'</div>';
   }
   if(ok){
     fb.className='feedback ok show';
