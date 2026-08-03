@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SpeakUp v5.7Kl</title>
+<title>SpeakUp v6.0Kl</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
@@ -214,6 +214,150 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
   border-color:#00d4ff; background:rgba(0,212,255,.14); color:#00d4ff;
 }
 
+/* TAB SWITCHER */
+.tab-bar {
+  display:flex; gap:6px; margin-bottom:14px;
+}
+.tab-btn {
+  flex:1; padding:12px 6px;
+  border-radius:10px; border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.04); color:rgba(255,255,255,.45);
+  font-size:.82rem; font-weight:700; font-family:inherit; cursor:pointer;
+}
+.tab-btn.active {
+  border-color:#00d4ff; background:rgba(0,212,255,.14); color:#00d4ff;
+}
+.tab-section { display:none; }
+.tab-section.show { display:block; }
+
+/* SLOVÍČKA */
+.voc-word {
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px; padding:20px 18px;
+  margin-bottom:14px; text-align:center;
+}
+.voc-en {
+  font-size:1.5rem; font-weight:700; color:#e8f0ff;
+  margin-bottom:4px; letter-spacing:.5px;
+}
+.voc-phonetic {
+  font-size:.82rem; color:rgba(0,212,255,.7);
+  margin-bottom:6px; font-style:italic;
+}
+.voc-cz {
+  font-size:.95rem; color:rgba(255,255,255,.5);
+  display:none;
+}
+.voc-cz.show { display:block; }
+.voc-cat {
+  font-size:.68rem; color:rgba(255,255,255,.3);
+  letter-spacing:1.5px; text-transform:uppercase;
+  margin-bottom:12px;
+}
+.voc-btns {
+  display:flex; gap:8px; margin-bottom:10px;
+}
+.btn-voc-play {
+  flex:1; padding:14px;
+  border-radius:12px; border:1.5px solid #00d4ff;
+  background:rgba(0,212,255,.12); color:#00d4ff;
+  font-size:.9rem; font-weight:700; font-family:inherit; cursor:pointer;
+}
+.btn-voc-mic {
+  flex:1; padding:14px;
+  border-radius:12px; border:1.5px solid #00ff88;
+  background:rgba(0,255,136,.12); color:#00ff88;
+  font-size:.9rem; font-weight:700; font-family:inherit; cursor:pointer;
+}
+.btn-voc-mic.listening {
+  border-color:#ff4466; background:rgba(255,68,102,.18); color:#ff6688;
+  animation:pulse 1.2s infinite;
+}
+.btn-voc-show {
+  width:100%; padding:12px;
+  border-radius:12px; border:1.5px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.05); color:rgba(255,255,255,.6);
+  font-size:.85rem; font-weight:700; font-family:inherit; cursor:pointer;
+  margin-bottom:10px;
+}
+.voc-heard {
+  font-size:.8rem; color:rgba(255,255,255,.4);
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:8px; padding:10px 12px;
+  margin-bottom:10px; min-height:36px;
+  text-align:center;
+}
+.voc-result {
+  border-radius:10px; padding:12px 14px;
+  font-size:.88rem; font-weight:600;
+  margin-bottom:10px; display:none; text-align:center;
+}
+.voc-result.show { display:block; }
+.voc-result.ok  { background:rgba(0,255,136,.1); border:1px solid rgba(0,255,136,.4); color:#00ff88; }
+.voc-result.bad { background:rgba(255,68,102,.1); border:1px solid rgba(255,68,102,.4); color:#ff6688; }
+.voc-next {
+  width:100%; padding:16px;
+  border-radius:12px; border:1.5px solid #00ff88;
+  background:rgba(0,255,136,.12); color:#00ff88;
+  font-size:.95rem; font-weight:700; font-family:inherit; cursor:pointer;
+  display:none;
+}
+.voc-next.show { display:block; }
+.voc-stats {
+  display:flex; gap:8px; margin-bottom:12px;
+}
+.voc-stat-box {
+  flex:1; background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:10px; padding:8px; text-align:center;
+}
+.voc-stat-num { font-size:1.2rem; font-weight:700; color:#00d4ff; }
+.voc-stat-lbl { font-size:.65rem; color:rgba(255,255,255,.35); }
+.voc-cat-bar {
+  display:flex; gap:5px; flex-wrap:wrap; margin-bottom:12px;
+}
+.voc-cat-btn {
+  padding:6px 10px; border-radius:8px;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.04); color:rgba(255,255,255,.4);
+  font-size:.7rem; font-weight:700; font-family:inherit; cursor:pointer;
+}
+.voc-cat-btn.active {
+  border-color:#00d4ff; background:rgba(0,212,255,.14); color:#00d4ff;
+}
+
+/* OPT s reproduktorem */
+.opt-row {
+  display:flex; align-items:stretch; gap:0;
+  border-radius:12px; border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.05);
+  overflow:hidden;
+  transition:border-color .15s;
+}
+.opt-row.correct { border-color:#00ff88; background:rgba(0,255,136,.08); }
+.opt-row.wrong   { border-color:#ff4466; background:rgba(255,68,102,.08); }
+.opt-main {
+  flex:1; padding:16px 12px;
+  background:transparent; color:#e8f0ff;
+  font-size:.92rem; font-family:inherit;
+  cursor:pointer; text-align:left; line-height:1.4; border:none;
+}
+.opt-main.correct { color:#00ff88; }
+.opt-main.wrong   { color:#ff6688; }
+.opt-main:disabled { cursor:not-allowed; }
+.opt-speak {
+  padding:0 14px;
+  background:rgba(255,255,255,.05);
+  border:none; border-left:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.4);
+  font-size:1rem; cursor:pointer;
+  transition:background .15s, color .15s;
+  flex-shrink:0;
+}
+.opt-speak:active { background:rgba(0,212,255,.2); color:#00d4ff; }
+
 /* CUSTOM PHRASES */
 .cu-btn{width:100%;padding:11px;border-radius:8px;border:1.5px solid rgba(0,212,255,.35);background:rgba(0,212,255,.07);color:#00d4ff;font-size:.78rem;font-weight:700;letter-spacing:.1em;cursor:pointer;margin-bottom:14px;}
 .cu-btn:hover{background:rgba(0,212,255,.15);}
@@ -237,7 +381,7 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 
 <div class="hdr">
   <h1>SPEAKUP</h1>
-  <span class="ver">v5.7Kl</span>
+  <span class="ver">v6.0Kl</span>
 </div>
 <div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
 
@@ -254,6 +398,15 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
   </div>
   <div class="lvl-badge" id="lvlBadge">LVL 1</div>
 </div>
+
+<!-- TAB SWITCHER -->
+<div class="tab-bar">
+  <button class="tab-btn active" id="tabConv" onclick="switchTab('conv')">💬 Konverzace</button>
+  <button class="tab-btn" id="tabVoc" onclick="switchTab('voc')">📖 Slovíčka</button>
+</div>
+
+<!-- ===== KONVERZACE TAB ===== -->
+<div class="tab-section show" id="sectionConv">
 
 <!-- LEVEL -->
 <div class="lvl-bar">
@@ -338,6 +491,51 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
   <p id="finalMsg">—</p>
   <button class="btn-restart" onclick="restart()">🔄 Znovu od začátku</button>
 </div>
+
+</div><!-- end sectionConv -->
+
+<!-- ===== SLOVÍČKA TAB ===== -->
+<div class="tab-section" id="sectionVoc">
+
+<div class="voc-stats">
+  <div class="voc-stat-box">
+    <div class="voc-stat-num" id="vocDone">0</div>
+    <div class="voc-stat-lbl">procvičeno</div>
+  </div>
+  <div class="voc-stat-box">
+    <div class="voc-stat-num" id="vocCorrect">0</div>
+    <div class="voc-stat-lbl">správně</div>
+  </div>
+  <div class="voc-stat-box">
+    <div class="voc-stat-num" id="vocTotal">0</div>
+    <div class="voc-stat-lbl">celkem slov</div>
+  </div>
+</div>
+
+<div class="voc-cat-bar" id="vocCatBar"></div>
+
+<div class="voc-word" id="vocCard">
+  <div class="voc-cat" id="vocCat">—</div>
+  <div class="voc-en" id="vocEn">—</div>
+  <div class="voc-phonetic" id="vocPhonetic"></div>
+  <div class="voc-cz" id="vocCz">—</div>
+</div>
+
+<div class="voc-btns">
+  <button class="btn-voc-play" onclick="vocPlay()">🔊 Přehrát</button>
+  <button class="btn-voc-mic" id="btnVocMic" onclick="vocToggleMic()">🎤 Vyslovit</button>
+</div>
+
+<button class="btn-voc-show" onclick="vocShowCz()">👁 Ukázat překlad</button>
+
+<div class="voc-heard" id="vocHeard">Stiskni 🎤 a vyslov slovo anglicky…</div>
+
+<div class="voc-result" id="vocResult"></div>
+
+<button class="voc-next show" id="vocNext" onclick="vocNextWord()">Další slovo →</button>
+
+</div><!-- end sectionVoc -->
+
 
 <script>
 /* ===== DATA — Úroveň 1: ~40 dvojic ===== */
@@ -1386,11 +1584,30 @@ function showQ(){
   oa.innerHTML='';
   if(mode==='opt'||mode==='both'){
     const opts = shuffle([...q.opts]);
+    // Uložit správnou odpověď (vždy opts[0] z DB)
+    const correctOpt = q.opts[0];
     opts.forEach(function(o){
+      const row=document.createElement('div');
+      row.className='opt-row';
+
       const b=document.createElement('button');
-      b.className='opt'; b.textContent=o;
-      b.onclick=function(){ checkOpt(o, b, q); };
-      oa.appendChild(b);
+      b.className='opt-main'; b.textContent=o;
+      b.onclick=function(){ checkOpt(o, row, b, q, correctOpt); };
+
+      const sp=document.createElement('button');
+      sp.className='opt-speak'; sp.textContent='🔊';
+      sp.title='Přehrát odpověď';
+      sp.onclick=function(e){
+        e.stopPropagation();
+        window.speechSynthesis.cancel();
+        const u=new SpeechSynthesisUtterance(o);
+        u.lang=ttsLang; u.rate=0.85;
+        window.speechSynthesis.speak(u);
+      };
+
+      row.appendChild(b);
+      row.appendChild(sp);
+      oa.appendChild(row);
     });
     oa.style.display='flex';
   } else {
@@ -1439,25 +1656,38 @@ function playQuestion(){
 }
 
 /* ===== CHECK OPTION ===== */
-function checkOpt(chosen, btn, q){
+function checkOpt(chosen, row, btn, q, correctOpt){
   if(answered) return;
   answered=true;
-  document.querySelectorAll('.opt').forEach(function(b){ b.disabled=true; });
+  // Disable všechny opt-main buttony
+  document.querySelectorAll('.opt-main').forEach(function(b){ b.disabled=true; });
 
-  const norm = chosen.toLowerCase();
-  const correct = q.answers.some(function(a){ return norm.includes(a); });
+  // Správnost: přesné porovnání s opts[0] (správná odpověď z DB)
+  const correct = (chosen === correctOpt);
   saveMastery(q, correct, correct?88:25);
 
   if(correct){
+    row.classList.add('correct');
     btn.classList.add('correct');
     score++; updateScore();
     showFeedback(true, chosen, null);
+    // Auto-posun po 1.5s
+    idx++;
+    setTimeout(function(){ if(answered) nextQ(); }, 1500);
   } else {
+    row.classList.add('wrong');
     btn.classList.add('wrong');
-    showFeedback(false, chosen, q.opts[0]);
+    // Zvýraznit správnou odpověď zeleně
+    document.querySelectorAll('.opt-main').forEach(function(b){
+      if(b.textContent === correctOpt){
+        b.closest('.opt-row').classList.add('correct');
+        b.classList.add('correct');
+      }
+    });
+    showFeedback(false, chosen, correctOpt);
+    idx++;
+    document.getElementById('btnNext').classList.add('show');
   }
-  idx++;
-  document.getElementById('btnNext').classList.add('show');
 }
 
 /* ===== MIC ===== */
@@ -1498,10 +1728,13 @@ function stopMic(){ if(recObj&&recRunning) recObj.stop(); }
 function evalMic(heard, confidence){
   if(answered) return;
   const q=queue[idx];
+  const correctOpt=q.opts[0];
   const correct=q.answers.some(function(a){ return heard.includes(a); });
   answered=true;
   document.getElementById('btnMic').disabled=true;
-  document.querySelectorAll('.opt').forEach(function(b){ b.disabled=true; });
+  document.querySelectorAll('.opt-main').forEach(function(b){ b.disabled=true; });
+  // Zobrazit co STT slyšelo
+  document.getElementById('status').textContent='🎤 Slyšeno: ' + heard;
 
   // Výpočet srozumitelnosti
   const bestSim = q.answers.reduce(function(best, ans){
@@ -1516,11 +1749,13 @@ function evalMic(heard, confidence){
   if(correct){
     score++; updateScore();
     showFeedback(true, heard, null, combined);
+    idx++;
+    setTimeout(function(){ if(answered) nextQ(); }, 2000);
   } else {
-    showFeedback(false, heard, q.opts[0], combined);
+    showFeedback(false, heard, correctOpt, combined);
+    idx++;
+    document.getElementById('btnNext').classList.add('show');
   }
-  idx++;
-  document.getElementById('btnNext').classList.add('show');
 }
 
 /* ===== FEEDBACK ===== */
@@ -1638,6 +1873,264 @@ if('speechSynthesis' in window){
 }
 
 init();
+
+/* ===== TAB SWITCHER ===== */
+function switchTab(tab){
+  document.getElementById('tabConv').classList.toggle('active', tab==='conv');
+  document.getElementById('tabVoc').classList.toggle('active', tab==='voc');
+  document.getElementById('sectionConv').classList.toggle('show', tab==='conv');
+  document.getElementById('sectionVoc').classList.toggle('show', tab==='voc');
+  if(tab==='voc') vocInit();
+}
+
+/* ===== SLOVÍČKA DATA ===== */
+const VOC = [
+  // Základní výrazy
+  {w:'hello',cz:'ahoj',ph:'/həˈloʊ/',cat:'Základy'},
+  {w:'goodbye',cz:'nashledanou',ph:'/ˌɡʊdˈbaɪ/',cat:'Základy'},
+  {w:'please',cz:'prosím',ph:'/pliːz/',cat:'Základy'},
+  {w:'thank you',cz:'děkuji',ph:'/ˈθæŋk juː/',cat:'Základy'},
+  {w:'sorry',cz:'promiňte',ph:'/ˈsɒri/',cat:'Základy'},
+  {w:'yes',cz:'ano',ph:'/jɛs/',cat:'Základy'},
+  {w:'no',cz:'ne',ph:'/noʊ/',cat:'Základy'},
+  {w:'maybe',cz:'možná',ph:'/ˈmeɪbi/',cat:'Základy'},
+  {w:'understand',cz:'rozumět',ph:'/ˌʌndəˈstænd/',cat:'Základy'},
+  {w:'repeat',cz:'zopakovat',ph:'/rɪˈpiːt/',cat:'Základy'},
+  {w:'slowly',cz:'pomalu',ph:'/ˈsloʊli/',cat:'Základy'},
+  {w:'clearly',cz:'jasně',ph:'/ˈklɪrli/',cat:'Základy'},
+  {w:'excuse me',cz:'promiňte / s dovolením',ph:'/ɪkˈskjuːz miː/',cat:'Základy'},
+  {w:'of course',cz:'samozřejmě',ph:'/əv kɔːrs/',cat:'Základy'},
+  {w:'no problem',cz:'žádný problém',ph:'/noʊ ˈprɒbləm/',cat:'Základy'},
+  // Čísla
+  {w:'one',cz:'jedna',ph:'/wʌn/',cat:'Čísla'},
+  {w:'two',cz:'dvě',ph:'/tuː/',cat:'Čísla'},
+  {w:'three',cz:'tři',ph:'/θriː/',cat:'Čísla'},
+  {w:'four',cz:'čtyři',ph:'/fɔːr/',cat:'Čísla'},
+  {w:'five',cz:'pět',ph:'/faɪv/',cat:'Čísla'},
+  {w:'ten',cz:'deset',ph:'/tɛn/',cat:'Čísla'},
+  {w:'hundred',cz:'sto',ph:'/ˈhʌndrəd/',cat:'Čísla'},
+  {w:'thousand',cz:'tisíc',ph:'/ˈθaʊzənd/',cat:'Čísla'},
+  {w:'million',cz:'milion',ph:'/ˈmɪljən/',cat:'Čísla'},
+  // Čas
+  {w:'today',cz:'dnes',ph:'/təˈdeɪ/',cat:'Čas'},
+  {w:'tomorrow',cz:'zítra',ph:'/təˈmɒroʊ/',cat:'Čas'},
+  {w:'yesterday',cz:'včera',ph:'/ˈjɛstədeɪ/',cat:'Čas'},
+  {w:'morning',cz:'ráno',ph:'/ˈmɔːrnɪŋ/',cat:'Čas'},
+  {w:'afternoon',cz:'odpoledne',ph:'/ˌæftəˈnuːn/',cat:'Čas'},
+  {w:'evening',cz:'večer',ph:'/ˈiːvnɪŋ/',cat:'Čas'},
+  {w:'night',cz:'noc',ph:'/naɪt/',cat:'Čas'},
+  {w:'week',cz:'týden',ph:'/wiːk/',cat:'Čas'},
+  {w:'month',cz:'měsíc',ph:'/mʌnθ/',cat:'Čas'},
+  {w:'year',cz:'rok',ph:'/jɪr/',cat:'Čas'},
+  {w:'always',cz:'vždy',ph:'/ˈɔːlweɪz/',cat:'Čas'},
+  {w:'never',cz:'nikdy',ph:'/ˈnɛvər/',cat:'Čas'},
+  {w:'sometimes',cz:'někdy',ph:'/ˈsʌmtaɪmz/',cat:'Čas'},
+  // Audio & DJ
+  {w:'mixer',cz:'mixér',ph:'/ˈmɪksər/',cat:'DJ & Audio'},
+  {w:'turntable',cz:'gramofon',ph:'/ˈtɜːrntteɪbəl/',cat:'DJ & Audio'},
+  {w:'headphones',cz:'sluchátka',ph:'/ˈhɛdfoʊnz/',cat:'DJ & Audio'},
+  {w:'microphone',cz:'mikrofon',ph:'/ˈmaɪkrəfoʊn/',cat:'DJ & Audio'},
+  {w:'speaker',cz:'reproduktor',ph:'/ˈspiːkər/',cat:'DJ & Audio'},
+  {w:'subwoofer',cz:'subwoofer',ph:'/ˈsʌbwʊfər/',cat:'DJ & Audio'},
+  {w:'frequency',cz:'frekvence',ph:'/ˈfriːkwənsi/',cat:'DJ & Audio'},
+  {w:'equalizer',cz:'ekvalizér',ph:'/ˈiːkwəlaɪzər/',cat:'DJ & Audio'},
+  {w:'compressor',cz:'kompresor',ph:'/kəmˈprɛsər/',cat:'DJ & Audio'},
+  {w:'latency',cz:'latence',ph:'/ˈleɪtənsi/',cat:'DJ & Audio'},
+  {w:'sample rate',cz:'vzorkovací frekvence',ph:'/ˈsæmpəl reɪt/',cat:'DJ & Audio'},
+  {w:'beat',cz:'takt / rytmus',ph:'/biːt/',cat:'DJ & Audio'},
+  {w:'tempo',cz:'tempo',ph:'/ˈtɛmpoʊ/',cat:'DJ & Audio'},
+  {w:'loop',cz:'smyčka',ph:'/luːp/',cat:'DJ & Audio'},
+  {w:'crossfader',cz:'crossfader',ph:'/ˈkrɒsfɛɪdər/',cat:'DJ & Audio'},
+  {w:'vinyl',cz:'vinyl',ph:'/ˈvaɪnəl/',cat:'DJ & Audio'},
+  {w:'waveform',cz:'průběh vlny',ph:'/ˈweɪvfɔːrm/',cat:'DJ & Audio'},
+  {w:'gain',cz:'zisk / zesílení',ph:'/ɡeɪn/',cat:'DJ & Audio'},
+  {w:'channel',cz:'kanál',ph:'/ˈtʃænəl/',cat:'DJ & Audio'},
+  {w:'output',cz:'výstup',ph:'/ˈaʊtpʊt/',cat:'DJ & Audio'},
+  {w:'input',cz:'vstup',ph:'/ˈɪnpʊt/',cat:'DJ & Audio'},
+  {w:'balanced',cz:'symetrický',ph:'/ˈbælənst/',cat:'DJ & Audio'},
+  {w:'clipping',cz:'přebuzení',ph:'/ˈklɪpɪŋ/',cat:'DJ & Audio'},
+  {w:'reverb',cz:'dozvuk',ph:'/ˈriːvɜːrb/',cat:'DJ & Audio'},
+  {w:'delay',cz:'opoždění / echo',ph:'/dɪˈleɪ/',cat:'DJ & Audio'},
+  // Technologie
+  {w:'server',cz:'server',ph:'/ˈsɜːrvər/',cat:'Technologie'},
+  {w:'network',cz:'síť',ph:'/ˈnɛtwɜːrk/',cat:'Technologie'},
+  {w:'database',cz:'databáze',ph:'/ˈdeɪtəbeɪs/',cat:'Technologie'},
+  {w:'password',cz:'heslo',ph:'/ˈpæswɜːrd/',cat:'Technologie'},
+  {w:'download',cz:'stahování',ph:'/ˈdaʊnloʊd/',cat:'Technologie'},
+  {w:'upload',cz:'nahrávání',ph:'/ˈʌploʊd/',cat:'Technologie'},
+  {w:'script',cz:'skript',ph:'/skrɪpt/',cat:'Technologie'},
+  {w:'command',cz:'příkaz',ph:'/kəˈmænd/',cat:'Technologie'},
+  {w:'terminal',cz:'terminál',ph:'/ˈtɜːrmɪnəl/',cat:'Technologie'},
+  {w:'wireless',cz:'bezdrátový',ph:'/ˈwaɪərləs/',cat:'Technologie'},
+  {w:'connection',cz:'připojení',ph:'/kəˈnɛkʃən/',cat:'Technologie'},
+  {w:'router',cz:'router',ph:'/ˈruːtər/',cat:'Technologie'},
+  {w:'firmware',cz:'firmware',ph:'/ˈfɜːrmwɛr/',cat:'Technologie'},
+  {w:'update',cz:'aktualizace',ph:'/ˈʌpdeɪt/',cat:'Technologie'},
+  {w:'restart',cz:'restart',ph:'/ˌriːˈstɑːrt/',cat:'Technologie'},
+  {w:'storage',cz:'úložiště',ph:'/ˈstɔːrɪdʒ/',cat:'Technologie'},
+  {w:'memory',cz:'paměť',ph:'/ˈmɛməri/',cat:'Technologie'},
+  {w:'processor',cz:'procesor',ph:'/ˈprɒsɛsər/',cat:'Technologie'},
+  {w:'interface',cz:'rozhraní',ph:'/ˈɪntərfeɪs/',cat:'Technologie'},
+  {w:'library',cz:'knihovna',ph:'/ˈlaɪbrɛri/',cat:'Technologie'},
+  // ZX Spectrum Next
+  {w:'assembly',cz:'assembler',ph:'/əˈsɛmbli/',cat:'ZX Next'},
+  {w:'register',cz:'registr',ph:'/ˈrɛdʒɪstər/',cat:'ZX Next'},
+  {w:'sprite',cz:'sprite',ph:'/spraɪt/',cat:'ZX Next'},
+  {w:'pixel',cz:'pixel',ph:'/ˈpɪksəl/',cat:'ZX Next'},
+  {w:'layer',cz:'vrstva',ph:'/ˈleɪər/',cat:'ZX Next'},
+  {w:'palette',cz:'paleta barev',ph:'/ˈpælɪt/',cat:'ZX Next'},
+  {w:'interrupt',cz:'přerušení',ph:'/ˌɪntəˈrʌpt/',cat:'ZX Next'},
+  {w:'emulator',cz:'emulátor',ph:'/ˈɛmjʊleɪtər/',cat:'ZX Next'},
+  {w:'cartridge',cz:'kazeta / cartridge',ph:'/ˈkɑːtrɪdʒ/',cat:'ZX Next'},
+  {w:'keyboard',cz:'klávesnice',ph:'/ˈkiːbɔːrd/',cat:'ZX Next'},
+  // Konverzace
+  {w:'question',cz:'otázka',ph:'/ˈkwɛstʃən/',cat:'Konverzace'},
+  {w:'answer',cz:'odpověď',ph:'/ˈɑːnsər/',cat:'Konverzace'},
+  {w:'sentence',cz:'věta',ph:'/ˈsɛntəns/',cat:'Konverzace'},
+  {w:'pronunciation',cz:'výslovnost',ph:'/prəˌnʌnsiˈeɪʃən/',cat:'Konverzace'},
+  {w:'vocabulary',cz:'slovní zásoba',ph:'/vəˈkæbjʊlɛri/',cat:'Konverzace'},
+  {w:'fluent',cz:'plynný',ph:'/ˈfluːənt/',cat:'Konverzace'},
+  {w:'accent',cz:'přízvuk',ph:'/ˈæksənt/',cat:'Konverzace'},
+  {w:'phrase',cz:'fráze',ph:'/freɪz/',cat:'Konverzace'},
+  {w:'conversation',cz:'konverzace',ph:'/ˌkɒnvəˈseɪʃən/',cat:'Konverzace'},
+  {w:'greeting',cz:'pozdrav',ph:'/ˈɡriːtɪŋ/',cat:'Konverzace'},
+];
+
+/* ===== SLOVÍČKA STATE ===== */
+let vocQueue=[], vocIdx=0, vocDone=0, vocCorrectCount=0;
+let vocCat='Vše', vocRecRunning=false, vocRecObj=null;
+
+function vocInit(){
+  // Kategorie tlačítka
+  const cats=['Vše',...new Set(VOC.map(function(v){return v.cat;}))];
+  const bar=document.getElementById('vocCatBar');
+  bar.innerHTML='';
+  cats.forEach(function(c){
+    const b=document.createElement('button');
+    b.className='voc-cat-btn'+(c===vocCat?' active':'');
+    b.textContent=c;
+    b.onclick=function(){
+      vocCat=c;
+      document.querySelectorAll('.voc-cat-btn').forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      vocBuildQueue();
+    };
+    bar.appendChild(b);
+  });
+  document.getElementById('vocTotal').textContent=VOC.length;
+  vocBuildQueue();
+}
+
+function vocBuildQueue(){
+  const src=vocCat==='Vše'?VOC:VOC.filter(function(v){return v.cat===vocCat;});
+  vocQueue=shuffle([...src]);
+  vocIdx=0; vocDone=0; vocCorrectCount=0;
+  updateVocStats();
+  vocShowWord();
+}
+
+function vocShowWord(){
+  if(vocIdx>=vocQueue.length) vocIdx=0;
+  const w=vocQueue[vocIdx];
+  document.getElementById('vocCat').textContent=w.cat;
+  document.getElementById('vocEn').textContent=w.w;
+  document.getElementById('vocPhonetic').textContent=w.ph||'';
+  document.getElementById('vocCz').textContent=w.cz;
+  document.getElementById('vocCz').classList.remove('show');
+  document.getElementById('vocHeard').textContent='Stiskni 🎤 a vyslov slovo anglicky…';
+  document.getElementById('vocResult').classList.remove('show');
+  document.getElementById('vocResult').className='voc-result';
+  document.getElementById('vocNext').classList.add('show');
+  document.getElementById('btnVocMic').textContent='🎤 Vyslovit';
+  document.getElementById('btnVocMic').classList.remove('listening');
+  document.getElementById('btnVocMic').disabled=false;
+}
+
+function vocPlay(){
+  const w=vocQueue[vocIdx];
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(w.w);
+  u.lang=ttsLang; u.rate=0.8;
+  window.speechSynthesis.speak(u);
+}
+
+function vocShowCz(){
+  document.getElementById('vocCz').classList.add('show');
+}
+
+function vocNextWord(){
+  window.speechSynthesis.cancel();
+  if(vocRecRunning) vocStopMic();
+  vocIdx++;
+  vocShowWord();
+}
+
+function updateVocStats(){
+  document.getElementById('vocDone').textContent=vocDone;
+  document.getElementById('vocCorrect').textContent=vocCorrectCount;
+  document.getElementById('vocTotal').textContent=
+    vocCat==='Vše'?VOC.length:VOC.filter(function(v){return v.cat===vocCat;}).length;
+}
+
+function vocToggleMic(){
+  if(vocRecRunning){vocStopMic();return;}
+  vocStartMic();
+}
+
+function vocStartMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){document.getElementById('vocHeard').textContent='❌ Mikrofon nepodporován.';return;}
+  vocRecObj=new SR();
+  vocRecObj.lang='en-US'; vocRecObj.interimResults=false; vocRecObj.maxAlternatives=3;
+  const btn=document.getElementById('btnVocMic');
+  vocRecObj.onstart=function(){
+    vocRecRunning=true;
+    btn.textContent='⏹ Zastavit';
+    btn.classList.add('listening');
+    document.getElementById('vocHeard').textContent='🎤 Poslouchám…';
+  };
+  vocRecObj.onresult=function(ev){
+    let heard='';
+    for(let i=0;i<ev.results[0].length;i++) heard+=ev.results[0][i].transcript+' ';
+    heard=heard.trim().toLowerCase();
+    document.getElementById('vocHeard').textContent='Slyšeno: '+heard;
+    vocEvalPronunciation(heard);
+  };
+  vocRecObj.onerror=function(ev){
+    document.getElementById('vocHeard').textContent=ev.error==='no-speech'?'Nic neslyšeno.':'❌ '+ev.error;
+    vocRecRunning=false;
+    btn.textContent='🎤 Vyslovit'; btn.classList.remove('listening');
+  };
+  vocRecObj.onend=function(){
+    vocRecRunning=false;
+    btn.textContent='🎤 Vyslovit'; btn.classList.remove('listening');
+  };
+  vocRecObj.start();
+}
+
+function vocStopMic(){if(vocRecObj&&vocRecRunning) vocRecObj.stop();}
+
+function vocEvalPronunciation(heard){
+  const w=vocQueue[vocIdx];
+  const target=w.w.toLowerCase().trim();
+  const heardClean=heard.trim();
+  // Porovnání: přesná shoda nebo heard obsahuje target
+  const correct=(heardClean===target||heardClean.includes(target));
+  vocDone++; if(correct) vocCorrectCount++;
+  updateVocStats();
+  const res=document.getElementById('vocResult');
+  res.classList.add('show');
+  if(correct){
+    res.className='voc-result ok show';
+    res.textContent='✅ Výborně! Výslovnost rozpoznána.';
+  } else {
+    res.className='voc-result bad show';
+    res.textContent='❌ Zkus znovu. Cíl: '+w.w;
+  }
+  document.getElementById('vocCz').classList.add('show');
+}
+
+
 </script>
 </body>
 </html>
