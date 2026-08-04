@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="2.17Kl">
+<meta name="version" content="2.18Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -401,7 +401,7 @@ h1 {
   </button>
 </div>
 
-<div class="footer">KLADYXHOME v2.17Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v2.18Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -449,8 +449,25 @@ try {
         devEl.className = d.on === true ? 'device on' : 'device off';
         statEl.textContent = 'BRIDGE OFFLINE';
         var btns = devEl.querySelector('.buttons');
-        if (btns) btns.style.display = 'none';
+        if (btns) {
+          btns.style.display = '';
+          var allBtns = btns.querySelectorAll('button');
+          allBtns.forEach(function(b) {
+            b.disabled = true;
+            b.style.opacity = '0.35';
+            b.style.cursor = 'not-allowed';
+          });
+        }
         return;
+      }
+      var btnsEl = devEl.querySelector('.buttons');
+      if (btnsEl) {
+        btnsEl.style.display = '';
+        btnsEl.querySelectorAll('button').forEach(function(b) {
+          b.disabled = false;
+          b.style.opacity = '';
+          b.style.cursor = '';
+        });
       }
       if (d.on === true) {
         devEl.className = 'device on';
