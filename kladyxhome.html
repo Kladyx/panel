@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="2.16Kl">
+<meta name="version" content="2.17Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -401,7 +401,7 @@ h1 {
   </button>
 </div>
 
-<div class="footer">KLADYXHOME v2.16Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v2.17Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -446,10 +446,10 @@ try {
       }
       var age = d.lastSeen ? Date.now() - d.lastSeen : 999999;
       if (age > 150000) {
-        devEl.className = 'device unknown';
+        devEl.className = d.on === true ? 'device on' : 'device off';
         statEl.textContent = 'BRIDGE OFFLINE';
-        btnOn.classList.remove('active');
-        btnOff.classList.remove('active');
+        var btns = devEl.querySelector('.buttons');
+        if (btns) btns.style.display = 'none';
         return;
       }
       if (d.on === true) {
