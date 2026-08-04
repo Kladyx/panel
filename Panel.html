@@ -18407,7 +18407,7 @@ function cardHTML(k,e){
       <span class="card-icon">🔑</span>
       <span class="card-title">\${esc(e.label||'—')}</span>
       <div class="card-actions">
-        <button class="btn-icon" onclick="openEdit('\${k}')" title="Upravit">✏</button>
+        <button class="btn-icon" onclick="requestPinFor('\${k}',\${esc(JSON.stringify(e.pin||''))},function(){openEdit('\${k}')})" title="Upravit">✏</button>
         <button class="btn-icon btn-del" onclick="delEntry('\${k}')" title="Smazat">🗑</button>
       </div>
     </div>
@@ -18419,7 +18419,7 @@ function cardHTML(k,e){
     <div class="field-row">
       <span class="field-label">🔒</span>
       <span class="field-val masked" id="fv-pass-\${k}">\${maskedPass}</span>
-      <button class="btn-copy" onclick="toggleReveal('\${k}',\${JSON.stringify(e.pass||'')},\${JSON.stringify(e.pin||'')})" title="Zobrazit / skrýt">👁</button>
+      <button class="btn-copy" onclick="toggleReveal('\${k}',\${esc(JSON.stringify(e.pass||''))},\${esc(JSON.stringify(e.pin||''))})" title="Zobrazit / skrýt">👁</button>
       <button class="btn-copy" onclick="copyVal(\${JSON.stringify(e.pass||'')},\\'Heslo\\')" title="Kopírovat">⎘</button>
     </div>
     \${e.note?'<div class="card-note">📝 '+esc(e.note)+'</div>':''}
@@ -18431,11 +18431,7 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 // ── REVEAL PASS ──
 const _revealed={};
 var _rp={k:null,pass:null};
-function toggleReveal(k,pass){
-  const el=document.getElementById('fv-pass-'+k);
-  if(!el)return;
-  if(_revealed[k]){el.textContent='•'.repeat(Math.min((pass||'').length,12)||8);el.classList.add('masked');_revealed[k]=false;return;}
-  _rp={k:k,pass:pass,pin:pin||''};
+function _showPinModal(){
   var od=document.getElementById('_rpov');
   if(!od){
     od=document.createElement('div');
@@ -18458,6 +18454,18 @@ function toggleReveal(k,pass){
   }
   setTimeout(function(){var i=document.getElementById('_rpinp');if(i)i.focus();},120);
 }
+function toggleReveal(k,pass,pin){
+  const el=document.getElementById('fv-pass-'+k);
+  if(!el)return;
+  if(_revealed[k]){el.textContent='•'.repeat(Math.min((pass||'').length,12)||8);el.classList.add('masked');_revealed[k]=false;return;}
+  _rp={k:k,pass:pass,pin:pin||''};
+  _showPinModal();
+}
+// Vyzadani PINu pred editaci zaznamu (v4.1.5.Pro - oprava: edit byl bez PIN kontroly)
+function requestPinFor(k,pin,onSuccess){
+  _rp={k:k,pass:null,pin:pin||'',onSuccess:onSuccess};
+  _showPinModal();
+}
 function _rpok(){
   var v=(document.getElementById('_rpinp').value||'').trim();
   _decrypt(_rp.pin||'').then(function(decPin){
@@ -18468,6 +18476,12 @@ function _rpok(){
 function _rpokCheck(v,s){
   if(v===s){
     document.getElementById('_rpov').style.display='none';
+    if(_rp.onSuccess){
+      var cb=_rp.onSuccess;
+      _rp={k:null,pass:null};
+      cb();
+      return;
+    }
     var el=document.getElementById('fv-pass-'+_rp.k);
     if(el){el.textContent=_rp.pass||'';el.classList.remove('masked');_revealed[_rp.k]=true;}
     _rp={k:null,pass:null};
@@ -18669,21 +18683,20 @@ APP_HTML["prekladac"] = `<!DOCTYPE html>
 <body>
 <header>
   <h1>🌐 Překladač</h1>
-  <p id="dirLabel">CZ → EN · powered by AI</p>
+  <p>CZ → EN · powered by AI</p>
 </header>
 <div class="container">
   <div class="panel">
-    <div class="panel-label" id="inLabel">Česky — vstup</div>
+    <div class="panel-label">Česky — vstup</div>
     <textarea id="input" placeholder="Napiš text česky..." rows="5"></textarea>
     <div class="btn-row">
       <button class="btn-translate" id="btn-tr" onclick="doTranslate()">⚡ Přeložit</button>
       <button class="btn-clear" onclick="clearAll()">✕ Smazat</button>
-      <button class="btn-clear" id="btn-swap" onclick="toggleDir()" title="Prohodit směr">⇄ Prohodit</button>
     </div>
     <div class="shortcuts">Ctrl+Enter = přeložit</div>
   </div>
   <div class="panel">
-    <div class="panel-label" id="outLabel">English — výstup</div>
+    <div class="panel-label">English — výstup</div>
     <div class="result-box empty" id="output">Překlad se zobrazí zde...</div>
     <div class="btn-row">
       <button class="btn-copy" onclick="copyResult()">📋 Kopírovat</button>
@@ -18691,35 +18704,12 @@ APP_HTML["prekladac"] = `<!DOCTYPE html>
   </div>
   <div class="status-bar">
     <span><span class="sdot" id="sdot"></span><span id="stxt">Připraveno</span></span>
-    <span>v1.1.0</span>
+    <span>v1.0.0</span>
   </div>
 </div>
 <div class="toast" id="toast">✓ ZKOPÍROVÁNO</div>
 <script>
 let lastResult='';
-let dirCsEn=true; // true = CZ->EN, false = EN->CZ
-function applyDirUI(){
-  const dirLabel=document.getElementById('dirLabel');
-  const inLabel=document.getElementById('inLabel');
-  const outLabel=document.getElementById('outLabel');
-  const inp=document.getElementById('input');
-  if(dirCsEn){
-    dirLabel.textContent='CZ → EN · powered by AI';
-    inLabel.textContent='Česky — vstup';
-    outLabel.textContent='English — výstup';
-    inp.placeholder='Napiš text česky...';
-  }else{
-    dirLabel.textContent='EN → CZ · powered by AI';
-    inLabel.textContent='English — vstup';
-    outLabel.textContent='Česky — výstup';
-    inp.placeholder='Napiš text anglicky...';
-  }
-}
-function toggleDir(){
-  dirCsEn=!dirCsEn;
-  applyDirUI();
-  clearAll();
-}
 async function doTranslate(){
   const inp=document.getElementById('input').value.trim();
   if(!inp)return;
@@ -18732,11 +18722,9 @@ async function doTranslate(){
   out.textContent='⟳ Překládám...';
   dot.className='sdot ok';
   stxt.textContent='Překládám...';
-  const sl=dirCsEn?'cs':'en';
-  const tl=dirCsEn?'en':'cs';
   try{
     const q=encodeURIComponent(inp);
-    const r=await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl='+sl+'&tl='+tl+'&dt=t&q='+q);
+    const r=await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=cs&tl=en&dt=t&q='+q);
     const d=await r.json();
     const t=d[0]?d[0].map(function(x){return x[0]||'';}).join(''):'';
     if(t){lastResult=t;out.className='result-box';out.textContent=t;dot.className='sdot ok';stxt.textContent='Hotovo';}
