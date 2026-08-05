@@ -18683,20 +18683,21 @@ APP_HTML["prekladac"] = `<!DOCTYPE html>
 <body>
 <header>
   <h1>🌐 Překladač</h1>
-  <p>CZ → EN · powered by AI</p>
+  <p id="dirLabel">CZ → EN · powered by AI</p>
 </header>
 <div class="container">
   <div class="panel">
-    <div class="panel-label">Česky — vstup</div>
+    <div class="panel-label" id="inLabel">Česky — vstup</div>
     <textarea id="input" placeholder="Napiš text česky..." rows="5"></textarea>
     <div class="btn-row">
       <button class="btn-translate" id="btn-tr" onclick="doTranslate()">⚡ Přeložit</button>
       <button class="btn-clear" onclick="clearAll()">✕ Smazat</button>
+      <button class="btn-clear" id="btn-swap" onclick="toggleDir()" title="Prohodit směr">⇄ Prohodit</button>
     </div>
     <div class="shortcuts">Ctrl+Enter = přeložit</div>
   </div>
   <div class="panel">
-    <div class="panel-label">English — výstup</div>
+    <div class="panel-label" id="outLabel">English — výstup</div>
     <div class="result-box empty" id="output">Překlad se zobrazí zde...</div>
     <div class="btn-row">
       <button class="btn-copy" onclick="copyResult()">📋 Kopírovat</button>
@@ -18704,12 +18705,35 @@ APP_HTML["prekladac"] = `<!DOCTYPE html>
   </div>
   <div class="status-bar">
     <span><span class="sdot" id="sdot"></span><span id="stxt">Připraveno</span></span>
-    <span>v1.0.0</span>
+    <span>v1.1.0</span>
   </div>
 </div>
 <div class="toast" id="toast">✓ ZKOPÍROVÁNO</div>
 <script>
 let lastResult='';
+let dirCsEn=true; // true = CZ->EN, false = EN->CZ
+function applyDirUI(){
+  const dirLabel=document.getElementById('dirLabel');
+  const inLabel=document.getElementById('inLabel');
+  const outLabel=document.getElementById('outLabel');
+  const inp=document.getElementById('input');
+  if(dirCsEn){
+    dirLabel.textContent='CZ → EN · powered by AI';
+    inLabel.textContent='Česky — vstup';
+    outLabel.textContent='English — výstup';
+    inp.placeholder='Napiš text česky...';
+  }else{
+    dirLabel.textContent='EN → CZ · powered by AI';
+    inLabel.textContent='English — vstup';
+    outLabel.textContent='Česky — výstup';
+    inp.placeholder='Napiš text anglicky...';
+  }
+}
+function toggleDir(){
+  dirCsEn=!dirCsEn;
+  applyDirUI();
+  clearAll();
+}
 async function doTranslate(){
   const inp=document.getElementById('input').value.trim();
   if(!inp)return;
@@ -18722,9 +18746,11 @@ async function doTranslate(){
   out.textContent='⟳ Překládám...';
   dot.className='sdot ok';
   stxt.textContent='Překládám...';
+  const sl=dirCsEn?'cs':'en';
+  const tl=dirCsEn?'en':'cs';
   try{
     const q=encodeURIComponent(inp);
-    const r=await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=cs&tl=en&dt=t&q='+q);
+    const r=await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl='+sl+'&tl='+tl+'&dt=t&q='+q);
     const d=await r.json();
     const t=d[0]?d[0].map(function(x){return x[0]||'';}).join(''):'';
     if(t){lastResult=t;out.className='result-box';out.textContent=t;dot.className='sdot ok';stxt.textContent='Hotovo';}
