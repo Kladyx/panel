@@ -18675,6 +18675,9 @@ APP_HTML["prekladac"] = `<!DOCTYPE html>
   .btn-copy { background:linear-gradient(135deg,#004d2a,#002d18); color:var(--green); border:1px solid rgba(0,255,136,0.3); }
   .btn-copy:hover { box-shadow:0 0 25px rgba(0,255,136,0.3); }
   .btn-clear { background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.4); border:1px solid rgba(255,255,255,0.1); }
+  .btn-swap { background:linear-gradient(135deg,#2a004d,#18002d); color:#cc88ff; border:1px solid rgba(180,100,255,0.4); font-size:1.1rem; padding:10px 18px; box-shadow:0 0 12px rgba(180,100,255,0.15); }
+  .btn-swap:hover { box-shadow:0 0 25px rgba(180,100,255,0.4); background:linear-gradient(135deg,#3d0066,#220040); }
+  .swap-row { display:flex; justify-content:center; margin:-6px 0; }
   .status-bar { display:flex; justify-content:space-between; align-items:center; font-size:0.65rem; color:rgba(255,255,255,0.3); padding:0 2px; }
   .sdot { display:inline-block; width:6px; height:6px; border-radius:50%; margin-right:6px; background:rgba(255,255,255,0.2); }
   .sdot.ok { background:var(--green); box-shadow:0 0 6px var(--green); }
@@ -18686,72 +18689,100 @@ APP_HTML["prekladac"] = `<!DOCTYPE html>
 </head>
 <body>
 <header>
-  <h1>🌐 Překladač</h1>
-  <p>CZ → EN · powered by AI</p>
+  <h1>\u{1F310} P\u0159eklada\u010D</h1>
+  <p id="dir-label">CZ \u2194 EN \u00B7 powered by AI</p>
 </header>
 <div class="container">
   <div class="panel">
-    <div class="panel-label">Česky — vstup</div>
-    <textarea id="input" placeholder="Napiš text česky..." rows="5"></textarea>
+    <div class="panel-label" id="input-label">\u010Cesky \u2014 vstup</div>
+    <textarea id="input" placeholder="Napi\u0161 text \u010Desky..." rows="5"></textarea>
     <div class="btn-row">
-      <button class="btn-translate" id="btn-tr" onclick="doTranslate()">⚡ Přeložit</button>
-      <button class="btn-clear" onclick="clearAll()">✕ Smazat</button>
+      <button class="btn-translate" id="btn-tr" onclick="doTranslate()">\u26A1 P\u0159elo\u017Eit</button>
+      <button class="btn-clear" onclick="clearAll()">\u2715 Smazat</button>
     </div>
-    <div class="shortcuts">Ctrl+Enter = přeložit</div>
+    <div class="shortcuts">Ctrl+Enter = p\u0159elo\u017Eit</div>
+  </div>
+  <div class="swap-row">
+    <button class="btn-swap" onclick="swapDir()" title="P\u0159epnout sm\u011Br p\u0159ekladu">\u{1F504}</button>
   </div>
   <div class="panel">
-    <div class="panel-label">English — výstup</div>
-    <div class="result-box empty" id="output">Překlad se zobrazí zde...</div>
+    <div class="panel-label" id="output-label">English \u2014 v\u00FDstup</div>
+    <div class="result-box empty" id="output">P\u0159eklad se zobraz\u00ED zde...</div>
     <div class="btn-row">
-      <button class="btn-copy" onclick="copyResult()">📋 Kopírovat</button>
+      <button class="btn-copy" onclick="copyResult()">\u{1F4CB} Kop\u00EDrovat</button>
     </div>
   </div>
   <div class="status-bar">
-    <span><span class="sdot" id="sdot"></span><span id="stxt">Připraveno</span></span>
-    <span>v1.0.0</span>
+    <span><span class="sdot" id="sdot"></span><span id="stxt">P\u0159ipraveno</span></span>
+    <span>v1.1.0</span>
   </div>
 </div>
-<div class="toast" id="toast">✓ ZKOPÍROVÁNO</div>
+<div class="toast" id="toast">\u2713 ZKOP\u00CDROV\u00C1NO</div>
 <script>
-let lastResult='';
+var lastResult='';
+var dir='cz2en';
+function updateLabels(){
+  var dl=document.getElementById('dir-label');
+  var il=document.getElementById('input-label');
+  var ol=document.getElementById('output-label');
+  var inp=document.getElementById('input');
+  if(dir==='cz2en'){
+    dl.textContent='CZ \u2192 EN \u00B7 powered by AI';
+    il.textContent='\u010Cesky \u2014 vstup';
+    ol.textContent='English \u2014 v\u00FDstup';
+    inp.placeholder='Napi\u0161 text \u010Desky...';
+  }else{
+    dl.textContent='EN \u2192 CZ \u00B7 powered by AI';
+    il.textContent='English \u2014 input';
+    ol.textContent='\u010Cesky \u2014 v\u00FDstup';
+    inp.placeholder='Type English text...';
+  }
+}
+function swapDir(){
+  dir=(dir==='cz2en')?'en2cz':'cz2en';
+  updateLabels();
+  clearAll();
+}
 async function doTranslate(){
-  const inp=document.getElementById('input').value.trim();
+  var inp=document.getElementById('input').value.trim();
   if(!inp)return;
-  const btn=document.getElementById('btn-tr');
-  const out=document.getElementById('output');
-  const dot=document.getElementById('sdot');
-  const stxt=document.getElementById('stxt');
+  var btn=document.getElementById('btn-tr');
+  var out=document.getElementById('output');
+  var dot=document.getElementById('sdot');
+  var stxt=document.getElementById('stxt');
+  var sl=(dir==='cz2en')?'cs':'en';
+  var tl=(dir==='cz2en')?'en':'cs';
   btn.disabled=true;
   out.className='result-box loading';
-  out.textContent='⟳ Překládám...';
+  out.textContent='\u27F3 P\u0159ekl\u00E1d\u00E1m...';
   dot.className='sdot ok';
-  stxt.textContent='Překládám...';
+  stxt.textContent='P\u0159ekl\u00E1d\u00E1m...';
   try{
-    const q=encodeURIComponent(inp);
-    const r=await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=cs&tl=en&dt=t&q='+q);
-    const d=await r.json();
-    const t=d[0]?d[0].map(function(x){return x[0]||'';}).join(''):'';
+    var q=encodeURIComponent(inp);
+    var r=await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl='+sl+'&tl='+tl+'&dt=t&q='+q);
+    var d=await r.json();
+    var t=d[0]?d[0].map(function(x){return x[0]||'';}).join(''):'';\
     if(t){lastResult=t;out.className='result-box';out.textContent=t;dot.className='sdot ok';stxt.textContent='Hotovo';}
-    else throw new Error('Prázdná odpověď');
+    else throw new Error('Pr\u00E1zdn\u00E1 odpov\u011B\u010F');
   }catch(e){
-    out.className='result-box';out.style.color='#ff6666';out.textContent='⚠ Chyba: '+e.message;
+    out.className='result-box';out.style.color='#ff6666';out.textContent='\u26A0 Chyba: '+e.message;
     dot.className='sdot err';stxt.textContent='Chyba';
   }
   btn.disabled=false;
 }
 function copyResult(){
   if(!lastResult)return;
-  navigator.clipboard.writeText(lastResult).then(()=>{
-    const t=document.getElementById('toast');t.classList.add('show');
-    setTimeout(()=>t.classList.remove('show'),2000);
+  navigator.clipboard.writeText(lastResult).then(function(){
+    var t=document.getElementById('toast');t.classList.add('show');
+    setTimeout(function(){t.classList.remove('show');},2000);
   });
 }
 function clearAll(){
   document.getElementById('input').value='';
-  const o=document.getElementById('output');
-  o.className='result-box empty';o.style.color='';o.textContent='Překlad se zobrazí zde...';
+  var o=document.getElementById('output');
+  o.className='result-box empty';o.style.color='';o.textContent='P\u0159eklad se zobraz\u00ED zde...';
   document.getElementById('sdot').className='sdot';
-  document.getElementById('stxt').textContent='Připraveno';
+  document.getElementById('stxt').textContent='P\u0159ipraveno';
   lastResult='';
 }
 document.getElementById('input').addEventListener('keydown',function(e){if(e.ctrlKey&&e.key==='Enter')doTranslate();});
@@ -18759,7 +18790,6 @@ document.getElementById('input').addEventListener('keydown',function(e){if(e.ctr
 </body>
 </html>
 `;
-
 APP_HTML["nextsync"] = `<!DOCTYPE html>
 <html lang="cs">
 <head>
