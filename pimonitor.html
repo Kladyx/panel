@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v4.1Pi">
-<title>Pi Monitor v4.1Pi</title>
+<meta name="version" content="v4.2Pi">
+<title>Pi Monitor v4.2Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -95,7 +95,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v4.1Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v4.2Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -177,6 +177,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="net-row"><div class="net-lbl">GitHub</div><div class="net-val" id="cloud-github"><span class="dot dot-wait"></span> ...</div></div>
   <div class="net-row"><div class="net-lbl">Firebase RTDB</div><div class="net-val" id="cloud-firebase"><span class="dot dot-wait"></span> ...</div></div>
   <div class="net-row"><div class="net-lbl">Pi Transfer</div><div class="net-val" id="cloud-pitransfer"><span class="dot dot-wait"></span> ...</div></div>
+  <div class="net-row"><div class="net-lbl">Web KladyxLand</div><div class="net-val" id="cloud-web"><span class="dot dot-wait"></span> ...</div></div>
   <div style="text-align:right;margin-top:6px;"><button onclick="clearPrijate()" style="background:rgba(255,50,50,.15);border:1px solid rgba(255,50,50,.4);color:#ff4444;padding:4px 12px;border-radius:6px;font-size:.7rem;cursor:pointer;">🗑 Smazat přijaté</button></div>
 </div>
 
@@ -683,6 +684,18 @@ function checkCloudStatus() {
   };
   xp.onerror = function() { ptEl.innerHTML = '—'; };
   xp.send();
+  // Web KladyxLand - přímý fetch na GitHub Pages
+  var wEl=document.getElementById('cloud-web');
+  var xw=new XMLHttpRequest();
+  xw.open('HEAD','https://kladyx.github.io/',true);
+  xw.timeout=8000;
+  xw.onload=function(){
+    if(xw.status>=200&&xw.status<400){wEl.innerHTML='<span class="dot dot-ok"></span> <span style="color:#00ff88;font-weight:700;">ONLINE</span>';}
+    else{wEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">OFFLINE</span>';}
+  };
+  xw.onerror=function(){wEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">OFFLINE</span>';};
+  xw.ontimeout=function(){wEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">TIMEOUT</span>';};
+  xw.send();
 }
 checkCloudStatus();
 setInterval(checkCloudStatus, 120000);
