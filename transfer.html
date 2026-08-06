@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v2.9Kl</title>
+<title>KladyxTransfer v3.0Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -161,7 +161,7 @@
   }
   .gh-saved { color:#00ff88; font-size:.8rem; margin-bottom:8px; }
 
-  /* --- Expirace tokenu (v2.9Kl) --- */
+  /* --- Expirace tokenu (v3.0Kl) --- */
   .gh-exp-row { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
   .gh-exp-row label {
     color:rgba(255,255,255,.55); font-size:.75rem; white-space:nowrap;
@@ -201,7 +201,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v2.9Kl • Firebase + GitHub</div>
+  <div class="version">v3.0Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -905,7 +905,7 @@ function saveGhToken() {
   setTimeout(function() { msg.innerHTML = ''; }, 3000);
 }
 
-// --- Expirace tokenu (v2.9Kl) ---
+// --- Expirace tokenu (v3.0Kl) ---
 function getGhExp() {
   return getStorage().getItem('gh_pat_exp') || '';
 }
@@ -990,6 +990,16 @@ function sendToGithub() {
   var repo = target.repo;
   var path = target.path;
   var msg = target.msg;
+
+  // POJISTKA 1: kontrola názvu souboru vs cíl
+  var uploadName = selectedGhFile.name.toLowerCase();
+  var targetName = path.toLowerCase();
+  if (uploadName !== targetName) {
+    if (!confirm('⚠️ POZOR!\n\nNahráváš: ' + selectedGhFile.name + '\nCíl na GitHubu: ' + path + '\n\nNázvy se LIŠÍ!\nOpravdu přepsat?')) return;
+  }
+
+  // POJISTKA 2: potvrzovací dialog
+  if (!confirm('Seš si jistý, že to máš správně nastavené?\n\nSoubor: ' + path + '\nRepo: ' + repo)) return;
   var btn = document.getElementById('sendBtnGh');
   var status = document.getElementById('statusGh');
   var pWrap = document.getElementById('progressWrapGh');
