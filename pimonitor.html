@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v3.9Pi">
-<title>Pi Monitor v3.9Pi</title>
+<meta name="version" content="v4.0Pi">
+<title>Pi Monitor v4.0Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -95,7 +95,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v3.9Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v4.0Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -304,10 +304,11 @@ function setSvc(id,ok,isPC){
 function setDev(id,on,fresh){
   var d=document.getElementById('d-dev-'+id);
   var s=document.getElementById('s-dev-'+id);
-  if(d)d.className='dot '+(on?'dot-ok':'dot-err');
+  var isOn=on&&fresh;
+  if(d)d.className='dot '+(isOn?'dot-ok':'dot-err');
   if(s){
-    s.textContent=on?'ZAPNUTO':'VYPNUTO';
-    s.className='svc-stat '+(on?'on':'off');
+    s.textContent=isOn?'ZAPNUTO':'VYPNUTO';
+    s.className='svc-stat '+(isOn?'on':'off');
   }
 }
 // PC SLUZBY - Pi4 o nich NEVI (bezi jako .bat na PC, ne jako systemd na Pi4),
