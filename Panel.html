@@ -235,7 +235,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.2.3.Pro - 2026 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.2.4.Pro - 2026 Kladyx</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -18469,7 +18469,7 @@ function toggleReveal(k,pass,pin){
   _showPinModal();
 }
 // Vyzadani PINu pred editaci zaznamu (v4.1.5.Pro - oprava: edit byl bez PIN kontroly)
-// v4.2.3.Pro - oprava race condition v openEdit: predvyplneni pass/pin cekalo asynchronne,
+// v4.2.4.Pro - oprava race condition v openEdit: predvyplneni pass/pin cekalo asynchronne,
 // modal se otvira az po dokonceni obou _decrypt, aby se PIN pri ulozeni neztratil/neprepsal
 function requestPinFor(k,pin,onSuccess){
   _rp={k:k,pass:null,pin:pin||'',onSuccess:onSuccess};
@@ -19548,6 +19548,9 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
 .empty{text-align:center;color:rgba(255,255,255,0.2);font-size:.75rem;padding:30px 0;}
 .count{text-align:center;font-size:.55rem;color:rgba(255,255,255,0.2);margin-top:10px;letter-spacing:1px;}
 .ver{text-align:center;font-size:.5rem;color:rgba(255,255,255,0.15);margin-top:8px;letter-spacing:2px;}
+.eq-wrap{display:flex;align-items:flex-end;justify-content:center;gap:3px;height:40px;margin-top:16px;padding:0 10px;}
+.eq-bar{width:6px;border-radius:2px 2px 0 0;animation:eqBounce 0.8s ease-in-out infinite alternate;animation-delay:var(--d);}
+@keyframes eqBounce{0%{height:15%;}100%{height:var(--h);}}
 </style>
 </head>
 <body>
@@ -19580,7 +19583,25 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
 </div>
 <div id="list"></div>
 <div class="count" id="cnt"></div>
-<div class="ver">v1.2.2</div>
+<div class="eq-wrap">
+  <div class="eq-bar" style="--d:0.2s;--h:60%;background:#ff4444;"></div>
+  <div class="eq-bar" style="--d:0.4s;--h:80%;background:#ff6b35;"></div>
+  <div class="eq-bar" style="--d:0.3s;--h:50%;background:#ffc800;"></div>
+  <div class="eq-bar" style="--d:0.5s;--h:90%;background:#00ff88;"></div>
+  <div class="eq-bar" style="--d:0.25s;--h:70%;background:#00b4ff;"></div>
+  <div class="eq-bar" style="--d:0.45s;--h:55%;background:#cc88ff;"></div>
+  <div class="eq-bar" style="--d:0.35s;--h:85%;background:#ff4444;"></div>
+  <div class="eq-bar" style="--d:0.5s;--h:65%;background:#ff6b35;"></div>
+  <div class="eq-bar" style="--d:0.2s;--h:75%;background:#ffc800;"></div>
+  <div class="eq-bar" style="--d:0.4s;--h:45%;background:#00ff88;"></div>
+  <div class="eq-bar" style="--d:0.3s;--h:80%;background:#00b4ff;"></div>
+  <div class="eq-bar" style="--d:0.55s;--h:60%;background:#cc88ff;"></div>
+  <div class="eq-bar" style="--d:0.25s;--h:90%;background:#ff4444;"></div>
+  <div class="eq-bar" style="--d:0.45s;--h:50%;background:#ff6b35;"></div>
+  <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
+  <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
+</div>
+<div class="ver">v1.3.0</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
