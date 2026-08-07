@@ -19580,7 +19580,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
 </div>
 <div id="list"></div>
 <div class="count" id="cnt"></div>
-<div class="ver">v1.2.1</div>
+<div class="ver">v1.2.2</div>
 <script>
 var fb,dbRef,records={},curFilter='all';
 function setSync(ok,txt){
@@ -19589,43 +19589,31 @@ function setSync(ok,txt){
   else if(ok)el.innerHTML='<span class="sync-dot sync-ok"></span> <span style="color:#00ff88">'+txt+'</span>';
   else el.innerHTML='<span class="sync-dot sync-err"></span> <span style="color:#ff4444">'+txt+'</span>';
 }
-var _fbTry=0;
-var _RES_CFG={apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"};
-function _getFirebase(){
-  try{var p=window.parent.firebase;if(p&&p.database)return p;}catch(e){}
-  try{
-    var f=window.firebase;
-    if(!f){return null;}
-    try{f.app('res-app');}catch(e){f.initializeApp(_RES_CFG,'res-app');}
-    return f;
-  }catch(e2){return null;}
-}
 function initFB(){
-  fb=_getFirebase();
-  if(!fb){
-    _fbTry++;
-    if(_fbTry>8){setSync(false,'Firebase nedostupne');return;}
-    setSync(null,'Pripojuji... ('+_fbTry+')');
-    setTimeout(initFB,1500);return;
-  }
   try{
-    var appName='res-app';
-    try{fb.app(appName);}catch(e){fb.initializeApp(_RES_CFG,appName);}
-    var db;
-    try{db=fb.app(appName).database();}catch(e){db=fb.database();}
-    dbRef=db.ref('residence');
-    dbRef.orderByChild('ts').limitToLast(100).on('value',function(snap){
-      records=snap.val()||{};
-      setSync(true,'Sync OK');
-      render();
-    },function(err){
-      setSync(false,'Offline: '+(err.code||err.message));
+    var cfg={apiKey:'AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8',authDomain:'kladyxland.firebaseapp.com',
+      databaseURL:'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app',
+      projectId:'kladyxland',storageBucket:'kladyxland.firebasestorage.app',
+      messagingSenderId:'178078059030',appId:'1:178078059030:web:8d8a0271b23a7aca2b4337'};
+    var _app;try{_app=firebase.app('res-app');}catch(e){_app=firebase.initializeApp(cfg,'res-app');}
+    fb=_app;
+    var _offTimer=setTimeout(function(){setSync(false,'Timeout');},8000);
+    _app.auth().signInAnonymously().catch(function(){clearTimeout(_offTimer);setSync(false,'Auth err');});
+    _app.auth().onAuthStateChanged(function(user){
+      if(!user)return;
+      clearTimeout(_offTimer);
+      setSync(null,'Pripojuji...');
+      dbRef=_app.database().ref('residence');
+      dbRef.orderByChild('ts').limitToLast(100).on('value',function(snap){
+        records=snap.val()||{};
+        setSync(true,'Sync OK');
+        render();
+      },function(err){
+        setSync(false,'Offline: '+(err.code||err.message));
+      });
     });
   }catch(e){
-    _fbTry++;
-    if(_fbTry>8){setSync(false,'Chyba: '+e.message);return;}
-    setSync(null,'Pripojuji...');
-    setTimeout(initFB,1500);
+    setSync(false,'Chyba: '+e.message);
   }
 }
 function addRecord(){
