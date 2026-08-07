@@ -235,7 +235,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.2.0.Pro - 2026 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.2.1.Pro - 2026 Kladyx</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -18469,7 +18469,7 @@ function toggleReveal(k,pass,pin){
   _showPinModal();
 }
 // Vyzadani PINu pred editaci zaznamu (v4.1.5.Pro - oprava: edit byl bez PIN kontroly)
-// v4.2.0.Pro - oprava race condition v openEdit: predvyplneni pass/pin cekalo asynchronne,
+// v4.2.1.Pro - oprava race condition v openEdit: predvyplneni pass/pin cekalo asynchronne,
 // modal se otvira az po dokonceni obou _decrypt, aby se PIN pri ulozeni neztratil/neprepsal
 function requestPinFor(k,pin,onSuccess){
   _rp={k:k,pass:null,pin:pin||'',onSuccess:onSuccess};
@@ -19510,14 +19510,21 @@ APP_HTML["residence"] = `<!DOCTYPE html>
 :root{--orange:#ff6b35;--dark:#05050f;--dark2:#0a0a20;--dark3:#0d1330;--border:rgba(255,107,53,0.25);}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--dark);color:#e0f0ff;font-family:'Share Tech Mono',monospace;min-height:100vh;padding:16px 12px 60px;}
-h1{font-family:'Orbitron',monospace;font-size:clamp(.9rem,4vw,1.4rem);font-weight:900;color:var(--orange);text-shadow:0 0 20px rgba(255,107,53,0.5);letter-spacing:3px;text-align:center;text-transform:uppercase;margin-bottom:6px;}
-.sub{text-align:center;font-size:.6rem;color:rgba(255,107,53,0.4);letter-spacing:2px;margin-bottom:16px;}
+h1{font-family:'Orbitron',monospace;font-size:clamp(.9rem,4vw,1.4rem);font-weight:900;color:var(--orange);text-shadow:0 0 20px rgba(255,107,53,0.5);letter-spacing:3px;text-align:center;text-transform:uppercase;margin-bottom:4px;}
+.sub{text-align:center;font-size:.6rem;color:rgba(255,107,53,0.4);letter-spacing:2px;margin-bottom:4px;}
+.sync{text-align:center;font-size:.55rem;letter-spacing:1px;margin-bottom:12px;}
+.sync-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:4px;}
+.sync-ok{background:#00ff88;box-shadow:0 0 6px #00ff88;}
+.sync-wait{background:#ffaa00;box-shadow:0 0 6px #ffaa00;}
+.sync-err{background:#ff4444;box-shadow:0 0 6px #ff4444;}
 .form{background:var(--dark2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;}
 .row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
 .row input,.row select{flex:1;min-width:0;background:var(--dark3);border:1px solid var(--border);border-radius:6px;color:#e0f0ff;font-family:'Share Tech Mono',monospace;font-size:.85rem;padding:10px;outline:none;}
 .row input:focus,.row select:focus{border-color:rgba(255,107,53,0.6);}
 textarea{width:100%;background:var(--dark3);border:1px solid var(--border);border-radius:6px;color:#e0f0ff;font-family:'Share Tech Mono',monospace;font-size:.85rem;padding:10px;resize:vertical;min-height:60px;outline:none;margin-bottom:8px;}
 textarea:focus{border-color:rgba(255,107,53,0.6);}
+.url-input{width:100%;background:var(--dark3);border:1px solid var(--border);border-radius:6px;color:#00b4ff;font-family:'Share Tech Mono',monospace;font-size:.75rem;padding:10px;outline:none;margin-bottom:8px;}
+.url-input:focus{border-color:rgba(0,180,255,0.6);}
 .btn-add{width:100%;padding:12px;background:linear-gradient(135deg,#804000,#553000);color:var(--orange);border:1px solid rgba(255,107,53,0.4);border-radius:6px;font-family:'Orbitron',monospace;font-size:.7rem;font-weight:700;letter-spacing:2px;cursor:pointer;text-transform:uppercase;}
 .btn-add:hover{box-shadow:0 0 20px rgba(255,107,53,0.3);}
 .filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
@@ -19532,6 +19539,9 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
 .cat-info{background:rgba(0,180,255,0.15);color:#00b4ff;}
 .cat-poznamky{background:rgba(0,255,136,0.15);color:#00ff88;}
 .card-note{font-size:.85rem;line-height:1.5;color:#c0d8f0;margin-bottom:4px;}
+.card-url{font-size:.7rem;margin-bottom:4px;}
+.card-url a{color:#00b4ff;text-decoration:none;word-break:break-all;}
+.card-url a:hover{text-decoration:underline;}
 .card-amount{font-family:'Orbitron',monospace;font-size:.8rem;color:var(--orange);font-weight:700;}
 .card-del{position:absolute;top:8px;right:10px;background:none;border:none;color:rgba(255,255,255,0.2);font-size:1rem;cursor:pointer;}
 .card-del:hover{color:#ff4444;}
@@ -19543,6 +19553,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
 <body>
 <h1>Residence Pribor</h1>
 <div class="sub">zaznamy - opravy - vydaje</div>
+<div class="sync" id="syncStatus"><span class="sync-dot sync-wait"></span> <span style="color:#ffaa00">Pripojuji...</span></div>
 <div class="form">
   <div class="row">
     <input type="date" id="rDate"/>
@@ -19554,6 +19565,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
     </select>
   </div>
   <textarea id="rNote" placeholder="Poznamka..."></textarea>
+  <input type="url" class="url-input" id="rUrl" placeholder="URL odkaz (volitelne)"/>
   <div class="row">
     <input type="number" id="rAmount" placeholder="Kc (volitelne)" step="1"/>
   </div>
@@ -19568,9 +19580,14 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
 </div>
 <div id="list"></div>
 <div class="count" id="cnt"></div>
-<div class="ver">v1.0.0</div>
+<div class="ver">v1.1.0</div>
 <script>
 var fb,dbRef,records={},curFilter='all';
+function setSync(ok,txt){
+  var el=document.getElementById('syncStatus');
+  if(ok)el.innerHTML='<span class="sync-dot sync-ok"></span> <span style="color:#00ff88">'+txt+'</span>';
+  else el.innerHTML='<span class="sync-dot sync-err"></span> <span style="color:#ff4444">'+txt+'</span>';
+}
 function initFB(){
   try{
     fb=window.parent.firebase;
@@ -19578,7 +19595,10 @@ function initFB(){
     dbRef=fb.database().ref('residence');
     dbRef.orderByChild('ts').limitToLast(100).on('value',function(snap){
       records=snap.val()||{};
+      setSync(true,'Sync OK');
       render();
+    },function(err){
+      setSync(false,'Offline');
     });
   }catch(e){setTimeout(initFB,1500);}
 }
@@ -19588,13 +19608,16 @@ function addRecord(){
   var c=document.getElementById('rCat').value;
   var n=document.getElementById('rNote').value.trim();
   var a=document.getElementById('rAmount').value;
+  var u=document.getElementById('rUrl').value.trim();
   if(!n){alert('Napis poznamku');return;}
   if(!d)d=new Date().toISOString().slice(0,10);
   var rec={date:d,cat:c,note:n,ts:Date.now()};
   if(a)rec.amount=parseFloat(a);
+  if(u)rec.url=u;
   dbRef.push(rec);
   document.getElementById('rNote').value='';
   document.getElementById('rAmount').value='';
+  document.getElementById('rUrl').value='';
 }
 function delRecord(id){
   if(!confirm('Smazat zaznam?'))return;
@@ -19618,6 +19641,7 @@ function render(){
       html+='<div class="card">';
       html+='<div class="card-head"><span class="card-date">'+r.date+'</span><span class="card-cat cat-'+r.cat+'">'+r.cat+'</span></div>';
       html+='<div class="card-note">'+r.note.replace(/</g,'&lt;')+'</div>';
+      if(r.url)html+='<div class="card-url"><a href="'+r.url+'" target="_blank">'+r.url+'</a></div>';
       if(r.amount!==undefined)html+='<div class="card-amount">'+r.amount+' Kc</div>';
       html+='<button class="card-del" data-id="'+r._id+'" onclick="delRecord(this.dataset.id)">&times;</button>';
       html+='</div>';
