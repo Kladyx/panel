@@ -235,7 +235,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.1.7.Pro - 2026 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.1.9.Pro - 2026 Kladyx</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     PŘIHLÁSIT SE PŘES GOOGLE
@@ -18467,7 +18467,7 @@ function toggleReveal(k,pass,pin){
   _showPinModal();
 }
 // Vyzadani PINu pred editaci zaznamu (v4.1.5.Pro - oprava: edit byl bez PIN kontroly)
-// v4.1.7.Pro - oprava race condition v openEdit: predvyplneni pass/pin cekalo asynchronne,
+// v4.1.9.Pro - oprava race condition v openEdit: predvyplneni pass/pin cekalo asynchronne,
 // modal se otvira az po dokonceni obou _decrypt, aby se PIN pri ulozeni neztratil/neprepsal
 function requestPinFor(k,pin,onSuccess){
   _rp={k:k,pass:null,pin:pin||'',onSuccess:onSuccess};
@@ -19502,7 +19502,7 @@ APP_HTML["residence"] = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Residence P\u0159\u00EDbor</title>
+<title>Residence Příbor</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
 <style>
 :root{--cyan:#00d4ff;--green:#00ff88;--orange:#ff6b35;--dark:#05050f;--dark2:#0a0a20;--dark3:#0d1330;--border:rgba(255,107,53,0.25);}
@@ -19540,7 +19540,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
 </style>
 </head>
 <body>
-<h1>\uD83C\uDFE2 Residence P\u0159\u00EDbor</h1>
+<h1>\u{1F3E2} Residence P\u0159\u00EDbor</h1>
 <div class="sub">z\u00E1znamy \u00B7 opravy \u00B7 v\u00FDdaje</div>
 <div class="form">
   <div class="row">
@@ -19556,14 +19556,14 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="row">
     <input type="number" id="rAmount" placeholder="K\u010D (voliteln\u00E9)" step="1"/>
   </div>
-  <button class="btn-add" onclick="addRecord()">\u2795 P\u0159idat z\u00E1znam</button>
+  <button class="btn-add" onclick="addRecord()">+ P\u0159idat z\u00E1znam</button>
 </div>
 <div class="filters">
-  <button class="fbtn active" data-f="all" onclick="setFilter('all',this)">V\u0161e</button>
-  <button class="fbtn" data-f="opravy" onclick="setFilter('opravy',this)">Opravy</button>
-  <button class="fbtn" data-f="vydaje" onclick="setFilter('vydaje',this)">V\u00FDdaje</button>
-  <button class="fbtn" data-f="info" onclick="setFilter('info',this)">Info</button>
-  <button class="fbtn" data-f="poznamky" onclick="setFilter('poznamky',this)">Pozn\u00E1mky</button>
+  <button class="fbtn active" onclick="setFilter('all',this)">V\u0161e</button>
+  <button class="fbtn" onclick="setFilter('opravy',this)">Opravy</button>
+  <button class="fbtn" onclick="setFilter('vydaje',this)">V\u00FDdaje</button>
+  <button class="fbtn" onclick="setFilter('info',this)">Info</button>
+  <button class="fbtn" onclick="setFilter('poznamky',this)">Pozn\u00E1mky</button>
 </div>
 <div id="list"></div>
 <div class="count" id="cnt"></div>
@@ -19587,7 +19587,7 @@ function addRecord(){
   var c=document.getElementById('rCat').value;
   var n=document.getElementById('rNote').value.trim();
   var a=document.getElementById('rAmount').value;
-  if(!n){alert('Napi\\u0161 pozn\\u00E1mku');return;}
+  if(!n){alert('Napiste poznamku');return;}
   if(!d)d=new Date().toISOString().slice(0,10);
   var rec={date:d,cat:c,note:n,ts:Date.now()};
   if(a)rec.amount=parseFloat(a);
@@ -19596,7 +19596,7 @@ function addRecord(){
   document.getElementById('rAmount').value='';
 }
 function delRecord(id){
-  if(!confirm('Smazat z\\u00E1znam?'))return;
+  if(!confirm('Smazat zaznam?'))return;
   dbRef.child(id).remove();
 }
 function setFilter(f,el){
@@ -19611,19 +19611,19 @@ function render(){
   arr.sort(function(a,b){return(b.ts||0)-(a.ts||0);});
   if(curFilter!=='all')arr=arr.filter(function(r){return r.cat===curFilter;});
   var html='';
-  if(arr.length===0){html='<div class="empty">\u017D\\u00E1dn\\u00E9 z\\u00E1znamy</div>';}
+  if(arr.length===0){html='<div class="empty">Zadne zaznamy</div>';}
   else{
     arr.forEach(function(r){
       html+='<div class="card">';
       html+='<div class="card-head"><span class="card-date">'+r.date+'</span><span class="card-cat cat-'+r.cat+'">'+r.cat+'</span></div>';
       html+='<div class="card-note">'+r.note.replace(/</g,'&lt;')+'</div>';
-      if(r.amount!==undefined)html+='<div class="card-amount">'+r.amount+' K\\u010D</div>';
+      if(r.amount!==undefined)html+='<div class="card-amount">'+r.amount+' Kc</div>';
       html+='<button class="card-del" data-id="'+r._id+'" onclick="delRecord(this.dataset.id)">&times;</button>';
       html+='</div>';
     });
   }
   document.getElementById('list').innerHTML=html;
-  document.getElementById('cnt').textContent=arr.length+' z\\u00E1znam\\u016F';
+  document.getElementById('cnt').textContent=arr.length+' zaznamu';
 }
 document.getElementById('rDate').value=new Date().toISOString().slice(0,10);
 initFB();
@@ -19631,6 +19631,7 @@ initFB();
 </body>
 </html>
 `;
+
 
 
 function openApp(id) {
@@ -20142,7 +20143,7 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
     "Multitrack":"multitrack","Status":"status","Radio ID":"radio",
     "ZX Games":"zxgames","World Time":"worldtime","Překladač":"prekladac",
     "NextSync":"nextsync","Scripty":"scripty","Co to je???":"cotoje","KladyxAmp":"kladyxamp",
-    "SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer"
+    "SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer","Residence":"residence"
   };
   try {
     var raw = localStorage.getItem('kladyx_custom_icons');
