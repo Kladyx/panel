@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="2.22Kl">
+<meta name="version" content="2.23Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -317,7 +317,7 @@ h1 {
 <div class="container">
 <h1>KLADYX HOME</h1>
 <div class="subtitle">SMART HOME CONTROL</div>
-<div class="version-badge">v2.22Kl</div>
+<div class="version-badge">v2.23Kl</div>
 
 <div class="device unknown" id="dev-p115">
   <div class="device-header">
@@ -415,7 +415,7 @@ h1 {
   </button>
 </div>
 
-<div class="footer">KLADYXHOME v2.22Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v2.23Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -460,9 +460,10 @@ try {
       }
       var age = d.lastSeen ? Date.now() - d.lastSeen : 999999;
       if (age > 150000) {
-        devEl.className = d.on === true ? 'device on' : 'device off';
-        statEl.textContent = d.on === true ? 'ZAPNUTO' : 'VYPNUTO';
-        [btnOn, btnOff].forEach(function(b){ b.disabled=true; b.style.opacity='0.35'; b.style.cursor='not-allowed'; });
+        devEl.className = 'device unknown';
+        statEl.textContent = 'OFFLINE';
+        if(btnOn){btnOn.disabled=true; btnOn.style.opacity='0.35'; btnOn.style.cursor='not-allowed';}
+        if(btnOff){btnOff.disabled=true; btnOff.style.opacity='0.35'; btnOff.style.cursor='not-allowed';}
         return;
       }
       [btnOn, btnOff].forEach(function(b){ b.disabled=false; b.style.opacity=''; b.style.cursor=''; });
