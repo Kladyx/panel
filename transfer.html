@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v3.1Kl</title>
+<title>KladyxTransfer v3.2Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -161,7 +161,7 @@
   }
   .gh-saved { color:#00ff88; font-size:.8rem; margin-bottom:8px; }
 
-  /* --- Expirace tokenu (v3.1Kl) --- */
+  /* --- Expirace tokenu (v3.2Kl) --- */
   .gh-exp-row { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
   .gh-exp-row label {
     color:rgba(255,255,255,.55); font-size:.75rem; white-space:nowrap;
@@ -201,7 +201,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v3.1Kl • Firebase + GitHub</div>
+  <div class="version">v3.2Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -353,9 +353,11 @@
 
     <div>
       <button class="sendbtn" id="sendBtnDl" onclick="downloadFromGithub()">⬇️ Stáhnout</button>
+      <button class="sendbtn" style="background:linear-gradient(135deg,#1a6b2a,#0d4a1a);border-color:rgba(0,255,100,.4);color:#00ff66;margin-top:8px;" onclick="downloadAllFromGithub()">📦 Stáhnout vše</button>
     </div>
 
     <div class="status" id="statusDl"></div>
+    <div class="status" id="statusDlAll" style="font-size:.7rem;color:rgba(0,255,100,.6);"></div>
   </div>
 
   <div class="box" style="margin-top:20px">
@@ -905,7 +907,7 @@ function saveGhToken() {
   setTimeout(function() { msg.innerHTML = ''; }, 3000);
 }
 
-// --- Expirace tokenu (v3.1Kl) ---
+// --- Expirace tokenu (v3.2Kl) ---
 function getGhExp() {
   return getStorage().getItem('gh_pat_exp') || '';
 }
@@ -1179,6 +1181,49 @@ function downloadFromGithub() {
     status.className = 'status';
   };
   xhr.send();
+}
+
+function downloadAllFromGithub() {
+  var sel = document.getElementById('ghDownTarget');
+  var opts = sel.options;
+  var files = [];
+  for (var i = 0; i < opts.length; i++) files.push(opts[i].value);
+  var status = document.getElementById('statusDlAll');
+  var done = 0;
+  var total = files.length;
+  status.textContent = '📦 Stahuji 0/' + total + '...';
+  function dlNext(idx) {
+    if (idx >= files.length) {
+      status.textContent = '✅ Hotovo! Staženo ' + done + '/' + total + ' souborů';
+      playDing();
+      return;
+    }
+    var parts = files[idx].split('/');
+    var repo = parts[0];
+    var file = parts[1];
+    var url = 'https://raw.githubusercontent.com/kladyx/' + repo + '/main/' + file;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(xhr.response);
+        a.download = file;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        done++;
+      }
+      status.textContent = '📦 Stahuji ' + (idx + 1) + '/' + total + '... (' + file + ')';
+      setTimeout(function() { dlNext(idx + 1); }, 800);
+    };
+    xhr.onerror = function() {
+      status.textContent = '❌ Chyba: ' + file;
+      setTimeout(function() { dlNext(idx + 1); }, 800);
+    };
+    xhr.send();
+  }
+  dlNext(0);
 }
 
 // ─── Načti čekající soubory Mobil→PC po refreshi ────
