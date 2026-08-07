@@ -19580,27 +19580,39 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
 </div>
 <div id="list"></div>
 <div class="count" id="cnt"></div>
-<div class="ver">v1.1.0</div>
+<div class="ver">v1.2.0</div>
 <script>
 var fb,dbRef,records={},curFilter='all';
 function setSync(ok,txt){
   var el=document.getElementById('syncStatus');
-  if(ok)el.innerHTML='<span class="sync-dot sync-ok"></span> <span style="color:#00ff88">'+txt+'</span>';
+  if(ok===null)el.innerHTML='<span class="sync-dot sync-wait"></span> <span style="color:#ffaa00">'+txt+'</span>';
+  else if(ok)el.innerHTML='<span class="sync-dot sync-ok"></span> <span style="color:#00ff88">'+txt+'</span>';
   else el.innerHTML='<span class="sync-dot sync-err"></span> <span style="color:#ff4444">'+txt+'</span>';
 }
+var _fbTry=0;
 function initFB(){
   try{
     fb=window.parent.firebase;
-    if(!fb||!fb.database){setTimeout(initFB,1500);return;}
+    if(!fb||!fb.database){
+      _fbTry++;
+      if(_fbTry>6){setSync(false,'Firebase nedostupne');return;}
+      setSync(null,'Pripojuji... ('+_fbTry+')');
+      setTimeout(initFB,1500);return;
+    }
     dbRef=fb.database().ref('residence');
     dbRef.orderByChild('ts').limitToLast(100).on('value',function(snap){
       records=snap.val()||{};
       setSync(true,'Sync OK');
       render();
     },function(err){
-      setSync(false,'Offline');
+      setSync(false,'Offline: '+err.code);
     });
-  }catch(e){setTimeout(initFB,1500);}
+  }catch(e){
+    _fbTry++;
+    if(_fbTry>6){setSync(false,'Chyba: '+e.message);return;}
+    setSync(null,'Pripojuji...');
+    setTimeout(initFB,1500);
+  }
 }
 function addRecord(){
   if(!dbRef)return;
