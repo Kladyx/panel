@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="2.23Kl">
+<meta name="version" content="2.24Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -317,7 +317,7 @@ h1 {
 <div class="container">
 <h1>KLADYX HOME</h1>
 <div class="subtitle">SMART HOME CONTROL</div>
-<div class="version-badge">v2.23Kl</div>
+<div class="version-badge">v2.24Kl</div>
 
 <div class="device unknown" id="dev-p115">
   <div class="device-header">
@@ -415,7 +415,7 @@ h1 {
   </button>
 </div>
 
-<div class="footer">KLADYXHOME v2.23Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v2.24Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -454,8 +454,8 @@ try {
       if (!d) {
         devEl.className = 'device unknown';
         statEl.textContent = 'OFFLINE';
-        btnOn.classList.remove('active');
-        btnOff.classList.remove('active');
+        if(btnOn)btnOn.classList.remove('active');
+        if(btnOff)btnOff.classList.remove('active');
         return;
       }
       var age = d.lastSeen ? Date.now() - d.lastSeen : 999999;
@@ -466,17 +466,17 @@ try {
         if(btnOff){btnOff.disabled=true; btnOff.style.opacity='0.35'; btnOff.style.cursor='not-allowed';}
         return;
       }
-      [btnOn, btnOff].forEach(function(b){ b.disabled=false; b.style.opacity=''; b.style.cursor=''; });
+      [btnOn, btnOff].forEach(function(b){ if(b){b.disabled=false; b.style.opacity=''; b.style.cursor='';} });
       if (d.on === true) {
         devEl.className = 'device on';
         statEl.textContent = 'ZAPNUTO';
-        btnOn.classList.add('active');
-        btnOff.classList.remove('active');
+        if(btnOn)btnOn.classList.add('active');
+        if(btnOff)btnOff.classList.remove('active');
       } else {
         devEl.className = 'device off';
         statEl.textContent = 'VYPNUTO';
-        btnOn.classList.remove('active');
-        btnOff.classList.add('active');
+        if(btnOn)btnOn.classList.remove('active');
+        if(btnOff)btnOff.classList.add('active');
       }
       log('Pripojeno OK', 'ok');
     }, function(err) {
@@ -487,8 +487,8 @@ try {
       el.addEventListener('touchstart', function(e) { e.preventDefault(); fn(); }, {passive: false});
       el.addEventListener('click', fn);
     }
-    addTap(btnOn, function() { sendCmd(node, 'on'); });
-    addTap(btnOff, function() { sendCmd(node, 'off'); });
+    if(btnOn)addTap(btnOn, function() { sendCmd(node, 'on'); });
+    if(btnOff)addTap(btnOff, function() { sendCmd(node, 'off'); });
   }
 
   function sendCmd(node, cmd) {
