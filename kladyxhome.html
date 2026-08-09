@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="2.24Kl">
+<meta name="version" content="2.25Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -317,7 +317,7 @@ h1 {
 <div class="container">
 <h1>KLADYX HOME</h1>
 <div class="subtitle">SMART HOME CONTROL</div>
-<div class="version-badge">v2.24Kl</div>
+<div class="version-badge">v2.25Kl</div>
 
 <div class="device unknown" id="dev-p115">
   <div class="device-header">
@@ -443,42 +443,52 @@ try {
   var db = firebase.database();
   log('Firebase OK - cekam na data...');
 
+  var deviceCache = {};
+
+  function checkDevice(suffix) {
+    var c = deviceCache[suffix];
+    if (!c) return;
+    var d = c.data, devEl = c.devEl, statEl = c.statEl, btnOn = c.btnOn, btnOff = c.btnOff;
+    if (!d) {
+      devEl.className = 'device unknown';
+      statEl.textContent = 'OFFLINE';
+      if(btnOn)btnOn.classList.remove('active');
+      if(btnOff)btnOff.classList.remove('active');
+      return;
+    }
+    var age = d.lastSeen ? Date.now() - d.lastSeen : 999999;
+    if (age > 150000) {
+      devEl.className = 'device unknown';
+      statEl.textContent = 'OFFLINE';
+      if(btnOn){btnOn.disabled=true; btnOn.style.opacity='0.35'; btnOn.style.cursor='not-allowed';}
+      if(btnOff){btnOff.disabled=true; btnOff.style.opacity='0.35'; btnOff.style.cursor='not-allowed';}
+      return;
+    }
+    [btnOn, btnOff].forEach(function(b){ if(b){b.disabled=false; b.style.opacity=''; b.style.cursor='';} });
+    if (d.on === true) {
+      devEl.className = 'device on';
+      statEl.textContent = 'ZAPNUTO';
+      if(btnOn)btnOn.classList.add('active');
+      if(btnOff)btnOff.classList.remove('active');
+    } else {
+      devEl.className = 'device off';
+      statEl.textContent = 'VYPNUTO';
+      if(btnOn)btnOn.classList.remove('active');
+      if(btnOff)btnOff.classList.add('active');
+    }
+    log('Pripojeno OK', 'ok');
+  }
+
   function setupDevice(node, suffix) {
     var devEl = document.getElementById('dev-' + suffix);
     var statEl = document.getElementById('status-' + suffix);
     var btnOn = document.getElementById('btn-on-' + suffix);
     var btnOff = document.getElementById('btn-off-' + suffix);
+    deviceCache[suffix] = { devEl: devEl, statEl: statEl, btnOn: btnOn, btnOff: btnOff, data: null };
 
     db.ref(node).on('value', function(snap) {
-      var d = snap.val();
-      if (!d) {
-        devEl.className = 'device unknown';
-        statEl.textContent = 'OFFLINE';
-        if(btnOn)btnOn.classList.remove('active');
-        if(btnOff)btnOff.classList.remove('active');
-        return;
-      }
-      var age = d.lastSeen ? Date.now() - d.lastSeen : 999999;
-      if (age > 150000) {
-        devEl.className = 'device unknown';
-        statEl.textContent = 'OFFLINE';
-        if(btnOn){btnOn.disabled=true; btnOn.style.opacity='0.35'; btnOn.style.cursor='not-allowed';}
-        if(btnOff){btnOff.disabled=true; btnOff.style.opacity='0.35'; btnOff.style.cursor='not-allowed';}
-        return;
-      }
-      [btnOn, btnOff].forEach(function(b){ if(b){b.disabled=false; b.style.opacity=''; b.style.cursor='';} });
-      if (d.on === true) {
-        devEl.className = 'device on';
-        statEl.textContent = 'ZAPNUTO';
-        if(btnOn)btnOn.classList.add('active');
-        if(btnOff)btnOff.classList.remove('active');
-      } else {
-        devEl.className = 'device off';
-        statEl.textContent = 'VYPNUTO';
-        if(btnOn)btnOn.classList.remove('active');
-        if(btnOff)btnOff.classList.add('active');
-      }
-      log('Pripojeno OK', 'ok');
+      deviceCache[suffix].data = snap.val();
+      checkDevice(suffix);
     }, function(err) {
       log('Chyba cteni ' + node + ': ' + (err.message || err), 'err');
     });
@@ -503,6 +513,10 @@ try {
   setupDevice('tapoDbP110', 'p110');
   setupDevice('tapoDbP100Sam', 'p100sam');
   setupDevice('tuyaDb', 'tuya-lampa');
+
+  setInterval(function() {
+    Object.keys(deviceCache).forEach(function(s) { checkDevice(s); });
+  }, 60000);
 
 } catch(e) {
   log('FATAL: ' + (e.message || e), 'err');
