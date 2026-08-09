@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="2.26Kl">
+<meta name="version" content="2.27Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -97,20 +97,21 @@ h1 {
 .device.on::before {
   content: '';
   position: absolute;
-  width: 20px; height: 20px;
-  background: radial-gradient(circle, #00ff41, transparent 70%);
-  border-radius: 50%;
-  filter: blur(6px);
-  animation: runBorder 4s linear infinite;
+  width: 40px; height: 2px;
+  background: linear-gradient(90deg, transparent, #00ff41, transparent);
+  border-radius: 2px;
+  filter: blur(2px);
+  box-shadow: 0 0 8px #00ff41, 0 0 16px rgba(0,255,65,0.6);
+  animation: runBorder 8s linear infinite;
   z-index: 1;
 }
 
 @keyframes runBorder {
-  0%   { top: -10px; left: -10px; }
-  25%  { top: -10px; left: calc(100% - 10px); }
-  50%  { top: calc(100% - 10px); left: calc(100% - 10px); }
-  75%  { top: calc(100% - 10px); left: -10px; }
-  100% { top: -10px; left: -10px; }
+  0%   { top: -1px; left: -40px; }
+  25%  { top: -1px; left: calc(100%); }
+  50%  { top: calc(100% - 1px); left: calc(100%); }
+  75%  { top: calc(100% - 1px); left: -40px; }
+  100% { top: -1px; left: -40px; }
 }
 
 .device.on {
@@ -327,7 +328,7 @@ h1 {
 <div class="container">
 <h1>KLADYX HOME</h1>
 <div class="subtitle">SMART HOME CONTROL</div>
-<div class="version-badge">v2.26Kl</div>
+<div class="version-badge">v2.27Kl</div>
 
 <div class="device unknown" id="dev-p115">
   <div class="device-header">
@@ -425,7 +426,7 @@ h1 {
   </button>
 </div>
 
-<div class="footer">KLADYXHOME v2.26Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v2.27Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
