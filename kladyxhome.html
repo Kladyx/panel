@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="2.25Kl">
+<meta name="version" content="2.26Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -273,6 +273,16 @@ h1 {
   50% { opacity: 0.3; }
 }
 
+/* Lávová Lampa - bez blikání box-shadow, jen runBorder tečka */
+#dev-tuya-lampa.on {
+  animation: none;
+  box-shadow: 0 4px 30px rgba(0, 255, 65, 0.4), inset 0 1px 0 rgba(0, 255, 65, 0.2);
+}
+#dev-tuya-lampa.off {
+  animation: none;
+  box-shadow: 0 4px 25px rgba(255, 51, 68, 0.3), inset 0 1px 0 rgba(255, 51, 68, 0.15);
+}
+
 .footer {
   text-align: center;
   margin-top: 25px;
@@ -317,7 +327,7 @@ h1 {
 <div class="container">
 <h1>KLADYX HOME</h1>
 <div class="subtitle">SMART HOME CONTROL</div>
-<div class="version-badge">v2.25Kl</div>
+<div class="version-badge">v2.26Kl</div>
 
 <div class="device unknown" id="dev-p115">
   <div class="device-header">
@@ -415,7 +425,7 @@ h1 {
   </button>
 </div>
 
-<div class="footer">KLADYXHOME v2.24Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v2.26Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
