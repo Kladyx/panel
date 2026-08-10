@@ -363,17 +363,15 @@ h1 {
   </div>
 </div>
 
-<div class="device unknown" id="dev-tuya-lampa">
+<div class="device unknown" id="dev-p100ma">
   <div class="device-header">
     <div class="device-name">Lávová Lampa (P100MA)</div>
-    <div class="device-status" id="status-tuya-lampa">...</div>
+    <div class="device-status" id="status-p100ma">...</div>
   </div>
   <div class="buttons" style="display:none;">
-    <button class="btn btn-on" id="btn-on-tuya-lampa">Zapni Lampu</button>
-    <button class="btn btn-off" id="btn-off-tuya-lampa">Vypni Lampu</button>
+    <button class="btn btn-on" id="btn-on-p100ma">ZAPNI LAMPU</button>
+    <button class="btn btn-off" id="btn-off-p100ma">VYPNI LAMPU</button>
   </div>
-  <div style="font-size:11px;text-align:center;padding:6px 0 2px;color:#4a7a8a;letter-spacing:1px;">OVLÁDÁNÍ PŘES SMART LIFE</div>
-  <div style="font-size:11px;text-align:right;padding:4px 6px 0 0;color:#00ff41;animation:tuya-pulse 2.5s ease-in-out infinite;">🔑 Tuya API trial: 2027-02-01</div>
 </div>
 
 <div class="device unknown" id="dev-p110">
@@ -523,7 +521,7 @@ try {
   setupDevice('tapoDbP100', 'p100');
   setupDevice('tapoDbP110', 'p110');
   setupDevice('tapoDbP100Sam', 'p100sam');
-  setupDevice('tuyaDb', 'tuya-lampa');
+  setupDevice('tapoDbP100Ma', 'p100ma');
 
   setInterval(function() {
     Object.keys(deviceCache).forEach(function(s) { checkDevice(s); });
