@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v3.3Kl</title>
+<title>KladyxTransfer v3.4Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -201,7 +201,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v3.3Kl • Firebase + GitHub</div>
+  <div class="version">v3.4Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -296,6 +296,7 @@
       <option value="starter">panel - starter.html</option>
       <option value="speakup">panel - speakup.html</option>
       <option value="accounts">panel - accounts.html</option>
+      <option value="manifest">panel - manifest.json</option>
     </select>
 
     <label class="pickbtn" for="fileInputGh">📁 Vybrat soubor</label>
@@ -351,6 +352,7 @@
       <option value="panel/starter.html">panel - starter.html</option>
       <option value="panel/speakup.html">panel - speakup.html</option>
       <option value="panel/accounts.html">panel - accounts.html</option>
+      <option value="panel/manifest.json">panel - manifest.json</option>
     </select>
 
     <div>
@@ -888,7 +890,8 @@ var GH_TARGETS = {
   mictest: { repo: 'panel', path: 'mictest.html', msg: 'Update panel' },
   starter: { repo: 'panel', path: 'starter.html', msg: 'Update panel' },
   speakup: { repo: 'panel', path: 'speakup.html', msg: 'Update panel' },
-  accounts: { repo: 'panel', path: 'accounts.html', msg: 'Update panel' }
+  accounts: { repo: 'panel', path: 'accounts.html', msg: 'Update panel' },
+  manifest: { repo: 'panel', path: 'manifest.json', msg: 'Update panel' }
 };
 
 function getStorage() {
