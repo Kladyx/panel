@@ -1,0 +1,24 @@
+{
+  "name": "ItalMaster",
+  "short_name": "ItalMaster",
+  "description": "Naučte se italsky s rozpoznáváním řeči",
+  "start_url": "https://kladyx.github.io/panel/italstina.html",
+  "display": "standalone",
+  "background_color": "#0d0d1f",
+  "theme_color": "#2ecc71",
+  "scope": "/panel/",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><text x='50%' y='50%' font-size='140' font-weight='bold' dominant-baseline='central' text-anchor='middle'>🇮🇹</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><text x='50%' y='50%' font-size='380' font-weight='bold' dominant-baseline='central' text-anchor='middle'>🇮🇹</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
