@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v4.4Pi">
-<title>Pi Monitor v4.4Pi</title>
+<meta name="version" content="v4.5Pi">
+<title>Pi Monitor v4.5Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -95,7 +95,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v4.4Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v4.5Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -143,7 +143,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 
 <div class="section">
   <div class="sec-title">🔌 ZAŘÍZENÍ</div>
-  <div class="svc-row"><div class="dot dot-wait" id="d-dev-lampa"></div><div class="svc-name">Lávová lampa (TUYA)</div><div class="svc-st" id="s-dev-lampa">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-dev-lampa"></div><div class="svc-name">Lávová lampa (P100MA)</div><div class="svc-st" id="s-dev-lampa">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-dev-p115"></div><div class="svc-name">DJ Studio (P115)</div><div class="svc-st" id="s-dev-p115">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-dev-p100"></div><div class="svc-name">TV System Sharp (P100)</div><div class="svc-st" id="s-dev-p100">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-dev-p100sam"></div><div class="svc-name">Radio system Samsung (P100sam)</div><div class="svc-st" id="s-dev-p100sam">…</div></div>
@@ -500,8 +500,8 @@ function loadStats(){
     setDev('p115',d&&d.on===true,fresh);
   })
   .catch(function(){setSvc('tapopy',false);setDev('p115',false,false);});
-  // ZARIZENI - Lavova lampa (tuyaDb, plug_bridge.py zapisuje po 60s)
-  fbFetch(fbUrl('/tuyaDb.json'),{signal:AbortSignal.timeout(5000)})
+  // ZARIZENI - Lavova lampa (tapoDbP100Ma, tapo-bridge zapisuje po 60s)
+  fbFetch(fbUrl('/tapoDbP100Ma.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(d){
     var ts=d&&d.lastSeen;
