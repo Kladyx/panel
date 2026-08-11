@@ -142,10 +142,6 @@
     color:#fff; font-size:.95rem; font-family:inherit;
     margin-bottom:10px; appearance:auto;
   }
-  .gh-select option {
-    background:#1a0a2a;
-    color:#fff;
-  }
   .gh-input {
     width:100%; padding:10px; border-radius:8px;
     background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2);
@@ -164,31 +160,42 @@
     white-space:nowrap;
   }
   .gh-saved { color:#00ff88; font-size:.8rem; margin-bottom:8px; }
+
+  /* --- Expirace tokenu (v3.2Kl) --- */
+  .gh-exp-row { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
+  .gh-exp-row label {
+    color:rgba(255,255,255,.55); font-size:.75rem; white-space:nowrap;
+  }
+  .gh-exp-row input {
+    flex:1; padding:7px 10px; border-radius:8px;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(255,255,255,.05); color:#fff;
+    font-size:.8rem; font-family:inherit;
+  }
+  .gh-exp-info {
+    font-size:.78rem; font-weight:700; letter-spacing:.02em;
+    margin-bottom:10px; min-height:1em;
+  }
+  .gh-exp-ok {
+    color:#00ff88;
+    text-shadow:0 0 8px rgba(0,255,136,.55);
+    animation: ghExpPulse 2s ease-in-out infinite;
+  }
+  .gh-exp-warn {
+    color:#ffaa00;
+    text-shadow:0 0 8px rgba(255,170,0,.6);
+    animation: ghExpPulse 1s ease-in-out infinite;
+  }
+  .gh-exp-dead {
+    color:#ff4444;
+    text-shadow:0 0 8px rgba(255,68,68,.6);
+    animation: ghExpPulse .8s ease-in-out infinite;
+  }
+  @keyframes ghExpPulse {
+    0%,100% { opacity:1; }
+    50%     { opacity:.35; }
+  }
   .footer { color:rgba(255,255,255,.35); font-size:.8rem; margin-top:22px; }
-  .gh-history-title {
-    font-size:.95rem; font-weight:700;
-    color:#00ffff; margin-bottom:8px; text-align:center;
-  }
-  .gh-history-item {
-    display:flex; align-items:center; gap:8px;
-    padding:6px 10px; margin-bottom:4px;
-    background:rgba(255,255,255,.05);
-    border-radius:8px;
-    font-size:.82rem;
-  }
-  .gh-history-item .hi-dot { color:#00ff88; }
-  .gh-history-item .hi-target { color:#ffaa00; flex-shrink:0; }
-  .gh-history-item .hi-file { color:#fff; flex:1; word-break:break-all; }
-  .gh-history-item .hi-time { color:rgba(255,255,255,.5); flex-shrink:0; }
-  .gh-history-empty { text-align:center; color:rgba(255,255,255,.4); font-size:.85rem; padding:6px; }
-  .gh-clear-btn {
-    display:inline-block; margin-top:8px;
-    padding:4px 12px; border-radius:6px;
-    border:1px solid rgba(255,255,255,.15);
-    background:rgba(255,255,255,.05);
-    color:rgba(255,255,255,.5); font-size:.75rem;
-    cursor:pointer; text-align:center;
-  }
 </style>
 </head>
 <body>
@@ -223,6 +230,29 @@
   </div>
 
   <div class="box" style="margin-top:20px">
+    <div class="icon">🍓</div>
+    <div class="desc">Vyber soubor v mobilu - uloží se na <b>Pi4</b> do /home/pi/prijate/</div>
+    <div class="desc2">Max. velikost cca 4 MB</div>
+
+    <label class="pickbtn" for="fileInputPi">📁 Vybrat soubor</label>
+    <input type="file" id="fileInputPi" onchange="onFileSelectedPi()">
+    <div class="filename" id="fileNamePi">Žádný soubor nevybrán</div>
+
+    <div>
+      <button class="sendbtn" id="sendBtnPi" onclick="sendFileToPi()" disabled>🍓 Odeslat na Pi4</button>
+    </div>
+
+    <div class="status" id="statusPi"></div>
+
+    <div class="progress-wrap" id="progressWrapPi">
+      <div class="progress-bar" id="progressBarPi"></div>
+      <div class="progress-text" id="progressTextPi">0%</div>
+    </div>
+
+    <div id="piSentList" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="box" style="margin-top:20px">
     <div class="icon">📥</div>
     <div class="desc">Vyber soubor v prohlížeči na PC - objeví se ke stažení na mobilu</div>
     <div class="desc2">Max. velikost cca 4 MB</div>
@@ -249,7 +279,7 @@
     <div class="desc2">Přímo z mobilu do repa</div>
 
     <select class="gh-select" id="ghTarget">
-      <option value="index">kladyxland web - index.html</option>
+      <option value="index">kladyxland - index.html</option>
       <option value="panel">panel - Panel.html</option>
       <option value="cotoje">panel - cotoje.html</option>
       <option value="equalizer">panel - equalizer.html</option>
@@ -262,7 +292,10 @@
       <option value="songup">panel - songup.html</option>
       <option value="speedtest">panel - speedtest.html</option>
       <option value="transfer">panel - transfer.html</option>
+      <option value="mictest">panel - mictest.html</option>
       <option value="starter">panel - starter.html</option>
+      <option value="speakup">panel - speakup.html</option>
+      <option value="accounts">panel - accounts.html</option>
     </select>
 
     <label class="pickbtn" for="fileInputGh">📁 Vybrat soubor</label>
@@ -287,13 +320,53 @@
         <input class="gh-input" id="ghToken" type="password" placeholder="ghp_xxxx..." style="margin-bottom:0">
         <button class="gh-save-btn" onclick="saveGhToken()">Uložit</button>
       </div>
+      <div class="gh-exp-row">
+        <label for="ghExp">Platnost do:</label>
+        <input id="ghExp" type="date" onchange="saveGhExp()">
+      </div>
+      <div class="gh-exp-info" id="ghExpInfo"></div>
+    </div>
+  </div>
+
+  <div class="box" style="margin-top:20px">
+    <div class="icon">⬇️</div>
+    <div class="desc">Stáhnout soubor z <b>GitHubu</b></div>
+    <div class="desc2">Přímo do mobilu z repa</div>
+
+    <select class="gh-select" id="ghDownTarget">
+      <option value="kladyxland/index.html">kladyxland - index.html</option>
+      <option value="panel/Panel.html">panel - Panel.html</option>
+      <option value="panel/cotoje.html">panel - cotoje.html</option>
+      <option value="panel/equalizer.html">panel - equalizer.html</option>
+      <option value="panel/italstina.html">panel - italstina.html</option>
+      <option value="panel/kladyxamp.html">panel - kladyxamp.html</option>
+      <option value="panel/kladyxhome.html">panel - kladyxhome.html</option>
+      <option value="panel/pimonitor.html">panel - pimonitor.html</option>
+      <option value="panel/reader.html">panel - reader.html</option>
+      <option value="panel/scripty.html">panel - scripty.html</option>
+      <option value="panel/songup.html">panel - songup.html</option>
+      <option value="panel/speedtest.html">panel - speedtest.html</option>
+      <option value="panel/transfer.html">panel - transfer.html</option>
+      <option value="panel/mictest.html">panel - mictest.html</option>
+      <option value="panel/starter.html">panel - starter.html</option>
+      <option value="panel/speakup.html">panel - speakup.html</option>
+      <option value="panel/accounts.html">panel - accounts.html</option>
+    </select>
+
+    <div>
+      <button class="sendbtn" id="sendBtnDl" onclick="downloadFromGithub()">⬇️ Stáhnout</button>
+      <button class="sendbtn" style="background:linear-gradient(135deg,#1a6b2a,#0d4a1a);border-color:rgba(0,255,100,.4);color:#00ff66;margin-top:8px;" onclick="downloadAllFromGithub()">📦 Stáhnout vše</button>
     </div>
 
-    <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
-      <div class="gh-history-title">📋 Historie commitů</div>
-      <div id="ghHistoryList"><div class="gh-history-empty">Zatím žádné commity</div></div>
-      <div style="text-align:center"><button class="gh-clear-btn" onclick="clearGhHistory()">Smazat historii</button></div>
-    </div>
+    <div class="status" id="statusDl"></div>
+    <div class="status" id="statusDlAll" style="font-size:.7rem;color:rgba(0,255,100,.6);"></div>
+  </div>
+
+  <div class="box" style="margin-top:20px">
+    <div class="icon">📋</div>
+    <div class="desc">Historie GitHub</div>
+    <div id="ghHistory" style="margin-top:10px;font-size:.85rem;color:rgba(255,255,255,.7);max-height:300px;overflow-y:auto;"></div>
+    <button class="sendbtn" onclick="clearGhHistory()" style="margin-top:10px;font-size:.75rem;padding:8px;background:rgba(255,0,0,.15);border-color:rgba(255,0,0,.4);color:#ff6666;">🗑 Smazat historii</button>
   </div>
 
   <div class="footer">přes Firebase Realtime Database + GitHub API</div>
@@ -302,11 +375,99 @@
 <script>
 var DB_TO_PC     = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/transfer_to_pc';
 var DB_TO_MOBILE = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/transfer_to_mobile';
+var DB_TO_PI     = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/nextsync/transfer_to_pi';
 var MAX_SIZE = 4 * 1024 * 1024; // 4 MB
 var MOBILE_POLL_INTERVAL = 20000;
 var selectedFile = null;
 var selectedFileToMobile = null;
+var selectedFilePi = null;
 var audioCtx = null;
+
+// ─── Pi4 Upload ──────────────────────────────────────
+function onFileSelectedPi() {
+  var input = document.getElementById('fileInputPi');
+  selectedFilePi = input.files[0] || null;
+  var nameEl = document.getElementById('fileNamePi');
+  var btn = document.getElementById('sendBtnPi');
+  document.getElementById('statusPi').textContent = '';
+  if (selectedFilePi) {
+    if (selectedFilePi.size > MAX_SIZE) {
+      nameEl.textContent = 'Příliš velký! Max 4 MB';
+      btn.disabled = true;
+      return;
+    }
+    var sizeMB = (selectedFilePi.size / 1e6).toFixed(2);
+    nameEl.textContent = selectedFilePi.name + ' (' + sizeMB + ' MB)';
+    btn.disabled = false;
+  } else {
+    nameEl.textContent = 'Žádný soubor nevybrán';
+    btn.disabled = true;
+  }
+}
+
+function sendFileToPi() {
+  if (!selectedFilePi) return;
+  var btn = document.getElementById('sendBtnPi');
+  var status = document.getElementById('statusPi');
+  var pWrap = document.getElementById('progressWrapPi');
+  var pBar = document.getElementById('progressBarPi');
+  var pText = document.getElementById('progressTextPi');
+  btn.disabled = true;
+  status.textContent = '📤 Čtu soubor...';
+  pWrap.style.display = 'block';
+  pBar.style.width = '0%';
+  pText.textContent = '0%';
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var base64 = e.target.result;
+    var safeName = selectedFilePi.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    var safeKey = safeName.replace(/\./g, '_');
+    pBar.style.width = '30%';
+    pText.textContent = '30%';
+    status.textContent = '📡 Odesílám na Pi4...';
+    var payload = JSON.stringify({ name: selectedFilePi.name, data: base64, ts: Date.now() });
+    var url = DB_TO_PI + '/' + encodeURIComponent(safeKey) + '.json';
+    var xhr = new XMLHttpRequest();
+    xhr.open('PUT', url);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.upload.onprogress = function(ev) {
+      if (ev.lengthComputable) {
+        var pct = 30 + Math.round((ev.loaded / ev.total) * 70);
+        pBar.style.width = pct + '%';
+        pText.textContent = pct + '%';
+      }
+    };
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        pBar.style.width = '100%';
+        pText.textContent = '100% ✓';
+        status.textContent = '✅ Odesláno na Pi4! Čeká na stažení.';
+        status.className = 'status done';
+        playDing();
+        addPiSentItem(selectedFilePi.name);
+        setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
+      } else {
+        pWrap.style.display = 'none';
+        status.textContent = '❌ Chyba: ' + xhr.status;
+        status.className = 'status';
+      }
+      btn.disabled = false;
+    };
+    xhr.onerror = function() {
+      pWrap.style.display = 'none';
+      status.textContent = '❌ Chyba sítě';
+      status.className = 'status';
+      btn.disabled = false;
+    };
+    xhr.send(payload);
+  };
+  reader.onerror = function() {
+    pWrap.style.display = 'none';
+    status.textContent = '❌ Chyba čtení souboru';
+    btn.disabled = false;
+  };
+  reader.readAsDataURL(selectedFilePi);
+}
 
 // ─── Zvukové cinknutí ────────────────────────────────
 function playDing() {
@@ -658,24 +819,75 @@ function downloadMobileFile(key) {
 
 loadMobileQueue();
 
+// ─── Pi4 Sent History ─────────────────────────────────
+function addPiSentItem(name) {
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('pi_sent') || '[]'); } catch(e) {}
+  hist.unshift({ name: name, ts: Date.now() });
+  if (hist.length > 20) hist = hist.slice(0, 20);
+  store.setItem('pi_sent', JSON.stringify(hist));
+  renderPiSent();
+}
+
+function renderPiSent() {
+  var el = document.getElementById('piSentList');
+  if (!el) return;
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('pi_sent') || '[]'); } catch(e) {}
+  if (hist.length === 0) { el.innerHTML = ''; return; }
+  var html = '<div style="font-size:.85rem;color:rgba(255,255,255,.5);margin-bottom:6px;">📋 Odesláno na Pi4:</div>';
+  for (var i = 0; i < hist.length; i++) {
+    var h = hist[i];
+    var d = new Date(h.ts);
+    var ts = d.getDate() + '.' + (d.getMonth()+1) + '. ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
+    html += '<div style="padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;">';
+    html += '<span style="color:#00ccff;flex:1;">🍓 ' + h.name + '</span>';
+    html += '<span style="color:rgba(255,255,255,.35);font-size:.75rem;margin-right:8px;">' + ts + '</span>';
+    html += '<span onclick="deletePiFile(' + i + ',\'' + h.name.replace(/'/g, "\\'") + '\')" style="cursor:pointer;font-size:.85rem;color:#ff4444;padding:2px 6px;">✕</span>';
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function deletePiFile(idx, name) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('PUT', DB_TO_PI.replace('transfer_to_pi', 'piTransfer/delete') + '.json');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onload = function() {
+    var store = getStorage();
+    var hist = [];
+    try { hist = JSON.parse(store.getItem('pi_sent') || '[]'); } catch(e) {}
+    hist.splice(idx, 1);
+    store.setItem('pi_sent', JSON.stringify(hist));
+    renderPiSent();
+  };
+  xhr.send(JSON.stringify(name));
+}
+
+renderPiSent();
+
 // ─── GitHub Upload ──────────────────────────────────
 var GH_OWNER = 'kladyx';
 var selectedGhFile = null;
 var GH_TARGETS = {
   index: { repo: 'kladyxland', path: 'index.html', msg: 'Update index' },
   panel: { repo: 'panel', path: 'Panel.html', msg: 'Update panel' },
-  cotoje: { repo: 'panel', path: 'cotoje.html', msg: 'Update cotoje.html' },
-  equalizer: { repo: 'panel', path: 'equalizer.html', msg: 'Update equalizer.html' },
-  italstina: { repo: 'panel', path: 'italstina.html', msg: 'Update italstina.html' },
-  kladyxamp: { repo: 'panel', path: 'kladyxamp.html', msg: 'Update kladyxamp.html' },
-  kladyxhome: { repo: 'panel', path: 'kladyxhome.html', msg: 'Update kladyxhome.html' },
-  pimonitor: { repo: 'panel', path: 'pimonitor.html', msg: 'Update pimonitor.html' },
-  reader: { repo: 'panel', path: 'reader.html', msg: 'Update reader.html' },
-  scripty: { repo: 'panel', path: 'scripty.html', msg: 'Update scripty.html' },
-  songup: { repo: 'panel', path: 'songup.html', msg: 'Update songup.html' },
-  speedtest: { repo: 'panel', path: 'speedtest.html', msg: 'Update speedtest.html' },
-  transfer: { repo: 'panel', path: 'transfer.html', msg: 'Update transfer.html' },
-  starter: { repo: 'panel', path: 'starter.html', msg: 'Update starter.html' }
+  cotoje: { repo: 'panel', path: 'cotoje.html', msg: 'Update panel' },
+  equalizer: { repo: 'panel', path: 'equalizer.html', msg: 'Update panel' },
+  italstina: { repo: 'panel', path: 'italstina.html', msg: 'Update panel' },
+  kladyxamp: { repo: 'panel', path: 'kladyxamp.html', msg: 'Update panel' },
+  kladyxhome: { repo: 'panel', path: 'kladyxhome.html', msg: 'Update panel' },
+  pimonitor: { repo: 'panel', path: 'pimonitor.html', msg: 'Update panel' },
+  reader: { repo: 'panel', path: 'reader.html', msg: 'Update panel' },
+  scripty: { repo: 'panel', path: 'scripty.html', msg: 'Update panel' },
+  songup: { repo: 'panel', path: 'songup.html', msg: 'Update panel' },
+  speedtest: { repo: 'panel', path: 'speedtest.html', msg: 'Update panel' },
+  transfer: { repo: 'panel', path: 'transfer.html', msg: 'Update panel' },
+  mictest: { repo: 'panel', path: 'mictest.html', msg: 'Update panel' },
+  starter: { repo: 'panel', path: 'starter.html', msg: 'Update panel' },
+  speakup: { repo: 'panel', path: 'speakup.html', msg: 'Update panel' }
 };
 
 function getStorage() {
@@ -697,11 +909,61 @@ function saveGhToken() {
   setTimeout(function() { msg.innerHTML = ''; }, 3000);
 }
 
+// --- Expirace tokenu (v3.2Kl) ---
+function getGhExp() {
+  return getStorage().getItem('gh_pat_exp') || '';
+}
+
+function saveGhExp() {
+  var v = document.getElementById('ghExp').value;
+  if (v) { getStorage().setItem('gh_pat_exp', v); }
+  else { getStorage().removeItem('gh_pat_exp'); }
+  renderGhExp();
+}
+
+function renderGhExp() {
+  var el = document.getElementById('ghExpInfo');
+  if (!el) return;
+  var v = getGhExp();
+  if (!v) {
+    el.className = 'gh-exp-info';
+    el.textContent = 'Datum expirace nenastaveno';
+    el.style.color = 'rgba(255,255,255,.35)';
+    return;
+  }
+  el.style.color = '';
+  var parts = v.split('-');
+  var exp = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  var days = Math.round((exp - today) / 86400000);
+  var d = ('0' + exp.getDate()).slice(-2) + '.' +
+          ('0' + (exp.getMonth() + 1)).slice(-2) + '.' +
+          exp.getFullYear();
+
+  if (days < 0) {
+    el.className = 'gh-exp-info gh-exp-dead';
+    el.textContent = '\u274C Token vypršel ' + d;
+  } else if (days === 0) {
+    el.className = 'gh-exp-info gh-exp-warn';
+    el.textContent = '\u26A0\uFE0F Token vyprší DNES (' + d + ')';
+  } else if (days <= 7) {
+    el.className = 'gh-exp-info gh-exp-warn';
+    el.textContent = '\u26A0\uFE0F Token platí do ' + d + ' \u00B7 zbývá ' + days + (days === 1 ? ' den' : (days < 5 ? ' dny' : ' dní'));
+  } else {
+    el.className = 'gh-exp-info gh-exp-ok';
+    el.textContent = '\uD83D\uDFE2 Token platí do ' + d + ' \u00B7 zbývá ' + days + (days < 5 ? ' dny' : ' dní');
+  }
+}
+
 (function() {
   if (getGhToken()) {
     var msg = document.getElementById('ghSavedMsg');
     msg.innerHTML = '<span class="gh-saved">Token uložen</span>';
   }
+  var expEl = document.getElementById('ghExp');
+  if (expEl) { expEl.value = getGhExp(); }
+  renderGhExp();
 })();
 
 function onGhFileSelected() {
@@ -732,6 +994,16 @@ function sendToGithub() {
   var repo = target.repo;
   var path = target.path;
   var msg = target.msg;
+
+  // POJISTKA 1: kontrola názvu souboru vs cíl
+  var uploadName = selectedGhFile.name.toLowerCase();
+  var targetName = path.toLowerCase();
+  if (uploadName !== targetName) {
+    if (!confirm('⚠️ POZOR!\n\nNahráváš: ' + selectedGhFile.name + '\nCíl na GitHubu: ' + path + '\n\nNázvy se LIŠÍ!\nOpravdu přepsat?')) return;
+  }
+
+  // POJISTKA 2: potvrzovací dialog
+  if (!confirm('Seš si jistý, že to máš správně nastavené?\n\nSoubor: ' + path + '\nRepo: ' + repo)) return;
   var btn = document.getElementById('sendBtnGh');
   var status = document.getElementById('statusGh');
   var pWrap = document.getElementById('progressWrapGh');
@@ -791,7 +1063,7 @@ function sendToGithub() {
           status.textContent = '✅ Commitnuto! ' + (sha ? '(přepsáno)' : '(nový soubor)');
           status.className = 'status done';
           playDing();
-          saveGhCommit(selectedGhFile.name, document.getElementById('ghTarget').selectedOptions[0].textContent);
+          addGhHistoryItem('commit', repo + '/' + path);
           setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
         } else {
           pWrap.style.display = 'none';
@@ -826,6 +1098,136 @@ function sendToGithub() {
   reader.readAsDataURL(selectedGhFile);
 }
 
+// ─── GitHub Historie ──────────────────────────────────
+function addGhHistoryItem(type, file) {
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('gh_history') || '[]'); } catch(e) {}
+  var now = new Date();
+  var ts = now.getDate() + '.' + (now.getMonth()+1) + '. ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  hist.unshift({ type: type, file: file, ts: ts });
+  if (hist.length > 30) hist = hist.slice(0, 30);
+  store.setItem('gh_history', JSON.stringify(hist));
+  renderGhHistory();
+}
+
+function renderGhHistory() {
+  var el = document.getElementById('ghHistory');
+  if (!el) return;
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('gh_history') || '[]'); } catch(e) {}
+  if (hist.length === 0) { el.innerHTML = '<div style="color:rgba(255,255,255,.3);text-align:center;">Zatím prázdná</div>'; return; }
+  var html = '';
+  for (var i = 0; i < hist.length; i++) {
+    var h = hist[i];
+    var icon = h.type === 'commit' ? '🐙 ↑' : '⬇️ ↓';
+    var color = h.type === 'commit' ? '#ffaa00' : '#00ccff';
+    html += '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;">';
+    html += '<span style="color:' + color + ';flex:1;">' + icon + ' ' + h.file + '</span>';
+    html += '<span style="color:rgba(255,255,255,.35);font-size:.75rem;margin-right:8px;">' + h.ts + '</span>';
+    html += '<span onclick="deleteGhHistoryItem(' + i + ')" style="cursor:pointer;font-size:.85rem;color:#ff4444;padding:2px 6px;">✕</span>';
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function clearGhHistory() {
+  getStorage().removeItem('gh_history');
+  renderGhHistory();
+}
+
+function deleteGhHistoryItem(idx) {
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('gh_history') || '[]'); } catch(e) {}
+  hist.splice(idx, 1);
+  store.setItem('gh_history', JSON.stringify(hist));
+  renderGhHistory();
+}
+
+renderGhHistory();
+
+// ─── GitHub Download ─────────────────────────────────
+function downloadFromGithub() {
+  var sel = document.getElementById('ghDownTarget');
+  var val = sel.value;
+  if (!val) { document.getElementById('statusDl').textContent = '⚠️ Vyber soubor'; return; }
+  var parts = val.split('/');
+  var repo = parts[0];
+  var file = parts[1];
+  var status = document.getElementById('statusDl');
+  status.textContent = '📡 Stahuji...';
+  var url = 'https://raw.githubusercontent.com/kladyx/' + repo + '/main/' + file;
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url);
+  xhr.responseType = 'blob';
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(xhr.response);
+      a.download = file;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      status.textContent = '✅ Staženo: ' + file;
+      status.className = 'status done';
+      playDing();
+      addGhHistoryItem('download', repo + '/' + file);
+    } else {
+      status.textContent = '❌ Chyba ' + xhr.status;
+      status.className = 'status';
+    }
+  };
+  xhr.onerror = function() {
+    status.textContent = '❌ Chyba sítě';
+    status.className = 'status';
+  };
+  xhr.send();
+}
+
+function downloadAllFromGithub() {
+  var sel = document.getElementById('ghDownTarget');
+  var opts = sel.options;
+  var files = [];
+  for (var i = 0; i < opts.length; i++) files.push(opts[i].value);
+  var status = document.getElementById('statusDlAll');
+  var done = 0;
+  var total = files.length;
+  status.textContent = '📦 Stahuji 0/' + total + '...';
+  function dlNext(idx) {
+    if (idx >= files.length) {
+      status.textContent = '✅ Hotovo! Staženo ' + done + '/' + total + ' souborů';
+      playDing();
+      return;
+    }
+    var parts = files[idx].split('/');
+    var repo = parts[0];
+    var file = parts[1];
+    var url = 'https://raw.githubusercontent.com/kladyx/' + repo + '/main/' + file;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(xhr.response);
+        a.download = file;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        done++;
+      }
+      status.textContent = '📦 Stahuji ' + (idx + 1) + '/' + total + '... (' + file + ')';
+      setTimeout(function() { dlNext(idx + 1); }, 800);
+    };
+    xhr.onerror = function() {
+      status.textContent = '❌ Chyba: ' + file;
+      setTimeout(function() { dlNext(idx + 1); }, 800);
+    };
+    xhr.send();
+  }
+  dlNext(0);
+}
+
 // ─── Načti čekající soubory Mobil→PC po refreshi ────
 function loadPendingQueue() {
   var xhr = new XMLHttpRequest();
@@ -854,56 +1256,6 @@ function loadPendingQueue() {
   xhr.send();
 }
 loadPendingQueue();
-
-// ─── GitHub Commit Historie (localStorage) ──────────
-var GH_HISTORY_KEY = 'gh_commit_history';
-var GH_HISTORY_MAX = 20;
-
-function getGhHistory() {
-  try {
-    var data = getStorage().getItem(GH_HISTORY_KEY);
-    return data ? JSON.parse(data) : [];
-  } catch(e) { return []; }
-}
-
-function saveGhCommit(fileName, targetLabel) {
-  var history = getGhHistory();
-  history.unshift({
-    file: fileName,
-    target: targetLabel,
-    ts: Date.now()
-  });
-  if (history.length > GH_HISTORY_MAX) history = history.slice(0, GH_HISTORY_MAX);
-  try { getStorage().setItem(GH_HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
-  renderGhHistory();
-}
-
-function renderGhHistory() {
-  var list = document.getElementById('ghHistoryList');
-  var history = getGhHistory();
-  if (!history.length) {
-    list.innerHTML = '<div class="gh-history-empty">Zatím žádné commity</div>';
-    return;
-  }
-  var html = '';
-  for (var i = 0; i < history.length; i++) {
-    var h = history[i];
-    html += '<div class="gh-history-item">';
-    html += '<span class="hi-dot">✓</span>';
-    html += '<span class="hi-target">' + escapeHtml(h.target) + '</span>';
-    html += '<span class="hi-file">' + escapeHtml(h.file) + '</span>';
-    html += '<span class="hi-time">' + formatAgo(h.ts) + '</span>';
-    html += '</div>';
-  }
-  list.innerHTML = html;
-}
-
-function clearGhHistory() {
-  try { getStorage().removeItem(GH_HISTORY_KEY); } catch(e) {}
-  renderGhHistory();
-}
-
-renderGhHistory();
 </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="2.7Kl">
+<meta name="version" content="2.27Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -94,18 +94,24 @@ h1 {
   overflow: hidden;
 }
 
-.device::before {
+.device.on::before {
   content: '';
   position: absolute;
-  top: 0; left: -100%;
-  width: 100%; height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.8), transparent);
-  animation: scan 4s linear infinite;
+  width: 40px; height: 2px;
+  background: linear-gradient(90deg, transparent, #00ff41, transparent);
+  border-radius: 2px;
+  filter: blur(2px);
+  box-shadow: 0 0 8px #00ff41, 0 0 16px rgba(0,255,65,0.6);
+  animation: runBorder 8s linear infinite;
+  z-index: 1;
 }
 
-@keyframes scan {
-  0% { left: -100%; }
-  100% { left: 100%; }
+@keyframes runBorder {
+  0%   { top: -1px; left: -40px; }
+  25%  { top: -1px; left: calc(100%); }
+  50%  { top: calc(100% - 1px); left: calc(100%); }
+  75%  { top: calc(100% - 1px); left: -40px; }
+  100% { top: -1px; left: -40px; }
 }
 
 .device.on {
@@ -263,6 +269,21 @@ h1 {
   50% { box-shadow: 0 0 25px rgba(255, 51, 68, 1); }
 }
 
+@keyframes tuya-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Lávová Lampa - bez blikání box-shadow, jen runBorder tečka */
+#dev-tuya-lampa.on {
+  animation: none;
+  box-shadow: 0 4px 30px rgba(0, 255, 65, 0.4), inset 0 1px 0 rgba(0, 255, 65, 0.2);
+}
+#dev-tuya-lampa.off {
+  animation: none;
+  box-shadow: 0 4px 25px rgba(255, 51, 68, 0.3), inset 0 1px 0 rgba(255, 51, 68, 0.15);
+}
+
 .footer {
   text-align: center;
   margin-top: 25px;
@@ -307,7 +328,7 @@ h1 {
 <div class="container">
 <h1>KLADYX HOME</h1>
 <div class="subtitle">SMART HOME CONTROL</div>
-<div class="version-badge">v2.12Kl</div>
+<div class="version-badge">v2.30Kl</div>
 
 <div class="device unknown" id="dev-p115">
   <div class="device-header">
@@ -322,16 +343,36 @@ h1 {
 
 <div class="device unknown" id="dev-p100">
   <div class="device-header">
-    <div class="device-name">Lavova Lampa (P100)</div>
+    <div class="device-name">Tv System Sharp (P100)</div>
     <div class="device-status" id="status-p100">...</div>
   </div>
   <div class="buttons">
-    <button class="btn btn-on" id="btn-on-p100">Zapni Lampu</button>
-    <button class="btn btn-off" id="btn-off-p100">Vypni Lampu</button>
+    <button class="btn btn-on" id="btn-on-p100">Zapni TV</button>
+    <button class="btn btn-off" id="btn-off-p100">Vypni TV</button>
   </div>
 </div>
 
+<div class="device unknown" id="dev-p100sam">
+  <div class="device-header">
+    <div class="device-name">Radio system Samsung (P100sam)</div>
+    <div class="device-status" id="status-p100sam">...</div>
+  </div>
+  <div class="buttons">
+    <button class="btn btn-on" id="btn-on-p100sam">Zapni Rádio</button>
+    <button class="btn btn-off" id="btn-off-p100sam">Vypni Rádio</button>
+  </div>
+</div>
 
+<div class="device unknown" id="dev-p100ma">
+  <div class="device-header">
+    <div class="device-name">Lávová Lampa (P100MA)</div>
+    <div class="device-status" id="status-p100ma">...</div>
+  </div>
+  <div class="buttons">
+    <button class="btn btn-on" id="btn-on-p100ma">ZAPNI LAMPU</button>
+    <button class="btn btn-off" id="btn-off-p100ma">VYPNI LAMPU</button>
+  </div>
+</div>
 
 <div class="device unknown" id="dev-p110">
   <div class="device-header">
@@ -366,17 +407,18 @@ h1 {
 
 <div id="debug">Pripojuji k Firebase...</div>
 
-<div style="margin:16px auto;max-width:400px;padding:0 16px;">
+<div style="margin:16px auto;max-width:400px;padding:0 16px;display:flex;gap:10px;">
   <button id="btn-restart-bridge" onclick="restartBridge()" style="
-    width:100%;padding:14px;border-radius:10px;
+    flex:1;padding:14px;border-radius:10px;
     background:rgba(255,140,0,.1);border:1.5px solid rgba(255,140,0,.4);
     color:#ff8c00;font-family:'Orbitron',monospace;font-size:.6rem;
     letter-spacing:.15em;cursor:pointer;font-weight:700;">
-    🔄 RESTART TAPO BRIDGE
+    🔄 RESTART TAPO
   </button>
+
 </div>
 
-<div class="footer">KLADYXHOME v2.12Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v2.30Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -404,41 +446,52 @@ try {
   var db = firebase.database();
   log('Firebase OK - cekam na data...');
 
+  var deviceCache = {};
+
+  function checkDevice(suffix) {
+    var c = deviceCache[suffix];
+    if (!c) return;
+    var d = c.data, devEl = c.devEl, statEl = c.statEl, btnOn = c.btnOn, btnOff = c.btnOff;
+    if (!d) {
+      devEl.className = 'device unknown';
+      statEl.textContent = 'OFFLINE';
+      if(btnOn)btnOn.classList.remove('active');
+      if(btnOff)btnOff.classList.remove('active');
+      return;
+    }
+    var age = d.lastSeen ? Date.now() - d.lastSeen : 999999;
+    if (age > 150000) {
+      devEl.className = 'device unknown';
+      statEl.textContent = 'OFFLINE';
+      if(btnOn){btnOn.disabled=true; btnOn.style.opacity='0.35'; btnOn.style.cursor='not-allowed';}
+      if(btnOff){btnOff.disabled=true; btnOff.style.opacity='0.35'; btnOff.style.cursor='not-allowed';}
+      return;
+    }
+    [btnOn, btnOff].forEach(function(b){ if(b){b.disabled=false; b.style.opacity=''; b.style.cursor='';} });
+    if (d.on === true) {
+      devEl.className = 'device on';
+      statEl.textContent = 'ZAPNUTO';
+      if(btnOn)btnOn.classList.add('active');
+      if(btnOff)btnOff.classList.remove('active');
+    } else {
+      devEl.className = 'device off';
+      statEl.textContent = 'VYPNUTO';
+      if(btnOn)btnOn.classList.remove('active');
+      if(btnOff)btnOff.classList.add('active');
+    }
+    log('Pripojeno OK', 'ok');
+  }
+
   function setupDevice(node, suffix) {
     var devEl = document.getElementById('dev-' + suffix);
     var statEl = document.getElementById('status-' + suffix);
     var btnOn = document.getElementById('btn-on-' + suffix);
     var btnOff = document.getElementById('btn-off-' + suffix);
+    deviceCache[suffix] = { devEl: devEl, statEl: statEl, btnOn: btnOn, btnOff: btnOff, data: null };
 
     db.ref(node).on('value', function(snap) {
-      var d = snap.val();
-      if (!d) {
-        devEl.className = 'device unknown';
-        statEl.textContent = 'OFFLINE';
-        btnOn.classList.remove('active');
-        btnOff.classList.remove('active');
-        return;
-      }
-      var age = d.lastSeen ? Date.now() - d.lastSeen : 999999;
-      if (age > 150000) {
-        devEl.className = 'device unknown';
-        statEl.textContent = 'BRIDGE OFFLINE';
-        btnOn.classList.remove('active');
-        btnOff.classList.remove('active');
-        return;
-      }
-      if (d.on === true) {
-        devEl.className = 'device on';
-        statEl.textContent = 'ZAPNUTO';
-        btnOn.classList.add('active');
-        btnOff.classList.remove('active');
-      } else {
-        devEl.className = 'device off';
-        statEl.textContent = 'VYPNUTO';
-        btnOn.classList.remove('active');
-        btnOff.classList.add('active');
-      }
-      log('Pripojeno OK', 'ok');
+      deviceCache[suffix].data = snap.val();
+      checkDevice(suffix);
     }, function(err) {
       log('Chyba cteni ' + node + ': ' + (err.message || err), 'err');
     });
@@ -447,8 +500,8 @@ try {
       el.addEventListener('touchstart', function(e) { e.preventDefault(); fn(); }, {passive: false});
       el.addEventListener('click', fn);
     }
-    addTap(btnOn, function() { sendCmd(node, 'on'); });
-    addTap(btnOff, function() { sendCmd(node, 'off'); });
+    if(btnOn)addTap(btnOn, function() { sendCmd(node, 'on'); });
+    if(btnOff)addTap(btnOff, function() { sendCmd(node, 'off'); });
   }
 
   function sendCmd(node, cmd) {
@@ -461,10 +514,37 @@ try {
   setupDevice('tapoDb', 'p115');
   setupDevice('tapoDbP100', 'p100');
   setupDevice('tapoDbP110', 'p110');
+  setupDevice('tapoDbP100Sam', 'p100sam');
+  setupDevice('tapoDbP100Ma', 'p100ma');
+
+  setInterval(function() {
+    Object.keys(deviceCache).forEach(function(s) { checkDevice(s); });
+  }, 60000);
 
 } catch(e) {
   log('FATAL: ' + (e.message || e), 'err');
 }
+
+  function restartTuya() {
+    var btn = document.getElementById('btn-restart-tuya');
+    btn.textContent = '⏳ RESTARTUJI...';
+    btn.style.pointerEvents = 'none';
+    db.ref('tuyaCmd/restart').set(Date.now())
+      .then(function() {
+        btn.textContent = '✓ PŘÍKAZ ODESLÁN';
+        setTimeout(function() {
+          btn.textContent = '🔄 RESTART TUYA';
+          btn.style.pointerEvents = '';
+        }, 5000);
+      })
+      .catch(function() {
+        btn.textContent = '✗ CHYBA';
+        setTimeout(function() {
+          btn.textContent = '🔄 RESTART TUYA';
+          btn.style.pointerEvents = '';
+        }, 3000);
+      });
+  }
 
   function restartBridge() {
     var btn = document.getElementById('btn-restart-bridge');

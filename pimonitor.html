@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v2.33.Kl">
-<title>Pi Monitor v2.33.Kl</title>
+<meta name="version" content="v4.5Pi">
+<title>Pi Monitor v4.5Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -56,6 +56,9 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 @keyframes pulse{from{opacity:.3}to{opacity:1}}
 @keyframes pulse-green{0%{color:var(--green);text-shadow:0 0 8px var(--green)}50%{color:rgba(0,255,136,0.5)}100%{color:var(--green);text-shadow:0 0 8px var(--green)}}
 @keyframes pulse-red{0%{color:var(--red);text-shadow:0 0 8px var(--red)}50%{color:rgba(255,60,90,0.5)}100%{color:var(--red);text-shadow:0 0 8px var(--red)}}
+@keyframes pulse-yellow{0%{color:#ffdd00;text-shadow:0 0 8px #ffdd00}50%{color:rgba(255,221,0,0.4)}100%{color:#ffdd00;text-shadow:0 0 8px #ffdd00}}
+.net-val.net-warn{color:#ffdd00;text-shadow:0 0 8px #ffdd00;animation:pulse-yellow 2s infinite;}
+.net-val.net-danger{color:var(--red);text-shadow:0 0 8px var(--red);animation:pulse-red 1.5s infinite;}
 .svc-stat.on{animation:pulse-green 1.2s infinite;}
 .svc-stat.off{animation:pulse-red 1.2s infinite;}
 .svc-name{flex:1;font-size:0.65rem;color:#c0cce0;}
@@ -92,7 +95,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v2.33.Kl</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v4.5Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -134,6 +137,28 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="svc-row"><div class="dot dot-wait" id="d-eq"></div><div class="svc-name">kladyx-equalizer</div><div class="svc-st" id="s-eq">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-irbridge"></div><div class="svc-name">kladyx-irbridge</div><div class="svc-st" id="s-irbridge">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-rpi"></div><div class="svc-name">kladyx-rpi</div><div class="svc-st" id="s-rpi">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-plugbridge"></div><div class="svc-name">kladyx-plugbridge</div><div class="svc-st" id="s-plugbridge">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-pitransfer"></div><div class="svc-name">kladyx-pitransfer</div><div class="svc-st" id="s-pitransfer">…</div></div>
+</div>
+
+<div class="section">
+  <div class="sec-title">🔌 ZAŘÍZENÍ</div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-dev-lampa"></div><div class="svc-name">Lávová lampa (P100MA)</div><div class="svc-st" id="s-dev-lampa">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-dev-p115"></div><div class="svc-name">DJ Studio (P115)</div><div class="svc-st" id="s-dev-p115">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-dev-p100"></div><div class="svc-name">TV System Sharp (P100)</div><div class="svc-st" id="s-dev-p100">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-dev-p100sam"></div><div class="svc-name">Radio system Samsung (P100sam)</div><div class="svc-st" id="s-dev-p100sam">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-dev-p110"></div><div class="svc-name">System rpi 4 (P110)</div><div class="svc-st" id="s-dev-p110">…</div></div>
+</div>
+
+<div class="section">
+  <div class="sec-title">🔄 RESTARTY (od bootu)</div>
+  <div class="svc-row"><div class="svc-name">tapo-py</div><div class="svc-st" id="r-tp">—</div></div>
+  <div class="svc-row"><div class="svc-name">tapobridge</div><div class="svc-st" id="r-tb">—</div></div>
+  <div class="svc-row"><div class="svc-name">irbridge</div><div class="svc-st" id="r-ir">—</div></div>
+  <div class="svc-row"><div class="svc-name">pimonitor</div><div class="svc-st" id="r-pm">—</div></div>
+  <div class="svc-row"><div class="svc-name">plugbridge</div><div class="svc-st" id="r-pb">—</div></div>
+  <div class="svc-row"><div class="svc-name">pitransfer</div><div class="svc-st" id="r-pt">—</div></div>
+  <div class="svc-row"><div class="svc-name">prijatelister</div><div class="svc-st" id="r-pl">—</div></div>
 </div>
 
 <div class="section">
@@ -147,12 +172,22 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="net-row"><div class="net-lbl">Aktivní skripty</div><div class="net-val net-scripts" id="net-scripts"><span class="net-scripts-inner" id="net-scripts-inner">—</span></div></div>
 </div>
 
+<div class="section" style="margin-top:10px;">
+  <div class="sec-title">☁️ CLOUD</div>
+  <div class="net-row"><div class="net-lbl">GitHub</div><div class="net-val" id="cloud-github"><span class="dot dot-wait"></span> ...</div></div>
+  <div class="net-row"><div class="net-lbl">Firebase RTDB</div><div class="net-val" id="cloud-firebase"><span class="dot dot-wait"></span> ...</div></div>
+  <div class="net-row"><div class="net-lbl">Pi Transfer</div><div class="net-val" id="cloud-pitransfer"><span class="dot dot-wait"></span> ...</div></div>
+  <div class="net-row"><div class="net-lbl">Web KladyxLand project.</div><div class="net-val" id="cloud-web"><span class="dot dot-wait"></span> ...</div></div>
+  <div class="net-row"><div class="net-lbl">Multifunkční Panel project.</div><div class="net-val" id="cloud-panel"><span class="dot dot-wait"></span> ...</div></div>
+  <div style="text-align:right;margin-top:6px;"><button onclick="clearPrijate()" style="background:rgba(255,50,50,.15);border:1px solid rgba(255,50,50,.4);color:#ff4444;padding:4px 12px;border-radius:6px;font-size:.7rem;cursor:pointer;">🗑 Smazat přijaté</button></div>
+</div>
+
 <div class="offline" id="offline-msg">
   ⚠ PI4 OFFLINE nebo piStats neběží
   <span>Nainstaluj kladyx-pimonitor service na Pi4</span>
 </div>
 
-<div class="footer">AUTO-REFRESH 30s · KLADYXLAND 2026</div>
+<div class="footer">AUTO-REFRESH 60s · KLADYXLAND 2026</div>
 
 <script>
 var FB='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
@@ -168,7 +203,9 @@ function fmtBytes(b){
   return b+' B';
 }
 function fbFetch(url,opts){
-  return fetch(url,opts).then(function(r){
+  var o=opts||{};
+  o.cache='no-store';
+  return fetch(url,o).then(function(r){
     var len=parseInt(r.headers.get('content-length')||'0');
     if(len>0){
       _fbDlBytes+=len;
@@ -276,6 +313,17 @@ function setSvc(id,ok,isPC){
     s.className='svc-stat '+(ok?'on':'off');
   }
 }
+// Stav zarizeni (zasuvky). fresh=false -> bridge neposila heartbeat.
+function setDev(id,on,fresh){
+  var d=document.getElementById('d-dev-'+id);
+  var s=document.getElementById('s-dev-'+id);
+  var isOn=on&&fresh;
+  if(d)d.className='dot '+(isOn?'dot-ok':'dot-err');
+  if(s){
+    s.textContent=isOn?'ZAPNUTO':'VYPNUTO';
+    s.className='svc-stat '+(isOn?'on':'off');
+  }
+}
 // PC SLUZBY - Pi4 o nich NEVI (bezi jako .bat na PC, ne jako systemd na Pi4),
 // proto piStats.services u nich vzdy hlasi false. Jediny spolehlivy zdroj je
 // heartbeat nextsync/status/lastSeen, ktery zapisuje PC.
@@ -330,7 +378,7 @@ function showOffline(fromFirebase){
   });
   // Pi4 offline = nemame data z piStats -> u techto sluzeb nelzeme, ukazeme ?
   // tapopy a irbridge maji vlastni fetch (tapoDb/irDb lastSeen), PC sluzby resi checkPC()
-  ['tapo','prijate'].forEach(function(id){
+  ['tapo','prijate','plugbridge','pitransfer'].forEach(function(id){
     var d=document.getElementById('d-'+id);
     if(d)d.className='dot dot-wait';
     var s=document.getElementById('s-'+id);
@@ -354,7 +402,8 @@ function loadStats(){
   .then(function(d){
     if(!d){showOffline(true);loadFallback();return;}
     var age=Date.now()-(d.ts||0);
-    if(age>45000){showOffline(true);loadFallback();return;}
+    // pi_monitor.py zapisuje po 60s (INTERVAL=60) -> tolerance 150s = 2 zmeskane zapisy
+    if(age>150000){showOffline(true);loadFallback();return;}
     // CPU
     var cpu=Math.round(d.cpu_pct||0);
     document.getElementById('val-cpu').textContent=cpu;
@@ -398,12 +447,15 @@ function loadStats(){
       var total=rx+tx;
       var el=document.getElementById('net-rxtx');
       el.textContent=total>=1024?(total/1024).toFixed(1)+' GB':total.toFixed(1)+' MB';
-      el.classList.remove('net-active');
+      el.classList.remove('net-active','net-warn','net-danger');
+      if(total>=1000){el.classList.add('net-danger');}
+      else if(total>=600){el.classList.add('net-warn');}
+      else{el.classList.add('net-active');}
     }
     // Services z piStats - POUZE sluzby ktere skutecne bezi na Pi4 jako systemd.
     // transfer/upload/nextsync/obs jsou .bat na PC, Pi4 je nevidi -> resi checkPC()
     if(d.services){
-      ['tapo','prijate'].forEach(function(k){
+      ['tapo','prijate','plugbridge','pitransfer'].forEach(function(k){
         if(d.services[k]!==undefined)setSvc(k,d.services[k]===true||d.services[k]==='active');
       });
     }
@@ -413,8 +465,10 @@ function loadStats(){
     setSvc('rpi',true);
     // Procesy (pokud Pi posle realna data, prepise ACTIVE ON)
     if(d.proc_count!==undefined){var el=document.getElementById('net-proc');el.textContent=d.proc_count;el.classList.remove('net-active');}
+    // Restarty služeb
+    if(d.restarts){var rk=['tp','tb','ir','pm','pb','pt','pl'];rk.forEach(function(k){var e=document.getElementById('r-'+k);if(e){e.textContent=d.restarts[k]!==undefined?d.restarts[k]:'—';e.style.color=d.restarts[k]>0?'#ffaa00':'#00ff88';}});}
     // Aktivní skripty - ze services pole, jen ty co jsou true/active na Pi
-    var svcMap={tapo:'tapobridge',tapo_py:'tapo-py',prijate:'prijatelister',irbridge:'irbridge',rpi:'rpi'};
+    var svcMap={tapo:'tapobridge',tapo_py:'tapo-py',prijate:'prijatelister',plugbridge:'plugbridge',pitransfer:'pitransfer',irbridge:'irbridge',rpi:'rpi'};
     _piActiveList=[];
     if(d.services){
       Object.keys(svcMap).forEach(function(k){
@@ -434,14 +488,48 @@ function loadStats(){
     setSvc('irbridge',ts&&(Date.now()-ts<60000));
   })
   .catch(function(){setSvc('irbridge',false);});
-  // Tapo Python bridge (kladyx-tapo-py na Pi4) - cte heartbeat z tapoDb/lastSeen
-  // Skript zapisuje kazdych 60s -> tolerance 150s = 2 zmeskane heartbeaty
-  fbFetch(fbUrl('/tapoDb/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
+  // Tapo Python bridge (kladyx-tapo-py na Pi4) + stav zasuvky DJ Studio.
+  // Cteme cely uzel tapoDb misto jen lastSeen -> jeden fetch pokryje obojí,
+  // zadny request navic.
+  fbFetch(fbUrl('/tapoDb.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
-  .then(function(ts){
-    setSvc('tapopy',ts&&(Date.now()-ts<150000));
+  .then(function(d){
+    var ts=d&&d.lastSeen;
+    var fresh=!!(ts&&(Date.now()-ts<150000));
+    setSvc('tapopy',fresh);
+    setDev('p115',d&&d.on===true,fresh);
   })
-  .catch(function(){setSvc('tapopy',false);});
+  .catch(function(){setSvc('tapopy',false);setDev('p115',false,false);});
+  // ZARIZENI - Lavova lampa (tapoDbP100Ma, tapo-bridge zapisuje po 60s)
+  fbFetch(fbUrl('/tapoDbP100Ma.json'),{signal:AbortSignal.timeout(5000)})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    var ts=d&&d.lastSeen;
+    setDev('lampa',d&&d.on===true,!!(ts&&(Date.now()-ts<150000)));
+  })
+  .catch(function(){setDev('lampa',false,false);});
+  // ZARIZENI - TV System Sharp (tapoDbP100)
+  fbFetch(fbUrl('/tapoDbP100.json'),{signal:AbortSignal.timeout(5000)})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    var ts=d&&d.lastSeen;
+    setDev('p100',d&&d.on===true,!!(ts&&(Date.now()-ts<150000)));
+  })
+  .catch(function(){setDev('p100',false,false);});
+  // ZARIZENI - Radio system Samsung (tapoDbP100Sam)
+  fbFetch(fbUrl('/tapoDbP100Sam.json'),{signal:AbortSignal.timeout(5000)})
+    .then(function(r){return r.json();}).then(function(d){
+    var ts=d&&d.lastSeen;
+    setDev('p100sam',d&&d.on===true,!!(ts&&(Date.now()-ts<150000)));
+  }).catch(function(){setDev('p100sam',false,false);});
+  // ZARIZENI - System rpi 4 (tapoDbP110)
+  fbFetch(fbUrl('/tapoDbP110.json'),{signal:AbortSignal.timeout(5000)})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    var ts=d&&d.lastSeen;
+    setDev('p110',d&&d.on===true,!!(ts&&(Date.now()-ts<150000)));
+  })
+  .catch(function(){setDev('p110',false,false);});
   // PC sluzby - nezavisle na piStats (funguje i kdyz je Pi4 vypnuty)
   checkPC();
 }
@@ -492,16 +580,24 @@ document.getElementById('btn-shutdown').onclick=function(){
   function startPolling(){
     loadStats();
     loadHistory();
-    setInterval(loadStats,30000);
+    // pi_monitor.py zapisuje po 60s -> cist casteji nema smysl a zbytecne zere download
+    setInterval(loadStats,60000);
     setInterval(loadHistory,120000);
     // Mobilni prohlizec zmrazi setInterval kdyz je stranka na pozadi (zamceny
     // telefon / prepnuta zalozka). Pri navratu bychom videli zastaraly stav,
     // proto nacteme data hned. Jen loadStats (~450 B), historii ne - je tezsi.
+    var _lastLoadTs=0;
+    function smartReload(){
+      var now=Date.now();
+      if(now-_lastLoadTs>25000){_lastLoadTs=now;loadStats();}
+    }
     document.addEventListener('visibilitychange',function(){
-      if(!document.hidden)loadStats();
+      if(!document.hidden)smartReload();
     });
-    // Zaloha pro Android/Chrome kde visibilitychange nefunguje spolehlive
-    window.addEventListener('focus',function(){loadStats();});
+    window.addEventListener('focus',function(){smartReload();});
+    window.addEventListener('pageshow',function(e){
+      if(e.persisted)smartReload();
+    });
   }
   var s1=document.createElement('script');
   s1.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
@@ -528,6 +624,102 @@ document.getElementById('btn-shutdown').onclick=function(){
   s1.onerror=function(){startPolling();};
   document.head.appendChild(s1);
 })();
+
+// ─── CLOUD STATUS ────────────────────────────────────
+function checkCloudStatus() {
+  // GitHub status - veřejné API, nulový Firebase download
+  var ghEl = document.getElementById('cloud-github');
+  var xg = new XMLHttpRequest();
+  xg.open('GET', 'https://www.githubstatus.com/api/v2/status.json');
+  xg.timeout = 8000;
+  xg.onload = function() {
+    if (xg.status === 200) {
+      try {
+        var d = JSON.parse(xg.responseText);
+        var st = d.status.indicator;
+        if (st === 'none') {
+          ghEl.innerHTML = '<span class="dot dot-ok" style="animation:pulse-green 1.5s infinite;"></span> <span style="color:var(--green);animation:pulse-green 1.5s infinite;">ONLINE</span>';
+        } else {
+          ghEl.innerHTML = '<span class="dot dot-err"></span> ' + d.status.description.toUpperCase();
+        }
+      } catch(e) { ghEl.innerHTML = '<span class="dot dot-err"></span> PARSE ERR'; }
+    } else { ghEl.innerHTML = '<span class="dot dot-err"></span> HTTP ' + xg.status; }
+  };
+  xg.onerror = function() { ghEl.innerHTML = '<span class="dot dot-err"></span> NEDOSTUPNÝ'; };
+  xg.ontimeout = function() { ghEl.innerHTML = '<span class="dot dot-err"></span> TIMEOUT'; };
+  xg.send();
+
+  // Firebase RTDB - GET shallow s limitem, pár bytů
+  var fbEl = document.getElementById('cloud-firebase');
+  var xf = new XMLHttpRequest();
+  xf.open('GET', FB + '/.json?shallow=true&limitToFirst=1');
+  xf.timeout = 8000;
+  xf.onload = function() {
+    if (xf.status === 200 || xf.status === 401) {
+      fbEl.innerHTML = '<span class="dot dot-ok" style="animation:pulse-green 1.5s infinite;"></span> <span style="color:var(--green);animation:pulse-green 1.5s infinite;">ONLINE</span>';
+    } else {
+      fbEl.innerHTML = '<span class="dot dot-err"></span> HTTP ' + xf.status;
+    }
+  };
+  xf.onerror = function() { fbEl.innerHTML = '<span class="dot dot-err"></span> NEDOSTUPNÝ'; };
+  xf.ontimeout = function() { fbEl.innerHTML = '<span class="dot dot-err"></span> TIMEOUT'; };
+  xf.send();
+  // Pi Transfer - posledni přijatý soubor
+  var ptEl = document.getElementById('cloud-pitransfer');
+  var xp = new XMLHttpRequest();
+  xp.open('GET', FB + '/nextsync/piTransfer.json');
+  xp.timeout = 8000;
+  xp.onload = function() {
+    if (xp.status === 200) {
+      try {
+        var d = JSON.parse(xp.responseText);
+        if (d && d.name) {
+          var ago = Math.round((Date.now() - d.ts) / 60000);
+          var agoStr = ago < 60 ? ago + 'm' : Math.round(ago/60) + 'h';
+          ptEl.innerHTML = '<span class="dot dot-ok"></span> ' + d.name + ' <span style="color:rgba(255,255,255,.35);font-size:.7rem;">' + agoStr + '</span>';
+        } else {
+          ptEl.innerHTML = '<span style="color:rgba(255,255,255,.35);">žádný soubor</span>';
+        }
+      } catch(e) { ptEl.innerHTML = '<span style="color:rgba(255,255,255,.35);">—</span>'; }
+    }
+  };
+  xp.onerror = function() { ptEl.innerHTML = '—'; };
+  xp.send();
+  // Web KladyxLand - přímý fetch na GitHub Pages
+  var wEl=document.getElementById('cloud-web');
+  fetch('https://kladyx.github.io/',{mode:'no-cors',cache:'no-store'}).then(function(){
+    wEl.innerHTML='<span class="dot dot-ok"></span> <span style="color:#00ff88;font-weight:700;">ONLINE</span>';
+  }).catch(function(){
+    wEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">OFFLINE</span>';
+  });
+  // Multifunkční Panel - přímý fetch na GitHub Pages
+  var pEl=document.getElementById('cloud-panel');
+  fetch('https://kladyx.github.io/Panel_final.html',{mode:'no-cors',cache:'no-store'}).then(function(){
+    pEl.innerHTML='<span class="dot dot-ok"></span> <span style="color:#00ff88;font-weight:700;">ONLINE</span>';
+  }).catch(function(){
+    pEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">OFFLINE</span>';
+  });
+}
+checkCloudStatus();
+setInterval(checkCloudStatus, 120000);
+
+function clearPrijate() {
+  var btn = event.target;
+  btn.textContent = '⏳ Mažu...';
+  btn.disabled = true;
+  var xhr = new XMLHttpRequest();
+  xhr.open('PUT', FB + '/nextsync/piTransfer/clear.json');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onload = function() {
+    btn.textContent = '✓ Příkaz odeslán';
+    setTimeout(function() { btn.textContent = '🗑 Smazat přijaté'; btn.disabled = false; }, 3000);
+  };
+  xhr.onerror = function() {
+    btn.textContent = '✗ Chyba';
+    setTimeout(function() { btn.textContent = '🗑 Smazat přijaté'; btn.disabled = false; }, 3000);
+  };
+  xhr.send(JSON.stringify(Date.now()));
+}
 </script>
 </body>
 </html>

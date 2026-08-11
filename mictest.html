@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpeakUp Test v1.0Kl</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:#0a0e18; color:#e8f0ff;
+    font-family:'Segoe UI',system-ui,sans-serif;
+    padding:18px; min-height:100vh;
+  }
+  h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; margin-bottom:4px; }
+  .ver { font-size:.7rem; color:rgba(255,255,255,.35); margin-bottom:22px; }
+  .box {
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:14px; padding:18px; margin-bottom:18px;
+  }
+  .box h2 { font-size:.85rem; color:#00ff88; margin-bottom:12px; letter-spacing:1px; }
+  button {
+    width:100%; padding:18px; margin-bottom:10px;
+    border-radius:12px; border:1.5px solid #00d4ff;
+    background:rgba(0,212,255,.12); color:#00d4ff;
+    font-size:1rem; font-weight:700; font-family:inherit;
+    cursor:pointer;
+  }
+  button:active { background:rgba(0,212,255,.3); }
+  button.rec { border-color:#ff4466; background:rgba(255,68,102,.15); color:#ff6688; }
+  .out {
+    margin-top:12px; padding:14px;
+    background:rgba(0,0,0,.35); border-radius:10px;
+    font-size:.85rem; line-height:1.6; min-height:44px;
+    word-break:break-word;
+  }
+  .ok { color:#00ff88; }
+  .err { color:#ff6688; }
+  .info { color:rgba(255,255,255,.5); font-size:.72rem; margin-top:8px; line-height:1.5; }
+</style>
+</head>
+<body>
+
+<h1>SPEAKUP &mdash; TEST</h1>
+<div class="ver">v1.0Kl &middot; ověření prohlížeče</div>
+
+<!-- TEST 1 -->
+<div class="box">
+  <h2>1. VÝSLOVNOST (reproduktor)</h2>
+  <button onclick="testTTS()">🔊 Přehrát anglickou větu</button>
+  <div class="out" id="out1">Klikni na tlačítko.</div>
+  <div class="info">Musíš slyšet: „Which core version are you running on your ZX Spectrum Next?"</div>
+</div>
+
+<!-- TEST 2 -->
+<div class="box">
+  <h2>2. MIKROFON (rozpoznání řeči)</h2>
+  <button id="btnRec" onclick="testSTT()">🎤 Začít nahrávat</button>
+  <div class="out" id="out2">Klikni a řekni anglicky cokoliv.</div>
+  <div class="info">Prohlížeč se zeptá na povolení mikrofonu &mdash; povol.<br>Zkus říct: „Hello, this is a test."</div>
+</div>
+
+<!-- VYSLEDEK -->
+<div class="box">
+  <h2>3. VÝSLEDEK</h2>
+  <div class="out" id="sum">—</div>
+</div>
+
+<script>
+var r1 = null, r2 = null;
+
+function sum(){
+  var s = document.getElementById('sum');
+  var a = r1===null ? '⏳ netestováno' : (r1 ? '<span class="ok">✅ FUNGUJE</span>' : '<span class="err">❌ NEFUNGUJE</span>');
+  var b = r2===null ? '⏳ netestováno' : (r2 ? '<span class="ok">✅ FUNGUJE</span>' : '<span class="err">❌ NEFUNGUJE</span>');
+  s.innerHTML = 'Výslovnost: ' + a + '<br>Mikrofon: ' + b;
+}
+
+/* ---- TEST 1: speechSynthesis ---- */
+function testTTS(){
+  var o = document.getElementById('out1');
+  if(!('speechSynthesis' in window)){
+    o.innerHTML = '<span class="err">❌ Prohlížeč neumí speechSynthesis</span>';
+    r1 = false; sum(); return;
+  }
+  try {
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(
+      'Which core version are you running on your ZX Spectrum Next?'
+    );
+    u.lang = 'en-GB';
+    u.rate = 0.9;
+    u.onstart = function(){ o.innerHTML = '<span class="ok">▶ Přehrávám…</span>'; };
+    u.onend   = function(){ o.innerHTML = '<span class="ok">✅ Dohráno. Slyšel jsi to?</span>'; r1 = true; sum(); };
+    u.onerror = function(e){ o.innerHTML = '<span class="err">❌ Chyba: ' + (e.error||'?') + '</span>'; r1 = false; sum(); };
+    window.speechSynthesis.speak(u);
+  } catch(e){
+    o.innerHTML = '<span class="err">❌ Výjimka: ' + e.message + '</span>';
+    r1 = false; sum();
+  }
+}
+
+/* ---- TEST 2: SpeechRecognition ---- */
+var rec = null, running = false;
+
+function testSTT(){
+  var o = document.getElementById('out2');
+  var b = document.getElementById('btnRec');
+
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){
+    o.innerHTML = '<span class="err">❌ Prohlížeč neumí SpeechRecognition</span>';
+    r2 = false; sum(); return;
+  }
+
+  if(running && rec){ rec.stop(); return; }
+
+  try {
+    rec = new SR();
+    rec.lang = 'en-US';
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+
+    rec.onstart = function(){
+      running = true;
+      b.textContent = '⏹ Zastavit';
+      b.classList.add('rec');
+      o.innerHTML = '<span class="ok">🎤 Poslouchám… mluv anglicky</span>';
+    };
+
+    rec.onresult = function(ev){
+      var txt = ev.results[0][0].transcript;
+      var conf = Math.round((ev.results[0][0].confidence||0)*100);
+      o.innerHTML = '<span class="ok">✅ Rozpoznáno:</span><br><b>' + txt + '</b><br>' +
+                    '<span class="info">jistota: ' + conf + ' %</span>';
+      r2 = true; sum();
+    };
+
+    rec.onerror = function(ev){
+      var m = ev.error;
+      var txt = m==='not-allowed' ? 'Nepovolil jsi mikrofon' :
+                m==='no-speech'   ? 'Nic jsem neslyšel (zkus znovu)' :
+                m==='network'     ? 'Chyba sítě (vyžaduje internet)' : m;
+      o.innerHTML = '<span class="err">❌ ' + txt + '</span>';
+      if(m!=='no-speech'){ r2 = false; sum(); }
+    };
+
+    rec.onend = function(){
+      running = false;
+      b.textContent = '🎤 Začít nahrávat';
+      b.classList.remove('rec');
+    };
+
+    rec.start();
+  } catch(e){
+    o.innerHTML = '<span class="err">❌ Výjimka: ' + e.message + '</span>';
+    r2 = false; sum();
+  }
+}
+
+sum();
+</script>
+</body>
+</html>

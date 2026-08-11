@@ -1,0 +1,3166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SpeakUp v6.5Kl</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  background:#0a0e18; color:#e8f0ff;
+  font-family:'Segoe UI',system-ui,sans-serif;
+  padding:14px; min-height:100vh;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* HEADER */
+.hdr { display:flex; align-items:baseline; gap:10px; margin-bottom:4px; }
+h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
+.ver { font-size:.7rem; color:rgba(255,255,255,.3); }
+.subhdr { font-size:.72rem; color:rgba(255,255,255,.35); margin-bottom:18px; }
+
+/* SCORE BAR */
+.scorebar {
+  display:flex; align-items:center; gap:10px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:10px; padding:10px 14px;
+  margin-bottom:14px;
+}
+.score-num { font-size:1.4rem; font-weight:700; color:#00ff88; min-width:30px; }
+.score-lbl { font-size:.72rem; color:rgba(255,255,255,.4); line-height:1.3; }
+.lvl-badge {
+  margin-left:auto;
+  background:rgba(0,212,255,.15);
+  border:1px solid rgba(0,212,255,.4);
+  border-radius:20px; padding:4px 12px;
+  font-size:.72rem; color:#00d4ff; font-weight:700;
+}
+.prog-wrap {
+  background:rgba(255,255,255,.08);
+  border-radius:4px; height:4px; margin-top:6px; width:100%;
+}
+.prog-bar {
+  height:4px; border-radius:4px;
+  background:linear-gradient(90deg,#00d4ff,#00ff88);
+  transition:width .4s ease;
+  width:0%;
+}
+.mastery-bar {
+  display:flex; gap:6px; margin-top:6px; align-items:center;
+  font-size:.68rem;
+}
+.mastery-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.mastery-dot.ok  { background:#00ff88; }
+.mastery-dot.mid { background:#ffcc00; }
+.mastery-dot.bad { background:#ff4466; }
+.mastery-dot.new { background:rgba(255,255,255,.25); }
+
+/* MAIN CARD */
+.card {
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px; padding:18px;
+  margin-bottom:14px;
+}
+.card-label {
+  font-size:.68rem; color:#00d4ff; letter-spacing:1.5px;
+  text-transform:uppercase; margin-bottom:8px;
+}
+.question-en {
+  font-size:1.15rem; font-weight:700; color:#e8f0ff;
+  line-height:1.4; margin-bottom:6px;
+}
+.question-cz {
+  font-size:.85rem; color:rgba(255,255,255,.45);
+  line-height:1.5; margin-bottom:0;
+  display:none;
+}
+.question-cz.show { display:block; }
+
+/* PLAY BUTTON */
+.btn-play {
+  width:100%; padding:16px;
+  border-radius:12px; border:1.5px solid #00d4ff;
+  background:rgba(0,212,255,.12); color:#00d4ff;
+  font-size:1rem; font-weight:700; font-family:inherit;
+  cursor:pointer; margin-bottom:14px;
+  transition:background .15s;
+}
+.btn-play:active { background:rgba(0,212,255,.3); }
+.btn-play:disabled { opacity:.4; cursor:not-allowed; }
+
+/* OPTIONS */
+.options { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+.opt {
+  width:100%; padding:16px 14px;
+  border-radius:12px; border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.05); color:#e8f0ff;
+  font-size:.92rem; font-family:inherit;
+  cursor:pointer; text-align:left; line-height:1.4;
+  transition:border-color .15s, background .15s;
+}
+.opt:active { background:rgba(255,255,255,.1); }
+.opt.correct { border-color:#00ff88; background:rgba(0,255,136,.12); color:#00ff88; }
+.opt.wrong   { border-color:#ff4466; background:rgba(255,68,102,.12); color:#ff6688; }
+.opt:disabled { cursor:not-allowed; }
+
+/* MIC BUTTON */
+.btn-mic {
+  width:100%; padding:20px;
+  border-radius:12px; border:1.5px solid #00d4ff;
+  background:rgba(0,212,255,.12); color:#00d4ff;
+  font-size:1.05rem; font-weight:700; font-family:inherit;
+  cursor:pointer; margin-bottom:14px;
+  transition:background .15s, border-color .15s;
+}
+.btn-mic.listening {
+  border-color:#ff4466; background:rgba(255,68,102,.18); color:#ff6688;
+  animation:pulse 1.2s infinite;
+}
+.btn-mic:disabled { opacity:.4; cursor:not-allowed; }
+@keyframes pulse {
+  0%,100% { opacity:1; }
+  50% { opacity:.6; }
+}
+
+/* FEEDBACK */
+.feedback {
+  border-radius:12px; padding:16px;
+  font-size:.9rem; font-weight:600; line-height:1.5;
+  margin-bottom:14px; display:none;
+}
+.feedback.show { display:block; }
+.feedback.ok  { background:rgba(0,255,136,.1); border:1px solid rgba(0,255,136,.4); color:#00ff88; }
+.feedback.bad { background:rgba(255,68,102,.1); border:1px solid rgba(255,68,102,.4); color:#ff6688; }
+.feedback .heard { font-size:.78rem; color:rgba(255,255,255,.5); margin-top:6px; }
+.feedback .mic-score { font-size:.82rem; color:#00ff88; margin-top:8px; line-height:1.5; }
+.mic-legend {
+  margin-top:10px; border-top:1px solid rgba(0,255,136,.2);
+  padding-top:8px;
+}
+.mic-legend table { width:100%; border-collapse:collapse; font-size:.75rem; }
+.mic-legend td { padding:4px 6px; line-height:1.4; }
+.mic-legend td:first-child { color:#00d4ff; font-weight:700; white-space:nowrap; width:90px; }
+.mic-legend td:last-child { color:rgba(255,255,255,.6); }
+.mic-legend tr.active-row td { color:#00ff88 !important; font-weight:700; }
+
+/* NEXT BUTTON */
+.btn-next {
+  width:100%; padding:18px;
+  border-radius:12px; border:1.5px solid #00ff88;
+  background:rgba(0,255,136,.12); color:#00ff88;
+  font-size:1rem; font-weight:700; font-family:inherit;
+  cursor:pointer; display:none;
+  transition:background .15s;
+}
+.btn-next.show { display:block; }
+.btn-next:active { background:rgba(0,255,136,.28); }
+
+/* STATUS */
+.status {
+  font-size:.75rem; color:rgba(255,255,255,.35);
+  text-align:center; min-height:20px;
+  margin-bottom:10px;
+}
+
+/* FINISH */
+.finish {
+  background:rgba(0,255,136,.06);
+  border:1px solid rgba(0,255,136,.3);
+  border-radius:14px; padding:24px; text-align:center;
+  display:none;
+}
+.finish.show { display:block; }
+.finish h2 { font-size:1.3rem; color:#00ff88; margin-bottom:8px; }
+.finish .fscore { font-size:2.5rem; font-weight:700; color:#00d4ff; margin:10px 0; }
+.finish p { font-size:.85rem; color:rgba(255,255,255,.5); margin-bottom:16px; }
+.btn-restart {
+  width:100%; padding:18px;
+  border-radius:12px; border:1.5px solid #00d4ff;
+  background:rgba(0,212,255,.12); color:#00d4ff;
+  font-size:1rem; font-weight:700; font-family:inherit;
+  cursor:pointer;
+}
+.btn-restart:active { background:rgba(0,212,255,.28); }
+
+/* LEVEL SELECTOR */
+.lvl-bar {
+  display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;
+}
+.lvl-btn {
+  flex:1; min-width:52px; padding:9px 4px;
+  border-radius:10px; border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.04); color:rgba(255,255,255,.45);
+  font-size:.75rem; font-weight:700; font-family:inherit;
+  cursor:pointer;
+}
+.lvl-btn.active {
+  border-color:#00ff88; background:rgba(0,255,136,.14); color:#00ff88;
+}
+
+/* MODE TOGGLE */
+.mode-bar {
+  display:flex; gap:8px; margin-bottom:14px;
+}
+.mode-btn {
+  flex:1; padding:10px 6px;
+  border-radius:10px; border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.04); color:rgba(255,255,255,.45);
+  font-size:.78rem; font-weight:700; font-family:inherit;
+  cursor:pointer;
+}
+.mode-btn.active {
+  border-color:#00d4ff; background:rgba(0,212,255,.14); color:#00d4ff;
+}
+
+/* NAUČENO TLAČÍTKO */
+.btn-voc-learned {
+  width:100%; padding:13px;
+  border-radius:12px; border:1.5px solid #00ff88;
+  background:rgba(0,255,136,.15); color:#00ff88;
+  font-size:.88rem; font-weight:700; font-family:inherit;
+  cursor:pointer; margin-bottom:8px; display:none;
+}
+.btn-voc-learned.show { display:block; }
+.btn-voc-reset {
+  width:100%; padding:10px;
+  border-radius:10px; border:1px solid rgba(255,68,102,.3);
+  background:rgba(255,68,102,.07); color:rgba(255,68,102,.7);
+  font-size:.75rem; font-weight:700; font-family:inherit;
+  cursor:pointer; margin-top:6px;
+}
+.voc-learned-badge {
+  font-size:.68rem; color:#00ff88;
+  background:rgba(0,255,136,.1);
+  border:1px solid rgba(0,255,136,.25);
+  border-radius:6px; padding:3px 8px;
+  margin-left:6px;
+}
+
+/* TAB SWITCHER */
+.tab-bar {
+  display:flex; gap:6px; margin-bottom:14px;
+}
+.tab-btn {
+  flex:1; padding:12px 6px;
+  border-radius:10px; border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.04); color:rgba(255,255,255,.45);
+  font-size:.82rem; font-weight:700; font-family:inherit; cursor:pointer;
+}
+.tab-btn.active {
+  border-color:#00d4ff; background:rgba(0,212,255,.14); color:#00d4ff;
+}
+.tab-section { display:none; }
+.tab-section.show { display:block; }
+
+/* SLOVÍČKA */
+.voc-word {
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px; padding:20px 18px;
+  margin-bottom:14px; text-align:center;
+}
+.voc-en {
+  font-size:1.5rem; font-weight:700; color:#e8f0ff;
+  margin-bottom:4px; letter-spacing:.5px;
+}
+.voc-phonetic {
+  font-size:.82rem; color:rgba(0,212,255,.7);
+  margin-bottom:6px; font-style:italic;
+}
+.voc-cz {
+  font-size:.95rem; color:rgba(255,255,255,.5);
+  display:none;
+}
+.voc-cz.show { display:block; }
+.voc-cat {
+  font-size:.68rem; color:rgba(255,255,255,.3);
+  letter-spacing:1.5px; text-transform:uppercase;
+  margin-bottom:12px;
+}
+.voc-btns {
+  display:flex; gap:8px; margin-bottom:10px;
+}
+.btn-voc-play {
+  flex:1; padding:14px;
+  border-radius:12px; border:1.5px solid #00d4ff;
+  background:rgba(0,212,255,.12); color:#00d4ff;
+  font-size:.9rem; font-weight:700; font-family:inherit; cursor:pointer;
+}
+.btn-voc-mic {
+  flex:1; padding:14px;
+  border-radius:12px; border:1.5px solid #00ff88;
+  background:rgba(0,255,136,.12); color:#00ff88;
+  font-size:.9rem; font-weight:700; font-family:inherit; cursor:pointer;
+}
+.btn-voc-mic.listening {
+  border-color:#ff4466; background:rgba(255,68,102,.18); color:#ff6688;
+  animation:pulse 1.2s infinite;
+}
+.btn-voc-show {
+  width:100%; padding:12px;
+  border-radius:12px; border:1.5px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.05); color:rgba(255,255,255,.6);
+  font-size:.85rem; font-weight:700; font-family:inherit; cursor:pointer;
+  margin-bottom:10px;
+}
+.voc-heard {
+  font-size:.8rem; color:rgba(255,255,255,.4);
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:8px; padding:10px 12px;
+  margin-bottom:10px; min-height:36px;
+  text-align:center;
+}
+.voc-result {
+  border-radius:10px; padding:12px 14px;
+  font-size:.88rem; font-weight:600;
+  margin-bottom:10px; display:none; text-align:center;
+}
+.voc-result.show { display:block; }
+.voc-result.ok  { background:rgba(0,255,136,.1); border:1px solid rgba(0,255,136,.4); color:#00ff88; }
+.voc-result.bad { background:rgba(255,68,102,.1); border:1px solid rgba(255,68,102,.4); color:#ff6688; }
+.voc-next {
+  width:100%; padding:16px;
+  border-radius:12px; border:1.5px solid #00ff88;
+  background:rgba(0,255,136,.12); color:#00ff88;
+  font-size:.95rem; font-weight:700; font-family:inherit; cursor:pointer;
+  display:none;
+}
+.voc-next.show { display:block; }
+.voc-stats {
+  display:flex; gap:8px; margin-bottom:12px;
+}
+.voc-stat-box {
+  flex:1; background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:10px; padding:8px; text-align:center;
+}
+.voc-stat-num { font-size:1.2rem; font-weight:700; color:#00d4ff; }
+.voc-stat-lbl { font-size:.65rem; color:rgba(255,255,255,.35); }
+.voc-cat-bar {
+  display:flex; gap:5px; flex-wrap:wrap; margin-bottom:12px;
+}
+.voc-cat-btn {
+  padding:6px 10px; border-radius:8px;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.04); color:rgba(255,255,255,.4);
+  font-size:.7rem; font-weight:700; font-family:inherit; cursor:pointer;
+}
+.voc-cat-btn.active {
+  border-color:#00d4ff; background:rgba(0,212,255,.14); color:#00d4ff;
+}
+
+/* OPT s reproduktorem */
+.opt-row {
+  display:flex; align-items:stretch; gap:0;
+  border-radius:12px; border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.05);
+  overflow:hidden;
+  transition:border-color .15s;
+}
+.opt-row.correct { border-color:#00ff88; background:rgba(0,255,136,.08); }
+.opt-row.wrong   { border-color:#ff4466; background:rgba(255,68,102,.08); }
+.opt-main {
+  flex:1; padding:16px 12px;
+  background:transparent; color:#e8f0ff;
+  font-size:.92rem; font-family:inherit;
+  cursor:pointer; text-align:left; line-height:1.4; border:none;
+}
+.opt-main.correct { color:#00ff88; }
+.opt-main.wrong   { color:#ff6688; }
+.opt-main:disabled { cursor:not-allowed; }
+.opt-speak {
+  padding:0 14px;
+  background:rgba(255,255,255,.05);
+  border:none; border-left:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.4);
+  font-size:1rem; cursor:pointer;
+  transition:background .15s, color .15s;
+  flex-shrink:0;
+}
+.opt-speak:active { background:rgba(0,212,255,.2); color:#00d4ff; }
+
+/* CUSTOM PHRASES */
+.cu-btn{width:100%;padding:11px;border-radius:8px;border:1.5px solid rgba(0,212,255,.35);background:rgba(0,212,255,.07);color:#00d4ff;font-size:.78rem;font-weight:700;letter-spacing:.1em;cursor:pointer;margin-bottom:14px;}
+.cu-btn:hover{background:rgba(0,212,255,.15);}
+.cu-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;justify-content:center;padding:16px;overflow-y:auto;}
+.cu-overlay.show{display:flex;}
+.cu-modal{background:#0d1525;border:1px solid rgba(0,212,255,.3);border-radius:12px;padding:18px;width:100%;max-width:480px;margin:auto;}
+.cu-modal h3{color:#00d4ff;font-size:.95rem;letter-spacing:2px;margin-bottom:14px;}
+.cu-input{width:100%;padding:9px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#e8f0ff;font-size:.8rem;margin-bottom:8px;box-sizing:border-box;}
+.cu-input::placeholder{color:rgba(255,255,255,.3);}
+.cu-label{font-size:.7rem;color:rgba(255,255,255,.4);margin-bottom:3px;letter-spacing:.05em;display:block;}
+.cu-save{padding:10px 18px;border-radius:7px;border:none;background:#00d4ff;color:#000;font-weight:700;font-size:.8rem;cursor:pointer;}
+.cu-close{padding:10px 18px;border-radius:7px;border:1px solid rgba(255,255,255,.2);background:transparent;color:#aaa;font-size:.8rem;cursor:pointer;margin-left:8px;}
+.cu-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:7px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);margin-bottom:6px;}
+.cu-item-q{font-size:.78rem;color:#e8f0ff;flex:1;}
+.cu-item-cz{font-size:.7rem;color:rgba(255,255,255,.4);}
+.cu-del{background:transparent;border:none;color:#ff4466;font-size:.9rem;cursor:pointer;padding:2px 6px;}
+.cu-count{font-size:.68rem;color:rgba(0,212,255,.6);margin-bottom:10px;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>SPEAKUP</h1>
+  <span class="ver">v6.5Kl</span>
+</div>
+<div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
+
+<!-- SCORE -->
+<div class="scorebar">
+  <div>
+    <div class="score-num" id="scoreNum">0</div>
+    <div class="score-lbl">správně<br>celkem</div>
+  </div>
+  <div style="flex:1;padding-left:8px;">
+    <div class="prog-wrap"><div class="prog-bar" id="progBar"></div></div>
+    <div style="font-size:.68rem;color:rgba(255,255,255,.3);margin-top:4px;" id="progLbl">0 / 40</div>
+    <div class="mastery-bar" id="masteryBar"></div>
+  </div>
+  <div class="lvl-badge" id="lvlBadge">LVL 1</div>
+</div>
+
+<!-- TAB SWITCHER -->
+<div class="tab-bar">
+  <button class="tab-btn active" id="tabConv" onclick="switchTab('conv')">💬 Konverzace</button>
+  <button class="tab-btn" id="tabVoc" onclick="switchTab('voc')">📖 Slovíčka</button>
+</div>
+
+<!-- ===== KONVERZACE TAB ===== -->
+<div class="tab-section show" id="sectionConv">
+
+<!-- LEVEL -->
+<div class="lvl-bar">
+  <button class="lvl-btn active" id="lbtn1" onclick="setLevel(1)">LVL 1</button>
+  <button class="lvl-btn" id="lbtn2" onclick="setLevel(2)">LVL 2</button>
+  <button class="lvl-btn" id="lbtn3" onclick="setLevel(3)">LVL 3</button>
+  <button class="lvl-btn" id="lbtn4" onclick="setLevel(4)">LVL 4</button>
+  <button class="lvl-btn" id="lbtnAll" onclick="setLevel(0)">VŠE</button>
+</div>
+
+<!-- MODE -->
+<div class="mode-bar">
+  <button class="mode-btn active" id="modeOpt" onclick="setMode('opt')">🎯 Výběr</button>
+  <button class="mode-btn" id="modeMic" onclick="setMode('mic')">🎤 Mluvit</button>
+  <button class="mode-btn" id="modeBoth" onclick="setMode('both')">⚡ Oboje</button>
+</div>
+
+<!-- MAIN CARD -->
+<div class="card" id="mainCard">
+  <div class="card-label">Otázka</div>
+  <div class="question-en" id="qEn">—</div>
+  <div class="question-cz" id="qCz">—</div>
+</div>
+
+<div class="status" id="status">Stiskni přehrát.</div>
+
+<button class="btn-play" id="btnPlay" onclick="playQuestion()">🔊 Přehrát otázku</button>
+
+<!-- OPTIONS (mode: opt / both) -->
+<div class="options" id="optArea"></div>
+
+<!-- MIC (mode: mic / both) -->
+<button class="btn-mic" id="btnMic" onclick="toggleMic()" style="display:none;">🎤 Odpovědět</button>
+
+<!-- FEEDBACK -->
+<div class="feedback" id="feedback"></div>
+
+
+<!-- CUSTOM PHRASES BUTTON -->
+<button class="cu-btn" onclick="openCuModal()">➕ Přidat vlastní frázi</button>
+
+<!-- CUSTOM PHRASES MODAL -->
+<div class="cu-overlay" id="cuOverlay">
+  <div class="cu-modal">
+    <h3>🎤 VLASTNÍ FRÁZE</h3>
+    <div class="cu-count" id="cuCount">Uloženo: 0 frází</div>
+
+    <label class="cu-label">Anglická fráze (otázka)</label>
+    <input class="cu-input" id="cuQ" placeholder="What's your favorite music?" />
+
+    <label class="cu-label">Český překlad</label>
+    <input class="cu-input" id="cuCz" placeholder="Co máš nejraději za hudbu?" />
+
+    <label class="cu-label">Správná odpověď</label>
+    <input class="cu-input" id="cuA1" placeholder="I love electronic music." />
+
+    <label class="cu-label">Špatná možnost 2</label>
+    <input class="cu-input" id="cuA2" placeholder="I play the drums." />
+
+    <label class="cu-label">Špatná možnost 3</label>
+    <input class="cu-input" id="cuA3" placeholder="Music is boring." />
+
+    <label class="cu-label">Klíčová slova pro hlas (oddělte čárkou)</label>
+    <input class="cu-input" id="cuKw" placeholder="love electronic music" />
+
+    <div>
+      <button class="cu-save" onclick="saveCuPhrase()">💾 Uložit</button>
+      <button class="cu-close" onclick="closeCuModal()">✕ Zavřít</button>
+    </div>
+
+    <div class="cu-list" id="cuList"></div>
+  </div>
+</div>
+
+<!-- NEXT -->
+<button class="btn-next" id="btnNext" onclick="nextQ()">Další otázka →</button>
+
+<!-- FINISH -->
+<div class="finish" id="finish">
+  <h2>✅ Hotovo!</h2>
+  <div class="fscore" id="finalScore">0/40</div>
+  <p id="finalMsg">—</p>
+  <button class="btn-restart" onclick="restart()">🔄 Znovu od začátku</button>
+</div>
+
+</div><!-- end sectionConv -->
+
+<!-- ===== SLOVÍČKA TAB ===== -->
+<div class="tab-section" id="sectionVoc">
+
+<div class="voc-stats">
+  <div class="voc-stat-box">
+    <div class="voc-stat-num" id="vocDone">0</div>
+    <div class="voc-stat-lbl">procvičeno</div>
+  </div>
+  <div class="voc-stat-box">
+    <div class="voc-stat-num" id="vocAvgPct">—</div>
+    <div class="voc-stat-lbl">průměr %</div>
+  </div>
+  <div class="voc-stat-box" style="border-color:rgba(0,255,136,.3);">
+    <div class="voc-stat-num" id="vocLearnedCount" style="color:#00ff88;">0</div>
+    <div class="voc-stat-lbl">naučeno</div>
+  </div>
+  <div class="voc-stat-box">
+    <div class="voc-stat-num" id="vocTotal">0</div>
+    <div class="voc-stat-lbl">slov</div>
+  </div>
+</div>
+
+<div class="voc-cat-bar" id="vocCatBar"></div>
+
+<div class="voc-word" id="vocCard">
+  <div class="voc-cat" id="vocCat">—</div>
+  <div class="voc-en" id="vocEn">—</div>
+  <div class="voc-phonetic" id="vocPhonetic"></div>
+  <div class="voc-cz" id="vocCz">—</div>
+</div>
+
+<div class="voc-btns">
+  <button class="btn-voc-play" onclick="vocPlay()">🔊 Přehrát</button>
+  <button class="btn-voc-mic" id="btnVocMic" onclick="vocToggleMic()">🎤 Vyslovit</button>
+</div>
+
+<button class="btn-voc-show" onclick="vocShowCz()">👁 Ukázat překlad</button>
+
+<div class="voc-heard" id="vocHeard">Stiskni 🎤 a vyslov slovo anglicky…</div>
+
+<div class="voc-result" id="vocResult"></div>
+
+<button class="btn-voc-learned" id="btnVocLearned" onclick="vocMarkLearned()" style="display:none;">✅ Naučeno — přeskočit příště</button>
+<button class="voc-next show" id="vocNext" onclick="vocNextWord()">Další slovo →</button>
+<button class="btn-voc-reset" onclick="vocResetLearned()">🔄 Reset naučených</button>
+
+</div><!-- end sectionVoc -->
+
+
+<script>
+/* ===== DATA — Úroveň 1: ~40 dvojic ===== */
+const DB = [
+  { q:"What's your name?", cz:"Jak se jmenuješ?",
+    opts:["My name is Micha.","I am fine, thanks.","Nice to meet you."],
+    answers:["my name","i am micha","micha","michal","my name is"] },
+
+  { q:"Where are you from?", cz:"Odkud pocházíš?",
+    opts:["I'm from the Czech Republic.","I'm from Prague.","I live in Czech Republic."],
+    answers:["czech","prague","from czech","czech republic"] },
+
+  { q:"How are you?", cz:"Jak se máš?",
+    opts:["I'm fine, thanks.","Pretty good, and you?","Not bad, thank you."],
+    answers:["fine","good","not bad","great","pretty good","i'm fine"] },
+
+  { q:"How old are you?", cz:"Kolik ti je let?",
+    opts:["I'm in my forties.","I'm forty something.","Age is just a number."],
+    answers:["forty","forties","forty something","age","years old"] },
+
+  { q:"What do you do for a living?", cz:"Čím se živíš?",
+    opts:["I'm a DJ.","I work in music.","I'm self-employed."],
+    answers:["dj","music","self","employed","work"] },
+
+  { q:"Do you speak English?", cz:"Mluvíš anglicky?",
+    opts:["A little bit.","I'm learning.","Yes, some English."],
+    answers:["little","learning","some","yes","speak","bit"] },
+
+  { q:"Can you repeat that, please?", cz:"Můžeš to zopakovat?",
+    opts:["Of course, no problem.","Sure, I'll repeat.","Yes, one moment."],
+    answers:["of course","sure","yes","repeat","no problem","moment"] },
+
+  { q:"Nice to meet you!", cz:"Těší mě!",
+    opts:["Nice to meet you too!","Likewise!","Great to meet you!"],
+    answers:["nice to meet","likewise","great","you too","meet you too"] },
+
+  { q:"What's the weather like today?", cz:"Jaké je dnes počasí?",
+    opts:["It's sunny and warm.","It's cloudy today.","It's a bit rainy."],
+    answers:["sunny","warm","cloudy","rainy","weather","today"] },
+
+  { q:"Where do you live?", cz:"Kde bydlíš?",
+    opts:["I live in Czech Republic.","In a small town.","Near Prague."],
+    answers:["czech","prague","small town","live","republic"] },
+
+  { q:"Do you have any hobbies?", cz:"Máš nějaké koníčky?",
+    opts:["Yes, I love DJing.","I collect vinyl records.","Music is my passion."],
+    answers:["dj","djing","vinyl","music","records","passion","hobby"] },
+
+  { q:"What's your favourite music?", cz:"Jaká je tvoje oblíbená hudba?",
+    opts:["I love electronic music.","House and techno.","All kinds of music."],
+    answers:["electronic","house","techno","music","dance","dj"] },
+
+  { q:"Do you like music?", cz:"Máš rád hudbu?",
+    opts:["Yes, I love it!","Music is my life.","Absolutely, always."],
+    answers:["yes","love","music","life","absolutely"] },
+
+  { q:"Can you help me, please?", cz:"Můžeš mi prosím pomoct?",
+    opts:["Of course, what do you need?","Sure, no problem.","Yes, how can I help?"],
+    answers:["of course","sure","yes","help","no problem","how can"] },
+
+  { q:"I don't understand. Could you explain?", cz:"Nerozumím. Mohl bys vysvětlit?",
+    opts:["Sure, let me explain.","No problem, I'll clarify.","Of course, step by step."],
+    answers:["sure","explain","clarify","step","no problem","let me"] },
+
+  { q:"What time is it?", cz:"Kolik je hodin?",
+    opts:["It's about noon.","I'm not sure, sorry.","Let me check my phone."],
+    answers:["noon","morning","afternoon","evening","time","check","sure"] },
+
+  { q:"How long have you been doing this?", cz:"Jak dlouho to děláš?",
+    opts:["For many years.","More than ten years.","Since I was young."],
+    answers:["years","long","many","ten","since","young"] },
+
+  { q:"Do you have a favourite movie?", cz:"Máš oblíbený film?",
+    opts:["Yes, I love sci-fi.","I prefer documentaries.","Too many to choose one."],
+    answers:["yes","sci","fi","documentary","movie","film","many","choose"] },
+
+  { q:"What are you doing this weekend?", cz:"Co děláš tento víkend?",
+    opts:["I'm playing music.","Just relaxing at home.","Working on a project."],
+    answers:["music","relaxing","home","project","work","playing","weekend"] },
+
+  { q:"Have you ever been abroad?", cz:"Byl jsi někdy v zahraničí?",
+    opts:["Yes, I've travelled a bit.","Not much, but some.","Yes, a few countries."],
+    answers:["yes","travel","countries","abroad","few","been"] },
+
+  { q:"What's your favourite food?", cz:"Jaké je tvoje oblíbené jídlo?",
+    opts:["I love Italian food.","Anything homemade.","Czech traditional food."],
+    answers:["italian","homemade","czech","food","traditional","love"] },
+
+  { q:"Are you married?", cz:"Jsi ženatý?",
+    opts:["No, I'm single.","Yes, happily married.","It's complicated."],
+    answers:["no","single","yes","married","complicated"] },
+
+  { q:"Do you have any pets?", cz:"Máš nějaké domácí zvíře?",
+    opts:["No, I don't.","I have a dog.","I have a cat."],
+    answers:["no","don't","dog","cat","pet","have"] },
+
+  { q:"What kind of music do you play?", cz:"Jaký druh hudby hraješ?",
+    opts:["House and techno mostly.","Electronic dance music.","Mixed styles."],
+    answers:["house","techno","electronic","dance","mixed","music","style"] },
+
+  { q:"Do you play any instruments?", cz:"Hraješ na nějaký nástroj?",
+    opts:["I DJ with turntables.","I use mixers and decks.","I'm more into production."],
+    answers:["dj","turntable","mixer","deck","production","instrument","play"] },
+
+  { q:"What do you think about that?", cz:"Co si o tom myslíš?",
+    opts:["I think it's a good idea.","Interesting point.","I'm not sure yet."],
+    answers:["good","idea","interesting","sure","think","point"] },
+
+  { q:"Could you speak more slowly, please?", cz:"Mohl bys mluvit pomaleji?",
+    opts:["Of course, sorry about that.","Sure, my apologies.","No problem at all."],
+    answers:["of course","sure","sorry","apologies","no problem","slowly"] },
+
+  { q:"What's your phone number?", cz:"Jaké je tvoje telefonní číslo?",
+    opts:["I'd rather not share it.","Let me write it down.","It's plus four two zero…"],
+    answers:["rather","not","share","write","number","zero","plus"] },
+
+  { q:"Can I ask you something?", cz:"Mohu se tě na něco zeptat?",
+    opts:["Yes, go ahead.","Of course, no problem.","Sure, what is it?"],
+    answers:["yes","go ahead","of course","sure","no problem","ask"] },
+
+  { q:"Thank you very much!", cz:"Mockrát děkuji!",
+    opts:["You're welcome!","No problem at all.","My pleasure!"],
+    answers:["welcome","no problem","pleasure","you're","my"] },
+
+  { q:"I'm sorry about that.", cz:"To mě mrzí.",
+    opts:["No worries, it's fine.","Don't worry about it.","That's okay."],
+    answers:["no worries","fine","don't worry","okay","that's"] },
+
+  { q:"What languages do you speak?", cz:"Jakými jazyky mluvíš?",
+    opts:["Czech and some English.","Czech is my native language.","Mainly Czech, learning English."],
+    answers:["czech","english","native","learning","language","speak"] },
+
+  { q:"Do you like travelling?", cz:"Rád cestuješ?",
+    opts:["Yes, when I have time.","Not really, I prefer home.","I love road trips."],
+    answers:["yes","time","home","prefer","love","travel","road","trip"] },
+
+  { q:"What's your job like?", cz:"Jak vypadá tvoje práce?",
+    opts:["It's creative and fun.","Busy but rewarding.","I work from home mostly."],
+    answers:["creative","fun","busy","rewarding","home","work","mostly"] },
+
+  { q:"Do you work from home?", cz:"Pracuješ z domova?",
+    opts:["Yes, most of the time.","Partly, yes.","Mostly from my home studio."],
+    answers:["yes","home","studio","mostly","partly","time"] },
+
+  { q:"What do you do in your free time?", cz:"Co děláš ve volném čase?",
+    opts:["I mix music in my studio.","I play records and relax.","Music and technology."],
+    answers:["music","studio","records","relax","technology","mix","free"] },
+
+  { q:"Do you prefer summer or winter?", cz:"Preferuješ léto nebo zimu?",
+    opts:["Summer, definitely.","Winter for sure.","I like both seasons."],
+    answers:["summer","winter","definitely","sure","both","season","prefer"] },
+
+  { q:"What's your biggest passion?", cz:"Co je tvoje největší vášeň?",
+    opts:["Music, without a doubt.","DJing and technology.","Sounds and electronics."],
+    answers:["music","dj","djing","technology","sound","electronic","passion","doubt"] },
+
+  { q:"Are you busy right now?", cz:"Jsi teď zaneprázdněný?",
+    opts:["A little bit, yes.","Not really, what's up?","Just finishing something."],
+    answers:["little","bit","yes","not really","finishing","something","busy"] },
+
+  { q:"Have a nice day!", cz:"Hezký den!",
+    opts:["You too, thanks!","Same to you!","Thank you, likewise!"],
+    answers:["you too","same","thanks","thank","likewise"] }
+];
+
+/* ===== DATA — Úroveň 2: ~60 dvojic — Život, rodina, novinky, koníčky ===== */
+const DB_L2 = [
+  { q:"Do you live alone or with family?", cz:"Bydlíš sám nebo s rodinou?",
+    opts:["I live alone.","With my family.","Just me and my partner."],
+    answers:["alone","family","partner","live","just me"] },
+
+  { q:"Do you have brothers or sisters?", cz:"Máš sourozence?",
+    opts:["No, I'm an only child.","I have one brother.","I have a sister."],
+    answers:["no","only child","brother","sister","have"] },
+
+  { q:"What did you do yesterday?", cz:"Co jsi dělal včera?",
+    opts:["I was working on my music.","I stayed at home.","I was at my studio."],
+    answers:["music","home","studio","work","stayed","yesterday"] },
+
+  { q:"Have you seen any good movies lately?", cz:"Viděl jsi poslední dobou nějaký dobrý film?",
+    opts:["Not recently, no.","Yes, a great documentary.","I prefer music over movies."],
+    answers:["not","recently","documentary","music","prefer","yes","great"] },
+
+  { q:"What's new with you?", cz:"Co je u tebe nového?",
+    opts:["Not much, just working.","I'm building a new project.","Same as usual."],
+    answers:["not much","working","project","building","same","usual"] },
+
+  { q:"How do you usually spend your evenings?", cz:"Jak obvykle trávíš večery?",
+    opts:["In my studio mixing music.","Relaxing at home.","Working on my projects."],
+    answers:["studio","music","relax","home","project","work","evening"] },
+
+  { q:"Do you cook your own meals?", cz:"Vaříš si sám?",
+    opts:["Yes, I enjoy cooking.","Sometimes, not always.","Mostly simple things."],
+    answers:["yes","cook","enjoy","sometimes","simple","meals"] },
+
+  { q:"What time do you usually wake up?", cz:"V kolik obvykle vstáváš?",
+    opts:["Around seven or eight.","Depends on the day.","Pretty late, I'm a night owl."],
+    answers:["seven","eight","late","night","depends","wake","owl"] },
+
+  { q:"Do you exercise regularly?", cz:"Cvičíš pravidelně?",
+    opts:["Not really, I should.","I walk a lot.","I try to stay active."],
+    answers:["not","walk","active","try","exercise","regularly"] },
+
+  { q:"What kind of books do you read?", cz:"Jaké knihy čteš?",
+    opts:["Technical books mostly.","I prefer magazines.","I don't read much."],
+    answers:["technical","magazine","don't","read","book","mostly","prefer"] },
+
+  { q:"Do you follow the news?", cz:"Sleduješ zprávy?",
+    opts:["Yes, mostly online.","Not really, too depressing.","Just the tech news."],
+    answers:["yes","online","not","depressing","tech","news","follow"] },
+
+  { q:"What's your morning routine like?", cz:"Jak vypadá tvoje ranní rutina?",
+    opts:["Coffee, then check the Pi.","Pretty simple, coffee first.","Music and coffee."],
+    answers:["coffee","pi","simple","music","morning","routine"] },
+
+  { q:"Do you prefer city or countryside?", cz:"Preferuješ město nebo venkov?",
+    opts:["City, for the energy.","Countryside, it's peaceful.","Both have their charm."],
+    answers:["city","country","peaceful","energy","both","charm","prefer"] },
+
+  { q:"What's the best thing about your day today?", cz:"Co bylo dnes nejlepší?",
+    opts:["Got some good work done.","Everything went smoothly.","My music session."],
+    answers:["work","smooth","music","session","good","done","best"] },
+
+  { q:"How do you deal with stress?", cz:"Jak zvládáš stres?",
+    opts:["Music helps a lot.","I focus on my work.","I try to stay calm."],
+    answers:["music","work","calm","focus","help","stress","deal"] },
+
+  { q:"Do you have a daily routine?", cz:"Máš každodenní rutinu?",
+    opts:["Yes, pretty structured.","Somewhat, yes.","Not really, I'm flexible."],
+    answers:["yes","structured","somewhat","flexible","routine","daily"] },
+
+  { q:"What was the last thing you bought?", cz:"Co bylo poslední co jsi koupil?",
+    opts:["Some audio gear.","A new cable.","I can't remember."],
+    answers:["audio","gear","cable","bought","remember","last"] },
+
+  { q:"Do you prefer coffee or tea?", cz:"Preferuješ kávu nebo čaj?",
+    opts:["Coffee, definitely.","Tea in the evening.","Both depending on mood."],
+    answers:["coffee","tea","definitely","evening","mood","both","prefer"] },
+
+  { q:"What's your favourite season?", cz:"Jaké je tvoje oblíbené roční období?",
+    opts:["Spring, fresh and warm.","Summer for the energy.","Autumn, I like the mood."],
+    answers:["spring","summer","autumn","warm","energy","mood","season","favourite"] },
+
+  { q:"Do you enjoy working with your hands?", cz:"Baví tě pracovat rukama?",
+    opts:["Yes, I love building things.","Wiring and electronics, yes.","Absolutely, always."],
+    answers:["yes","build","wiring","electronic","love","hands","absolutely"] },
+
+  { q:"What do you find most relaxing?", cz:"Co ti nejvíc pomáhá relaxovat?",
+    opts:["Listening to music.","Working in my studio.","Just sitting quietly."],
+    answers:["music","studio","quiet","listen","relax","sitting","work"] },
+
+  { q:"Are you a morning person or a night owl?", cz:"Jsi ranní ptáče nebo noční sova?",
+    opts:["Night owl, for sure.","Morning, I'm productive then.","Depends on the project."],
+    answers:["night","owl","morning","productive","depends","project","sure"] },
+
+  { q:"Have you learned any new skills recently?", cz:"Naučil ses nedávno něco nového?",
+    opts:["Yes, some Python scripting.","Always learning something.","Working on my English."],
+    answers:["python","script","learning","english","new","skill","always"] },
+
+  { q:"Do you like fixing things yourself?", cz:"Rád opravuješ věci sám?",
+    opts:["Yes, always try first.","Especially electronics.","I prefer to understand how things work."],
+    answers:["yes","always","electronic","understand","fix","repair","try"] },
+
+  { q:"What would your ideal weekend look like?", cz:"Jak by vypadal tvůj ideální víkend?",
+    opts:["Studio session and good music.","At home with my setup.","Mixing records all day."],
+    answers:["studio","music","home","setup","mixing","records","weekend","ideal"] },
+
+  { q:"Do you spend much time online?", cz:"Trávíš hodně času online?",
+    opts:["Yes, for work and projects.","Quite a lot, yes.","Mostly for technical stuff."],
+    answers:["yes","work","project","technical","online","lot","stuff"] },
+
+  { q:"What technology do you use every day?", cz:"Jakou techniku používáš každý den?",
+    opts:["My Raspberry Pi and mixer.","PC and audio interface.","Everything in my studio."],
+    answers:["raspberry","pi","mixer","pc","audio","interface","studio","tech"] },
+
+  { q:"Have you ever built something from scratch?", cz:"Postavil jsi někdy něco od nuly?",
+    opts:["Yes, my whole home system.","My studio setup.","Many times, yes."],
+    answers:["yes","home","system","studio","setup","built","scratch","times"] },
+
+  { q:"What makes you happy?", cz:"Co tě dělá šťastným?",
+    opts:["Music and technology.","When a project works.","My studio setup running smooth."],
+    answers:["music","tech","project","studio","smooth","happy","works","running"] },
+
+  { q:"Do you like meeting new people?", cz:"Rád poznáváš nové lidi?",
+    opts:["Yes, if we share interests.","It depends on the situation.","I prefer small groups."],
+    answers:["yes","interest","depend","situation","small","prefer","people","meet"] },
+
+  { q:"How do you prefer to communicate?", cz:"Jak raději komunikuješ?",
+    opts:["Text messages mostly.","Online, it's easier for me.","I'm better in writing."],
+    answers:["text","message","online","easier","writing","write","communicate","prefer"] },
+
+  { q:"What's something you're proud of?", cz:"Na co jsi hrdý?",
+    opts:["Building my studio myself.","My home automation system.","Learning everything on my own."],
+    answers:["studio","home","system","learn","own","myself","proud","built","automation"] },
+
+  { q:"Do you prefer working alone or in a team?", cz:"Raději pracuješ sám nebo v týmu?",
+    opts:["Alone, I'm more focused.","Solo, it's my style.","By myself mostly."],
+    answers:["alone","solo","myself","focused","style","prefer","team","work"] },
+
+  { q:"What's the most interesting thing you've done?", cz:"Co nejzajímavějšího jsi udělal?",
+    opts:["Built a smart home system.","Set up my DJ studio.","Created my own web apps."],
+    answers:["smart","home","dj","studio","web","app","built","system","interesting"] },
+
+  { q:"Do you keep in touch with old friends?", cz:"Udržuješ kontakt se starými přáteli?",
+    opts:["Not much, to be honest.","A few close ones, yes.","Mostly online."],
+    answers:["not","few","close","yes","online","honest","touch","friend"] },
+
+  { q:"What's your biggest challenge right now?", cz:"Jaká je teď tvoje největší výzva?",
+    opts:["Learning to speak English better.","Finishing my projects.","Staying organised."],
+    answers:["english","project","organised","speak","learn","finish","challenge","right"] },
+
+  { q:"Do you like trying new things?", cz:"Rád zkouší nové věci?",
+    opts:["Yes, especially in tech.","Always open to new ideas.","If it makes sense, yes."],
+    answers:["yes","tech","new","idea","open","sense","trying","always"] },
+
+  { q:"What's something you want to improve?", cz:"Co chceš zlepšit?",
+    opts:["My spoken English.","My coding skills.","My studio workflow."],
+    answers:["english","speak","coding","code","studio","workflow","improve","skill"] },
+
+  { q:"Do you listen to podcasts or audiobooks?", cz:"Posloucháš podcasty nebo audioknihy?",
+    opts:["Not really, I prefer music.","Sometimes tech podcasts.","Rarely, to be honest."],
+    answers:["not","music","tech","podcast","rarely","honest","sometimes","prefer"] },
+
+  { q:"What's one thing you can't live without?", cz:"Jedna věc, bez které bys nemohl žít?",
+    opts:["Music, definitely.","My studio setup.","Internet connection."],
+    answers:["music","studio","internet","definitely","connection","live","without"] },
+
+  { q:"How do you stay motivated?", cz:"Jak si udržuješ motivaci?",
+    opts:["I love what I do.","Seeing progress keeps me going.","My projects motivate me."],
+    answers:["love","progress","project","motivate","going","stay","motivated","do"] },
+
+  { q:"Do you plan things ahead or go with the flow?", cz:"Plánuješ dopředu nebo jdeš podle nálady?",
+    opts:["I mix both approaches.","Plan for big things, flow for small.","Mostly plan ahead."],
+    answers:["mix","both","plan","flow","ahead","approach","mostly","small","big"] },
+
+  { q:"What's your favourite way to learn something new?", cz:"Jak nejraději se učíš něco nového?",
+    opts:["By doing it hands-on.","Reading and experimenting.","Trial and error, mostly."],
+    answers:["hands","doing","reading","experiment","trial","error","learn","mostly"] },
+
+  { q:"Do you like DIY projects?", cz:"Máš rád kutilské projekty?",
+    opts:["Yes, I do almost everything myself.","Especially electronics and audio.","It's how I built my studio."],
+    answers:["yes","myself","electronic","audio","studio","built","diy","project"] },
+
+  { q:"How important is music in your life?", cz:"Jak důležitá je hudba ve tvém životě?",
+    opts:["It's everything to me.","Very important, always has been.","Music is my world."],
+    answers:["everything","important","always","world","music","life","central"] }
+];
+
+/* ===== DATA — Úroveň 3a: DJ technika a audio (~60 dvojic) ===== */
+const DB_L3 = [
+  { q:"What DJ controller do you use?", cz:"Jaký DJ kontroler používáš?",
+    opts:["I use the Pioneer DDJ-800.","A Pioneer DDJ-800 with rekordbox.","DDJ-800, it's a great controller."],
+    answers:["ddj","800","pioneer","controller","rekordbox"] },
+
+  { q:"What mixer are you running?", cz:"Jaký mixer používáš?",
+    opts:["A Pioneer DJM-300S.","The DJM-300S from Pioneer.","Pioneer DJM, the 300S model."],
+    answers:["djm","300","pioneer","mixer","300s"] },
+
+  { q:"Do you use CDJs or a controller?", cz:"Používáš CDJ nebo kontroler?",
+    opts:["Both — CDJ-800 MK2 and a DDJ-800.","I have CDJs and a controller.","Mainly my DDJ, but also CDJs."],
+    answers:["cdj","ddj","controller","both","800","mk2"] },
+
+  { q:"What turntable do you have?", cz:"Jaký gramofon máš?",
+    opts:["A Reloop RP-1000 MK2.","Reloop with a Concorde Black cartridge.","RP-1000 MK2 with Concorde Black."],
+    answers:["reloop","rp","1000","mk2","concorde","black","turntable","gramophone"] },
+
+  { q:"What cartridge do you use on your turntable?", cz:"Jakou přenosku používáš na gramofonu?",
+    opts:["A Ortofon Concorde Black.","Concorde Black by Ortofon.","The Concorde Black DJ cartridge."],
+    answers:["concorde","black","ortofon","cartridge","pickup"] },
+
+  { q:"What audio interface do you use?", cz:"Jaký audio interface používáš?",
+    opts:["A PreSonus Quantum ES4.","The Quantum ES4 from PreSonus.","PreSonus ES4, it's very clean."],
+    answers:["presonus","quantum","es4","interface","audio"] },
+
+  { q:"What monitor speakers do you have?", cz:"Jaké monitory máš?",
+    opts:["PreSonus Eris 4.5 BT.","Eris 4.5 BT nearfields.","PreSonus Eris monitors."],
+    answers:["presonus","eris","4.5","bt","monitor","speaker"] },
+
+  { q:"Do you have a subwoofer in your setup?", cz:"Máš v setu subwoofer?",
+    opts:["Yes, a PreSonus Eris Sub 8BT.","Sub 8BT from PreSonus.","Yes, the Sub 8 BT."],
+    answers:["sub","8","bt","presonus","eris","subwoofer","yes"] },
+
+  { q:"What headphones do you use for DJing?", cz:"Jaká sluchátka používáš pro DJing?",
+    opts:["Pioneer HDJ-X5 mostly.","Two pairs of Pioneer HDJ-X5.","Pioneer HDJ series."],
+    answers:["pioneer","hdj","x5","headphone","dj"] },
+
+  { q:"What software do you DJ with?", cz:"Jakým softwarem mixuješ?",
+    opts:["VirtualDJ Pro Infinity.","I use VirtualDJ Pro.","VirtualDJ, the Pro version."],
+    answers:["virtualdj","virtual","dj","pro","infinity","software"] },
+
+  { q:"What DAW do you use for production?", cz:"Jaký DAW používáš pro produkci?",
+    opts:["Studio One 7 from PreSonus.","PreSonus Studio One 7.","Studio One, version seven."],
+    answers:["studio","one","7","presonus","daw","production"] },
+
+  { q:"Do you also use Magix Music Maker?", cz:"Používáš také Magix Music Maker?",
+    opts:["Yes, the Premium version.","Magix Music Maker Premium, yes.","Sometimes, yes."],
+    answers:["magix","music","maker","premium","yes","sometimes"] },
+
+  { q:"What's your signal chain like?", cz:"Jaký je tvůj signálový řetězec?",
+    opts:["DDJ into AR8C, then into Quantum ES4.","Mixer to interface to monitors.","Sources into AR8C, then PreSonus."],
+    answers:["ddj","ar8c","quantum","es4","mixer","interface","chain","signal","presonus"] },
+
+  { q:"What kind of cables do you use?", cz:"Jaké kabely používáš?",
+    opts:["Adam Hall, Klotz and Cordial.","Mostly Adam Hall 4 Series.","Adam Hall, Klotz, Cordial and Hosa."],
+    answers:["adam","hall","klotz","cordial","hosa","cable","series"] },
+
+  { q:"Do you use XLR or jack cables mainly?", cz:"Používáš hlavně XLR nebo jack kabely?",
+    opts:["Both, depends on the connection.","XLR for balanced runs, jack for others.","Mix of XLR and TRS jacks."],
+    answers:["xlr","jack","trs","balanced","both","mix","cable"] },
+
+  { q:"What is a balanced connection?", cz:"Co je symetrické připojení?",
+    opts:["It cancels noise over long runs.","XLR or TRS with noise rejection.","Three conductors, rejects interference."],
+    answers:["noise","cancel","reject","xlr","trs","balanced","conductor","interference"] },
+
+  { q:"What does gain staging mean?", cz:"Co znamená nastavení zisku?",
+    opts:["Setting proper levels at each stage.","Optimising signal level through the chain.","Making sure nothing clips or is too quiet."],
+    answers:["gain","level","stage","clip","signal","optimis","proper","chain"] },
+
+  { q:"What is a DI box used for?", cz:"K čemu slouží DI box?",
+    opts:["Converting unbalanced to balanced signal.","For instrument to mixer connection.","Impedance matching and balancing."],
+    answers:["di","balanced","unbalanced","impedance","convert","instrument","match"] },
+
+  { q:"Do you have a Behringer DI20?", cz:"Máš Behringer DI20?",
+    opts:["Yes, a Behringer DI20.","Yes, I use it in my setup.","DI20 from Behringer, yes."],
+    answers:["behringer","di20","di","yes","have"] },
+
+  { q:"What is a VU meter used for?", cz:"K čemu slouží VU metr?",
+    opts:["To monitor audio signal levels.","Shows average signal strength.","Visual level monitoring."],
+    answers:["vu","meter","level","signal","monitor","average","visual"] },
+
+  { q:"Do you have VU meters in your studio?", cz:"Máš ve studiu VU metry?",
+    opts:["Yes, two Douk Audio VU56 PRO.","Two Douk VU meters.","Yes, Douk Audio units."],
+    answers:["douk","vu","56","pro","meter","two","yes","audio"] },
+
+  { q:"What is the Monitor Station V2?", cz:"Co je Monitor Station V2?",
+    opts:["A PreSonus monitor controller.","It controls monitor outputs and sources.","Source selector and volume control for monitors."],
+    answers:["presonus","monitor","station","v2","controller","source","volume","output"] },
+
+  { q:"How many studio monitor inputs do you switch between?", cz:"Mezi kolika vstupy monitorů přepínáš?",
+    opts:["Two — ST1 from ES4, ST2 from AR8C.","I have two stereo inputs on the Monitor Station.","ST1 and ST2 on the PreSonus V2."],
+    answers:["st1","st2","two","es4","ar8c","input","monitor","station","switch"] },
+
+  { q:"What is the TubePre V2?", cz:"Co je TubePre V2?",
+    opts:["A tube microphone preamp from PreSonus.","PreSonus valve preamp.","Tube preamp for mic or instrument."],
+    answers:["tube","pre","v2","presonus","preamp","mic","valve","microphone"] },
+
+  { q:"What microphone do you have?", cz:"Jaký mikrofon máš?",
+    opts:["A Rode NT1 and a PodMic.","NT1 condenser and Rode PodMic.","Rode NT1 plus PodMic."],
+    answers:["rode","nt1","podmic","pod","mic","microphone","condenser"] },
+
+  { q:"What's the Rode PSA1+ used for?", cz:"K čemu slouží Rode PSA1+?",
+    opts:["It's a studio mic boom arm.","A desk-mounted microphone arm.","Articulated mic arm from Rode."],
+    answers:["rode","psa","arm","boom","desk","mic","articulated","mount"] },
+
+  { q:"What recorder do you use for podcasting?", cz:"Jaký rekordér používáš pro podcast?",
+    opts:["A RodeCaster Duo.","The RodeCaster Duo from Rode.","Rode RodeCaster Duo."],
+    answers:["rode","rodecaster","duo","podcast","recorder"] },
+
+  { q:"What does latency mean in audio?", cz:"Co znamená latence v audiu?",
+    opts:["The delay between input and output.","Time for signal to travel through the system.","How fast the interface processes audio."],
+    answers:["latency","delay","input","output","time","signal","process","fast"] },
+
+  { q:"What is a sample rate?", cz:"Co je vzorkovací frekvence?",
+    opts:["How many samples per second are recorded.","44.1 or 48 kHz typically.","Number of audio snapshots per second."],
+    answers:["sample","rate","44","48","khz","second","snapshot","record"] },
+
+  { q:"What sample rate do you usually work at?", cz:"Na jaké vzorkovací frekvenci obvykle pracuješ?",
+    opts:["44.1 kHz for music, 48 for video.","Forty-four point one or forty-eight.","Standard 44.1 kHz mostly."],
+    answers:["44","48","khz","sample","rate","standard","44.1","48khz"] },
+
+  { q:"What is bit depth in audio?", cz:"Co je bitová hloubka v audiu?",
+    opts:["The resolution of each audio sample.","16 or 24 bit typically.","How much dynamic range you capture."],
+    answers:["bit","depth","16","24","resolution","sample","dynamic","range","capture"] },
+
+  { q:"What does EQ stand for?", cz:"Co znamená zkratka EQ?",
+    opts:["Equalizer.","It stands for equalization.","EQ means equalizer, for shaping tone."],
+    answers:["equalizer","equali","eq","tone","shape","frequency"] },
+
+  { q:"What does a compressor do in audio?", cz:"Co dělá kompresor v audiu?",
+    opts:["It reduces the dynamic range.","Controls peaks and evens out levels.","Makes loud parts quieter, quiet parts louder."],
+    answers:["compress","dynamic","range","peak","level","loud","quiet","control","reduce"] },
+
+  { q:"What is a crossfader on a DJ mixer?", cz:"Co je crossfader na DJ mixeru?",
+    opts:["It blends between two channels.","A fader to mix between deck A and B.","Smooth transition between two sources."],
+    answers:["crossfader","cross","fader","blend","channel","deck","transition","mix"] },
+
+  { q:"What does BPM stand for?", cz:"Co znamená zkratka BPM?",
+    opts:["Beats per minute.","It measures the tempo of music.","BPM is the speed of a track."],
+    answers:["beats","per","minute","bpm","tempo","speed","track"] },
+
+  { q:"How do you beatmatch two tracks?", cz:"Jak nabiješ dva tracky?",
+    opts:["Adjust tempo until beats align.","Match BPM and phase of both tracks.","Use pitch fader to sync the beats."],
+    answers:["bpm","tempo","sync","beat","match","pitch","fader","align","phase"] },
+
+  { q:"What is a loop in DJing?", cz:"Co je smyčka v DJingu?",
+    opts:["A section of audio repeated continuously.","Repeating a part of the track.","One or more bars played on repeat."],
+    answers:["loop","repeat","section","bar","continuous","audio","part"] },
+
+  { q:"What is cue point used for?", cz:"K čemu slouží cue bod?",
+    opts:["Marking a specific point in a track.","A saved start point for instant play.","Jump directly to a saved position."],
+    answers:["cue","mark","point","save","start","jump","position","instant"] },
+
+  { q:"Do you play vinyl or digital mostly?", cz:"Hraješ hlavně vinyl nebo digitálně?",
+    opts:["Both — vinyl on the Reloop, digital on DDJ.","Mix of vinyl and digital.","Digital mainly, but vinyl too."],
+    answers:["vinyl","digital","reloop","ddj","both","mix","mainly","turntable"] },
+
+  { q:"What genre of music do you mix?", cz:"Jaký žánr hudby mixuješ?",
+    opts:["Mostly electronic and house.","House, techno and electronic.","Electronic dance music mainly."],
+    answers:["electronic","house","techno","dance","genre","mix","edm","mainly"] },
+
+  { q:"What is a hot cue?", cz:"Co je hot cue?",
+    opts:["An instant trigger for a saved point.","Like a cue point but triggered instantly.","Jump to a saved position with one pad hit."],
+    answers:["hot","cue","instant","trigger","save","point","pad","jump"] },
+
+  { q:"What are performance pads used for?", cz:"K čemu slouží performance pady?",
+    opts:["Triggering loops, cues and samples.","Hot cues, loops and effects via pads.","For finger drumming and live remixing."],
+    answers:["pad","hot","cue","loop","sample","effect","trigger","drum","remix","performance"] },
+
+  { q:"Do you use the Reloop Neon in your setup?", cz:"Používáš Reloop Neon v setu?",
+    opts:["Yes, it's my pad controller.","Reloop Neon for performance pads.","Yes, for triggering pads and loops."],
+    answers:["reloop","neon","pad","controller","yes","loop","trigger"] },
+
+  { q:"What is the PreSonus ATOM used for?", cz:"K čemu slouží PreSonus ATOM?",
+    opts:["Pad controller for Studio One.","MIDI pad controller from PreSonus.","For drum programming and performance."],
+    answers:["atom","presonus","pad","controller","midi","drum","studio","one","performance"] },
+
+  { q:"What is gain on a mixer channel?", cz:"Co je gain na kanálu mixeru?",
+    opts:["The input sensitivity of the channel.","How much the input signal is amplified.","Sets the level before the channel fader."],
+    answers:["gain","input","sensitivity","amplify","level","channel","fader","signal"] },
+
+  { q:"What does the master output do?", cz:"Co dělá master výstup?",
+    opts:["Sends the final mix to speakers.","Main output of the mixer.","Controls overall output to the system."],
+    answers:["master","output","speaker","main","mix","overall","final","system"] },
+
+  { q:"What is a send and return effect?", cz:"Co je send a return efekt?",
+    opts:["Routing signal to an external effect unit.","Send audio out, process it, return it.","Parallel effect processing loop."],
+    answers:["send","return","effect","route","parallel","process","external","loop"] },
+
+  { q:"What is headroom in audio?", cz:"Co je headroom v audiu?",
+    opts:["Space between peak level and clipping.","How much louder you can go before distortion.","The buffer before the signal clips."],
+    answers:["headroom","peak","clip","distort","buffer","loud","space","signal"] },
+
+  { q:"What causes audio clipping?", cz:"Co způsobuje přebuzení audio signálu?",
+    opts:["Signal exceeding the maximum level.","Too much gain, signal goes into red.","Overdriving the input or output."],
+    answers:["clip","signal","maximum","gain","red","overdrive","input","output","exceed"] },
+
+  { q:"What is a phono input on a mixer?", cz:"Co je phono vstup na mixeru?",
+    opts:["For connecting turntables.","A low-level input with RIAA equalisation.","Used for turntables and gramophones."],
+    answers:["phono","turntable","gramophone","riaa","input","low","level","connect"] },
+
+  { q:"What does RIAA equalisation do?", cz:"Co dělá RIAA ekvalizace?",
+    opts:["Corrects the frequency curve of vinyl.","Reverses the recording curve of LPs.","Restores flat response from vinyl playback."],
+    answers:["riaa","frequency","curve","vinyl","lp","correct","reverse","restore","flat","response"] },
+
+  { q:"What is the difference between line and phono level?", cz:"Jaký je rozdíl mezi line a phono úrovní?",
+    opts:["Phono is much lower level than line.","Line is around minus ten dBV, phono is much weaker.","Phono needs a preamp, line does not."],
+    answers:["phono","line","level","preamp","lower","weaker","dBV","difference"] },
+
+  { q:"What does monitoring mean in a studio?", cz:"Co znamená monitoring ve studiu?",
+    opts:["Listening to audio through studio speakers.","Checking the mix on reference monitors.","Hearing what you are recording or mixing."],
+    answers:["monitor","listen","speaker","mix","reference","check","hear","studio"] },
+
+  { q:"What are nearfield monitors?", cz:"Co jsou nearfield monitory?",
+    opts:["Speakers placed close to the listener.","Studio monitors for close listening.","Short-distance reference speakers."],
+    answers:["nearfield","near","field","close","short","distance","speaker","monitor","listener"] },
+
+  { q:"What is the Nobsound L3-3 in your setup?", cz:"Co je Nobsound L3-3 v tvém setu?",
+    opts:["A headphone amplifier.","It's a small headphone amp.","Nobsound headphone amp for monitoring."],
+    answers:["nobsound","l3","headphone","amp","amplifier","monitor"] },
+
+  { q:"What is a headphone amp used for?", cz:"K čemu slouží sluchátkový zesilovač?",
+    opts:["Driving multiple headphones from one source.","Boosting headphone output level.","Sharing a monitor mix with several listeners."],
+    answers:["headphone","amp","amplifier","drive","multiple","output","boost","monitor","share"] },
+
+  { q:"What does stem mixing mean?", cz:"Co znamená stem mixing?",
+    opts:["Mixing grouped tracks together.","Processing instrument groups separately.","Drums, bass and synths mixed as groups."],
+    answers:["stem","mix","group","track","drum","bass","synth","separately","process"] },
+
+  { q:"What is sidechain compression?", cz:"Co je sidechain komprese?",
+    opts:["Compressing one signal triggered by another.","Kick drum ducking the bass.","Using one track to control compression on another."],
+    answers:["sidechain","side","chain","compress","trigger","kick","duck","bass","control"] },
+
+  { q:"What does dry and wet mean on an effect?", cz:"Co znamená dry a wet u efektu?",
+    opts:["Dry is unprocessed, wet is processed signal.","Original versus effected sound.","How much effect is blended in."],
+    answers:["dry","wet","process","effect","original","blend","signal","unprocess"] }
+];
+
+/* ===== DATA — Úroveň 4: ZX Spectrum Next, NextBASIC, programování, Raspberry Pi, síť ===== */
+const DB_L4 = [
+  { q:"What is the ZX Spectrum Next?", cz:"Co je ZX Spectrum Next?",
+    opts:["An enhanced ZX Spectrum with FPGA.","A modern reimagining of the ZX Spectrum.","FPGA-based Spectrum compatible computer."],
+    answers:["zx","spectrum","next","fpga","enhanced","reimagin","compatible","modern"] },
+
+  { q:"Which Kickstarter backer number are you?", cz:"Jaké máš číslo backera na Kickstarteru?",
+    opts:["I'm backer number two thousand and ninety one.","KS3 backer number 2091.","Two zero nine one on Kickstarter 3."],
+    answers:["2091","two thousand","ninety one","backer","kickstarter","ks3","number"] },
+
+  { q:"What colour is your ZX Spectrum Next?", cz:"Jaká je barva tvého ZX Spectrum Next?",
+    opts:["It's purple.","Mine is a purple unit.","Purple, from Kickstarter 2."],
+    answers:["purple","colour","color","unit","mine"] },
+
+  { q:"What does FPGA stand for?", cz:"Co znamená zkratka FPGA?",
+    opts:["Field Programmable Gate Array.","It's a reconfigurable chip.","Field Programmable Gate Array — a flexible chip."],
+    answers:["field","programmable","gate","array","fpga","chip","reconfig"] },
+
+  { q:"What is NextBASIC?", cz:"Co je NextBASIC?",
+    opts:["An enhanced BASIC for the ZX Spectrum Next.","Extended BASIC with new commands for the Next.","The built-in programming language of the ZX Next."],
+    answers:["nextbasic","next","basic","enhanced","extended","language","command","built"] },
+
+  { q:"What is a core on the ZX Spectrum Next?", cz:"Co je core na ZX Spectrum Next?",
+    opts:["An FPGA firmware defining the hardware.","Different hardware configurations via FPGA.","A selectable hardware profile on the Next."],
+    answers:["core","fpga","firmware","hardware","config","profile","selectable"] },
+
+  { q:"Which core version are you running?", cz:"Jakou verzi core používáš?",
+    opts:["The latest stable core.","Core three point oh eight.","I keep it on the latest release."],
+    answers:["core","version","latest","stable","three","08","running","release"] },
+
+  { q:"What is the IP address of your ZX Spectrum Next?", cz:"Jaká je IP adresa tvého ZX Spectrum Next?",
+    opts:["One nine two dot one six eight dot zero dot one two four.","It's 192.168.0.124 on my network.","Local IP is 192.168.0.124."],
+    answers:["192","168","124","ip","address","local","network"] },
+
+  { q:"What operating system does the ZX Next run?", cz:"Jaký operační systém běží na ZX Next?",
+    opts:["It runs NextZXOS.","NextZXOS, based on classic ZX Spectrum OS.","A custom OS called NextZXOS."],
+    answers:["nextzxos","nextzx","zxos","os","operating","system","custom","based"] },
+
+  { q:"What language is used for scripting on the Next?", cz:"Jaký jazyk se používá pro skripty na Next?",
+    opts:["NextBASIC for scripting.","Mainly NextBASIC and assembler.","BASIC and Z80 assembly."],
+    answers:["nextbasic","basic","assembler","assembly","z80","script","language"] },
+
+  { q:"What is Z80 assembly?", cz:"Co je Z80 assembler?",
+    opts:["Low level language for the Z80 processor.","Machine code instructions for the Z80 CPU.","Direct processor instructions for Z80."],
+    answers:["z80","assembly","assembler","machine","code","processor","cpu","low","level","instruction"] },
+
+  { q:"What is the Raspberry Pi 4?", cz:"Co je Raspberry Pi 4?",
+    opts:["A single board Linux computer.","A small ARM-based Linux computer.","Credit card sized Linux computer."],
+    answers:["raspberry","pi","4","single","board","linux","arm","computer","small"] },
+
+  { q:"What is the hostname of your Raspberry Pi?", cz:"Jaký je hostname tvého Raspberry Pi?",
+    opts:["DJsound.","My Pi's hostname is DJsound.","It's called DJsound on the network."],
+    answers:["djsound","hostname","pi","network","called"] },
+
+  { q:"What is the IP address of your Raspberry Pi?", cz:"Jaká je IP adresa tvého Raspberry Pi?",
+    opts:["192.168.0.50.","It's 192.168.0.50 on my LAN.","Local address is 192 168 0 50."],
+    answers:["192","168","50","ip","address","pi","local","lan"] },
+
+  { q:"What is systemd used for on Linux?", cz:"K čemu slouží systemd na Linuxu?",
+    opts:["Managing system services and processes.","Starting and controlling background services.","Service manager for Linux."],
+    answers:["systemd","service","process","manage","start","control","background","linux","manager"] },
+
+  { q:"How do you create a systemd service?", cz:"Jak vytvoříš systemd service?",
+    opts:["Write a unit file in /etc/systemd/system.","Create a dot service file and run systemctl enable.","Add a unit file then systemctl daemon-reload and enable."],
+    answers:["unit","file","systemd","system","systemctl","enable","service","daemon","reload"] },
+
+  { q:"What does systemctl enable do?", cz:"Co dělá příkaz systemctl enable?",
+    opts:["Makes a service start on boot.","Enables the service to run automatically.","Sets the service to start at system startup."],
+    answers:["enable","boot","start","auto","startup","systemctl","service"] },
+
+  { q:"What is SSH?", cz:"Co je SSH?",
+    opts:["Secure Shell for remote access.","Encrypted remote terminal connection.","Protocol for secure remote login."],
+    answers:["ssh","secure","shell","remote","access","encrypt","terminal","login","protocol"] },
+
+  { q:"How do you SSH into your Raspberry Pi?", cz:"Jak se připojíš přes SSH k Raspberry Pi?",
+    opts:["ssh pi at 192.168.0.50.","Type ssh pi@192.168.0.50 in terminal.","Connect with ssh pi@192.168.0.50."],
+    answers:["ssh","pi","192","168","50","terminal","connect","192.168.0.50"] },
+
+  { q:"What is Python used for in your setup?", cz:"K čemu používáš Python ve svém setu?",
+    opts:["Running bridges and automation scripts.","Tapo bridge, Firebase sync, monitor scripts.","Background services on the Pi."],
+    answers:["python","script","bridge","firebase","tapo","monitor","service","automation","pi"] },
+
+  { q:"What is a Python virtual environment?", cz:"Co je Python virtuální prostředí?",
+    opts:["An isolated Python installation for a project.","Keeps project dependencies separate.","Separate Python packages per project."],
+    answers:["virtual","environment","venv","isolate","depend","separate","package","project"] },
+
+  { q:"What does pip install do?", cz:"Co dělá příkaz pip install?",
+    opts:["Installs a Python package.","Downloads and installs a Python library.","Adds a package to your Python environment."],
+    answers:["pip","install","package","library","download","python","add"] },
+
+  { q:"What is Firebase Realtime Database?", cz:"Co je Firebase Realtime Database?",
+    opts:["A cloud JSON database by Google.","Real-time syncing cloud database from Firebase.","NoSQL cloud database with live sync."],
+    answers:["firebase","realtime","database","cloud","json","google","nosql","sync","live"] },
+
+  { q:"What is the daily download limit on Firebase free tier?", cz:"Jaký je denní download limit na Firebase free tier?",
+    opts:["Three hundred and sixty megabytes per day.","360 MB daily download limit.","The free tier allows 360 MB downloads per day."],
+    answers:["360","mb","megabyte","daily","limit","free","tier","download","per day"] },
+
+  { q:"What time does the Firebase quota reset?", cz:"V kolik se resetuje Firebase kvóta?",
+    opts:["At nine in the morning.","Nine AM every day.","The quota resets at 9:00 AM."],
+    answers:["nine","9","morning","am","reset","quota","daily","every"] },
+
+  { q:"What is a Firebase listener?", cz:"Co je Firebase listener?",
+    opts:["A function triggered by database changes.","Watches a database node for updates.","Fires when data at a path changes."],
+    answers:["listener","firebase","trigger","change","watch","node","update","fire","path","function"] },
+
+  { q:"What is a cron job?", cz:"Co je cron job?",
+    opts:["A scheduled task running automatically.","A command scheduled to run at a set time.","Automated task scheduler on Linux."],
+    answers:["cron","schedule","task","auto","time","command","linux","job","run"] },
+
+  { q:"How do you edit the crontab on Linux?", cz:"Jak upravíš crontab na Linuxu?",
+    opts:["Type crontab minus e in terminal.","Run crontab -e to edit your jobs.","Use crontab -e command."],
+    answers:["crontab","-e","edit","terminal","command","run","cron","job"] },
+
+  { q:"What does the cat command do on Linux?", cz:"Co dělá příkaz cat na Linuxu?",
+    opts:["Displays the content of a file.","Prints file contents to the terminal.","Reads and outputs a file."],
+    answers:["cat","file","content","display","print","terminal","read","output"] },
+
+  { q:"What does chmod do on Linux?", cz:"Co dělá příkaz chmod na Linuxu?",
+    opts:["Changes file permissions.","Sets read write execute rights on a file.","Modifies access permissions."],
+    answers:["chmod","permission","read","write","execute","access","modify","file","right"] },
+
+  { q:"What is a local IP address?", cz:"Co je lokální IP adresa?",
+    opts:["An address on your home network.","Private network address like 192.168.x.x.","Internal network identifier."],
+    answers:["local","ip","192","168","private","home","network","address","internal"] },
+
+  { q:"What is DHCP?", cz:"Co je DHCP?",
+    opts:["Automatic IP address assignment.","Protocol that assigns IPs on a network.","Dynamic Host Configuration Protocol."],
+    answers:["dhcp","dynamic","host","config","protocol","ip","assign","auto","address"] },
+
+  { q:"What is a DHCP reservation?", cz:"Co je DHCP rezervace?",
+    opts:["Assigning a fixed IP to a device by MAC.","Always giving the same IP to a device.","Static IP via router based on MAC address."],
+    answers:["dhcp","reservation","fixed","static","mac","ip","device","address","router","always"] },
+
+  { q:"What is a MAC address?", cz:"Co je MAC adresa?",
+    opts:["A unique hardware identifier for a network device.","Physical address of a network interface.","Unique identifier burned into a network chip."],
+    answers:["mac","address","hardware","unique","identifier","physical","network","interface","device"] },
+
+  { q:"What router do you use at home?", cz:"Jaký router máš doma?",
+    opts:["A TP-Link AX55.","TP-Link AX55 WiFi 6 router.","TP-Link AX55, it's a WiFi 6 router."],
+    answers:["tp-link","tplink","ax55","router","wifi","6","home"] },
+
+  { q:"What is WiFi 6?", cz:"Co je WiFi 6?",
+    opts:["The latest major WiFi standard, 802.11ax.","Faster and more efficient wireless standard.","802.11ax, improved speed and capacity."],
+    answers:["wifi","6","802","11ax","ax","standard","fast","efficient","wireless","capacity"] },
+
+  { q:"What is a REST API?", cz:"Co je REST API?",
+    opts:["An HTTP-based interface for web services.","A way to communicate between apps over HTTP.","Standard for web service communication."],
+    answers:["rest","api","http","web","service","interface","communicate","standard","app"] },
+
+  { q:"What is JSON?", cz:"Co je JSON?",
+    opts:["JavaScript Object Notation for data exchange.","A lightweight text data format.","Key-value data format used in web APIs."],
+    answers:["json","javascript","object","notation","data","format","key","value","lightweight","web"] },
+
+  { q:"What does async mean in programming?", cz:"Co znamená async v programování?",
+    opts:["Code that runs without blocking.","Asynchronous — runs in background.","Non-blocking execution of code."],
+    answers:["async","asynchronous","non-blocking","background","run","block","execution"] },
+
+  { q:"What is a GitHub repository?", cz:"Co je GitHub repozitář?",
+    opts:["A storage place for code on GitHub.","A project folder tracked by Git.","Version-controlled project on GitHub."],
+    answers:["github","repository","repo","code","storage","git","version","project","track"] },
+
+  { q:"What does git push do?", cz:"Co dělá příkaz git push?",
+    opts:["Uploads local commits to the remote repo.","Sends your changes to GitHub.","Pushes local code to the remote repository."],
+    answers:["push","git","upload","commit","remote","repo","github","change","send"] },
+
+  { q:"What does git pull do?", cz:"Co dělá příkaz git pull?",
+    opts:["Downloads changes from the remote repo.","Fetches and merges remote changes.","Gets the latest code from GitHub."],
+    answers:["pull","git","download","remote","change","fetch","merge","latest","github"] },
+
+  { q:"What is a Node.js script?", cz:"Co je Node.js skript?",
+    opts:["JavaScript running on the server side.","A server-side JS script using Node runtime.","JavaScript outside the browser using Node."],
+    answers:["node","nodejs","javascript","server","side","script","runtime","browser"] },
+
+  { q:"What is npm?", cz:"Co je npm?",
+    opts:["Node Package Manager for JavaScript.","Tool for installing Node.js packages.","Package manager for Node and JavaScript."],
+    answers:["npm","node","package","manager","javascript","install","tool"] },
+
+  { q:"What is a WebSocket?", cz:"Co je WebSocket?",
+    opts:["A persistent two-way connection over TCP.","Real-time bidirectional communication protocol.","Keep-alive connection between client and server."],
+    answers:["websocket","persistent","two-way","tcp","real-time","bidirectional","client","server","keep","alive"] },
+
+  { q:"What is localhost?", cz:"Co je localhost?",
+    opts:["The local machine address, 127.0.0.1.","Refers to the computer itself on the network.","Loopback address pointing to your own machine."],
+    answers:["localhost","127","0","local","machine","loopback","address","itself","own"] },
+
+  { q:"What is a port number in networking?", cz:"Co je číslo portu v sítích?",
+    opts:["A logical channel for network communication.","Identifies which service on a host to connect to.","Number like 80 or 8080 for different services."],
+    answers:["port","number","network","service","host","connect","channel","80","8080","logical"] },
+
+  { q:"What does ping do?", cz:"Co dělá příkaz ping?",
+    opts:["Tests network connectivity to a host.","Checks if a device is reachable on the network.","Sends packets and waits for a reply."],
+    answers:["ping","test","network","connectivity","host","reachable","packet","reply","check"] },
+
+  { q:"What is the difference between TCP and UDP?", cz:"Jaký je rozdíl mezi TCP a UDP?",
+    opts:["TCP is reliable, UDP is faster but lossy.","TCP confirms delivery, UDP does not.","TCP has error checking, UDP skips it."],
+    answers:["tcp","udp","reliable","fast","loss","confirm","delivery","error","check","difference"] },
+
+  { q:"What is a firewall?", cz:"Co je firewall?",
+    opts:["Software or hardware filtering network traffic.","Blocks unwanted network connections.","Security layer controlling network access."],
+    answers:["firewall","filter","network","traffic","block","security","access","control","connection"] },
+
+  { q:"What is an SSH key?", cz:"Co je SSH klíč?",
+    opts:["A cryptographic key pair for SSH login.","Used instead of a password for SSH access.","Public and private key for secure SSH."],
+    answers:["ssh","key","cryptographic","pair","login","password","public","private","secure"] },
+
+  { q:"What does SCP do?", cz:"Co dělá příkaz SCP?",
+    opts:["Copies files securely over SSH.","Secure file transfer between machines.","Transfers files via SSH connection."],
+    answers:["scp","copy","file","secure","ssh","transfer","machine","between"] },
+
+  { q:"What is a heredoc in Linux?", cz:"Co je heredoc v Linuxu?",
+    opts:["A way to pass multi-line input to a command.","Multi-line string input method in shell.","cat with EOF for writing multi-line files."],
+    answers:["heredoc","here","doc","eof","multi","line","input","shell","cat","file"] },
+
+  { q:"Why do you use heredoc instead of nano for scripts?", cz:"Proč používáš heredoc místo nano pro skripty?",
+    opts:["Mobile SSH corrupts multi-line text.","Termius breaks multi-line Python code.","Heredoc avoids corruption on mobile SSH."],
+    answers:["heredoc","nano","mobile","ssh","termius","corrupt","multi","line","python","break"] },
+
+  { q:"What is a Python bridge script?", cz:"Co je Python bridge skript?",
+    opts:["A script connecting two systems or services.","Relay between Firebase and a device.","Script that translates commands between services."],
+    answers:["bridge","script","python","connect","firebase","device","relay","translate","service","system"] },
+
+  { q:"What is the Tapo bridge used for?", cz:"K čemu slouží Tapo bridge?",
+    opts:["Controlling Tapo smart plugs from Firebase.","Reads Firebase commands and controls plugs.","Python script linking Firebase to Tapo devices."],
+    answers:["tapo","bridge","firebase","smart","plug","control","python","command","device","link"] },
+
+  { q:"What smart plugs do you have?", cz:"Jaké chytré zásuvky máš?",
+    opts:["P115, P100 and P110 from TP-Link Tapo.","Three Tapo plugs — P115, P100 and P110.","Tapo P115, P100 and P110."],
+    answers:["p115","p100","p110","tapo","plug","tp-link","three","smart"] },
+
+  { q:"What is the IR bridge used for?", cz:"K čemu slouží IR bridge?",
+    opts:["Sending infrared commands to devices.","Controls TV and other IR devices via Firebase.","Forwards Firebase commands to an IR hub."],
+    answers:["ir","infrared","bridge","command","device","tv","firebase","hub","control","forward"] },
+
+  { q:"What does the pi_monitor script do?", cz:"Co dělá skript pi_monitor?",
+    opts:["Monitors Raspberry Pi stats and sends to Firebase.","Tracks CPU, RAM, temperature and uptime.","Collects Pi metrics and writes to Firebase."],
+    answers:["pi","monitor","firebase","cpu","ram","temperature","uptime","stat","metric","collect"] },
+
+  { q:"What electricity rate do you use for cost calculations?", cz:"Jakou sazbu elektřiny používáš pro výpočty ceny?",
+    opts:["Six point five Czech crowns per kilowatt hour.","6.50 CZK per kWh, fixed contract.","Fixed rate of 6.50 CZK per kWh."],
+    answers:["6.50","6","50","czk","kWh","kilowatt","crown","fixed","rate","contract"] }
+];
+
+/* ===== STATE ===== */
+let queue = [], idx = 0, score = 0, answered = false;
+let mode = 'opt'; // opt | mic | both
+let currentLevel = 1; // 1 | 2 | 3 | 4 | 0=all
+let recRunning = false, recObj = null;
+let ttsLang = 'en-GB';
+let micTotal = 0, micScoreSum = 0; // pro % srozumitelnosti
+
+/* ===== MASTERY (localStorage) ===== */
+// Klíč: su_q_{hash} → {attempts, correct, avgPct}
+function qKey(q){ return 'su_q_'+Math.abs(hashStr(q.q)); }
+function hashStr(s){
+  let h=0;
+  for(let i=0;i<s.length;i++){ h=Math.imul(31,h)+s.charCodeAt(i)|0; }
+  return h;
+}
+function getMastery(q){
+  try{ return JSON.parse(localStorage.getItem(qKey(q)))||{attempts:0,correct:0,avgPct:50}; }
+  catch(e){ return {attempts:0,correct:0,avgPct:50}; }
+}
+function saveMastery(q, isCorrect, pct){
+  try{
+    const m=getMastery(q);
+    m.attempts++;
+    if(isCorrect) m.correct++;
+    // klouzavý průměr posledních výsledků
+    m.avgPct=Math.round((m.avgPct*(m.attempts-1)+(pct||( isCorrect?85:30)))/m.attempts);
+    localStorage.setItem(qKey(q), JSON.stringify(m));
+  }catch(e){}
+}
+function getPriority(q){
+  const m=getMastery(q);
+  if(m.attempts===0) return 2;        // nová — střední
+  if(m.avgPct<55)    return 4;        // špatná výslovnost — nejvyšší
+  if(m.avgPct<75)    return 3;        // pod cílem — vysoká
+  if(m.avgPct<90)    return 2;        // OK — normální
+  return 1;                           // zvládnuto — nízká
+}
+function buildQueue(src){
+  // Rozděl podle priority a zamíchej každou skupinu
+  const p4=[],p3=[],p2=[],p1=[];
+  src.forEach(function(q){
+    const p=getPriority(q);
+    if(p===4) p4.push(q);
+    else if(p===3) p3.push(q);
+    else if(p===2) p2.push(q);
+    else p1.push(q);
+  });
+  // Vysoce prioritní 2x, ostatní 1x, zvládnuté jen občas
+  const result=[];
+  shuffle(p4).forEach(function(q){ result.push(q); result.push(q); }); // 2x
+  shuffle(p3).forEach(function(q){ result.push(q); });
+  shuffle(p2).forEach(function(q){ result.push(q); });
+  // p1 (zvládnuté) — jen každá třetí
+  shuffle(p1).filter(function(_,i){ return i%3===0; }).forEach(function(q){ result.push(q); });
+  return result.length>0 ? result : shuffle([...src]);
+}
+function updateMasteryBar(src){
+  let ok=0,mid=0,bad=0,nw=0;
+  src.forEach(function(q){
+    const m=getMastery(q);
+    if(m.attempts===0) nw++;
+    else if(m.avgPct>=90) ok++;
+    else if(m.avgPct>=75) mid++;
+    else bad++;
+  });
+  const bar=document.getElementById('masteryBar');
+  if(!bar) return;
+  bar.innerHTML=
+    '<span class="mastery-dot ok"></span><span style="color:rgba(255,255,255,.4)">'+ok+'</span>'
+   +'<span class="mastery-dot mid" style="margin-left:6px"></span><span style="color:rgba(255,255,255,.4)">'+mid+'</span>'
+   +'<span class="mastery-dot bad" style="margin-left:6px"></span><span style="color:rgba(255,255,255,.4)">'+bad+'</span>'
+   +'<span class="mastery-dot new" style="margin-left:6px"></span><span style="color:rgba(255,255,255,.4)">'+nw+' nových</span>';
+}
+
+/* ===== LEVENSHTEIN ===== */
+function levenshtein(a, b){
+  const m=a.length, n=b.length;
+  const dp=[];
+  for(let i=0;i<=m;i++){ dp[i]=[i]; }
+  for(let j=0;j<=n;j++){ dp[0][j]=j; }
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+    }
+  }
+  return dp[m][n];
+}
+
+function similarityPct(heard, target){
+  heard=heard.toLowerCase().trim();
+  target=target.toLowerCase().trim();
+  const maxLen=Math.max(heard.length, target.length);
+  if(maxLen===0) return 100;
+  const dist=levenshtein(heard, target);
+  return Math.round((1 - dist/maxLen)*100);
+}
+
+/* ===== LEVEL ===== */
+function setLevel(lvl){
+  currentLevel = lvl;
+  ['lbtn1','lbtn2','lbtn3','lbtn4','lbtnAll'].forEach(function(id){ document.getElementById(id).classList.remove('active'); });
+  const map = {1:'lbtn1', 2:'lbtn2', 3:'lbtn3', 4:'lbtn4', 0:'lbtnAll'};
+  document.getElementById(map[lvl]).classList.add('active');
+  const names = {1:'Základy', 2:'Život & Koníčky', 3:'DJ & Audio', 4:'ZX Next & Tech', 0:'Všechny úrovně'};
+  document.getElementById('subhdr').textContent = 'Trénink anglické konverzace · ' + (lvl===0 ? 'Vše' : 'Úroveň '+lvl+' — '+names[lvl]);
+  init();
+}
+
+
+/* ===== CUSTOM PHRASES ===== */
+var CU_KEY = 'su_custom_phrases';
+
+function loadCuPhrases(){
+  try { return JSON.parse(localStorage.getItem(CU_KEY) || '[]'); } catch(e){ return []; }
+}
+function saveCuPhrases(arr){
+  try { localStorage.setItem(CU_KEY, JSON.stringify(arr)); } catch(e){}
+}
+function openCuModal(){
+  document.getElementById('cuOverlay').classList.add('show');
+  renderCuList();
+}
+function closeCuModal(){
+  document.getElementById('cuOverlay').classList.remove('show');
+}
+function saveCuPhrase(){
+  var q = document.getElementById('cuQ').value.trim();
+  var cz = document.getElementById('cuCz').value.trim();
+  var a1 = document.getElementById('cuA1').value.trim();
+  var a2 = document.getElementById('cuA2').value.trim();
+  var a3 = document.getElementById('cuA3').value.trim();
+  var kw = document.getElementById('cuKw').value.trim();
+  if(!q || !cz || !a1){ alert('Vyplň anglickou frázi, překlad a správnou odpověď.'); return; }
+  var opts = [a1];
+  if(a2) opts.push(a2);
+  if(a3) opts.push(a3);
+  var answers = kw ? kw.split(',').map(function(s){ return s.trim(); }) : [a1];
+  var phrase = { q:q, cz:cz, opts:opts, answers:answers };
+  var arr = loadCuPhrases();
+  arr.push(phrase);
+  saveCuPhrases(arr);
+  document.getElementById('cuQ').value='';
+  document.getElementById('cuCz').value='';
+  document.getElementById('cuA1').value='';
+  document.getElementById('cuA2').value='';
+  document.getElementById('cuA3').value='';
+  document.getElementById('cuKw').value='';
+  renderCuList();
+}
+function deleteCuPhrase(i){
+  var arr = loadCuPhrases();
+  arr.splice(i,1);
+  saveCuPhrases(arr);
+  renderCuList();
+}
+function renderCuList(){
+  var arr = loadCuPhrases();
+  document.getElementById('cuCount').textContent = 'Uloženo: ' + arr.length + ' frází';
+  var html = '';
+  arr.forEach(function(p,i){
+    html += '<div class="cu-item"><div><div class="cu-item-q">'+p.q+'</div><div class="cu-item-cz">'+p.cz+'</div></div><button class="cu-del" onclick="deleteCuPhrase('+i+')">🗑</button></div>';
+  });
+  document.getElementById('cuList').innerHTML = html;
+}
+
+/* ===== INIT ===== */
+function init(){
+  let src;
+  if(currentLevel===1) src = DB;
+  else if(currentLevel===2) src = DB_L2;
+  else if(currentLevel===3) src = DB_L3;
+  else if(currentLevel===4) src = DB_L4;
+  else src = DB.concat(DB_L2).concat(DB_L3).concat(DB_L4);
+  var custom = loadCuPhrases();
+  if(custom.length) src = src.concat(custom);
+  queue = buildQueue(src);
+  idx = 0; score = 0; answered = false;
+  micTotal = 0; micScoreSum = 0;
+  document.getElementById('lvlBadge').textContent = currentLevel===0 ? 'VŠE' : 'LVL '+currentLevel;
+  updateMasteryBar(src);
+  updateScore(); showQ();
+}
+
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+/* ===== SHOW QUESTION ===== */
+function showQ(){
+  if(idx >= queue.length){ showFinish(); return; }
+  const q = queue[idx];
+  answered = false;
+
+  document.getElementById('finish').classList.remove('show');
+  document.getElementById('mainCard').style.display='';
+  document.getElementById('btnPlay').style.display='';
+  document.getElementById('status').textContent='Stiskni přehrát.';
+
+  document.getElementById('qEn').textContent = q.q;
+  const cz = document.getElementById('qCz');
+  cz.textContent = q.cz;
+  cz.classList.remove('show');
+
+  document.getElementById('feedback').classList.remove('show');
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('btnNext').classList.remove('show');
+  document.getElementById('btnPlay').disabled=false;
+
+  // options
+  const oa = document.getElementById('optArea');
+  oa.innerHTML='';
+  if(mode==='opt'||mode==='both'){
+    const opts = shuffle([...q.opts]);
+    // Uložit správnou odpověď (vždy opts[0] z DB)
+    const correctOpt = q.opts[0];
+    opts.forEach(function(o){
+      const row=document.createElement('div');
+      row.className='opt-row';
+
+      const b=document.createElement('button');
+      b.className='opt-main'; b.textContent=o;
+      b.onclick=function(){ checkOpt(o, row, b, q, correctOpt); };
+
+      const sp=document.createElement('button');
+      sp.className='opt-speak'; sp.textContent='🔊';
+      sp.title='Přehrát odpověď';
+      sp.onclick=function(e){
+        e.stopPropagation();
+        window.speechSynthesis.cancel();
+        const u=new SpeechSynthesisUtterance(o);
+        u.lang=ttsLang; u.rate=0.85;
+        window.speechSynthesis.speak(u);
+      };
+
+      row.appendChild(b);
+      row.appendChild(sp);
+      oa.appendChild(row);
+    });
+    oa.style.display='flex';
+  } else {
+    oa.style.display='none';
+  }
+
+  // mic
+  const bm = document.getElementById('btnMic');
+  if(mode==='mic'||mode==='both'){
+    bm.style.display='';
+    bm.textContent='🎤 Odpovědět';
+    bm.classList.remove('listening');
+    bm.disabled=true; // enable after play
+  } else {
+    bm.style.display='none';
+  }
+
+  updateProg();
+}
+
+/* ===== PLAY TTS ===== */
+function playQuestion(){
+  const q = queue[idx];
+  document.getElementById('btnPlay').disabled=true;
+  document.getElementById('status').textContent='▶ Přehrávám…';
+  window.speechSynthesis.cancel();
+  setTimeout(function(){
+    const u = new SpeechSynthesisUtterance(q.q);
+    u.lang=ttsLang; u.rate=0.88;
+    u.onend=function(){
+      document.getElementById('status').textContent='Slyšel jsi to? Zvol odpověď nebo mluv.';
+      document.getElementById('qCz').classList.add('show');
+      document.getElementById('btnPlay').disabled=false; // FIX: znovu povolit
+      if(mode==='mic'||mode==='both'){
+        document.getElementById('btnMic').disabled=false;
+      }
+    };
+    u.onerror=function(){
+      document.getElementById('status').textContent='⚠ TTS chyba — zkus znovu.';
+      document.getElementById('btnPlay').disabled=false;
+      document.getElementById('qCz').classList.add('show');
+      if(mode==='mic'||mode==='both') document.getElementById('btnMic').disabled=false;
+    };
+    window.speechSynthesis.speak(u);
+  },100);
+}
+
+/* ===== CHECK OPTION ===== */
+function checkOpt(chosen, row, btn, q, correctOpt){
+  if(answered) return;
+  answered=true;
+  // Disable všechny opt-main buttony
+  document.querySelectorAll('.opt-main').forEach(function(b){ b.disabled=true; });
+
+  // Správnost: přesné porovnání s opts[0] (správná odpověď z DB)
+  const correct = (chosen === correctOpt);
+  saveMastery(q, correct, correct?88:25);
+
+  if(correct){
+    row.classList.add('correct');
+    btn.classList.add('correct');
+    score++; updateScore();
+    showFeedback(true, chosen, null);
+    // Auto-posun po 1.5s
+    idx++;
+    setTimeout(function(){ if(answered) nextQ(); }, 1500);
+  } else {
+    row.classList.add('wrong');
+    btn.classList.add('wrong');
+    // Zvýraznit správnou odpověď zeleně
+    document.querySelectorAll('.opt-main').forEach(function(b){
+      if(b.textContent === correctOpt){
+        b.closest('.opt-row').classList.add('correct');
+        b.classList.add('correct');
+      }
+    });
+    showFeedback(false, chosen, correctOpt);
+    idx++;
+    document.getElementById('btnNext').classList.add('show');
+  }
+}
+
+/* ===== MIC ===== */
+function toggleMic(){
+  if(recRunning){ stopMic(); return; }
+  startMic();
+}
+
+function startMic(){
+  const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ document.getElementById('status').textContent='❌ Prohlížeč nepodporuje mikrofon.'; return; }
+  recObj=new SR();
+  recObj.lang='en-US'; recObj.interimResults=false; recObj.maxAlternatives=3;
+  const btn=document.getElementById('btnMic');
+  recObj.onstart=function(){ recRunning=true; btn.textContent='⏹ Zastavit'; btn.classList.add('listening'); document.getElementById('status').textContent='🎤 Poslouchám…'; };
+  recObj.onresult=function(ev){
+    let heard='';
+    let conf=0;
+    for(let i=0;i<ev.results[0].length;i++){
+      heard+=ev.results[0][i].transcript+' ';
+      if(ev.results[0][i].confidence>conf) conf=ev.results[0][i].confidence;
+    }
+    heard=heard.trim().toLowerCase();
+    evalMic(heard, conf);
+  };
+  recObj.onerror=function(ev){
+    if(ev.error==='no-speech'){ document.getElementById('status').textContent='Nic neslyšeno, zkus znovu.'; }
+    else { document.getElementById('status').textContent='❌ '+ev.error; }
+    recRunning=false;
+    btn.textContent='🎤 Odpovědět'; btn.classList.remove('listening');
+  };
+  recObj.onend=function(){ recRunning=false; btn.textContent='🎤 Odpovědět'; btn.classList.remove('listening'); };
+  recObj.start();
+}
+
+function stopMic(){ if(recObj&&recRunning) recObj.stop(); }
+
+function evalMic(heard, confidence){
+  if(answered) return;
+  const q=queue[idx];
+  const correctOpt=q.opts[0];
+  const correct=q.answers.some(function(a){ return heard.includes(a); });
+  answered=true;
+  document.getElementById('btnMic').disabled=true;
+  document.querySelectorAll('.opt-main').forEach(function(b){ b.disabled=true; });
+  // Zobrazit co STT slyšelo
+  document.getElementById('status').textContent='🎤 Slyšeno: ' + heard;
+
+  // Výpočet srozumitelnosti
+  const bestSim = q.answers.reduce(function(best, ans){
+    return Math.max(best, similarityPct(heard, ans));
+  }, 0);
+  const confPct = Math.round((confidence||0)*100);
+  const combined = Math.round(confPct*0.5 + bestSim*0.5);
+  micTotal++;
+  micScoreSum += combined;
+  saveMastery(q, correct, combined);
+
+  if(correct){
+    score++; updateScore();
+    showFeedback(true, heard, null, combined);
+    idx++;
+    setTimeout(function(){ if(answered) nextQ(); }, 2000);
+  } else {
+    showFeedback(false, heard, correctOpt, combined);
+    idx++;
+    document.getElementById('btnNext').classList.add('show');
+  }
+}
+
+/* ===== FEEDBACK ===== */
+function showFeedback(ok, heard, suggestion, micPct){
+  const fb=document.getElementById('feedback');
+  let micLine='';
+  if(micPct !== undefined && micPct !== null){
+    let label='';
+    if(micPct>=90) label='Perfektní výslovnost 🏆';
+    else if(micPct>=75) label='Angličan by ti rozuměl ✅';
+    else if(micPct>=55) label='Celkem srozumitelné, ale pracuj na výslovnosti ⚠️';
+    else label='Angličan by měl problém porozumět ❌';
+    const avg = micTotal>0 ? Math.round(micScoreSum/micTotal) : micPct;
+    const rows=[
+      {range:'90–100%', desc:'Angličan rozumí bez problémů', min:90},
+      {range:'75–89%',  desc:'Rozumí, možná se zeptá jednou znovu', min:75},
+      {range:'55–74%',  desc:'Pochopí, ale musí se snažit', min:55},
+      {range:'0–54%',   desc:'Požádá tě o zopakování', min:0}
+    ];
+    let tableRows='';
+    rows.forEach(function(r){
+      let isActive=false;
+      if(micPct>=90) isActive=(r.min===90);
+      else if(micPct>=75) isActive=(r.min===75);
+      else if(micPct>=55) isActive=(r.min===55);
+      else isActive=(r.min===0);
+      tableRows+='<tr'+(isActive?' class="active-row"':'')+'><td>'+r.range+'</td><td>'+r.desc+'</td></tr>';
+    });
+    micLine='<div class="mic-score">🎙 Srozumitelnost: <b>'+micPct+'%</b> — '+label+'<br>'
+            +'<span style="font-size:.72rem;opacity:.7">Průměr relace: '+avg+'%</span>'
+            +'<div class="mic-legend"><table>'+tableRows+'</table></div>'
+            +'</div>';
+  }
+  if(ok){
+    fb.className='feedback ok show';
+    fb.innerHTML='✅ Správně!<div class="heard">Slyšeno: '+escHtml(heard)+'</div>'+micLine;
+  } else {
+    fb.className='feedback bad show';
+    let s='❌ Zkus jinak.';
+    if(suggestion) s+=' Zkus: <b>'+escHtml(suggestion)+'</b>';
+    s+='<div class="heard">Slyšeno/vybráno: '+escHtml(heard)+'</div>'+micLine;
+    fb.innerHTML=s;
+  }
+}
+
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ===== NEXT ===== */
+function nextQ(){
+  if(recRunning) stopMic();
+  window.speechSynthesis.cancel();
+  showQ();
+}
+
+/* ===== SCORE & PROGRESS ===== */
+function updateScore(){
+  document.getElementById('scoreNum').textContent=score;
+}
+function updateProg(){
+  const pct=Math.round((idx/queue.length)*100);
+  document.getElementById('progBar').style.width=pct+'%';
+  document.getElementById('progLbl').textContent=idx+' / '+queue.length;
+}
+
+/* ===== FINISH ===== */
+function showFinish(){
+  document.getElementById('mainCard').style.display='none';
+  document.getElementById('btnPlay').style.display='none';
+  document.getElementById('optArea').style.display='none';
+  document.getElementById('btnMic').style.display='none';
+  document.getElementById('feedback').classList.remove('show');
+  document.getElementById('btnNext').classList.remove('show');
+  document.getElementById('status').textContent='';
+  const pct=Math.round((score/queue.length)*100);
+  let msg=pct>=80?'Výborně! 🎉':pct>=50?'Dobrá práce, pokračuj! 💪':'Nevzdávej to, zkus znovu! 🔁';
+  document.getElementById('finalScore').textContent=score+'/'+queue.length+' ('+pct+'%)';
+  document.getElementById('finalMsg').textContent=msg;
+  document.getElementById('finish').classList.add('show');
+  // save to localStorage
+  try {
+    var lkey='su_l'+currentLevel+'_best';
+    const best=parseInt(localStorage.getItem(lkey)||'0');
+    if(score>best) localStorage.setItem(lkey,score);
+    localStorage.setItem('su_l'+currentLevel+'_last',score);
+  } catch(e){}
+}
+
+/* ===== RESTART ===== */
+function restart(){
+  document.getElementById('finish').classList.remove('show');
+  init();
+}
+
+/* ===== MODE ===== */
+function setMode(m){
+  mode=m;
+  document.getElementById('modeOpt').classList.toggle('active',m==='opt');
+  document.getElementById('modeMic').classList.toggle('active',m==='mic');
+  document.getElementById('modeBoth').classList.toggle('active',m==='both');
+  showQ();
+}
+
+/* ===== START ===== */
+// TTS voice preference: en-GB → en-US
+if('speechSynthesis' in window){
+  window.speechSynthesis.onvoiceschanged=function(){
+    const vs=window.speechSynthesis.getVoices();
+    const gb=vs.find(function(v){ return v.lang==='en-GB'; });
+    const us=vs.find(function(v){ return v.lang==='en-US'; });
+    const any=vs.find(function(v){ return v.lang.startsWith('en'); });
+    if(gb) ttsLang='en-GB';
+    else if(us) ttsLang='en-US';
+    else if(any) ttsLang=any.lang;
+  };
+}
+
+init();
+
+/* ===== TAB SWITCHER ===== */
+function switchTab(tab){
+  document.getElementById('tabConv').classList.toggle('active', tab==='conv');
+  document.getElementById('tabVoc').classList.toggle('active', tab==='voc');
+  document.getElementById('sectionConv').classList.toggle('show', tab==='conv');
+  document.getElementById('sectionVoc').classList.toggle('show', tab==='voc');
+  if(tab==='voc') vocInit();
+}
+
+/* ===== SLOVÍČKA DATA ===== */
+const VOC = [
+  // Základní výrazy
+  {w:'hello',cz:'ahoj',ph:'/həˈloʊ/',cat:'Základy'},
+  {w:'goodbye',cz:'nashledanou',ph:'/ˌɡʊdˈbaɪ/',cat:'Základy'},
+  {w:'please',cz:'prosím',ph:'/pliːz/',cat:'Základy'},
+  {w:'thank you',cz:'děkuji',ph:'/ˈθæŋk juː/',cat:'Základy'},
+  {w:'sorry',cz:'promiňte',ph:'/ˈsɒri/',cat:'Základy'},
+  {w:'yes',cz:'ano',ph:'/jɛs/',cat:'Základy'},
+  {w:'no',cz:'ne',ph:'/noʊ/',cat:'Základy'},
+  {w:'maybe',cz:'možná',ph:'/ˈmeɪbi/',cat:'Základy'},
+  {w:'understand',cz:'rozumět',ph:'/ˌʌndəˈstænd/',cat:'Základy'},
+  {w:'repeat',cz:'zopakovat',ph:'/rɪˈpiːt/',cat:'Základy'},
+  {w:'slowly',cz:'pomalu',ph:'/ˈsloʊli/',cat:'Základy'},
+  {w:'clearly',cz:'jasně',ph:'/ˈklɪrli/',cat:'Základy'},
+  {w:'excuse me',cz:'promiňte / s dovolením',ph:'/ɪkˈskjuːz miː/',cat:'Základy'},
+  {w:'of course',cz:'samozřejmě',ph:'/əv kɔːrs/',cat:'Základy'},
+  {w:'no problem',cz:'žádný problém',ph:'/noʊ ˈprɒbləm/',cat:'Základy'},
+  // Čísla
+  {w:'one',cz:'jedna',ph:'/wʌn/',cat:'Čísla'},
+  {w:'two',cz:'dvě',ph:'/tuː/',cat:'Čísla'},
+  {w:'three',cz:'tři',ph:'/θriː/',cat:'Čísla'},
+  {w:'four',cz:'čtyři',ph:'/fɔːr/',cat:'Čísla'},
+  {w:'five',cz:'pět',ph:'/faɪv/',cat:'Čísla'},
+  {w:'ten',cz:'deset',ph:'/tɛn/',cat:'Čísla'},
+  {w:'hundred',cz:'sto',ph:'/ˈhʌndrəd/',cat:'Čísla'},
+  {w:'thousand',cz:'tisíc',ph:'/ˈθaʊzənd/',cat:'Čísla'},
+  {w:'million',cz:'milion',ph:'/ˈmɪljən/',cat:'Čísla'},
+  // Čas
+  {w:'today',cz:'dnes',ph:'/təˈdeɪ/',cat:'Čas'},
+  {w:'tomorrow',cz:'zítra',ph:'/təˈmɒroʊ/',cat:'Čas'},
+  {w:'yesterday',cz:'včera',ph:'/ˈjɛstədeɪ/',cat:'Čas'},
+  {w:'morning',cz:'ráno',ph:'/ˈmɔːrnɪŋ/',cat:'Čas'},
+  {w:'afternoon',cz:'odpoledne',ph:'/ˌæftəˈnuːn/',cat:'Čas'},
+  {w:'evening',cz:'večer',ph:'/ˈiːvnɪŋ/',cat:'Čas'},
+  {w:'night',cz:'noc',ph:'/naɪt/',cat:'Čas'},
+  {w:'week',cz:'týden',ph:'/wiːk/',cat:'Čas'},
+  {w:'month',cz:'měsíc',ph:'/mʌnθ/',cat:'Čas'},
+  {w:'year',cz:'rok',ph:'/jɪr/',cat:'Čas'},
+  {w:'always',cz:'vždy',ph:'/ˈɔːlweɪz/',cat:'Čas'},
+  {w:'never',cz:'nikdy',ph:'/ˈnɛvər/',cat:'Čas'},
+  {w:'sometimes',cz:'někdy',ph:'/ˈsʌmtaɪmz/',cat:'Čas'},
+  // Audio & DJ
+  {w:'mixer',cz:'mixér',ph:'/ˈmɪksər/',cat:'DJ & Audio'},
+  {w:'turntable',cz:'gramofon',ph:'/ˈtɜːrntteɪbəl/',cat:'DJ & Audio'},
+  {w:'headphones',cz:'sluchátka',ph:'/ˈhɛdfoʊnz/',cat:'DJ & Audio'},
+  {w:'microphone',cz:'mikrofon',ph:'/ˈmaɪkrəfoʊn/',cat:'DJ & Audio'},
+  {w:'speaker',cz:'reproduktor',ph:'/ˈspiːkər/',cat:'DJ & Audio'},
+  {w:'subwoofer',cz:'subwoofer',ph:'/ˈsʌbwʊfər/',cat:'DJ & Audio'},
+  {w:'frequency',cz:'frekvence',ph:'/ˈfriːkwənsi/',cat:'DJ & Audio'},
+  {w:'equalizer',cz:'ekvalizér',ph:'/ˈiːkwəlaɪzər/',cat:'DJ & Audio'},
+  {w:'compressor',cz:'kompresor',ph:'/kəmˈprɛsər/',cat:'DJ & Audio'},
+  {w:'latency',cz:'latence',ph:'/ˈleɪtənsi/',cat:'DJ & Audio'},
+  {w:'sample rate',cz:'vzorkovací frekvence',ph:'/ˈsæmpəl reɪt/',cat:'DJ & Audio'},
+  {w:'beat',cz:'takt / rytmus',ph:'/biːt/',cat:'DJ & Audio'},
+  {w:'tempo',cz:'tempo',ph:'/ˈtɛmpoʊ/',cat:'DJ & Audio'},
+  {w:'loop',cz:'smyčka',ph:'/luːp/',cat:'DJ & Audio'},
+  {w:'crossfader',cz:'crossfader',ph:'/ˈkrɒsfɛɪdər/',cat:'DJ & Audio'},
+  {w:'vinyl',cz:'vinyl',ph:'/ˈvaɪnəl/',cat:'DJ & Audio'},
+  {w:'waveform',cz:'průběh vlny',ph:'/ˈweɪvfɔːrm/',cat:'DJ & Audio'},
+  {w:'gain',cz:'zisk / zesílení',ph:'/ɡeɪn/',cat:'DJ & Audio'},
+  {w:'channel',cz:'kanál',ph:'/ˈtʃænəl/',cat:'DJ & Audio'},
+  {w:'output',cz:'výstup',ph:'/ˈaʊtpʊt/',cat:'DJ & Audio'},
+  {w:'input',cz:'vstup',ph:'/ˈɪnpʊt/',cat:'DJ & Audio'},
+  {w:'balanced',cz:'symetrický',ph:'/ˈbælənst/',cat:'DJ & Audio'},
+  {w:'clipping',cz:'přebuzení',ph:'/ˈklɪpɪŋ/',cat:'DJ & Audio'},
+  {w:'reverb',cz:'dozvuk',ph:'/ˈriːvɜːrb/',cat:'DJ & Audio'},
+  {w:'delay',cz:'opoždění / echo',ph:'/dɪˈleɪ/',cat:'DJ & Audio'},
+  // Technologie
+  {w:'server',cz:'server',ph:'/ˈsɜːrvər/',cat:'Technologie'},
+  {w:'network',cz:'síť',ph:'/ˈnɛtwɜːrk/',cat:'Technologie'},
+  {w:'database',cz:'databáze',ph:'/ˈdeɪtəbeɪs/',cat:'Technologie'},
+  {w:'password',cz:'heslo',ph:'/ˈpæswɜːrd/',cat:'Technologie'},
+  {w:'download',cz:'stahování',ph:'/ˈdaʊnloʊd/',cat:'Technologie'},
+  {w:'upload',cz:'nahrávání',ph:'/ˈʌploʊd/',cat:'Technologie'},
+  {w:'script',cz:'skript',ph:'/skrɪpt/',cat:'Technologie'},
+  {w:'command',cz:'příkaz',ph:'/kəˈmænd/',cat:'Technologie'},
+  {w:'terminal',cz:'terminál',ph:'/ˈtɜːrmɪnəl/',cat:'Technologie'},
+  {w:'wireless',cz:'bezdrátový',ph:'/ˈwaɪərləs/',cat:'Technologie'},
+  {w:'connection',cz:'připojení',ph:'/kəˈnɛkʃən/',cat:'Technologie'},
+  {w:'router',cz:'router',ph:'/ˈruːtər/',cat:'Technologie'},
+  {w:'firmware',cz:'firmware',ph:'/ˈfɜːrmwɛr/',cat:'Technologie'},
+  {w:'update',cz:'aktualizace',ph:'/ˈʌpdeɪt/',cat:'Technologie'},
+  {w:'restart',cz:'restart',ph:'/ˌriːˈstɑːrt/',cat:'Technologie'},
+  {w:'storage',cz:'úložiště',ph:'/ˈstɔːrɪdʒ/',cat:'Technologie'},
+  {w:'memory',cz:'paměť',ph:'/ˈmɛməri/',cat:'Technologie'},
+  {w:'processor',cz:'procesor',ph:'/ˈprɒsɛsər/',cat:'Technologie'},
+  {w:'interface',cz:'rozhraní',ph:'/ˈɪntərfeɪs/',cat:'Technologie'},
+  {w:'library',cz:'knihovna',ph:'/ˈlaɪbrɛri/',cat:'Technologie'},
+  // ZX Spectrum Next
+  {w:'assembly',cz:'assembler',ph:'/əˈsɛmbli/',cat:'ZX Next'},
+  {w:'register',cz:'registr',ph:'/ˈrɛdʒɪstər/',cat:'ZX Next'},
+  {w:'sprite',cz:'sprite',ph:'/spraɪt/',cat:'ZX Next'},
+  {w:'pixel',cz:'pixel',ph:'/ˈpɪksəl/',cat:'ZX Next'},
+  {w:'layer',cz:'vrstva',ph:'/ˈleɪər/',cat:'ZX Next'},
+  {w:'palette',cz:'paleta barev',ph:'/ˈpælɪt/',cat:'ZX Next'},
+  {w:'interrupt',cz:'přerušení',ph:'/ˌɪntəˈrʌpt/',cat:'ZX Next'},
+  {w:'emulator',cz:'emulátor',ph:'/ˈɛmjʊleɪtər/',cat:'ZX Next'},
+  {w:'cartridge',cz:'kazeta / cartridge',ph:'/ˈkɑːtrɪdʒ/',cat:'ZX Next'},
+  {w:'keyboard',cz:'klávesnice',ph:'/ˈkiːbɔːrd/',cat:'ZX Next'},
+  // Konverzace
+  {w:'question',cz:'otázka',ph:'/ˈkwɛstʃən/',cat:'Konverzace'},
+  {w:'answer',cz:'odpověď',ph:'/ˈɑːnsər/',cat:'Konverzace'},
+  {w:'sentence',cz:'věta',ph:'/ˈsɛntəns/',cat:'Konverzace'},
+  {w:'pronunciation',cz:'výslovnost',ph:'/prəˌnʌnsiˈeɪʃən/',cat:'Konverzace'},
+  {w:'vocabulary',cz:'slovní zásoba',ph:'/vəˈkæbjʊlɛri/',cat:'Konverzace'},
+  {w:'fluent',cz:'plynný',ph:'/ˈfluːənt/',cat:'Konverzace'},
+  {w:'accent',cz:'přízvuk',ph:'/ˈæksənt/',cat:'Konverzace'},
+  {w:'phrase',cz:'fráze',ph:'/freɪz/',cat:'Konverzace'},
+  {w:'conversation',cz:'konverzace',ph:'/ˌkɒnvəˈseɪʃən/',cat:'Konverzace'},
+  {w:'greeting',cz:'pozdrav',ph:'/ˈɡriːtɪŋ/',cat:'Konverzace'},
+
+  // Základy - rozšíření
+  {w:'help',cz:'pomoc / pomoci',ph:'/hɛlp/',cat:'Základy'},
+  {w:'problem',cz:'problém',ph:'/ˈprɒbləm/',cat:'Základy'},
+  {w:'important',cz:'důležitý',ph:'/ɪmˈpɔːrtənt/',cat:'Základy'},
+  {w:'easy',cz:'snadný',ph:'/ˈiːzi/',cat:'Základy'},
+  {w:'difficult',cz:'obtížný',ph:'/ˈdɪfɪkəlt/',cat:'Základy'},
+  {w:'different',cz:'různý / odlišný',ph:'/ˈdɪfrənt/',cat:'Základy'},
+  {w:'same',cz:'stejný',ph:'/seɪm/',cat:'Základy'},
+  {w:'ready',cz:'připravený',ph:'/ˈrɛdi/',cat:'Základy'},
+  {w:'finished',cz:'hotový / dokončený',ph:'/ˈfɪnɪʃt/',cat:'Základy'},
+  {w:'broken',cz:'rozbitý',ph:'/ˈbroʊkən/',cat:'Základy'},
+  {w:'working',cz:'funkční / pracující',ph:'/ˈwɜːrkɪŋ/',cat:'Základy'},
+  {w:'correct',cz:'správný',ph:'/kəˈrɛkt/',cat:'Základy'},
+  {w:'wrong',cz:'špatný / chybný',ph:'/rɒŋ/',cat:'Základy'},
+  {w:'good',cz:'dobrý',ph:'/ɡʊd/',cat:'Základy'},
+  {w:'bad',cz:'špatný',ph:'/bæd/',cat:'Základy'},
+  {w:'great',cz:'skvělý',ph:'/ɡreɪt/',cat:'Základy'},
+  {w:'small',cz:'malý',ph:'/smɔːl/',cat:'Základy'},
+  {w:'large',cz:'velký',ph:'/lɑːrdʒ/',cat:'Základy'},
+  {w:'fast',cz:'rychlý',ph:'/fæst/',cat:'Základy'},
+  {w:'slow',cz:'pomalý',ph:'/sloʊ/',cat:'Základy'},
+  {w:'loud',cz:'hlasitý',ph:'/laʊd/',cat:'Základy'},
+  {w:'quiet',cz:'tichý',ph:'/ˈkwaɪət/',cat:'Základy'},
+  {w:'new',cz:'nový',ph:'/njuː/',cat:'Základy'},
+  {w:'old',cz:'starý',ph:'/oʊld/',cat:'Základy'},
+  {w:'free',cz:'volný / zdarma',ph:'/friː/',cat:'Základy'},
+
+  // Čas - rozšíření
+  {w:'now',cz:'teď',ph:'/naʊ/',cat:'Čas'},
+  {w:'soon',cz:'brzy',ph:'/suːn/',cat:'Čas'},
+  {w:'later',cz:'později',ph:'/ˈleɪtər/',cat:'Čas'},
+  {w:'early',cz:'brzy / časně',ph:'/ˈɜːrli/',cat:'Čas'},
+  {w:'late',cz:'pozdě',ph:'/leɪt/',cat:'Čas'},
+  {w:'before',cz:'před',ph:'/bɪˈfɔːr/',cat:'Čas'},
+  {w:'after',cz:'po / potom',ph:'/ˈæftər/',cat:'Čas'},
+  {w:'during',cz:'během',ph:'/ˈdjʊərɪŋ/',cat:'Čas'},
+  {w:'since',cz:'od té doby / od',ph:'/sɪns/',cat:'Čas'},
+  {w:'until',cz:'dokud / až do',ph:'/ənˈtɪl/',cat:'Čas'},
+  {w:'daily',cz:'denní / každý den',ph:'/ˈdeɪli/',cat:'Čas'},
+  {w:'weekly',cz:'týdenní',ph:'/ˈwiːkli/',cat:'Čas'},
+  {w:'midnight',cz:'půlnoc',ph:'/ˈmɪdnaɪt/',cat:'Čas'},
+  {w:'noon',cz:'poledne',ph:'/nuːn/',cat:'Čas'},
+  {w:'second',cz:'sekunda',ph:'/ˈsɛkənd/',cat:'Čas'},
+  {w:'minute',cz:'minuta',ph:'/ˈmɪnɪt/',cat:'Čas'},
+  {w:'hour',cz:'hodina',ph:'/ˈaʊər/',cat:'Čas'},
+
+  // DJ & Audio - rozšíření
+  {w:'preamp',cz:'předzesilovač',ph:'/ˈpriːæmp/',cat:'DJ & Audio'},
+  {w:'amplitude',cz:'amplituda',ph:'/ˈæmplɪtjuːd/',cat:'DJ & Audio'},
+  {w:'pitch',cz:'výška tónu',ph:'/pɪtʃ/',cat:'DJ & Audio'},
+  {w:'sync',cz:'synchronizace',ph:'/sɪŋk/',cat:'DJ & Audio'},
+  {w:'cue',cz:'cue bod / příposlech',ph:'/kjuː/',cat:'DJ & Audio'},
+  {w:'monitor',cz:'monitor / aktivní reproduktor',ph:'/ˈmɒnɪtər/',cat:'DJ & Audio'},
+  {w:'noise',cz:'šum',ph:'/nɔɪz/',cat:'DJ & Audio'},
+  {w:'signal',cz:'signál',ph:'/ˈsɪɡnəl/',cat:'DJ & Audio'},
+  {w:'stereo',cz:'stereo',ph:'/ˈstɛrioʊ/',cat:'DJ & Audio'},
+  {w:'mono',cz:'mono',ph:'/ˈmɒnoʊ/',cat:'DJ & Audio'},
+  {w:'track',cz:'skladba / stopa',ph:'/træk/',cat:'DJ & Audio'},
+  {w:'playlist',cz:'playlist',ph:'/ˈpleɪlɪst/',cat:'DJ & Audio'},
+  {w:'record',cz:'nahrávka / deska',ph:'/ˈrɛkərd/',cat:'DJ & Audio'},
+  {w:'mix',cz:'mix / mixovat',ph:'/mɪks/',cat:'DJ & Audio'},
+  {w:'fade',cz:'přechod / přechodový efekt',ph:'/feɪd/',cat:'DJ & Audio'},
+  {w:'volume',cz:'hlasitost',ph:'/ˈvɒljuːm/',cat:'DJ & Audio'},
+  {w:'bass',cz:'bas',ph:'/beɪs/',cat:'DJ & Audio'},
+  {w:'treble',cz:'výšky',ph:'/ˈtrɛbəl/',cat:'DJ & Audio'},
+  {w:'mid',cz:'středy',ph:'/mɪd/',cat:'DJ & Audio'},
+  {w:'effect',cz:'efekt',ph:'/ɪˈfɛkt/',cat:'DJ & Audio'},
+  {w:'filter',cz:'filtr',ph:'/ˈfɪltər/',cat:'DJ & Audio'},
+  {w:'distortion',cz:'zkreslení',ph:'/dɪˈstɔːrʃən/',cat:'DJ & Audio'},
+  {w:'headroom',cz:'rezerva signálu',ph:'/ˈhɛdruːm/',cat:'DJ & Audio'},
+  {w:'mastering',cz:'mastering',ph:'/ˈmæstərɪŋ/',cat:'DJ & Audio'},
+  {w:'phantom power',cz:'fantomové napájení',ph:'/ˈfæntəm ˈpaʊər/',cat:'DJ & Audio'},
+  {w:'impedance',cz:'impedance',ph:'/ɪmˈpiːdəns/',cat:'DJ & Audio'},
+  {w:'sleeve',cz:'obal desky',ph:'/sliːv/',cat:'DJ & Audio'},
+
+  // Technologie - rozšíření
+  {w:'firewall',cz:'firewall',ph:'/ˈfaɪərwɔːl/',cat:'Technologie'},
+  {w:'backup',cz:'záloha',ph:'/ˈbækʌp/',cat:'Technologie'},
+  {w:'cache',cz:'cache / mezipaměť',ph:'/kæʃ/',cat:'Technologie'},
+  {w:'debug',cz:'ladit / hledat chyby',ph:'/ˌdiːˈbʌɡ/',cat:'Technologie'},
+  {w:'deploy',cz:'nasadit / spustit',ph:'/dɪˈplɔɪ/',cat:'Technologie'},
+  {w:'token',cz:'token / žeton',ph:'/ˈtoʊkən/',cat:'Technologie'},
+  {w:'socket',cz:'socket / zásuvka',ph:'/ˈsɒkɪt/',cat:'Technologie'},
+  {w:'thread',cz:'vlákno (programování)',ph:'/θrɛd/',cat:'Technologie'},
+  {w:'function',cz:'funkce',ph:'/ˈfʌŋkʃən/',cat:'Technologie'},
+  {w:'variable',cz:'proměnná',ph:'/ˈvɛəriəbəl/',cat:'Technologie'},
+  {w:'loop',cz:'smyčka (kód)',ph:'/luːp/',cat:'Technologie'},
+  {w:'array',cz:'pole (datová struktura)',ph:'/əˈreɪ/',cat:'Technologie'},
+  {w:'string',cz:'řetězec (text)',ph:'/strɪŋ/',cat:'Technologie'},
+  {w:'integer',cz:'celé číslo',ph:'/ˈɪntɪdʒər/',cat:'Technologie'},
+  {w:'boolean',cz:'logická hodnota',ph:'/ˈbuːliən/',cat:'Technologie'},
+  {w:'callback',cz:'callback / zpětné volání',ph:'/ˈkɔːlbæk/',cat:'Technologie'},
+  {w:'promise',cz:'příslib (async)',ph:'/ˈprɒmɪs/',cat:'Technologie'},
+  {w:'branch',cz:'větev (Git)',ph:'/brɑːntʃ/',cat:'Technologie'},
+  {w:'commit',cz:'commit (Git)',ph:'/kəˈmɪt/',cat:'Technologie'},
+  {w:'merge',cz:'sloučit (Git)',ph:'/mɜːrdʒ/',cat:'Technologie'},
+  {w:'repository',cz:'repozitář',ph:'/rɪˈpɒzɪtri/',cat:'Technologie'},
+  {w:'permission',cz:'oprávnění',ph:'/pərˈmɪʃən/',cat:'Technologie'},
+  {w:'process',cz:'proces',ph:'/ˈprɒsɛs/',cat:'Technologie'},
+  {w:'service',cz:'služba / servis',ph:'/ˈsɜːrvɪs/',cat:'Technologie'},
+  {w:'endpoint',cz:'koncový bod (API)',ph:'/ˈɛndpɔɪnt/',cat:'Technologie'},
+  {w:'request',cz:'požadavek',ph:'/rɪˈkwɛst/',cat:'Technologie'},
+  {w:'response',cz:'odpověď (API)',ph:'/rɪˈspɒns/',cat:'Technologie'},
+  {w:'timeout',cz:'vypršení limitu',ph:'/ˈtaɪmaʊt/',cat:'Technologie'},
+  {w:'bandwidth',cz:'šířka pásma',ph:'/ˈbændwɪdθ/',cat:'Technologie'},
+  {w:'encryption',cz:'šifrování',ph:'/ɪnˈkrɪpʃən/',cat:'Technologie'},
+
+  // ZX Next - rozšíření
+  {w:'tilemap',cz:'mapa dlaždic',ph:'/ˈtaɪlmæp/',cat:'ZX Next'},
+  {w:'copper',cz:'copper efekt (HW)',ph:'/ˈkɒpər/',cat:'ZX Next'},
+  {w:'DMA',cz:'přímý přístup do paměti',ph:'/ˌdiː ɛm ˈeɪ/',cat:'ZX Next'},
+  {w:'BASIC',cz:'programovací jazyk BASIC',ph:'/ˈbeɪsɪk/',cat:'ZX Next'},
+  {w:'machine code',cz:'strojový kód',ph:'/məˈʃiːn koʊd/',cat:'ZX Next'},
+  {w:'ROM',cz:'ROM paměť',ph:'/rɒm/',cat:'ZX Next'},
+  {w:'RAM',cz:'RAM paměť',ph:'/ræm/',cat:'ZX Next'},
+  {w:'paging',cz:'stránkování paměti',ph:'/ˈpeɪdʒɪŋ/',cat:'ZX Next'},
+  {w:'port',cz:'port (HW)',ph:'/pɔːrt/',cat:'ZX Next'},
+  {w:'border',cz:'rámeček (Spectrum)',ph:'/ˈbɔːrdər/',cat:'ZX Next'},
+  {w:'attribute',cz:'atribut (barva buňky)',ph:'/ˈætrɪbjuːt/',cat:'ZX Next'},
+  {w:'beeper',cz:'bzučák (Spectrum zvuk)',ph:'/ˈbiːpər/',cat:'ZX Next'},
+  {w:'AY chip',cz:'zvukový čip AY',ph:'/ˌeɪ ˈwaɪ tʃɪp/',cat:'ZX Next'},
+  {w:'Next BASIC',cz:'rozšířený BASIC pro Next',ph:'/nɛkst ˈbeɪsɪk/',cat:'ZX Next'},
+  {w:'SD card',cz:'SD karta',ph:'/ˌɛs ˈdiː kɑːrd/',cat:'ZX Next'},
+  {w:'WiFi module',cz:'WiFi modul',ph:'/ˈwaɪfaɪ ˈmɒdjuːl/',cat:'ZX Next'},
+
+  // Konverzace - rozšíření
+  {w:'introduction',cz:'představení',ph:'/ˌɪntrəˈdʌkʃən/',cat:'Konverzace'},
+  {w:'opinion',cz:'názor',ph:'/əˈpɪnjən/',cat:'Konverzace'},
+  {w:'suggestion',cz:'návrh',ph:'/səˈdʒɛstʃən/',cat:'Konverzace'},
+  {w:'confirmation',cz:'potvrzení',ph:'/ˌkɒnfəˈmeɪʃən/',cat:'Konverzace'},
+  {w:'misunderstanding',cz:'nedorozumění',ph:'/ˌmɪsʌndəˈstændɪŋ/',cat:'Konverzace'},
+  {w:'clarification',cz:'vyjasnění',ph:'/ˌklærɪfɪˈkeɪʃən/',cat:'Konverzace'},
+  {w:'example',cz:'příklad',ph:'/ɪɡˈzɑːmpəl/',cat:'Konverzace'},
+  {w:'definition',cz:'definice',ph:'/ˌdɛfɪˈnɪʃən/',cat:'Konverzace'},
+  {w:'native speaker',cz:'rodilý mluvčí',ph:'/ˈneɪtɪv ˈspiːkər/',cat:'Konverzace'},
+  {w:'translate',cz:'přeložit',ph:'/trænsˈleɪt/',cat:'Konverzace'},
+  {w:'practice',cz:'procvičovat',ph:'/ˈpræktɪs/',cat:'Konverzace'},
+  {w:'improve',cz:'zlepšit',ph:'/ɪmˈpruːv/',cat:'Konverzace'},
+  {w:'mistake',cz:'chyba',ph:'/mɪˈsteɪk/',cat:'Konverzace'},
+  {w:'correct',cz:'opravit / správný',ph:'/kəˈrɛkt/',cat:'Konverzace'},
+  {w:'polite',cz:'zdvořilý',ph:'/pəˈlaɪt/',cat:'Konverzace'},
+  {w:'formal',cz:'formální',ph:'/ˈfɔːrməl/',cat:'Konverzace'},
+  {w:'informal',cz:'neformální',ph:'/ɪnˈfɔːrməl/',cat:'Konverzace'},
+
+  // Nová kategorie: Hudební žánry
+  {w:'house',cz:'house music',ph:'/haʊs/',cat:'Žánry'},
+  {w:'techno',cz:'techno',ph:'/ˈtɛknoʊ/',cat:'Žánry'},
+  {w:'trance',cz:'trance',ph:'/træns/',cat:'Žánry'},
+  {w:'drum and bass',cz:'drum and bass',ph:'/drʌm ænd beɪs/',cat:'Žánry'},
+  {w:'ambient',cz:'ambientní hudba',ph:'/ˈæmbiənt/',cat:'Žánry'},
+  {w:'electronic',cz:'elektronická hudba',ph:'/ɪˌlɛkˈtrɒnɪk/',cat:'Žánry'},
+  {w:'jazz',cz:'jazz',ph:'/dʒæz/',cat:'Žánry'},
+  {w:'classical',cz:'klasická hudba',ph:'/ˈklæsɪkəl/',cat:'Žánry'},
+  {w:'hip hop',cz:'hip hop',ph:'/hɪp hɒp/',cat:'Žánry'},
+  {w:'soul',cz:'soul',ph:'/soʊl/',cat:'Žánry'},
+  {w:'funk',cz:'funk',ph:'/fʌŋk/',cat:'Žánry'},
+  {w:'pop',cz:'pop',ph:'/pɒp/',cat:'Žánry'},
+  {w:'rock',cz:'rock',ph:'/rɒk/',cat:'Žánry'},
+  {w:'disco',cz:'disco',ph:'/ˈdɪskoʊ/',cat:'Žánry'},
+  {w:'garage',cz:'UK garage',ph:'/ˈɡærɪdʒ/',cat:'Žánry'},
+  {w:'minimal',cz:'minimal techno',ph:'/ˈmɪnɪməl/',cat:'Žánry'},
+  {w:'progressive',cz:'progressive house',ph:'/prəˈɡrɛsɪv/',cat:'Žánry'},
+  {w:'deep house',cz:'deep house',ph:'/diːp haʊs/',cat:'Žánry'},
+
+  // Nová kategorie: Každodenní život
+  {w:'breakfast',cz:'snídaně',ph:'/ˈbrɛkfəst/',cat:'Život'},
+  {w:'lunch',cz:'oběd',ph:'/lʌntʃ/',cat:'Život'},
+  {w:'dinner',cz:'večeře',ph:'/ˈdɪnər/',cat:'Život'},
+  {w:'coffee',cz:'káva',ph:'/ˈkɒfi/',cat:'Život'},
+  {w:'water',cz:'voda',ph:'/ˈwɔːtər/',cat:'Život'},
+  {w:'sleep',cz:'spánek / spát',ph:'/sliːp/',cat:'Život'},
+  {w:'work',cz:'práce / pracovat',ph:'/wɜːrk/',cat:'Život'},
+  {w:'home',cz:'domov',ph:'/hoʊm/',cat:'Život'},
+  {w:'shop',cz:'obchod / nakupovat',ph:'/ʃɒp/',cat:'Život'},
+  {w:'phone',cz:'telefon',ph:'/foʊn/',cat:'Život'},
+  {w:'computer',cz:'počítač',ph:'/kəmˈpjuːtər/',cat:'Život'},
+  {w:'internet',cz:'internet',ph:'/ˈɪntərnɛt/',cat:'Život'},
+  {w:'car',cz:'auto',ph:'/kɑːr/',cat:'Život'},
+  {w:'money',cz:'peníze',ph:'/ˈmʌni/',cat:'Život'},
+  {w:'price',cz:'cena',ph:'/praɪs/',cat:'Život'},
+  {w:'health',cz:'zdraví',ph:'/hɛlθ/',cat:'Život'},
+  {w:'weather',cz:'počasí',ph:'/ˈwɛðər/',cat:'Život'},
+  {w:'hobby',cz:'koníček',ph:'/ˈhɒbi/',cat:'Život'},
+  {w:'friend',cz:'přítel',ph:'/frɛnd/',cat:'Život'},
+  {w:'family',cz:'rodina',ph:'/ˈfæməli/',cat:'Život'},
+  {w:'holiday',cz:'svátek / dovolená',ph:'/ˈhɒlɪdeɪ/',cat:'Život'},
+  {w:'birthday',cz:'narozeniny',ph:'/ˈbɜːrθdeɪ/',cat:'Život'},
+  {w:'neighbour',cz:'soused',ph:'/ˈneɪbər/',cat:'Život'},
+  {w:'apartment',cz:'byt',ph:'/əˈpɑːrtmənt/',cat:'Život'},
+  {w:'kitchen',cz:'kuchyň',ph:'/ˈkɪtʃɪn/',cat:'Život'},
+  {w:'bathroom',cz:'koupelna',ph:'/ˈbɑːθruːm/',cat:'Život'},
+  {w:'garden',cz:'zahrada',ph:'/ˈɡɑːrdən/',cat:'Život'},
+  // Čísla - rozšíření
+  {w:'zero',cz:'nula',ph:'/ˈzɪəroʊ/',cat:'Čísla'},
+  {w:'six',cz:'šest',ph:'/sɪks/',cat:'Čísla'},
+  {w:'seven',cz:'sedm',ph:'/ˈsɛvən/',cat:'Čísla'},
+  {w:'eight',cz:'osm',ph:'/eɪt/',cat:'Čísla'},
+  {w:'nine',cz:'devět',ph:'/naɪn/',cat:'Čísla'},
+  {w:'eleven',cz:'jedenáct',ph:'/ɪˈlɛvən/',cat:'Čísla'},
+  {w:'twelve',cz:'dvanáct',ph:'/twɛlv/',cat:'Čísla'},
+  {w:'twenty',cz:'dvacet',ph:'/ˈtwɛnti/',cat:'Čísla'},
+  {w:'fifty',cz:'padesát',ph:'/ˈfɪfti/',cat:'Čísla'},
+  {w:'first',cz:'první',ph:'/fɜːrst/',cat:'Čísla'},
+  {w:'second',cz:'druhý',ph:'/ˈsɛkənd/',cat:'Čísla'},
+  {w:'third',cz:'třetí',ph:'/θɜːrd/',cat:'Čísla'},
+  {w:'last',cz:'poslední',ph:'/læst/',cat:'Čísla'},
+  {w:'half',cz:'polovina',ph:'/hɑːf/',cat:'Čísla'},
+  {w:'quarter',cz:'čtvrtina',ph:'/ˈkwɔːrtər/',cat:'Čísla'},
+  {w:'double',cz:'dvojnásobek',ph:'/ˈdʌbəl/',cat:'Čísla'},
+  // Život - rozšíření
+  {w:'password',cz:'heslo',ph:'/ˈpæswɜːrd/',cat:'Život'},
+  {w:'meeting',cz:'schůzka',ph:'/ˈmiːtɪŋ/',cat:'Život'},
+  {w:'project',cz:'projekt',ph:'/ˈprɒdʒɛkt/',cat:'Život'},
+  {w:'schedule',cz:'rozvrh / plán',ph:'/ˈʃɛdjuːl/',cat:'Život'},
+  {w:'deadline',cz:'termín',ph:'/ˈdɛdlaɪn/',cat:'Život'},
+  {w:'solution',cz:'řešení',ph:'/səˈluːʃən/',cat:'Život'},
+  // ===== SLOVESA =====
+  {w:'listen',cz:'poslouchat',ph:'/ˈlɪsən/',cat:'Slovesa'},
+  {w:'speak',cz:'mluvit',ph:'/spiːk/',cat:'Slovesa'},
+  {w:'write',cz:'psát',ph:'/raɪt/',cat:'Slovesa'},
+  {w:'read',cz:'číst',ph:'/riːd/',cat:'Slovesa'},
+  {w:'learn',cz:'učit se',ph:'/lɜːrn/',cat:'Slovesa'},
+  {w:'teach',cz:'učit (někoho)',ph:'/tiːtʃ/',cat:'Slovesa'},
+  {w:'understand',cz:'rozumět',ph:'/ˌʌndəˈstænd/',cat:'Slovesa'},
+  {w:'explain',cz:'vysvětlit',ph:'/ɪkˈspleɪn/',cat:'Slovesa'},
+  {w:'ask',cz:'ptát se',ph:'/ɑːsk/',cat:'Slovesa'},
+  {w:'answer',cz:'odpovědět',ph:'/ˈɑːnsər/',cat:'Slovesa'},
+  {w:'think',cz:'myslet',ph:'/θɪŋk/',cat:'Slovesa'},
+  {w:'know',cz:'vědět / znát',ph:'/noʊ/',cat:'Slovesa'},
+  {w:'remember',cz:'pamatovat si',ph:'/rɪˈmɛmbər/',cat:'Slovesa'},
+  {w:'forget',cz:'zapomenout',ph:'/fəˈɡɛt/',cat:'Slovesa'},
+  {w:'find',cz:'najít',ph:'/faɪnd/',cat:'Slovesa'},
+  {w:'lose',cz:'ztratit',ph:'/luːz/',cat:'Slovesa'},
+  {w:'start',cz:'začít',ph:'/stɑːrt/',cat:'Slovesa'},
+  {w:'stop',cz:'zastavit',ph:'/stɒp/',cat:'Slovesa'},
+  {w:'finish',cz:'dokončit',ph:'/ˈfɪnɪʃ/',cat:'Slovesa'},
+  {w:'continue',cz:'pokračovat',ph:'/kənˈtɪnjuː/',cat:'Slovesa'},
+  {w:'try',cz:'zkusit',ph:'/traɪ/',cat:'Slovesa'},
+  {w:'need',cz:'potřebovat',ph:'/niːd/',cat:'Slovesa'},
+  {w:'want',cz:'chtít',ph:'/wɒnt/',cat:'Slovesa'},
+  {w:'like',cz:'mít rád',ph:'/laɪk/',cat:'Slovesa'},
+  {w:'love',cz:'milovat',ph:'/lʌv/',cat:'Slovesa'},
+  {w:'hate',cz:'nenávidět',ph:'/heɪt/',cat:'Slovesa'},
+  {w:'prefer',cz:'preferovat',ph:'/prɪˈfɜːr/',cat:'Slovesa'},
+  {w:'choose',cz:'vybrat',ph:'/tʃuːz/',cat:'Slovesa'},
+  {w:'build',cz:'stavět / budovat',ph:'/bɪld/',cat:'Slovesa'},
+  {w:'fix',cz:'opravit',ph:'/fɪks/',cat:'Slovesa'},
+  {w:'connect',cz:'připojit',ph:'/kəˈnɛkt/',cat:'Slovesa'},
+  {w:'install',cz:'nainstalovat',ph:'/ɪnˈstɔːl/',cat:'Slovesa'},
+  {w:'run',cz:'spustit / běžet',ph:'/rʌn/',cat:'Slovesa'},
+  {w:'save',cz:'uložit',ph:'/seɪv/',cat:'Slovesa'},
+  {w:'send',cz:'poslat',ph:'/sɛnd/',cat:'Slovesa'},
+  {w:'receive',cz:'přijmout',ph:'/rɪˈsiːv/',cat:'Slovesa'},
+  {w:'check',cz:'zkontrolovat',ph:'/tʃɛk/',cat:'Slovesa'},
+  {w:'change',cz:'změnit',ph:'/tʃeɪndʒ/',cat:'Slovesa'},
+  {w:'add',cz:'přidat',ph:'/æd/',cat:'Slovesa'},
+  {w:'remove',cz:'odstranit',ph:'/rɪˈmuːv/',cat:'Slovesa'},
+
+  // ===== PŘÍDAVNÁ JMÉNA =====
+  {w:'happy',cz:'šťastný',ph:'/ˈhæpi/',cat:'Přídavná jména'},
+  {w:'sad',cz:'smutný',ph:'/sæd/',cat:'Přídavná jména'},
+  {w:'tired',cz:'unavený',ph:'/ˈtaɪərd/',cat:'Přídavná jména'},
+  {w:'excited',cz:'nadšený',ph:'/ɪkˈsaɪtɪd/',cat:'Přídavná jména'},
+  {w:'nervous',cz:'nervózní',ph:'/ˈnɜːrvəs/',cat:'Přídavná jména'},
+  {w:'confident',cz:'sebejistý',ph:'/ˈkɒnfɪdənt/',cat:'Přídavná jména'},
+  {w:'patient',cz:'trpělivý',ph:'/ˈpeɪʃənt/',cat:'Přídavná jména'},
+  {w:'busy',cz:'zaneprázdněný',ph:'/ˈbɪzi/',cat:'Přídavná jména'},
+  {w:'creative',cz:'kreativní',ph:'/kriˈeɪtɪv/',cat:'Přídavná jména'},
+  {w:'professional',cz:'profesionální',ph:'/prəˈfɛʃənəl/',cat:'Přídavná jména'},
+  {w:'technical',cz:'technický',ph:'/ˈtɛknɪkəl/',cat:'Přídavná jména'},
+  {w:'digital',cz:'digitální',ph:'/ˈdɪdʒɪtəl/',cat:'Přídavná jména'},
+  {w:'analogue',cz:'analogový',ph:'/ˈænəlɒɡ/',cat:'Přídavná jména'},
+  {w:'automatic',cz:'automatický',ph:'/ˌɔːtəˈmætɪk/',cat:'Přídavná jména'},
+  {w:'manual',cz:'manuální / ruční',ph:'/ˈmænjuəl/',cat:'Přídavná jména'},
+  {w:'stable',cz:'stabilní',ph:'/ˈsteɪbəl/',cat:'Přídavná jména'},
+  {w:'reliable',cz:'spolehlivý',ph:'/rɪˈlaɪəbəl/',cat:'Přídavná jména'},
+  {w:'compatible',cz:'kompatibilní',ph:'/kəmˈpætɪbəl/',cat:'Přídavná jména'},
+  {w:'portable',cz:'přenosný',ph:'/ˈpɔːrtəbəl/',cat:'Přídavná jména'},
+  {w:'powerful',cz:'výkonný',ph:'/ˈpaʊərfəl/',cat:'Přídavná jména'},
+  {w:'efficient',cz:'efektivní',ph:'/ɪˈfɪʃənt/',cat:'Přídavná jména'},
+  {w:'precise',cz:'přesný',ph:'/prɪˈsaɪs/',cat:'Přídavná jména'},
+  {w:'sharp',cz:'ostrý / přesný',ph:'/ʃɑːrp/',cat:'Přídavná jména'},
+  {w:'warm',cz:'teplý',ph:'/wɔːrm/',cat:'Přídavná jména'},
+  {w:'cool',cz:'chladný / skvělý',ph:'/kuːl/',cat:'Přídavná jména'},
+
+  // ===== CESTOVÁNÍ =====
+  {w:'airport',cz:'letiště',ph:'/ˈɛrpɔːrt/',cat:'Cestování'},
+  {w:'passport',cz:'cestovní pas',ph:'/ˈpæspɔːrt/',cat:'Cestování'},
+  {w:'ticket',cz:'jízdenka / letenka',ph:'/ˈtɪkɪt/',cat:'Cestování'},
+  {w:'hotel',cz:'hotel',ph:'/hoʊˈtɛl/',cat:'Cestování'},
+  {w:'reservation',cz:'rezervace',ph:'/ˌrɛzərˈveɪʃən/',cat:'Cestování'},
+  {w:'departure',cz:'odlet / odjezd',ph:'/dɪˈpɑːrtʃər/',cat:'Cestování'},
+  {w:'arrival',cz:'přílet / příjezd',ph:'/əˈraɪvəl/',cat:'Cestování'},
+  {w:'luggage',cz:'zavazadla',ph:'/ˈlʌɡɪdʒ/',cat:'Cestování'},
+  {w:'border',cz:'hranice',ph:'/ˈbɔːrdər/',cat:'Cestování'},
+  {w:'currency',cz:'měna',ph:'/ˈkʌrənsi/',cat:'Cestování'},
+  {w:'exchange',cz:'výměna / směnárna',ph:'/ɪksˈtʃeɪndʒ/',cat:'Cestování'},
+  {w:'destination',cz:'cíl cesty',ph:'/ˌdɛstɪˈneɪʃən/',cat:'Cestování'},
+  {w:'journey',cz:'cesta / cestování',ph:'/ˈdʒɜːrni/',cat:'Cestování'},
+  {w:'map',cz:'mapa',ph:'/mæp/',cat:'Cestování'},
+  {w:'direction',cz:'směr / pokyn',ph:'/dɪˈrɛkʃən/',cat:'Cestování'},
+  {w:'straight',cz:'rovně',ph:'/streɪt/',cat:'Cestování'},
+  {w:'left',cz:'vlevo',ph:'/lɛft/',cat:'Cestování'},
+  {w:'right',cz:'vpravo',ph:'/raɪt/',cat:'Cestování'},
+  {w:'near',cz:'blízko',ph:'/nɪər/',cat:'Cestování'},
+  {w:'far',cz:'daleko',ph:'/fɑːr/',cat:'Cestování'},
+
+  // ===== JÍDLO =====
+  {w:'hungry',cz:'hladový',ph:'/ˈhʌŋɡri/',cat:'Jídlo'},
+  {w:'thirsty',cz:'žíznivý',ph:'/ˈθɜːrsti/',cat:'Jídlo'},
+  {w:'delicious',cz:'lahodný / výborný',ph:'/dɪˈlɪʃəs/',cat:'Jídlo'},
+  {w:'spicy',cz:'pikantní',ph:'/ˈspaɪsi/',cat:'Jídlo'},
+  {w:'sweet',cz:'sladký',ph:'/swiːt/',cat:'Jídlo'},
+  {w:'sour',cz:'kyselý',ph:'/ˈsaʊər/',cat:'Jídlo'},
+  {w:'bitter',cz:'hořký',ph:'/ˈbɪtər/',cat:'Jídlo'},
+  {w:'salty',cz:'slaný',ph:'/ˈsɔːlti/',cat:'Jídlo'},
+  {w:'meat',cz:'maso',ph:'/miːt/',cat:'Jídlo'},
+  {w:'bread',cz:'chléb',ph:'/brɛd/',cat:'Jídlo'},
+  {w:'soup',cz:'polévka',ph:'/suːp/',cat:'Jídlo'},
+  {w:'salad',cz:'salát',ph:'/ˈsæləd/',cat:'Jídlo'},
+  {w:'dessert',cz:'dezert',ph:'/dɪˈzɜːrt/',cat:'Jídlo'},
+  {w:'beer',cz:'pivo',ph:'/bɪər/',cat:'Jídlo'},
+  {w:'wine',cz:'víno',ph:'/waɪn/',cat:'Jídlo'},
+  {w:'juice',cz:'džus',ph:'/dʒuːs/',cat:'Jídlo'},
+  {w:'menu',cz:'jídelní lístek',ph:'/ˈmɛnjuː/',cat:'Jídlo'},
+  {w:'recipe',cz:'recept',ph:'/ˈrɛsɪpi/',cat:'Jídlo'},
+  {w:'ingredient',cz:'ingredience',ph:'/ɪnˈɡriːdiənt/',cat:'Jídlo'},
+  {w:'portion',cz:'porce',ph:'/ˈpɔːrʃən/',cat:'Jídlo'},
+
+  // ===== TĚLO & ZDRAVÍ =====
+  {w:'head',cz:'hlava',ph:'/hɛd/',cat:'Tělo & Zdraví'},
+  {w:'hand',cz:'ruka',ph:'/hænd/',cat:'Tělo & Zdraví'},
+  {w:'eye',cz:'oko',ph:'/aɪ/',cat:'Tělo & Zdraví'},
+  {w:'ear',cz:'ucho',ph:'/ɪər/',cat:'Tělo & Zdraví'},
+  {w:'mouth',cz:'ústa',ph:'/maʊθ/',cat:'Tělo & Zdraví'},
+  {w:'back',cz:'záda',ph:'/bæk/',cat:'Tělo & Zdraví'},
+  {w:'heart',cz:'srdce',ph:'/hɑːrt/',cat:'Tělo & Zdraví'},
+  {w:'pain',cz:'bolest',ph:'/peɪn/',cat:'Tělo & Zdraví'},
+  {w:'doctor',cz:'lékař',ph:'/ˈdɒktər/',cat:'Tělo & Zdraví'},
+  {w:'hospital',cz:'nemocnice',ph:'/ˈhɒspɪtəl/',cat:'Tělo & Zdraví'},
+  {w:'medicine',cz:'lék',ph:'/ˈmɛdɪsɪn/',cat:'Tělo & Zdraví'},
+  {w:'tablet',cz:'tableta',ph:'/ˈtæblɪt/',cat:'Tělo & Zdraví'},
+  {w:'stroke',cz:'mrtvice',ph:'/stroʊk/',cat:'Tělo & Zdraví'},
+  {w:'recovery',cz:'zotavení',ph:'/rɪˈkʌvəri/',cat:'Tělo & Zdraví'},
+  {w:'exercise',cz:'cvičení',ph:'/ˈɛksəsaɪz/',cat:'Tělo & Zdraví'},
+  {w:'therapy',cz:'terapie',ph:'/ˈθɛrəpi/',cat:'Tělo & Zdraví'},
+  {w:'strength',cz:'síla',ph:'/strɛŋθ/',cat:'Tělo & Zdraví'},
+  {w:'progress',cz:'pokrok',ph:'/ˈprɒɡrɛs/',cat:'Tělo & Zdraví'},
+  {w:'determination',cz:'odhodlání',ph:'/dɪˌtɜːrmɪˈneɪʃən/',cat:'Tělo & Zdraví'},
+  {w:'left hand',cz:'levá ruka',ph:'/lɛft hænd/',cat:'Tělo & Zdraví'},
+
+  // ===== PŘÍRODA =====
+  {w:'sun',cz:'slunce',ph:'/sʌn/',cat:'Příroda'},
+  {w:'moon',cz:'měsíc',ph:'/muːn/',cat:'Příroda'},
+  {w:'sky',cz:'obloha',ph:'/skaɪ/',cat:'Příroda'},
+  {w:'rain',cz:'déšť',ph:'/reɪn/',cat:'Příroda'},
+  {w:'wind',cz:'vítr',ph:'/wɪnd/',cat:'Příroda'},
+  {w:'snow',cz:'sníh',ph:'/snoʊ/',cat:'Příroda'},
+  {w:'storm',cz:'bouřka',ph:'/stɔːrm/',cat:'Příroda'},
+  {w:'cloud',cz:'oblak',ph:'/klaʊd/',cat:'Příroda'},
+  {w:'river',cz:'řeka',ph:'/ˈrɪvər/',cat:'Příroda'},
+  {w:'mountain',cz:'hora',ph:'/ˈmaʊntɪn/',cat:'Příroda'},
+  {w:'forest',cz:'les',ph:'/ˈfɒrɪst/',cat:'Příroda'},
+  {w:'tree',cz:'strom',ph:'/triː/',cat:'Příroda'},
+  {w:'flower',cz:'květ',ph:'/ˈflaʊər/',cat:'Příroda'},
+  {w:'animal',cz:'zvíře',ph:'/ˈænɪməl/',cat:'Příroda'},
+  {w:'bird',cz:'pták',ph:'/bɜːrd/',cat:'Příroda'},
+  {w:'temperature',cz:'teplota',ph:'/ˈtɛmprɪtʃər/',cat:'Příroda'},
+  {w:'season',cz:'roční období',ph:'/ˈsiːzən/',cat:'Příroda'},
+  {w:'spring',cz:'jaro',ph:'/sprɪŋ/',cat:'Příroda'},
+  {w:'summer',cz:'léto',ph:'/ˈsʌmər/',cat:'Příroda'},
+  {w:'autumn',cz:'podzim',ph:'/ˈɔːtəm/',cat:'Příroda'},
+  {w:'winter',cz:'zima',ph:'/ˈwɪntər/',cat:'Příroda'},
+
+  // ===== EMOCE =====
+  {w:'joy',cz:'radost',ph:'/dʒɔɪ/',cat:'Emoce'},
+  {w:'anger',cz:'hněv',ph:'/ˈæŋɡər/',cat:'Emoce'},
+  {w:'fear',cz:'strach',ph:'/fɪər/',cat:'Emoce'},
+  {w:'surprise',cz:'překvapení',ph:'/səˈpraɪz/',cat:'Emoce'},
+  {w:'pride',cz:'hrdost',ph:'/praɪd/',cat:'Emoce'},
+  {w:'shame',cz:'stud',ph:'/ʃeɪm/',cat:'Emoce'},
+  {w:'hope',cz:'naděje',ph:'/hoʊp/',cat:'Emoce'},
+  {w:'worry',cz:'obava / starat se',ph:'/ˈwʌri/',cat:'Emoce'},
+  {w:'relief',cz:'úleva',ph:'/rɪˈliːf/',cat:'Emoce'},
+  {w:'frustration',cz:'frustrace',ph:'/frʌˈstreɪʃən/',cat:'Emoce'},
+  {w:'satisfaction',cz:'spokojenost',ph:'/ˌsætɪsˈfækʃən/',cat:'Emoce'},
+  {w:'motivation',cz:'motivace',ph:'/ˌmoʊtɪˈveɪʃən/',cat:'Emoce'},
+  {w:'passion',cz:'vášeň',ph:'/ˈpæʃən/',cat:'Emoce'},
+  {w:'patience',cz:'trpělivost',ph:'/ˈpeɪʃəns/',cat:'Emoce'},
+  {w:'courage',cz:'odvaha',ph:'/ˈkʌrɪdʒ/',cat:'Emoce'},
+  {w:'lonely',cz:'osamělý',ph:'/ˈloʊnli/',cat:'Emoce'},
+  {w:'grateful',cz:'vděčný',ph:'/ˈɡreɪtfəl/',cat:'Emoce'},
+  {w:'proud',cz:'hrdý',ph:'/praʊd/',cat:'Emoce'},
+  {w:'calm',cz:'klidný',ph:'/kɑːm/',cat:'Emoce'},
+  {w:'stressed',cz:'vystresovaný',ph:'/strɛst/',cat:'Emoce'},
+
+  {w:'ability',cz:'schopnost',ph:'/əˈbɪləti/',cat:'Abstraktní'},
+  {w:'absent',cz:'nepřítomný',ph:'/ˈæbsənt/',cat:'Přídavná jména'},
+  {w:'accept',cz:'přijmout',ph:'/əkˈsept/',cat:'Slovesa'},
+  {w:'accident',cz:'nehoda',ph:'/ˈæksɪdənt/',cat:'Podstatná jména'},
+  {w:'account',cz:'účet',ph:'/əˈkaʊnt/',cat:'Finance'},
+  {w:'accurate',cz:'přesný',ph:'/ˈækjərət/',cat:'Přídavná jména'},
+  {w:'achieve',cz:'dosáhnout',ph:'/əˈtʃiːv/',cat:'Slovesa'},
+  {w:'across',cz:'přes',ph:'/əˈkrɒs/',cat:'Předložky'},
+  {w:'actual',cz:'skutečný',ph:'/ˈæktʃuəl/',cat:'Přídavná jména'},
+  {w:'admit',cz:'přiznat',ph:'/ədˈmɪt/',cat:'Slovesa'},
+  {w:'adult',cz:'dospělý',ph:'/əˈdʌlt/',cat:'Lidé'},
+  {w:'advantage',cz:'výhoda',ph:'/ədˈvɑːntɪdʒ/',cat:'Abstraktní'},
+  {w:'advice',cz:'rada',ph:'/ədˈvaɪs/',cat:'Podstatná jména'},
+  {w:'afford',cz:'dovolit si (finančně)',ph:'/əˈfɔːd/',cat:'Finance'},
+  {w:'afraid',cz:'vystrašený',ph:'/əˈfreɪd/',cat:'Emoce'},
+  {w:'agree',cz:'souhlasit',ph:'/əˈɡriː/',cat:'Slovesa'},
+  {w:'aim',cz:'cíl',ph:'/eɪm/',cat:'Abstraktní'},
+  {w:'alarm',cz:'poplach',ph:'/əˈlɑːm/',cat:'Podstatná jména'},
+  {w:'alive',cz:'naživu',ph:'/əˈlaɪv/',cat:'Přídavná jména'},
+  {w:'allow',cz:'dovolit',ph:'/əˈlaʊ/',cat:'Slovesa'},
+  {w:'ambition',cz:'ambice',ph:'/æmˈbɪʃən/',cat:'Abstraktní'},
+  {w:'ancient',cz:'starověký',ph:'/ˈeɪnʃənt/',cat:'Přídavná jména'},
+  {w:'ankle',cz:'kotník',ph:'/ˈæŋkl/',cat:'Tělo'},
+  {w:'announce',cz:'oznámit',ph:'/əˈnaʊns/',cat:'Slovesa'},
+  {w:'annoy',cz:'obtěžovat',ph:'/əˈnɔɪ/',cat:'Slovesa'},
+  {w:'anxious',cz:'úzkostný',ph:'/ˈæŋkʃəs/',cat:'Emoce'},
+  {w:'apologize',cz:'omluvit se',ph:'/əˈpɒlədʒaɪz/',cat:'Slovesa'},
+  {w:'appear',cz:'objevit se',ph:'/əˈpɪə/',cat:'Slovesa'},
+  {w:'appointment',cz:'schůzka',ph:'/əˈpɔɪntmənt/',cat:'Práce'},
+  {w:'approach',cz:'přístup',ph:'/əˈprəʊtʃ/',cat:'Abstraktní'},
+  {w:'argue',cz:'hádat se',ph:'/ˈɑːɡjuː/',cat:'Slovesa'},
+  {w:'arrange',cz:'zařídit',ph:'/əˈreɪndʒ/',cat:'Slovesa'},
+  {w:'ashamed',cz:'zahanbený',ph:'/əˈʃeɪmd/',cat:'Emoce'},
+  {w:'assist',cz:'pomáhat',ph:'/əˈsɪst/',cat:'Slovesa'},
+  {w:'assume',cz:'předpokládat',ph:'/əˈsjuːm/',cat:'Slovesa'},
+  {w:'attach',cz:'připojit',ph:'/əˈtætʃ/',cat:'Slovesa'},
+  {w:'attempt',cz:'pokus',ph:'/əˈtempt/',cat:'Podstatná jména'},
+  {w:'attitude',cz:'postoj',ph:'/ˈætɪtjuːd/',cat:'Abstraktní'},
+  {w:'attract',cz:'přitahovat',ph:'/əˈtrækt/',cat:'Slovesa'},
+  {w:'available',cz:'dostupný',ph:'/əˈveɪləbl/',cat:'Přídavná jména'},
+  {w:'average',cz:'průměrný',ph:'/ˈævərɪdʒ/',cat:'Přídavná jména'},
+  {w:'avoid',cz:'vyhnout se',ph:'/əˈvɔɪd/',cat:'Slovesa'},
+  {w:'aware',cz:'vědomý si',ph:'/əˈweə/',cat:'Přídavná jména'},
+  {w:'background',cz:'pozadí',ph:'/ˈbækɡraʊnd/',cat:'Podstatná jména'},
+  {w:'balance',cz:'rovnováha',ph:'/ˈbæləns/',cat:'Abstraktní'},
+  {w:'bargain',cz:'výhodná koupě',ph:'/ˈbɑːɡɪn/',cat:'Finance'},
+  {w:'battery',cz:'baterie',ph:'/ˈbætəri/',cat:'Technika'},
+  {w:'behave',cz:'chovat se',ph:'/bɪˈheɪv/',cat:'Slovesa'},
+  {w:'behavior',cz:'chování',ph:'/bɪˈheɪvjə/',cat:'Abstraktní'},
+  {w:'belong',cz:'patřit',ph:'/bɪˈlɒŋ/',cat:'Slovesa'},
+  {w:'beneath',cz:'pod',ph:'/bɪˈniːθ/',cat:'Předložky'},
+  {w:'benefit',cz:'prospěch',ph:'/ˈbenɪfɪt/',cat:'Abstraktní'},
+  {w:'beyond',cz:'za, mimo',ph:'/bɪˈjɒnd/',cat:'Předložky'},
+  {w:'bill',cz:'účet, faktura',ph:'/bɪl/',cat:'Finance'},
+  {w:'blame',cz:'vinit',ph:'/bleɪm/',cat:'Slovesa'},
+  {w:'blank',cz:'prázdný',ph:'/blæŋk/',cat:'Přídavná jména'},
+  {w:'bond',cz:'pouto',ph:'/bɒnd/',cat:'Abstraktní'},
+  {w:'boring',cz:'nudný',ph:'/ˈbɔːrɪŋ/',cat:'Přídavná jména'},
+  {w:'borrow',cz:'půjčit si',ph:'/ˈbɒrəʊ/',cat:'Slovesa'},
+  {w:'brave',cz:'statečný',ph:'/breɪv/',cat:'Přídavná jména'},
+  {w:'breath',cz:'dech',ph:'/breθ/',cat:'Tělo'},
+  {w:'bright',cz:'jasný',ph:'/braɪt/',cat:'Přídavná jména'},
+  {w:'budget',cz:'rozpočet',ph:'/ˈbʌdʒɪt/',cat:'Finance'},
+  {w:'bury',cz:'pohřbít',ph:'/ˈberi/',cat:'Slovesa'},
+  {w:'calculate',cz:'vypočítat',ph:'/ˈkælkjʊleɪt/',cat:'Slovesa'},
+  {w:'cancel',cz:'zrušit',ph:'/ˈkænsəl/',cat:'Slovesa'},
+  {w:'capable',cz:'schopný',ph:'/ˈkeɪpəbl/',cat:'Přídavná jména'},
+  {w:'career',cz:'kariéra',ph:'/kəˈrɪə/',cat:'Práce'},
+  {w:'careful',cz:'opatrný',ph:'/ˈkeəfəl/',cat:'Přídavná jména'},
+  {w:'cause',cz:'příčina',ph:'/kɔːz/',cat:'Podstatná jména'},
+  {w:'celebrate',cz:'oslavovat',ph:'/ˈselɪbreɪt/',cat:'Slovesa'},
+  {w:'certain',cz:'jistý',ph:'/ˈsɜːtn/',cat:'Přídavná jména'},
+  {w:'challenge',cz:'výzva',ph:'/ˈtʃælɪndʒ/',cat:'Abstraktní'},
+  {w:'chase',cz:'honit',ph:'/tʃeɪs/',cat:'Slovesa'},
+  {w:'cheap',cz:'levný',ph:'/tʃiːp/',cat:'Přídavná jména'},
+  {w:'cheat',cz:'podvádět',ph:'/tʃiːt/',cat:'Slovesa'},
+  {w:'chemical',cz:'chemický',ph:'/ˈkemɪkəl/',cat:'Přídavná jména'},
+  {w:'circumstance',cz:'okolnost',ph:'/ˈsɜːkəmstəns/',cat:'Abstraktní'},
+  {w:'claim',cz:'tvrdit',ph:'/kleɪm/',cat:'Slovesa'},
+  {w:'clarify',cz:'objasnit',ph:'/ˈklærɪfaɪ/',cat:'Slovesa'},
+  {w:'client',cz:'klient',ph:'/ˈklaɪənt/',cat:'Práce'},
+  {w:'clue',cz:'stopa, indicie',ph:'/kluː/',cat:'Podstatná jména'},
+  {w:'collapse',cz:'zhroutit se',ph:'/kəˈlæps/',cat:'Slovesa'},
+  {w:'combine',cz:'kombinovat',ph:'/kəmˈbaɪn/',cat:'Slovesa'},
+  {w:'comfort',cz:'pohodlí',ph:'/ˈkʌmfət/',cat:'Abstraktní'},
+  {w:'comment',cz:'komentář',ph:'/ˈkɒment/',cat:'Podstatná jména'},
+  {w:'common',cz:'běžný',ph:'/ˈkɒmən/',cat:'Přídavná jména'},
+  {w:'compare',cz:'porovnat',ph:'/kəmˈpeə/',cat:'Slovesa'},
+  {w:'compete',cz:'soutěžit',ph:'/kəmˈpiːt/',cat:'Slovesa'},
+  {w:'complain',cz:'stěžovat si',ph:'/kəmˈpleɪn/',cat:'Slovesa'},
+  {w:'complex',cz:'složitý',ph:'/ˈkɒmpleks/',cat:'Přídavná jména'},
+  {w:'concern',cz:'obava',ph:'/kənˈsɜːn/',cat:'Emoce'},
+  {w:'confirm',cz:'potvrdit',ph:'/kənˈfɜːm/',cat:'Slovesa'},
+  {w:'confuse',cz:'zmást',ph:'/kənˈfjuːz/',cat:'Slovesa'},
+  {w:'conscious',cz:'vědomý',ph:'/ˈkɒnʃəs/',cat:'Přídavná jména'},
+  {w:'consider',cz:'zvažovat',ph:'/kənˈsɪdə/',cat:'Slovesa'},
+  {w:'consist',cz:'sestávat',ph:'/kənˈsɪst/',cat:'Slovesa'},
+  {w:'constant',cz:'stálý',ph:'/ˈkɒnstənt/',cat:'Přídavná jména'},
+  {w:'contain',cz:'obsahovat',ph:'/kənˈteɪn/',cat:'Slovesa'},
+  {w:'content',cz:'obsah',ph:'/ˈkɒntent/',cat:'Podstatná jména'},
+  {w:'contract',cz:'smlouva',ph:'/ˈkɒntrækt/',cat:'Práce'},
+  {w:'contribute',cz:'přispět',ph:'/kənˈtrɪbjuːt/',cat:'Slovesa'},
+  {w:'convince',cz:'přesvědčit',ph:'/kənˈvɪns/',cat:'Slovesa'},
+  {w:'cooperate',cz:'spolupracovat',ph:'/kəʊˈɒpəreɪt/',cat:'Slovesa'},
+  {w:'cope',cz:'vyrovnat se',ph:'/kəʊp/',cat:'Slovesa'},
+  {w:'cost',cz:'stát (peníze)',ph:'/kɒst/',cat:'Finance'},
+  {w:'council',cz:'rada (instituce)',ph:'/ˈkaʊnsəl/',cat:'Podstatná jména'},
+  {w:'courageous',cz:'odvážný',ph:'/kəˈreɪdʒəs/',cat:'Přídavná jména'},
+  {w:'crash',cz:'havárie',ph:'/kræʃ/',cat:'Podstatná jména'},
+  {w:'crawl',cz:'lézt',ph:'/krɔːl/',cat:'Slovesa'},
+  {w:'credit',cz:'úvěr',ph:'/ˈkredɪt/',cat:'Finance'},
+  {w:'crisis',cz:'krize',ph:'/ˈkraɪsɪs/',cat:'Abstraktní'},
+  {w:'crowded',cz:'přeplněný',ph:'/ˈkraʊdɪd/',cat:'Přídavná jména'},
+  {w:'crucial',cz:'zásadní',ph:'/ˈkruːʃəl/',cat:'Přídavná jména'},
+  {w:'cruel',cz:'krutý',ph:'/ˈkruːəl/',cat:'Přídavná jména'},
+  {w:'curious',cz:'zvědavý',ph:'/ˈkjʊəriəs/',cat:'Přídavná jména'},
+  {w:'damage',cz:'poškození',ph:'/ˈdæmɪdʒ/',cat:'Podstatná jména'},
+  {w:'debt',cz:'dluh',ph:'/det/',cat:'Finance'},
+  {w:'decade',cz:'desetiletí',ph:'/ˈdekeɪd/',cat:'Čas'},
+  {w:'deceive',cz:'klamat',ph:'/dɪˈsiːv/',cat:'Slovesa'},
+  {w:'decline',cz:'odmítnout, klesat',ph:'/dɪˈklaɪn/',cat:'Slovesa'},
+  {w:'defeat',cz:'porazit',ph:'/dɪˈfiːt/',cat:'Slovesa'},
+  {w:'defend',cz:'bránit',ph:'/dɪˈfend/',cat:'Slovesa'},
+  {w:'define',cz:'definovat',ph:'/dɪˈfaɪn/',cat:'Slovesa'},
+  {w:'deliver',cz:'doručit',ph:'/dɪˈlɪvə/',cat:'Slovesa'},
+  {w:'demand',cz:'požadovat',ph:'/dɪˈmɑːnd/',cat:'Slovesa'},
+  {w:'deny',cz:'popřít',ph:'/dɪˈnaɪ/',cat:'Slovesa'},
+  {w:'depend',cz:'záviset',ph:'/dɪˈpend/',cat:'Slovesa'},
+  {w:'deposit',cz:'záloha, vklad',ph:'/dɪˈpɒzɪt/',cat:'Finance'},
+  {w:'depressed',cz:'skleslý',ph:'/dɪˈprest/',cat:'Emoce'},
+  {w:'describe',cz:'popsat',ph:'/dɪˈskraɪb/',cat:'Slovesa'},
+  {w:'deserve',cz:'zasloužit si',ph:'/dɪˈzɜːv/',cat:'Slovesa'},
+  {w:'destroy',cz:'zničit',ph:'/dɪˈstrɔɪ/',cat:'Slovesa'},
+  {w:'determine',cz:'určit',ph:'/dɪˈtɜːmɪn/',cat:'Slovesa'},
+  {w:'device',cz:'zařízení',ph:'/dɪˈvaɪs/',cat:'Technika'},
+  {w:'diagram',cz:'diagram',ph:'/ˈdaɪəɡræm/',cat:'Podstatná jména'},
+  {w:'differ',cz:'lišit se',ph:'/ˈdɪfə/',cat:'Slovesa'},
+  {w:'digest',cz:'trávit',ph:'/daɪˈdʒest/',cat:'Slovesa'},
+  {w:'dignity',cz:'důstojnost',ph:'/ˈdɪɡnəti/',cat:'Abstraktní'},
+  {w:'disappear',cz:'zmizet',ph:'/ˌdɪsəˈpɪə/',cat:'Slovesa'},
+  {w:'disappoint',cz:'zklamat',ph:'/ˌdɪsəˈpɔɪnt/',cat:'Slovesa'},
+  {w:'discount',cz:'sleva',ph:'/ˈdɪskaʊnt/',cat:'Finance'},
+  {w:'discover',cz:'objevit',ph:'/dɪˈskʌvə/',cat:'Slovesa'},
+  {w:'discuss',cz:'diskutovat',ph:'/dɪˈskʌs/',cat:'Slovesa'},
+  {w:'disease',cz:'nemoc',ph:'/dɪˈziːz/',cat:'Zdraví'},
+  {w:'disgusting',cz:'odporný',ph:'/dɪsˈɡʌstɪŋ/',cat:'Přídavná jména'},
+  {w:'dismiss',cz:'propustit, zamítnout',ph:'/dɪsˈmɪs/',cat:'Slovesa'},
+  {w:'distance',cz:'vzdálenost',ph:'/ˈdɪstəns/',cat:'Podstatná jména'},
+  {w:'distinct',cz:'zřetelný',ph:'/dɪˈstɪŋkt/',cat:'Přídavná jména'},
+  {w:'disturb',cz:'rušit',ph:'/dɪˈstɜːb/',cat:'Slovesa'},
+  {w:'donate',cz:'darovat',ph:'/dəʊˈneɪt/',cat:'Slovesa'},
+  {w:'doubt',cz:'pochybnost',ph:'/daʊt/',cat:'Abstraktní'},
+  {w:'draft',cz:'návrh',ph:'/drɑːft/',cat:'Podstatná jména'},
+  {w:'drown',cz:'utopit se',ph:'/draʊn/',cat:'Slovesa'},
+  {w:'due',cz:'splatný, kvůli',ph:'/djuː/',cat:'Přídavná jména'},
+  {w:'earn',cz:'vydělávat',ph:'/ɜːn/',cat:'Finance'},
+  {w:'effective',cz:'účinný',ph:'/ɪˈfektɪv/',cat:'Přídavná jména'},
+  {w:'elderly',cz:'starší (o lidech)',ph:'/ˈeldəli/',cat:'Lidé'},
+  {w:'embarrass',cz:'zahanbit',ph:'/ɪmˈbærəs/',cat:'Slovesa'},
+  {w:'emergency',cz:'nouzová situace',ph:'/ɪˈmɜːdʒənsi/',cat:'Podstatná jména'},
+  {w:'employ',cz:'zaměstnat',ph:'/ɪmˈplɔɪ/',cat:'Práce'},
+  {w:'enable',cz:'umožnit',ph:'/ɪˈneɪbl/',cat:'Slovesa'},
+  {w:'encourage',cz:'povzbudit',ph:'/ɪnˈkʌrɪdʒ/',cat:'Slovesa'},
+  {w:'engage',cz:'zapojit',ph:'/ɪnˈɡeɪdʒ/',cat:'Slovesa'},
+  {w:'enormous',cz:'obrovský',ph:'/ɪˈnɔːməs/',cat:'Přídavná jména'},
+  {w:'ensure',cz:'zajistit',ph:'/ɪnˈʃʊə/',cat:'Slovesa'},
+  {w:'entire',cz:'celý',ph:'/ɪnˈtaɪə/',cat:'Přídavná jména'},
+  {w:'envy',cz:'závidět',ph:'/ˈenvi/',cat:'Emoce'},
+  {w:'equal',cz:'stejný',ph:'/ˈiːkwəl/',cat:'Přídavná jména'},
+  {w:'escape',cz:'utéct',ph:'/ɪˈskeɪp/',cat:'Slovesa'},
+  {w:'essential',cz:'nezbytný',ph:'/ɪˈsenʃəl/',cat:'Přídavná jména'},
+  {w:'estimate',cz:'odhad',ph:'/ˈestɪmət/',cat:'Podstatná jména'},
+  {w:'evidence',cz:'důkaz',ph:'/ˈevɪdəns/',cat:'Podstatná jména'},
+  {w:'exact',cz:'přesný',ph:'/ɪɡˈzækt/',cat:'Přídavná jména'},
+  {w:'examine',cz:'zkoumat',ph:'/ɪɡˈzæmɪn/',cat:'Slovesa'},
+  {w:'exceed',cz:'překročit',ph:'/ɪkˈsiːd/',cat:'Slovesa'},
+  {w:'excuse',cz:'omluva, výmluva',ph:'/ɪkˈskjuːs/',cat:'Podstatná jména'},
+  {w:'exhausted',cz:'vyčerpaný',ph:'/ɪɡˈzɔːstɪd/',cat:'Emoce'},
+  {w:'exist',cz:'existovat',ph:'/ɪɡˈzɪst/',cat:'Slovesa'},
+  {w:'expand',cz:'rozšířit',ph:'/ɪkˈspænd/',cat:'Slovesa'},
+  {w:'expect',cz:'očekávat',ph:'/ɪkˈspekt/',cat:'Slovesa'},
+  {w:'expense',cz:'výdaj',ph:'/ɪkˈspens/',cat:'Finance'},
+  {w:'experience',cz:'zkušenost',ph:'/ɪkˈspɪəriəns/',cat:'Abstraktní'},
+  {w:'expose',cz:'vystavit (riziku)',ph:'/ɪkˈspəʊz/',cat:'Slovesa'},
+  {w:'extend',cz:'prodloužit',ph:'/ɪkˈstend/',cat:'Slovesa'},
+  {w:'extreme',cz:'extrémní',ph:'/ɪkˈstriːm/',cat:'Přídavná jména'},
+  {w:'fail',cz:'selhat',ph:'/feɪl/',cat:'Slovesa'},
+  {w:'fair',cz:'spravedlivý',ph:'/feə/',cat:'Přídavná jména'},
+  {w:'faith',cz:'víra',ph:'/feɪθ/',cat:'Abstraktní'},
+  {w:'fake',cz:'falešný',ph:'/feɪk/',cat:'Přídavná jména'},
+  {w:'familiar',cz:'známý',ph:'/fəˈmɪliə/',cat:'Přídavná jména'},
+  {w:'fascinate',cz:'fascinovat',ph:'/ˈfæsɪneɪt/',cat:'Slovesa'},
+  {w:'favor',cz:'laskavost',ph:'/ˈfeɪvə/',cat:'Abstraktní'},
+  {w:'fee',cz:'poplatek',ph:'/fiː/',cat:'Finance'},
+  {w:'firm',cz:'pevný, firma',ph:'/fɜːm/',cat:'Práce'},
+  {w:'flexible',cz:'flexibilní',ph:'/ˈfleksəbl/',cat:'Přídavná jména'},
+  {w:'focus',cz:'zaměřit se',ph:'/ˈfəʊkəs/',cat:'Slovesa'},
+  {w:'forbid',cz:'zakázat',ph:'/fəˈbɪd/',cat:'Slovesa'},
+  {w:'forgive',cz:'odpustit',ph:'/fəˈɡɪv/',cat:'Slovesa'},
+  {w:'fortunate',cz:'šťastný, mající štěstí',ph:'/ˈfɔːtʃənət/',cat:'Přídavná jména'},
+  {w:'fragile',cz:'křehký',ph:'/ˈfrædʒaɪl/',cat:'Přídavná jména'},
+  {w:'frequent',cz:'častý',ph:'/ˈfriːkwənt/',cat:'Přídavná jména'},
+  {w:'fulfil',cz:'splnit',ph:'/fʊlˈfɪl/',cat:'Slovesa'},
+  {w:'furious',cz:'zuřivý',ph:'/ˈfjʊəriəs/',cat:'Emoce'},
+  {w:'generous',cz:'štědrý',ph:'/ˈdʒenərəs/',cat:'Přídavná jména'},
+  {w:'genuine',cz:'pravý, opravdový',ph:'/ˈdʒenjʊɪn/',cat:'Přídavná jména'},
+  {w:'glance',cz:'pohled, mrknout',ph:'/ɡlɑːns/',cat:'Slovesa'},
+  {w:'goal',cz:'cíl',ph:'/ɡəʊl/',cat:'Abstraktní'},
+  {w:'grab',cz:'popadnout',ph:'/ɡræb/',cat:'Slovesa'},
+  {w:'gradual',cz:'postupný',ph:'/ˈɡrædʒuəl/',cat:'Přídavná jména'},
+  {w:'graduate',cz:'absolvent',ph:'/ˈɡrædʒʊət/',cat:'Vzdělání'},
+  {w:'guarantee',cz:'záruka',ph:'/ˌɡærənˈtiː/',cat:'Podstatná jména'},
+  {w:'guilty',cz:'vinen',ph:'/ˈɡɪlti/',cat:'Emoce'},
+  {w:'handle',cz:'zvládnout',ph:'/ˈhændl/',cat:'Slovesa'},
+  {w:'harm',cz:'poškodit',ph:'/hɑːm/',cat:'Slovesa'},
+  {w:'harsh',cz:'drsný',ph:'/hɑːʃ/',cat:'Přídavná jména'},
+  {w:'hesitate',cz:'váhat',ph:'/ˈhezɪteɪt/',cat:'Slovesa'},
+  {w:'hire',cz:'najmout',ph:'/ˈhaɪə/',cat:'Práce'},
+  {w:'honest',cz:'poctivý',ph:'/ˈɒnɪst/',cat:'Přídavná jména'},
+  {w:'humble',cz:'skromný',ph:'/ˈhʌmbl/',cat:'Přídavná jména'},
+  {w:'identify',cz:'identifikovat',ph:'/aɪˈdentɪfaɪ/',cat:'Slovesa'},
+  {w:'ignore',cz:'ignorovat',ph:'/ɪɡˈnɔː/',cat:'Slovesa'},
+  {w:'imagine',cz:'představit si',ph:'/ɪˈmædʒɪn/',cat:'Slovesa'},
+  {w:'immediate',cz:'okamžitý',ph:'/ɪˈmiːdiət/',cat:'Přídavná jména'},
+  {w:'impact',cz:'dopad',ph:'/ˈɪmpækt/',cat:'Abstraktní'},
+  {w:'include',cz:'zahrnout',ph:'/ɪnˈkluːd/',cat:'Slovesa'},
+  {w:'income',cz:'příjem',ph:'/ˈɪnkʌm/',cat:'Finance'},
+  {w:'increase',cz:'zvýšit',ph:'/ɪnˈkriːs/',cat:'Slovesa'},
+  {w:'indeed',cz:'skutečně',ph:'/ɪnˈdiːd/',cat:'Příslovce'},
+  {w:'independent',cz:'nezávislý',ph:'/ˌɪndɪˈpendənt/',cat:'Přídavná jména'},
+  {w:'indicate',cz:'naznačit',ph:'/ˈɪndɪkeɪt/',cat:'Slovesa'},
+  {w:'inevitable',cz:'nevyhnutelný',ph:'/ɪnˈevɪtəbl/',cat:'Přídavná jména'},
+  {w:'influence',cz:'vliv',ph:'/ˈɪnfluəns/',cat:'Abstraktní'},
+  {w:'inform',cz:'informovat',ph:'/ɪnˈfɔːm/',cat:'Slovesa'},
+  {w:'inherit',cz:'zdědit',ph:'/ɪnˈherɪt/',cat:'Slovesa'},
+  {w:'initial',cz:'počáteční',ph:'/ɪˈnɪʃəl/',cat:'Přídavná jména'},
+  {w:'injure',cz:'zranit',ph:'/ˈɪndʒə/',cat:'Zdraví'},
+  {w:'innocent',cz:'nevinný',ph:'/ˈɪnəsənt/',cat:'Přídavná jména'},
+  {w:'inquire',cz:'dotázat se',ph:'/ɪnˈkwaɪə/',cat:'Slovesa'},
+  {w:'insist',cz:'trvat na',ph:'/ɪnˈsɪst/',cat:'Slovesa'},
+  {w:'inspire',cz:'inspirovat',ph:'/ɪnˈspaɪə/',cat:'Slovesa'},
+  {w:'instance',cz:'příklad',ph:'/ˈɪnstəns/',cat:'Podstatná jména'},
+  {w:'instruct',cz:'instruovat',ph:'/ɪnˈstrʌkt/',cat:'Slovesa'},
+  {w:'insurance',cz:'pojištění',ph:'/ɪnˈʃʊərəns/',cat:'Finance'},
+  {w:'intend',cz:'zamýšlet',ph:'/ɪnˈtend/',cat:'Slovesa'},
+  {w:'interfere',cz:'zasahovat',ph:'/ˌɪntəˈfɪə/',cat:'Slovesa'},
+  {w:'invest',cz:'investovat',ph:'/ɪnˈvest/',cat:'Finance'},
+  {w:'involve',cz:'zahrnovat',ph:'/ɪnˈvɒlv/',cat:'Slovesa'},
+  {w:'irritate',cz:'dráždit',ph:'/ˈɪrɪteɪt/',cat:'Slovesa'},
+  {w:'issue',cz:'problém, otázka',ph:'/ˈɪʃuː/',cat:'Abstraktní'},
+  {w:'jealous',cz:'žárlivý',ph:'/ˈdʒeləs/',cat:'Emoce'},
+  {w:'judge',cz:'soudit',ph:'/dʒʌdʒ/',cat:'Slovesa'},
+  {w:'justify',cz:'zdůvodnit',ph:'/ˈdʒʌstɪfaɪ/',cat:'Slovesa'},
+  {w:'lack',cz:'nedostatek',ph:'/læk/',cat:'Podstatná jména'},
+  {w:'launch',cz:'spustit',ph:'/lɔːntʃ/',cat:'Slovesa'},
+  {w:'lend',cz:'půjčit',ph:'/lend/',cat:'Slovesa'},
+  {w:'limit',cz:'omezit',ph:'/ˈlɪmɪt/',cat:'Slovesa'},
+  {w:'loan',cz:'půjčka',ph:'/ləʊn/',cat:'Finance'},
+  {w:'loyal',cz:'loajální',ph:'/ˈlɔɪəl/',cat:'Přídavná jména'},
+  {w:'maintain',cz:'udržovat',ph:'/meɪnˈteɪn/',cat:'Slovesa'},
+  {w:'manage',cz:'zvládnout, řídit',ph:'/ˈmænɪdʒ/',cat:'Slovesa'},
+  {w:'manner',cz:'způsob, chování',ph:'/ˈmænə/',cat:'Abstraktní'},
+  {w:'manufacture',cz:'vyrábět',ph:'/ˌmænjʊˈfæktʃə/',cat:'Slovesa'},
+  {w:'mature',cz:'zralý',ph:'/məˈtʃʊə/',cat:'Přídavná jména'},
+  {w:'measure',cz:'měřit',ph:'/ˈmeʒə/',cat:'Slovesa'},
+  {w:'mention',cz:'zmínit',ph:'/ˈmenʃən/',cat:'Slovesa'},
+  {w:'mislead',cz:'zavádět',ph:'/ˌmɪsˈliːd/',cat:'Slovesa'},
+  {w:'modest',cz:'skromný',ph:'/ˈmɒdɪst/',cat:'Přídavná jména'},
+  {w:'modify',cz:'upravit',ph:'/ˈmɒdɪfaɪ/',cat:'Slovesa'},
+  {w:'moral',cz:'morální',ph:'/ˈmɒrəl/',cat:'Přídavná jména'},
+  {w:'mortgage',cz:'hypotéka',ph:'/ˈmɔːɡɪdʒ/',cat:'Finance'},
+  {w:'mutual',cz:'vzájemný',ph:'/ˈmjuːtʃuəl/',cat:'Přídavná jména'},
+  {w:'narrow',cz:'úzký',ph:'/ˈnærəʊ/',cat:'Přídavná jména'},
+  {w:'necessary',cz:'nutný',ph:'/ˈnesəsəri/',cat:'Přídavná jména'},
+  {w:'negotiate',cz:'vyjednávat',ph:'/nɪˈɡəʊʃieɪt/',cat:'Slovesa'},
+  {w:'neighbor',cz:'soused',ph:'/ˈneɪbə/',cat:'Lidé'},
+  {w:'notice',cz:'všimnout si',ph:'/ˈnəʊtɪs/',cat:'Slovesa'},
+  {w:'obey',cz:'poslouchat (uposlechnout)',ph:'/əˈbeɪ/',cat:'Slovesa'},
+  {w:'obtain',cz:'získat',ph:'/əbˈteɪn/',cat:'Slovesa'},
+  {w:'obvious',cz:'zřejmý',ph:'/ˈɒbviəs/',cat:'Přídavná jména'},
+  {w:'occur',cz:'nastat',ph:'/əˈkɜː/',cat:'Slovesa'},
+  {w:'offend',cz:'urazit',ph:'/əˈfend/',cat:'Slovesa'},
+  {w:'operate',cz:'provozovat',ph:'/ˈɒpəreɪt/',cat:'Slovesa'},
+  {w:'opportunity',cz:'příležitost',ph:'/ˌɒpəˈtjuːnəti/',cat:'Abstraktní'},
+  {w:'oppose',cz:'oponovat',ph:'/əˈpəʊz/',cat:'Slovesa'},
+  {w:'original',cz:'původní',ph:'/əˈrɪdʒənl/',cat:'Přídavná jména'},
+  {w:'overcome',cz:'překonat',ph:'/ˌəʊvəˈkʌm/',cat:'Slovesa'},
+  {w:'overwhelm',cz:'zahltit',ph:'/ˌəʊvəˈwelm/',cat:'Slovesa'},
+  {w:'painful',cz:'bolestivý',ph:'/ˈpeɪnfəl/',cat:'Zdraví'},
+  {w:'particular',cz:'konkrétní',ph:'/pəˈtɪkjʊlə/',cat:'Přídavná jména'},
+  {w:'permanent',cz:'trvalý',ph:'/ˈpɜːmənənt/',cat:'Přídavná jména'},
+  {w:'persuade',cz:'přesvědčit',ph:'/pəˈsweɪd/',cat:'Slovesa'},
+  {w:'pleasant',cz:'příjemný',ph:'/ˈplezənt/',cat:'Přídavná jména'},
+  {w:'poverty',cz:'chudoba',ph:'/ˈpɒvəti/',cat:'Abstraktní'},
+  {w:'praise',cz:'chválit',ph:'/preɪz/',cat:'Slovesa'},
+  {w:'predict',cz:'předpovědět',ph:'/prɪˈdɪkt/',cat:'Slovesa'},
+  {w:'pregnant',cz:'těhotná',ph:'/ˈpreɡnənt/',cat:'Zdraví'},
+  {w:'prepare',cz:'připravit',ph:'/prɪˈpeə/',cat:'Slovesa'},
+  {w:'presence',cz:'přítomnost',ph:'/ˈprezəns/',cat:'Abstraktní'},
+  {w:'pretend',cz:'předstírat',ph:'/prɪˈtend/',cat:'Slovesa'},
+  {w:'prevent',cz:'zabránit',ph:'/prɪˈvent/',cat:'Slovesa'},
+  {w:'previous',cz:'předchozí',ph:'/ˈpriːviəs/',cat:'Přídavná jména'},
+  {w:'primary',cz:'primární',ph:'/ˈpraɪməri/',cat:'Přídavná jména'},
+  {w:'private',cz:'soukromý',ph:'/ˈpraɪvət/',cat:'Přídavná jména'},
+  {w:'probable',cz:'pravděpodobný',ph:'/ˈprɒbəbl/',cat:'Přídavná jména'},
+  {w:'proceed',cz:'pokračovat',ph:'/prəˈsiːd/',cat:'Slovesa'},
+  {w:'profit',cz:'zisk',ph:'/ˈprɒfɪt/',cat:'Finance'},
+  {w:'prohibit',cz:'zakázat',ph:'/prəˈhɪbɪt/',cat:'Slovesa'},
+  {w:'promote',cz:'povýšit, propagovat',ph:'/prəˈməʊt/',cat:'Práce'},
+  {w:'proper',cz:'náležitý',ph:'/ˈprɒpə/',cat:'Přídavná jména'},
+  {w:'property',cz:'majetek',ph:'/ˈprɒpəti/',cat:'Finance'},
+  {w:'protect',cz:'chránit',ph:'/prəˈtekt/',cat:'Slovesa'},
+  {w:'prove',cz:'dokázat',ph:'/pruːv/',cat:'Slovesa'},
+  {w:'provide',cz:'poskytnout',ph:'/prəˈvaɪd/',cat:'Slovesa'},
+  {w:'punish',cz:'potrestat',ph:'/ˈpʌnɪʃ/',cat:'Slovesa'},
+  {w:'pursue',cz:'usilovat o',ph:'/pəˈsjuː/',cat:'Slovesa'},
+  {w:'qualify',cz:'kvalifikovat se',ph:'/ˈkwɒlɪfaɪ/',cat:'Slovesa'},
+  {w:'quality',cz:'kvalita',ph:'/ˈkwɒləti/',cat:'Abstraktní'},
+  {w:'quantity',cz:'množství',ph:'/ˈkwɒntəti/',cat:'Abstraktní'},
+  {w:'random',cz:'náhodný',ph:'/ˈrændəm/',cat:'Přídavná jména'},
+  {w:'range',cz:'rozsah',ph:'/reɪndʒ/',cat:'Podstatná jména'},
+  {w:'rare',cz:'vzácný',ph:'/reə/',cat:'Přídavná jména'},
+  {w:'rate',cz:'sazba, tempo',ph:'/reɪt/',cat:'Finance'},
+  {w:'reasonable',cz:'rozumný',ph:'/ˈriːzənəbl/',cat:'Přídavná jména'},
+  {w:'recall',cz:'vzpomenout si',ph:'/rɪˈkɔːl/',cat:'Slovesa'},
+  {w:'receipt',cz:'účtenka',ph:'/rɪˈsiːt/',cat:'Finance'},
+  {w:'recognize',cz:'rozpoznat',ph:'/ˈrekəɡnaɪz/',cat:'Slovesa'},
+  {w:'recommend',cz:'doporučit',ph:'/ˌrekəˈmend/',cat:'Slovesa'},
+  {w:'recover',cz:'zotavit se',ph:'/rɪˈkʌvə/',cat:'Zdraví'},
+  {w:'reduce',cz:'snížit',ph:'/rɪˈdjuːs/',cat:'Slovesa'},
+  {w:'refer',cz:'odkazovat',ph:'/rɪˈfɜː/',cat:'Slovesa'},
+  {w:'reflect',cz:'odrážet, uvažovat',ph:'/rɪˈflekt/',cat:'Slovesa'},
+  {w:'refund',cz:'vrácení peněz',ph:'/ˈriːfʌnd/',cat:'Finance'},
+  {w:'refuse',cz:'odmítnout',ph:'/rɪˈfjuːz/',cat:'Slovesa'},
+  {w:'regard',cz:'ohled',ph:'/rɪˈɡɑːd/',cat:'Abstraktní'},
+  {w:'regret',cz:'litovat',ph:'/rɪˈɡret/',cat:'Emoce'},
+  {w:'reject',cz:'odmítnout',ph:'/rɪˈdʒekt/',cat:'Slovesa'},
+  {w:'relate',cz:'týkat se',ph:'/rɪˈleɪt/',cat:'Slovesa'},
+  {w:'relax',cz:'uvolnit se',ph:'/rɪˈlæks/',cat:'Slovesa'},
+  {w:'release',cz:'uvolnit, vydat',ph:'/rɪˈliːs/',cat:'Slovesa'},
+  {w:'relevant',cz:'relevantní',ph:'/ˈreləvənt/',cat:'Přídavná jména'},
+  {w:'relieve',cz:'ulevit',ph:'/rɪˈliːv/',cat:'Slovesa'},
+  {w:'reluctant',cz:'neochotný',ph:'/rɪˈlʌktənt/',cat:'Přídavná jména'},
+  {w:'rely',cz:'spoléhat se',ph:'/rɪˈlaɪ/',cat:'Slovesa'},
+  {w:'remain',cz:'zůstat',ph:'/rɪˈmeɪn/',cat:'Slovesa'},
+  {w:'remark',cz:'poznámka',ph:'/rɪˈmɑːk/',cat:'Podstatná jména'},
+  {w:'remind',cz:'připomenout',ph:'/rɪˈmaɪnd/',cat:'Slovesa'},
+  {w:'repair',cz:'opravit',ph:'/rɪˈpeə/',cat:'Slovesa'},
+  {w:'replace',cz:'nahradit',ph:'/rɪˈpleɪs/',cat:'Slovesa'},
+  {w:'reply',cz:'odpovědět',ph:'/rɪˈplaɪ/',cat:'Slovesa'},
+  {w:'represent',cz:'reprezentovat',ph:'/ˌreprɪˈzent/',cat:'Slovesa'},
+  {w:'require',cz:'vyžadovat',ph:'/rɪˈkwaɪə/',cat:'Slovesa'},
+  {w:'rescue',cz:'zachránit',ph:'/ˈreskjuː/',cat:'Slovesa'},
+  {w:'resemble',cz:'podobat se',ph:'/rɪˈzembl/',cat:'Slovesa'},
+  {w:'resign',cz:'rezignovat',ph:'/rɪˈzaɪn/',cat:'Práce'},
+  {w:'resist',cz:'odolat',ph:'/rɪˈzɪst/',cat:'Slovesa'},
+  {w:'resolve',cz:'vyřešit',ph:'/rɪˈzɒlv/',cat:'Slovesa'},
+  {w:'respond',cz:'reagovat',ph:'/rɪˈspɒnd/',cat:'Slovesa'},
+  {w:'responsible',cz:'zodpovědný',ph:'/rɪˈspɒnsəbl/',cat:'Přídavná jména'},
+  {w:'restore',cz:'obnovit',ph:'/rɪˈstɔː/',cat:'Slovesa'},
+  {w:'restrict',cz:'omezit',ph:'/rɪˈstrɪkt/',cat:'Slovesa'},
+  {w:'reveal',cz:'odhalit',ph:'/rɪˈviːl/',cat:'Slovesa'},
+  {w:'revenue',cz:'příjem (firmy)',ph:'/ˈrevənjuː/',cat:'Finance'},
+  {w:'reverse',cz:'obrátit',ph:'/rɪˈvɜːs/',cat:'Slovesa'},
+  {w:'reward',cz:'odměna',ph:'/rɪˈwɔːd/',cat:'Podstatná jména'},
+  {w:'risk',cz:'riziko',ph:'/rɪsk/',cat:'Abstraktní'},
+  {w:'rough',cz:'drsný, hrubý',ph:'/rʌf/',cat:'Přídavná jména'},
+  {w:'route',cz:'trasa',ph:'/ruːt/',cat:'Podstatná jména'},
+  {w:'rude',cz:'hrubý (nezdvořilý)',ph:'/ruːd/',cat:'Přídavná jména'},
+  {w:'ruin',cz:'zničit',ph:'/ˈruːɪn/',cat:'Slovesa'},
+  {w:'satisfied',cz:'spokojený',ph:'/ˈsætɪsfaɪd/',cat:'Emoce'},
+  {w:'scared',cz:'vyděšený',ph:'/skeəd/',cat:'Emoce'},
+  {w:'seek',cz:'hledat',ph:'/siːk/',cat:'Slovesa'},
+  {w:'seldom',cz:'zřídka',ph:'/ˈseldəm/',cat:'Příslovce'},
+  {w:'select',cz:'vybrat',ph:'/sɪˈlekt/',cat:'Slovesa'},
+  {w:'senior',cz:'starší, vedoucí',ph:'/ˈsiːniə/',cat:'Práce'},
+  {w:'sensible',cz:'rozumný',ph:'/ˈsensəbl/',cat:'Přídavná jména'},
+  {w:'sensitive',cz:'citlivý',ph:'/ˈsensətɪv/',cat:'Přídavná jména'},
+  {w:'separate',cz:'oddělit',ph:'/ˈsepəreɪt/',cat:'Slovesa'},
+  {w:'severe',cz:'závažný',ph:'/sɪˈvɪə/',cat:'Přídavná jména'},
+  {w:'shift',cz:'posun, směna',ph:'/ʃɪft/',cat:'Práce'},
+  {w:'significant',cz:'významný',ph:'/sɪɡˈnɪfɪkənt/',cat:'Přídavná jména'},
+  {w:'similar',cz:'podobný',ph:'/ˈsɪmɪlə/',cat:'Přídavná jména'},
+  {w:'skilled',cz:'zkušený',ph:'/skɪld/',cat:'Přídavná jména'},
+  {w:'slight',cz:'nepatrný',ph:'/slaɪt/',cat:'Přídavná jména'},
+  {w:'solid',cz:'pevný',ph:'/ˈsɒlɪd/',cat:'Přídavná jména'},
+  {w:'solve',cz:'vyřešit',ph:'/sɒlv/',cat:'Slovesa'},
+  {w:'sorrow',cz:'zármutek',ph:'/ˈsɒrəʊ/',cat:'Emoce'},
+  {w:'source',cz:'zdroj',ph:'/sɔːs/',cat:'Podstatná jména'},
+  {w:'spare',cz:'ušetřit, náhradní',ph:'/speə/',cat:'Přídavná jména'},
+  {w:'spread',cz:'rozšířit',ph:'/spred/',cat:'Slovesa'},
+  {w:'stare',cz:'zírat',ph:'/steə/',cat:'Slovesa'},
+  {w:'steady',cz:'stálý',ph:'/ˈstedi/',cat:'Přídavná jména'},
+  {w:'strategy',cz:'strategie',ph:'/ˈstrætədʒi/',cat:'Abstraktní'},
+  {w:'strict',cz:'přísný',ph:'/strɪkt/',cat:'Přídavná jména'},
+  {w:'struggle',cz:'zápasit, bojovat',ph:'/ˈstrʌɡl/',cat:'Slovesa'},
+  {w:'submit',cz:'předložit',ph:'/səbˈmɪt/',cat:'Slovesa'},
+  {w:'succeed',cz:'uspět',ph:'/səkˈsiːd/',cat:'Slovesa'},
+  {w:'suffer',cz:'trpět',ph:'/ˈsʌfə/',cat:'Slovesa'},
+  {w:'sufficient',cz:'dostatečný',ph:'/səˈfɪʃənt/',cat:'Přídavná jména'},
+  {w:'suggest',cz:'navrhnout',ph:'/səˈdʒest/',cat:'Slovesa'},
+  {w:'suit',cz:'vyhovovat',ph:'/suːt/',cat:'Slovesa'},
+  {w:'suitable',cz:'vhodný',ph:'/ˈsuːtəbl/',cat:'Přídavná jména'},
+  {w:'supply',cz:'zásobovat',ph:'/səˈplaɪ/',cat:'Slovesa'},
+  {w:'suppose',cz:'předpokládat',ph:'/səˈpəʊz/',cat:'Slovesa'},
+  {w:'surface',cz:'povrch',ph:'/ˈsɜːfɪs/',cat:'Podstatná jména'},
+  {w:'surround',cz:'obklopit',ph:'/səˈraʊnd/',cat:'Slovesa'},
+  {w:'survive',cz:'přežít',ph:'/səˈvaɪv/',cat:'Slovesa'},
+  {w:'suspect',cz:'podezřívat',ph:'/səˈspekt/',cat:'Slovesa'},
+  {w:'suspicious',cz:'podezřelý',ph:'/səˈspɪʃəs/',cat:'Přídavná jména'},
+  {w:'sympathy',cz:'soucit',ph:'/ˈsɪmpəθi/',cat:'Emoce'},
+  {w:'talent',cz:'talent',ph:'/ˈtælənt/',cat:'Abstraktní'},
+  {w:'tax',cz:'daň',ph:'/tæks/',cat:'Finance'},
+  {w:'temporary',cz:'dočasný',ph:'/ˈtemprəri/',cat:'Přídavná jména'},
+  {w:'tend',cz:'mít tendenci',ph:'/tend/',cat:'Slovesa'},
+  {w:'tension',cz:'napětí',ph:'/ˈtenʃən/',cat:'Emoce'},
+  {w:'terrify',cz:'vyděsit',ph:'/ˈterɪfaɪ/',cat:'Slovesa'},
+  {w:'thorough',cz:'důkladný',ph:'/ˈθʌrə/',cat:'Přídavná jména'},
+  {w:'threat',cz:'hrozba',ph:'/θret/',cat:'Abstraktní'},
+  {w:'tolerate',cz:'tolerovat',ph:'/ˈtɒləreɪt/',cat:'Slovesa'},
+  {w:'tough',cz:'tvrdý, náročný',ph:'/tʌf/',cat:'Přídavná jména'},
+  {w:'trace',cz:'stopa',ph:'/treɪs/',cat:'Podstatná jména'},
+  {w:'trade',cz:'obchod',ph:'/treɪd/',cat:'Finance'},
+  {w:'transfer',cz:'přenést, převést',ph:'/trænsˈfɜː/',cat:'Slovesa'},
+  {w:'transform',cz:'proměnit',ph:'/trænsˈfɔːm/',cat:'Slovesa'},
+  {w:'treat',cz:'zacházet s',ph:'/triːt/',cat:'Slovesa'},
+  {w:'tremble',cz:'třást se',ph:'/ˈtrembl/',cat:'Slovesa'},
+  {w:'trust',cz:'důvěra',ph:'/trʌst/',cat:'Abstraktní'},
+  {w:'typical',cz:'typický',ph:'/ˈtɪpɪkəl/',cat:'Přídavná jména'},
+  {w:'ultimate',cz:'konečný, vrcholný',ph:'/ˈʌltɪmət/',cat:'Přídavná jména'},
+  {w:'unfair',cz:'nespravedlivý',ph:'/ʌnˈfeə/',cat:'Přídavná jména'},
+  {w:'unique',cz:'jedinečný',ph:'/juˈniːk/',cat:'Přídavná jména'},
+  {w:'urgent',cz:'naléhavý',ph:'/ˈɜːdʒənt/',cat:'Přídavná jména'},
+  {w:'valuable',cz:'cenný',ph:'/ˈvæljuəbl/',cat:'Přídavná jména'},
+  {w:'vary',cz:'lišit se',ph:'/ˈveəri/',cat:'Slovesa'},
+  {w:'via',cz:'přes, prostřednictvím',ph:'/ˈvaɪə/',cat:'Předložky'},
+  {w:'violate',cz:'porušit',ph:'/ˈvaɪəleɪt/',cat:'Slovesa'},
+  {w:'virtually',cz:'prakticky',ph:'/ˈvɜːtʃuəli/',cat:'Příslovce'},
+  {w:'vital',cz:'životně důležitý',ph:'/ˈvaɪtl/',cat:'Přídavná jména'},
+  {w:'volunteer',cz:'dobrovolník',ph:'/ˌvɒlənˈtɪə/',cat:'Lidé'},
+  {w:'vote',cz:'hlasovat',ph:'/vəʊt/',cat:'Slovesa'},
+  {w:'warn',cz:'varovat',ph:'/wɔːn/',cat:'Slovesa'},
+  {w:'weigh',cz:'vážit',ph:'/weɪ/',cat:'Slovesa'},
+  {w:'widespread',cz:'rozšířený',ph:'/ˈwaɪdspred/',cat:'Přídavná jména'},
+  {w:'willing',cz:'ochotný',ph:'/ˈwɪlɪŋ/',cat:'Přídavná jména'},
+  {w:'wisdom',cz:'moudrost',ph:'/ˈwɪzdəm/',cat:'Abstraktní'},
+  {w:'withdraw',cz:'stáhnout, vybrat (peníze)',ph:'/wɪðˈdrɔː/',cat:'Finance'},
+  {w:'witness',cz:'svědek',ph:'/ˈwɪtnəs/',cat:'Lidé'},
+  {w:'worthwhile',cz:'stojící za to',ph:'/ˌwɜːθˈwaɪl/',cat:'Přídavná jména'},
+  {w:'wound',cz:'zranění',ph:'/wuːnd/',cat:'Zdraví'},
+  {w:'apple',cz:'jablko',ph:'/ˈæpl/',cat:'Jídlo'},
+  {w:'banana',cz:'banán',ph:'/bəˈnɑːnə/',cat:'Jídlo'},
+  {w:'butter',cz:'máslo',ph:'/ˈbʌtə/',cat:'Jídlo'},
+  {w:'cheese',cz:'sýr',ph:'/tʃiːz/',cat:'Jídlo'},
+  {w:'chicken',cz:'kuře',ph:'/ˈtʃɪkɪn/',cat:'Jídlo'},
+  {w:'egg',cz:'vejce',ph:'/eɡ/',cat:'Jídlo'},
+  {w:'fish',cz:'ryba',ph:'/fɪʃ/',cat:'Jídlo'},
+  {w:'flour',cz:'mouka',ph:'/ˈflaʊə/',cat:'Jídlo'},
+  {w:'garlic',cz:'česnek',ph:'/ˈɡɑːlɪk/',cat:'Jídlo'},
+  {w:'honey',cz:'med',ph:'/ˈhʌni/',cat:'Jídlo'},
+  {w:'lemon',cz:'citron',ph:'/ˈlemən/',cat:'Jídlo'},
+  {w:'milk',cz:'mléko',ph:'/mɪlk/',cat:'Jídlo'},
+  {w:'onion',cz:'cibule',ph:'/ˈʌnjən/',cat:'Jídlo'},
+  {w:'pepper',cz:'pepř, paprika',ph:'/ˈpepə/',cat:'Jídlo'},
+  {w:'potato',cz:'brambora',ph:'/pəˈteɪtəʊ/',cat:'Jídlo'},
+  {w:'rice',cz:'rýže',ph:'/raɪs/',cat:'Jídlo'},
+  {w:'salt',cz:'sůl',ph:'/sɔːlt/',cat:'Jídlo'},
+  {w:'sugar',cz:'cukr',ph:'/ˈʃʊɡə/',cat:'Jídlo'},
+  {w:'tomato',cz:'rajče',ph:'/təˈmɑːtəʊ/',cat:'Jídlo'},
+  {w:'vegetable',cz:'zelenina',ph:'/ˈvedʒtəbl/',cat:'Jídlo'},
+  {w:'ambulance',cz:'sanitka',ph:'/ˈæmbjələns/',cat:'Zdraví'},
+  {w:'bandage',cz:'obvaz',ph:'/ˈbændɪdʒ/',cat:'Zdraví'},
+  {w:'blood',cz:'krev',ph:'/blʌd/',cat:'Zdraví'},
+  {w:'bone',cz:'kost',ph:'/bəʊn/',cat:'Tělo'},
+  {w:'clinic',cz:'klinika',ph:'/ˈklɪnɪk/',cat:'Zdraví'},
+  {w:'cough',cz:'kašel',ph:'/kɒf/',cat:'Zdraví'},
+  {w:'dentist',cz:'zubař',ph:'/ˈdentɪst/',cat:'Zdraví'},
+  {w:'fever',cz:'horečka',ph:'/ˈfiːvə/',cat:'Zdraví'},
+  {w:'headache',cz:'bolest hlavy',ph:'/ˈhedeɪk/',cat:'Zdraví'},
+  {w:'nurse',cz:'zdravotní sestra',ph:'/nɜːs/',cat:'Práce'},
+  {w:'pharmacy',cz:'lékárna',ph:'/ˈfɑːməsi/',cat:'Zdraví'},
+  {w:'surgery',cz:'operace',ph:'/ˈsɜːdʒəri/',cat:'Zdraví'},
+  {w:'symptom',cz:'příznak',ph:'/ˈsɪmptəm/',cat:'Zdraví'},
+  {w:'vaccine',cz:'očkovací látka',ph:'/ˈvæksiːn/',cat:'Zdraví'},
+  {w:'baggage',cz:'zavazadlo',ph:'/ˈbæɡɪdʒ/',cat:'Cestování'},
+  {w:'boarding',cz:'nástup (do letadla)',ph:'/ˈbɔːdɪŋ/',cat:'Cestování'},
+  {w:'platform',cz:'nástupiště',ph:'/ˈplætfɔːm/',cat:'Cestování'},
+  {w:'visa',cz:'vízum',ph:'/ˈviːzə/',cat:'Cestování'},
+  {w:'voyage',cz:'plavba',ph:'/ˈvɔɪɪdʒ/',cat:'Cestování'},
+  {w:'basement',cz:'sklep',ph:'/ˈbeɪsmənt/',cat:'Bydlení'},
+  {w:'ceiling',cz:'strop',ph:'/ˈsiːlɪŋ/',cat:'Bydlení'},
+  {w:'curtain',cz:'záclona',ph:'/ˈkɜːtn/',cat:'Bydlení'},
+  {w:'fence',cz:'plot',ph:'/fens/',cat:'Bydlení'},
+  {w:'furniture',cz:'nábytek',ph:'/ˈfɜːnɪtʃə/',cat:'Bydlení'},
+  {w:'roof',cz:'střecha',ph:'/ruːf/',cat:'Bydlení'},
+  {w:'staircase',cz:'schodiště',ph:'/ˈsteəkeɪs/',cat:'Bydlení'},
+  {w:'tenant',cz:'nájemník',ph:'/ˈtenənt/',cat:'Bydlení'},
+  {w:'apply',cz:'ucházet se, aplikovat',ph:'/əˈplaɪ/',cat:'Práce'},
+  {w:'colleague',cz:'kolega',ph:'/ˈkɒliːɡ/',cat:'Práce'},
+  {w:'interview',cz:'pohovor',ph:'/ˈɪntəvjuː/',cat:'Práce'},
+  {w:'manager',cz:'manažer',ph:'/ˈmænɪdʒə/',cat:'Práce'},
+  {w:'overtime',cz:'přesčas',ph:'/ˈəʊvətaɪm/',cat:'Práce'},
+  {w:'salary',cz:'plat',ph:'/ˈsæləri/',cat:'Finance'},
+  {w:'staff',cz:'personál',ph:'/stɑːf/',cat:'Práce'},
+  {w:'task',cz:'úkol',ph:'/tɑːsk/',cat:'Práce'},
+  {w:'workplace',cz:'pracoviště',ph:'/ˈwɜːkpleɪs/',cat:'Práce'},
+  {w:'browser',cz:'prohlížeč',ph:'/ˈbraʊzə/',cat:'Technika'},
+  {w:'file',cz:'soubor',ph:'/faɪl/',cat:'Technika'},
+  {w:'screen',cz:'obrazovka',ph:'/skriːn/',cat:'Technika'},
+  {w:'software',cz:'software',ph:'/ˈsɒftweə/',cat:'Technika'},
+  {w:'ancestor',cz:'předek',ph:'/ˈænsestə/',cat:'Rodina'},
+  {w:'cousin',cz:'bratranec/sestřenice',ph:'/ˈkʌzn/',cat:'Rodina'},
+  {w:'nephew',cz:'synovec',ph:'/ˈnefjuː/',cat:'Rodina'},
+  {w:'niece',cz:'neteř',ph:'/niːs/',cat:'Rodina'},
+  {w:'sibling',cz:'sourozenec',ph:'/ˈsɪblɪŋ/',cat:'Rodina'},
+  {w:'widow',cz:'vdova',ph:'/ˈwɪdəʊ/',cat:'Rodina'},
+  {w:'blizzard',cz:'sněhová bouře',ph:'/ˈblɪzəd/',cat:'Počasí'},
+  {w:'breeze',cz:'vánek',ph:'/briːz/',cat:'Počasí'},
+  {w:'drought',cz:'sucho',ph:'/draʊt/',cat:'Počasí'},
+  {w:'flood',cz:'povodeň',ph:'/flʌd/',cat:'Počasí'},
+  {w:'humidity',cz:'vlhkost',ph:'/hjuːˈmɪdəti/',cat:'Počasí'},
+  {w:'lightning',cz:'blesk',ph:'/ˈlaɪtnɪŋ/',cat:'Počasí'},
+  {w:'thunder',cz:'hrom',ph:'/ˈθʌndə/',cat:'Počasí'},
+  {w:'ant',cz:'mravenec',ph:'/ænt/',cat:'Zvířata'},
+  {w:'bear',cz:'medvěd',ph:'/beə/',cat:'Zvířata'},
+  {w:'butterfly',cz:'motýl',ph:'/ˈbʌtəflaɪ/',cat:'Zvířata'},
+  {w:'eagle',cz:'orel',ph:'/ˈiːɡl/',cat:'Zvířata'},
+  {w:'goat',cz:'koza',ph:'/ɡəʊt/',cat:'Zvířata'},
+  {w:'lion',cz:'lev',ph:'/ˈlaɪən/',cat:'Zvířata'},
+  {w:'owl',cz:'sova',ph:'/aʊl/',cat:'Zvířata'},
+  {w:'rabbit',cz:'králík',ph:'/ˈræbɪt/',cat:'Zvířata'},
+  {w:'snake',cz:'had',ph:'/sneɪk/',cat:'Zvířata'},
+  {w:'spider',cz:'pavouk',ph:'/ˈspaɪdə/',cat:'Zvířata'},
+];
+
+/* ===== SLOVÍČKA STATE ===== */
+let vocQueue=[], vocIdx=0, vocDone=0, vocCorrectCount=0, vocScoreSum=0;
+let vocCat='Vše', vocRecRunning=false, vocRecObj=null;
+
+// Naučená slovíčka — localStorage
+function vocGetLearned(){
+  try{ return JSON.parse(localStorage.getItem('su_voc_learned')||'[]'); }catch(e){ return []; }
+}
+function vocSaveLearned(arr){
+  try{ localStorage.setItem('su_voc_learned', JSON.stringify(arr)); }catch(e){}
+}
+function vocIsLearned(word){
+  return vocGetLearned().indexOf(word)!==-1;
+}
+function vocMarkLearned(){
+  if(vocIdx>=vocQueue.length) return;
+  const w=vocQueue[vocIdx];
+  const arr=vocGetLearned();
+  if(arr.indexOf(w.w)===-1){ arr.push(w.w); vocSaveLearned(arr); }
+  document.getElementById('btnVocLearned').style.display='none';
+  updateVocStats();
+  // Přejít na další po 400ms
+  setTimeout(vocNextWord, 400);
+}
+function vocResetLearned(){
+  if(!confirm('Opravdu resetovat všechna naučená slovíčka?')) return;
+  try{ localStorage.removeItem('su_voc_learned'); }catch(e){}
+  updateVocStats();
+  vocBuildQueue();
+}
+
+function vocInit(){
+  // Kategorie tlačítka
+  const cats=['Vše',...new Set(VOC.map(function(v){return v.cat;}))];
+  const bar=document.getElementById('vocCatBar');
+  bar.innerHTML='';
+  cats.forEach(function(c){
+    const b=document.createElement('button');
+    b.className='voc-cat-btn'+(c===vocCat?' active':'');
+    b.textContent=c;
+    b.onclick=function(){
+      vocCat=c;
+      document.querySelectorAll('.voc-cat-btn').forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      vocBuildQueue();
+    };
+    bar.appendChild(b);
+  });
+  document.getElementById('vocTotal').textContent=VOC.length;
+  vocBuildQueue();
+}
+
+function vocBuildQueue(){
+  const learned=vocGetLearned();
+  const src=vocCat==='Vše'?VOC:VOC.filter(function(v){return v.cat===vocCat;});
+  // Oddělení: nenaučená + naučená (nenaučená první)
+  const notLearned=src.filter(function(v){ return learned.indexOf(v.w)===-1; });
+  const learnedSrc=src.filter(function(v){ return learned.indexOf(v.w)!==-1; });
+  vocQueue=shuffle([...notLearned]).concat(shuffle([...learnedSrc]));
+  if(vocQueue.length===0) vocQueue=shuffle([...src]);
+  vocIdx=0; vocDone=0; vocCorrectCount=0; vocScoreSum=0;
+  updateVocStats();
+  vocShowWord();
+}
+
+function vocShowWord(){
+  if(vocIdx>=vocQueue.length) vocIdx=0;
+  const w=vocQueue[vocIdx];
+  const learned=vocGetLearned();
+  const isLearned=learned.indexOf(w.w)!==-1;
+  const learnedBadge=isLearned?' <span class="voc-learned-badge">✅ naučeno</span>':'';
+  document.getElementById('vocCat').innerHTML=w.cat+learnedBadge;
+  document.getElementById('vocEn').textContent=w.w;
+  document.getElementById('vocPhonetic').textContent=w.ph||'';
+  document.getElementById('vocCz').textContent=w.cz;
+  document.getElementById('vocCz').classList.remove('show');
+  document.getElementById('vocHeard').textContent='Stiskni 🎤 a vyslov slovo anglicky…';
+  document.getElementById('vocResult').classList.remove('show');
+  document.getElementById('vocResult').className='voc-result';
+  document.getElementById('vocNext').classList.add('show');
+  document.getElementById('btnVocLearned').style.display='none';
+  document.getElementById('btnVocMic').textContent='🎤 Vyslovit';
+  document.getElementById('btnVocMic').classList.remove('listening');
+  document.getElementById('btnVocMic').disabled=false;
+}
+
+function vocPlay(){
+  const w=vocQueue[vocIdx];
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(w.w);
+  u.lang=ttsLang; u.rate=0.8;
+  window.speechSynthesis.speak(u);
+}
+
+function vocShowCz(){
+  document.getElementById('vocCz').classList.add('show');
+  // Zobrazit "Naučeno" tlačítko pokud pct >= 65
+  const lb=document.getElementById('btnVocLearned');
+  if(pct>=65 && !vocIsLearned(vocQueue[vocIdx].w)){
+    lb.style.display='block';
+  } else {
+    lb.style.display='none';
+  }
+}
+
+function vocNextWord(){
+  window.speechSynthesis.cancel();
+  if(vocRecRunning) vocStopMic();
+  vocIdx++;
+  vocShowWord();
+}
+
+function updateVocStats(){
+  const learned=vocGetLearned();
+  const catSrc=vocCat==='Vše'?VOC:VOC.filter(function(v){return v.cat===vocCat;});
+  const learnedInCat=catSrc.filter(function(v){return learned.indexOf(v.w)!==-1;}).length;
+  document.getElementById('vocDone').textContent=vocDone;
+  document.getElementById('vocAvgPct').textContent=vocDone>0?Math.round(vocScoreSum/vocDone)+'%':'—';
+  document.getElementById('vocLearnedCount').textContent=learnedInCat+'/'+catSrc.length;
+  document.getElementById('vocTotal').textContent=catSrc.length;
+}
+
+function vocToggleMic(){
+  if(vocRecRunning){vocStopMic();return;}
+  vocStartMic();
+}
+
+function vocStartMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){document.getElementById('vocHeard').textContent='❌ Mikrofon nepodporován.';return;}
+  vocRecObj=new SR();
+  vocRecObj.lang='en-US'; vocRecObj.interimResults=false; vocRecObj.maxAlternatives=3;
+  const btn=document.getElementById('btnVocMic');
+  vocRecObj.onstart=function(){
+    vocRecRunning=true;
+    btn.textContent='⏹ Zastavit';
+    btn.classList.add('listening');
+    document.getElementById('vocHeard').textContent='🎤 Poslouchám…';
+  };
+  vocRecObj.onresult=function(ev){
+    let heard='', conf=0;
+    for(let i=0;i<ev.results[0].length;i++){
+      heard+=ev.results[0][i].transcript+' ';
+      if(ev.results[0][i].confidence>conf) conf=ev.results[0][i].confidence;
+    }
+    heard=heard.trim().toLowerCase();
+    document.getElementById('vocHeard').textContent='Slyšeno: '+heard;
+    vocEvalPronunciation(heard, conf);
+  };
+  vocRecObj.onerror=function(ev){
+    document.getElementById('vocHeard').textContent=ev.error==='no-speech'?'Nic neslyšeno.':'❌ '+ev.error;
+    vocRecRunning=false;
+    btn.textContent='🎤 Vyslovit'; btn.classList.remove('listening');
+  };
+  vocRecObj.onend=function(){
+    vocRecRunning=false;
+    btn.textContent='🎤 Vyslovit'; btn.classList.remove('listening');
+  };
+  vocRecObj.start();
+}
+
+function vocStopMic(){if(vocRecObj&&vocRecRunning) vocRecObj.stop();}
+
+function vocEvalPronunciation(heard, confidence){
+  const w=vocQueue[vocIdx];
+  const target=w.w.toLowerCase().trim();
+  const heardClean=heard.trim();
+
+  // Podobnost: similarity + confidence
+  const sim=similarityPct(heardClean, target);
+  const confPct=Math.round((confidence||0)*100);
+  // Bonus: pokud heard přímo obsahuje target word, minimálně 80%
+  const containsBonus=(heardClean===target||heardClean.includes(target))?Math.max(sim,85):sim;
+  const combined=Math.round(confPct*0.45 + containsBonus*0.55);
+  const pct=Math.min(100, Math.max(combined, confPct>0?combined:sim));
+
+  const correct=(pct>=65);
+  vocDone++; vocScoreSum+=pct; if(correct) vocCorrectCount++;
+  updateVocStats();
+
+  // Hodnocení
+  let label, emoji;
+  if(pct>=90){ label='Angličan rozumí bez problémů'; emoji='🏆'; }
+  else if(pct>=75){ label='Angličan by ti rozuměl'; emoji='✅'; }
+  else if(pct>=55){ label='Celkem srozumitelné'; emoji='⚠️'; }
+  else { label='Zkus výslovnost znovu'; emoji='❌'; }
+
+  // Barevný progress bar pro %
+  let barColor = pct>=75?'#00ff88':pct>=55?'#ffcc00':'#ff4466';
+
+  const res=document.getElementById('vocResult');
+  res.classList.add('show');
+  res.className='voc-result '+(correct?'ok':'bad')+' show';
+  res.innerHTML=
+    '<div style="font-size:1.6rem;font-weight:700;color:'+barColor+';">'+pct+'%</div>'
+   +'<div style="font-size:.8rem;margin:2px 0 8px;">'+emoji+' '+label+'</div>'
+   +'<div style="background:rgba(255,255,255,.08);border-radius:6px;height:8px;overflow:hidden;">'
+   +'<div style="width:'+pct+'%;height:8px;border-radius:6px;background:'+barColor+';transition:width .4s;"></div>'
+   +'</div>'
+   +(correct?'':'<div style="font-size:.75rem;margin-top:8px;opacity:.6;">Cíl: <b>'+escHtml(w.w)+'</b></div>');
+
+  document.getElementById('vocCz').classList.add('show');
+}
+
+
+</script>
+</body>
+</html>

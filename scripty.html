@@ -131,7 +131,7 @@ button{
   <div class="head">
     <div class="gear" id="gear">⚙️</div>
     <div class="title">SCRIPTY</div>
-  <div style="font-size:.38rem;color:#000000;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v3.0</div>
+  <div style="font-size:.38rem;color:#000000;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v3.1</div>
   </div>
   <div style="position:relative;z-index:2;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
     <button onclick="(window.top||window).open('https://console.firebase.google.com/u/1/project/kladyxland/usage','_blank','noopener,noreferrer')" style="display:inline-block;padding:6px 16px;border:1.5px solid rgba(255,165,0,.6);border-radius:8px;background:rgba(255,165,0,.08);color:#ffa500;font-family:'Orbitron',monospace;font-size:.38rem;letter-spacing:.12em;font-weight:700;cursor:pointer;box-shadow:0 0 8px rgba(255,165,0,.2);">
@@ -294,6 +294,12 @@ button{
       {c:'sudo systemctl restart kladyx-tapobridge',d:'Restart'},
       {c:'sudo systemctl status kladyx-tapobridge',d:'Stav'}
     ]},
+    {s:'LAMPA (kladyx-plugbridge)',cmds:[
+      {c:'sudo systemctl restart kladyx-plugbridge',d:'Restart'},
+      {c:'sudo systemctl status kladyx-plugbridge',d:'Stav'},
+      {c:'sudo journalctl -u kladyx-plugbridge -n 20 --no-pager',d:'Log 20 řádků'},
+      {c:'sudo systemctl reset-failed kladyx-plugbridge; sudo systemctl start kladyx-plugbridge',d:'Reset po pádu + start'}
+    ]},
     {s:'IR (kladyx-irbridge)',cmds:[
       {c:'sudo systemctl restart kladyx-irbridge',d:'Restart'},
       {c:'sudo systemctl status kladyx-irbridge',d:'Stav'}
@@ -302,6 +308,12 @@ button{
       {c:'sudo systemctl restart kladyx-pimonitor',d:'Pi Monitor'},
       {c:'sudo systemctl restart kladyx-prijatelister',d:'Prijate Lister'},
       {c:'sudo systemctl restart kladyx-uploadserver',d:'Upload Server'}
+    ]},
+    {s:'DIAGNOSTIKA',cmds:[
+      {c:'ps -eo pid,etime,args | grep -E "tapo-bridge|plug_bridge|tuya_bridge|ir-bridge|pi_monitor|pi_transfer|prijate_lister" | grep -v grep',d:'Kontrola duplicit - kazdy skript 1x'},
+      {c:"systemctl list-units --type=service --state=running --no-pager --no-legend | grep -i kladyx | awk '{print $1}'",d:'Bezici sluzby'},
+      {c:'systemctl is-enabled kladyx-tapo tapo-bridge kladyx-plugbridge kladyx-tapo-py',d:'Autostart po restartu'},
+      {c:'sudo journalctl -u kladyx-plugbridge -f --no-pager',d:'Sledovat log zive'}
     ]},
     {s:'PYTHON / PIP',cmds:[
       {c:'pip3 show python-kasa',d:'Verze kasa'},
@@ -322,7 +334,22 @@ button{
       {c:'vcgencmd measure_temp',d:'Teplota CPU'},
       {c:'crontab -l',d:'Crony'},
       {c:'cat /home/pi/uptime_total.txt',d:'Celkový uptime Pi4'},
-      {c:'python3 /home/pi/uptime_tracker.py',d:'Aktualizuj uptime teď'}
+      {c:'python3 /home/pi/uptime_tracker.py',d:'Aktualizuj uptime teď'},
+      {c:'R1=$(cat /sys/class/net/eth0/statistics/rx_bytes); sleep 60; R2=$(cat /sys/class/net/eth0/statistics/rx_bytes); echo "RX/den odhad: $(((R2-R1)*1440/1048576)) MB"',d:'Provoz Pi4 - meri 60s'},
+      {c:'sudo timeout 70 nethogs -t -v 1 -d 60 | tail -25',d:'Provoz podle procesu - 70s'}
+    ]},
+    {s:'FIREBASE STAVY',cmds:[
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/tuyaDb.json"',d:'Stav lampy'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/tapoDb.json"',d:'Stav DJ Studio P115'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/tapoDbP100.json"',d:'Stav TV Sharp P100'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/piStats/services.json"',d:'Stavy sluzeb v piStats'}
+    ]},
+    {s:'TUYA CLOUD',cmds:[
+      {c:'cd /home/pi/tuya && python3 -c "import tinytuya;c=tinytuya.Cloud(apiRegion=\'eu\',apiKey=\'xmsau3w4d9ewgw9gjrwr\',apiSecret=\'039a3435e19c43d4853dcb24b8f149f6\');[print(d.get(\'id\'),\'|\',d.get(\'name\')) for d in c.getdevices()]"',d:'Seznam zarizeni + ID'},
+      {c:'cd /home/pi/tuya && python3 -c "import tinytuya,json;c=tinytuya.Cloud(apiRegion=\'eu\',apiKey=\'xmsau3w4d9ewgw9gjrwr\',apiSecret=\'039a3435e19c43d4853dcb24b8f149f6\');print(json.dumps(c.getstatus(\'bf2e719a4cae09486dgar5\'),indent=1))"',d:'Stav lampy z Tuya cloudu'}
+    ]},
+    {s:'FIREBASE RULES',cmds:[
+      {c:'cd /home/pi/tapo && python3 -c "import firebase_admin;from firebase_admin import credentials;import urllib.request,glob;cred=credentials.Certificate([f for f in glob.glob(\'*.json\') if \'firebase\' in f.lower()][0]);app=firebase_admin.initialize_app(cred,{\'databaseURL\':\'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app\'});token=app.credential.get_access_token().access_token;req=urllib.request.Request(\'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/.settings/rules.json\',headers={\'Authorization\':\'Bearer \'+token});print(urllib.request.urlopen(req).read().decode());firebase_admin.delete_app(app)"',d:'RTDB Rules'}
     ]}
   ];
   var t=document.getElementById('cmd-table');
