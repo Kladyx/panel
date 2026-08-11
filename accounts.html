@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="v1.1Kl">
+<meta name="version" content="v1.3Kl">
 <title>ACCOUNTS · KLADYXLAND</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -304,14 +304,64 @@
     height: 1px;
     background: rgba(0,245,255,.1);
   }
+  /* LOCK SCREEN */
+  #accounts-lock {
+    position: fixed; inset: 0;
+    background: #000a1a;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px; z-index: 999;
+  }
+  #accounts-lock .lock-icon { font-size: 2.2rem; }
+  #accounts-lock .lock-title {
+    font-size: 1rem; font-weight: 900;
+    letter-spacing: .2em; color: #00f5ff;
+    text-shadow: 0 0 18px rgba(0,245,255,.5);
+  }
+  #accounts-lock .lock-sub {
+    font-size: .5rem; letter-spacing: .2em;
+    color: rgba(0,245,255,.35);
+  }
+  #accounts-lock .lock-btn {
+    margin-top: 8px;
+    padding: 12px 28px;
+    background: rgba(0,245,255,.08);
+    border: 1.5px solid rgba(0,245,255,.4);
+    border-radius: 8px;
+    color: #00f5ff;
+    font-family: 'Orbitron', monospace;
+    font-size: .58rem; letter-spacing: .18em;
+    cursor: pointer; font-weight: 700;
+    transition: background .2s;
+  }
+  #accounts-lock .lock-btn:hover { background: rgba(0,245,255,.18); }
+  #accounts-lock .lock-err {
+    font-size: .55rem; color: #ff4466;
+    letter-spacing: .1em; min-height: 16px;
+  }
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 </head>
 <body>
 
+<!-- LOCK -->
+<div id="accounts-lock" style="display:none;">
+  <div class="lock-icon">🔐</div>
+  <div class="lock-title">ACCOUNTS</div>
+  <div class="lock-sub">KLADYXLAND · PŘIHLÁŠENÍ VYŽADOVÁNO</div>
+  <button class="lock-btn" onclick="_signIn()">⚡ PŘIHLÁSIT PŘES GOOGLE</button>
+  <div class="lock-err" id="accounts-lock-err"></div>
+</div>
+
+<!-- MAIN -->
+<div id="accounts-main" style="display:none;">
 <div class="header">
   <h1>⚡ ACCOUNTS</h1>
   <div class="sub">KLADYXLAND · SPRÁVA ÚČTŮ</div>
-  <div class="version">v1.1Kl</div>
+  <div class="version">v1.3Kl</div>
+  <div style="margin-top:8px;"><span id="sync-dot" style="font-size:.65rem;color:#4a6d90;letter-spacing:.08em;">⏳ Načítám...</span></div>
 </div>
 
 <!-- FORM -->
@@ -367,24 +417,103 @@
 <div class="counter" id="counter">0 účtů</div>
 <div class="acc-list" id="acc-list"></div>
 
+</div><!-- /accounts-main -->
+
 <div class="toast" id="toast"></div>
 
 <script>
 const STORE_KEY = 'kladyx_accounts_v1';
+const _fbCfg = {
+  apiKey: "AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",
+  authDomain: "kladyxland.firebaseapp.com",
+  databaseURL: "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "kladyxland",
+  storageBucket: "kladyxland.firebasestorage.app",
+  messagingSenderId: "178078059030",
+  appId: "1:178078059030:web:8d8a0271b23a7aca2b4337"
+};
+var _ref = null;
+var _dataInited = false;
 
-function load() {
-  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
-  catch(e) { return []; }
-}
-function save(data) {
-  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+function setSyncStatus(msg, color) {
+  var el = document.getElementById('sync-dot');
+  if (el) { el.textContent = msg; el.style.color = color || '#4a6d90'; }
 }
 
 function toast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 2000);
+  setTimeout(function() { t.classList.remove('show'); }, 2000);
+}
+
+function _showLock() {
+  document.getElementById('accounts-lock').style.display = 'flex';
+  document.getElementById('accounts-main').style.display = 'none';
+}
+function _hideLock() {
+  document.getElementById('accounts-lock').style.display = 'none';
+  document.getElementById('accounts-main').style.display = 'block';
+  _initData();
+}
+
+function _setupAuth(auth, db) {
+  _ref = db.ref('accounts');
+  auth.onAuthStateChanged(function(user) {
+    if (user) { _hideLock(); } else { _showLock(); }
+  });
+}
+
+// Přebere session od parent._gateAuth (Panel), fallback standalone
+(function _connectAuth(attempt) {
+  try {
+    if (parent && parent !== self && parent._gateAuth) {
+      var pdb = null;
+      try { pdb = parent.firebase.app('gate-app').database(); } catch(e) {}
+      if (!pdb) {
+        try { if (!firebase.apps.length) firebase.initializeApp(_fbCfg); } catch(e2) {}
+        pdb = firebase.database();
+      }
+      _setupAuth(parent._gateAuth, pdb);
+      return;
+    }
+  } catch(e) {}
+  if (attempt < 8) {
+    setTimeout(function() { _connectAuth(attempt + 1); }, 250);
+  } else {
+    try { if (!firebase.apps.length) firebase.initializeApp(_fbCfg); } catch(e) {}
+    _setupAuth(firebase.auth(), firebase.database());
+  }
+})(0);
+
+function _signIn() {
+  try {
+    if (parent && parent !== self && typeof parent.googleSignIn === 'function') {
+      parent.googleSignIn(); return;
+    }
+  } catch(e) {}
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithRedirect(provider)
+    .catch(function(e) {
+      document.getElementById('accounts-lock-err').textContent = '✗ ' + (e.message || 'Chyba přihlášení');
+    });
+}
+
+function _initData() {
+  if (_dataInited) return;
+  _dataInited = true;
+  setSyncStatus('⏳ Načítám...', '#f39c12');
+  _ref.on('value', function(snap) {
+    var obj = snap.val() || {};
+    var data = Object.values(obj);
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch(e) {}
+    setSyncStatus('✅ Synchronizováno', '#2ecc71');
+    _renderFromData(data);
+  }, function(err) {
+    console.error('Firebase read error:', err);
+    setSyncStatus('❌ Chyba čtení', '#e74c3c');
+    try { _renderFromData(JSON.parse(localStorage.getItem(STORE_KEY)) || []); } catch(e) {}
+  });
 }
 
 function addAccount() {
@@ -395,70 +524,44 @@ function addAccount() {
   var kod = document.getElementById('f-kod').value.trim();
   var iban = document.getElementById('f-iban').value.trim();
   var poznamka = document.getElementById('f-poznamka').value.trim();
-
-  if (!jmeno || !prijmeni || !cislo || !kod) {
-    toast('⚠ VYPLŇTE POVINNÁ POLE');
-    return;
-  }
-
+  if (!jmeno || !prijmeni || !cislo || !kod) { toast('⚠ VYPLŇTE POVINNÁ POLE'); return; }
   var ucet = predcisli ? predcisli + '-' + cislo + '/' + kod : cislo + '/' + kod;
-
-  var data = load();
-  data.push({
-    id: Date.now(),
-    jmeno: jmeno,
-    prijmeni: prijmeni,
-    ucet: ucet,
-    iban: iban,
-    poznamka: poznamka
+  var id = Date.now();
+  setSyncStatus('⏳ Ukládám...', '#f39c12');
+  _ref.child('id_' + id).set({ id: id, jmeno: jmeno, prijmeni: prijmeni, ucet: ucet, iban: iban, poznamka: poznamka })
+    .then(function() { setSyncStatus('✅ Synchronizováno', '#2ecc71'); toast('✓ ÚČET ULOŽEN'); })
+    .catch(function(e) { console.error(e); setSyncStatus('❌ Chyba uložení', '#e74c3c'); toast('⚠ CHYBA ULOŽENÍ'); });
+  ['f-jmeno','f-prijmeni','f-predcisli','f-cislo','f-kod','f-iban','f-poznamka'].forEach(function(fid) {
+    document.getElementById(fid).value = '';
   });
-  save(data);
-
-  // Reset
-  ['f-jmeno','f-prijmeni','f-predcisli','f-cislo','f-kod','f-iban','f-poznamka'].forEach(function(id){
-    var el = document.getElementById(id);
-    el.value = '';
-  });
-
-  toast('✓ ÚČET ULOŽEN');
-  renderList();
 }
 
 function deleteAccount(id) {
-  var data = load().filter(function(a){ return a.id !== id; });
-  save(data);
-  renderList();
-  toast('✗ ÚČET ODSTRANĚN');
+  setSyncStatus('⏳ Mažu...', '#f39c12');
+  _ref.child('id_' + id).remove()
+    .then(function() { setSyncStatus('✅ Synchronizováno', '#2ecc71'); toast('✗ ÚČET ODSTRANĚN'); })
+    .catch(function(e) { console.error(e); setSyncStatus('❌ Chyba mazání', '#e74c3c'); });
 }
 
 function copyText(text) {
-  navigator.clipboard.writeText(text).then(function(){
-    toast('✓ ZKOPÍROVÁNO');
-  }).catch(function(){
-    toast('⚠ KOPÍROVÁNÍ SELHALO');
-  });
+  navigator.clipboard.writeText(text).then(function() { toast('✓ ZKOPÍROVÁNO'); })
+    .catch(function() { toast('⚠ KOPÍROVÁNÍ SELHALO'); });
 }
 
 function renderList() {
-  var data = load();
+  try { _renderFromData(JSON.parse(localStorage.getItem(STORE_KEY)) || []); } catch(e) {}
+}
+
+function _renderFromData(data) {
   var q = document.getElementById('search').value.trim().toLowerCase();
-  if (q) {
-    data = data.filter(function(a){
-      return (a.jmeno+' '+a.prijmeni+' '+a.ucet+' '+a.iban+' '+a.poznamka).toLowerCase().includes(q);
-    });
-  }
-
-  document.getElementById('counter').textContent = data.length + ' účt' + (data.length===1?'':'ů');
-
-  data.sort(function(a,b){ return (a.prijmeni+a.jmeno).localeCompare(b.prijmeni+b.jmeno,'cs'); });
-
+  var filtered = q ? data.filter(function(a) {
+    return (a.jmeno + ' ' + a.prijmeni + ' ' + a.ucet + ' ' + a.iban + ' ' + a.poznamka).toLowerCase().includes(q);
+  }) : data;
+  document.getElementById('counter').textContent = filtered.length + ' účt' + (filtered.length === 1 ? '' : 'ů');
+  filtered.sort(function(a, b) { return (a.prijmeni + a.jmeno).localeCompare(b.prijmeni + b.jmeno, 'cs'); });
   var list = document.getElementById('acc-list');
-  if (!data.length) {
-    list.innerHTML = '<div class="empty">ŽÁDNÉ ÚČTY</div>';
-    return;
-  }
-
-  list.innerHTML = data.map(function(a){
+  if (!filtered.length) { list.innerHTML = '<div class="empty">ŽÁDNÉ ÚČTY</div>'; return; }
+  list.innerHTML = filtered.map(function(a) {
     return '<div class="acc-card">' +
       '<div class="acc-name">' + a.jmeno.toUpperCase() + ' ' + a.prijmeni.toUpperCase() + '</div>' +
       '<div class="acc-field"><span class="acc-field-label">ČÍSLO ÚČTU</span><span class="acc-field-val">' + a.ucet + '</span></div>' +
@@ -472,8 +575,6 @@ function renderList() {
     '</div>';
   }).join('');
 }
-
-renderList();
 </script>
 </body>
 </html>
