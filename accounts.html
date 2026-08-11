@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="version" content="v1.1Kl">
+<title>ACCOUNTS · KLADYXLAND</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #000a1a;
+    color: #c8e6f0;
+    font-family: 'Orbitron', monospace;
+    min-height: 100vh;
+    padding: 20px 16px 60px;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 24px 0 20px;
+    border-bottom: 1px solid rgba(0,245,255,.15);
+    margin-bottom: 24px;
+  }
+  .header h1 {
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: .25em;
+    color: #00f5ff;
+    text-shadow: 0 0 18px rgba(0,245,255,.6);
+  }
+  .header .sub {
+    font-size: .55rem;
+    letter-spacing: .2em;
+    color: rgba(0,245,255,.4);
+    margin-top: 4px;
+  }
+  .version {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: .5rem;
+    padding: 3px 10px;
+    border: 1px solid rgba(0,245,255,.3);
+    border-radius: 20px;
+    color: rgba(0,245,255,.5);
+  }
+
+  /* FORM */
+  .form-card {
+    background: rgba(0,20,40,.7);
+    border: 1px solid rgba(0,245,255,.2);
+    border-radius: 12px;
+    padding: 20px 16px;
+    margin-bottom: 24px;
+  }
+  .form-title {
+    font-size: .6rem;
+    letter-spacing: .2em;
+    color: rgba(0,245,255,.5);
+    margin-bottom: 16px;
+  }
+  .form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .form-group {
+    flex: 1;
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .form-group label {
+    font-size: .48rem;
+    letter-spacing: .15em;
+    color: rgba(0,245,255,.45);
+  }
+  .form-group input, .form-group textarea {
+    background: rgba(0,10,25,.8);
+    border: 1px solid rgba(0,245,255,.25);
+    border-radius: 7px;
+    padding: 10px 12px;
+    color: #c8e6f0;
+    font-size: .75rem;
+    outline: none;
+    transition: border-color .2s;
+    width: 100%;
+  }
+  /* Čísla účtu - Times New Roman */
+  .form-group input.account-num {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: .9rem;
+    letter-spacing: .05em;
+    color: #00f5ff;
+  }
+  .form-group input:focus, .form-group textarea:focus {
+    border-color: rgba(0,245,255,.6);
+    box-shadow: 0 0 8px rgba(0,245,255,.15);
+  }
+  .form-group textarea {
+    font-family: 'Orbitron', monospace;
+    font-size: .6rem;
+    resize: none;
+    height: 60px;
+  }
+
+  /* Předčíslí + číslo účtu row */
+  .account-row {
+    display: flex;
+    gap: 6px;
+    align-items: flex-end;
+  }
+  .predcisli {
+    flex: 0 0 90px;
+  }
+  .cislo-uctu {
+    flex: 1;
+  }
+  .separator {
+    font-family: 'Times New Roman', serif;
+    font-size: 1.2rem;
+    color: rgba(0,245,255,.4);
+    padding-bottom: 10px;
+    line-height: 1;
+  }
+
+  .btn-add {
+    width: 100%;
+    padding: 13px;
+    background: rgba(0,245,255,.08);
+    border: 1.5px solid rgba(0,245,255,.4);
+    border-radius: 10px;
+    color: #00f5ff;
+    font-family: 'Orbitron', monospace;
+    font-size: .6rem;
+    letter-spacing: .2em;
+    cursor: pointer;
+    font-weight: 700;
+    margin-top: 4px;
+    transition: background .2s, box-shadow .2s;
+  }
+  .btn-add:hover {
+    background: rgba(0,245,255,.15);
+    box-shadow: 0 0 12px rgba(0,245,255,.2);
+  }
+
+  /* SEARCH */
+  .search-wrap {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .search-wrap input {
+    width: 100%;
+    background: rgba(0,10,25,.8);
+    border: 1px solid rgba(0,245,255,.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #c8e6f0;
+    font-family: 'Orbitron', monospace;
+    font-size: .6rem;
+    letter-spacing: .1em;
+    outline: none;
+  }
+  .search-wrap input::placeholder { color: rgba(0,245,255,.25); }
+
+  /* COUNTER */
+  .counter {
+    font-size: .5rem;
+    letter-spacing: .15em;
+    color: rgba(0,245,255,.35);
+    margin-bottom: 12px;
+  }
+
+  /* ACCOUNT CARDS */
+  .acc-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .acc-card {
+    background: rgba(0,15,35,.8);
+    border: 1px solid rgba(0,245,255,.18);
+    border-radius: 12px;
+    padding: 16px 14px;
+    position: relative;
+    transition: border-color .2s;
+  }
+  .acc-card:hover { border-color: rgba(0,245,255,.35); }
+
+  .acc-name {
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    color: #00f5ff;
+    text-shadow: 0 0 8px rgba(0,245,255,.3);
+    margin-bottom: 10px;
+  }
+
+  .acc-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+    gap: 8px;
+  }
+  .acc-field-label {
+    font-size: .45rem;
+    letter-spacing: .15em;
+    color: rgba(0,245,255,.35);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .acc-field-val {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: .85rem;
+    color: #e0f4ff;
+    text-align: right;
+    word-break: break-all;
+  }
+  .acc-field-val.note {
+    font-family: 'Orbitron', monospace;
+    font-size: .55rem;
+    color: rgba(200,230,240,.6);
+    letter-spacing: .05em;
+  }
+
+  .acc-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    border-top: 1px solid rgba(0,245,255,.08);
+    padding-top: 10px;
+  }
+  .btn-copy {
+    flex: 1;
+    padding: 8px;
+    background: rgba(0,245,255,.06);
+    border: 1px solid rgba(0,245,255,.2);
+    border-radius: 7px;
+    color: rgba(0,245,255,.7);
+    font-family: 'Orbitron', monospace;
+    font-size: .45rem;
+    letter-spacing: .1em;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-copy:hover { background: rgba(0,245,255,.12); }
+  .btn-del {
+    padding: 8px 14px;
+    background: rgba(255,50,50,.06);
+    border: 1px solid rgba(255,80,80,.25);
+    border-radius: 7px;
+    color: rgba(255,100,100,.7);
+    font-family: 'Orbitron', monospace;
+    font-size: .45rem;
+    letter-spacing: .1em;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-del:hover { background: rgba(255,50,50,.15); }
+
+  /* EMPTY */
+  .empty {
+    text-align: center;
+    padding: 40px 0;
+    color: rgba(0,245,255,.2);
+    font-size: .55rem;
+    letter-spacing: .15em;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: rgba(0,245,255,.15);
+    border: 1px solid rgba(0,245,255,.4);
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: .55rem;
+    letter-spacing: .15em;
+    color: #00f5ff;
+    transition: transform .3s;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* DIVIDER */
+  .section-label {
+    font-size: .5rem;
+    letter-spacing: .2em;
+    color: rgba(0,245,255,.3);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(0,245,255,.1);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⚡ ACCOUNTS</h1>
+  <div class="sub">KLADYXLAND · SPRÁVA ÚČTŮ</div>
+  <div class="version">v1.1Kl</div>
+</div>
+
+<!-- FORM -->
+<div class="form-card">
+  <div class="form-title">✦ PŘIDAT NOVÝ ÚČET</div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>JMÉNO</label>
+      <input type="text" id="f-jmeno" placeholder="Jméno">
+    </div>
+    <div class="form-group">
+      <label>PŘÍJMENÍ</label>
+      <input type="text" id="f-prijmeni" placeholder="Příjmení">
+    </div>
+  </div>
+
+  <div class="form-group" style="margin-bottom:12px;">
+    <label>ČÍSLO ÚČTU</label>
+    <div class="account-row">
+      <div class="predcisli">
+        <input type="text" id="f-predcisli" class="account-num" placeholder="předčíslí" maxlength="6">
+      </div>
+      <div class="separator">-</div>
+      <div class="cislo-uctu">
+        <input type="text" id="f-cislo" class="account-num" placeholder="číslo účtu" maxlength="10">
+      </div>
+      <div class="separator">/</div>
+      <div class="predcisli">
+        <input type="text" id="f-kod" class="account-num" placeholder="kód banky" maxlength="4">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group" style="margin-bottom:12px;">
+    <label>IBAN</label>
+    <input type="text" id="f-iban" class="account-num" placeholder="CZ00 0000 0000 0000 0000 0000">
+  </div>
+
+  <div class="form-group" style="margin-bottom:16px;">
+    <label>POZNÁMKA</label>
+    <textarea id="f-poznamka" placeholder="volitelný popis..."></textarea>
+  </div>
+
+  <button class="btn-add" onclick="addAccount()">＋ ULOŽIT ÚČET</button>
+</div>
+
+<!-- LIST -->
+<div class="section-label">ULOŽENÉ ÚČTY</div>
+<div class="search-wrap">
+  <input type="text" id="search" placeholder="🔍  HLEDAT..." oninput="renderList()">
+</div>
+<div class="counter" id="counter">0 účtů</div>
+<div class="acc-list" id="acc-list"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORE_KEY = 'kladyx_accounts_v1';
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
+  catch(e) { return []; }
+}
+function save(data) {
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+}
+
+function toast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2000);
+}
+
+function addAccount() {
+  var jmeno = document.getElementById('f-jmeno').value.trim();
+  var prijmeni = document.getElementById('f-prijmeni').value.trim();
+  var predcisli = document.getElementById('f-predcisli').value.trim();
+  var cislo = document.getElementById('f-cislo').value.trim();
+  var kod = document.getElementById('f-kod').value.trim();
+  var iban = document.getElementById('f-iban').value.trim();
+  var poznamka = document.getElementById('f-poznamka').value.trim();
+
+  if (!jmeno || !prijmeni || !cislo || !kod) {
+    toast('⚠ VYPLŇTE POVINNÁ POLE');
+    return;
+  }
+
+  var ucet = predcisli ? predcisli + '-' + cislo + '/' + kod : cislo + '/' + kod;
+
+  var data = load();
+  data.push({
+    id: Date.now(),
+    jmeno: jmeno,
+    prijmeni: prijmeni,
+    ucet: ucet,
+    iban: iban,
+    poznamka: poznamka
+  });
+  save(data);
+
+  // Reset
+  ['f-jmeno','f-prijmeni','f-predcisli','f-cislo','f-kod','f-iban','f-poznamka'].forEach(function(id){
+    var el = document.getElementById(id);
+    el.value = '';
+  });
+
+  toast('✓ ÚČET ULOŽEN');
+  renderList();
+}
+
+function deleteAccount(id) {
+  var data = load().filter(function(a){ return a.id !== id; });
+  save(data);
+  renderList();
+  toast('✗ ÚČET ODSTRANĚN');
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(function(){
+    toast('✓ ZKOPÍROVÁNO');
+  }).catch(function(){
+    toast('⚠ KOPÍROVÁNÍ SELHALO');
+  });
+}
+
+function renderList() {
+  var data = load();
+  var q = document.getElementById('search').value.trim().toLowerCase();
+  if (q) {
+    data = data.filter(function(a){
+      return (a.jmeno+' '+a.prijmeni+' '+a.ucet+' '+a.iban+' '+a.poznamka).toLowerCase().includes(q);
+    });
+  }
+
+  document.getElementById('counter').textContent = data.length + ' účt' + (data.length===1?'':'ů');
+
+  data.sort(function(a,b){ return (a.prijmeni+a.jmeno).localeCompare(b.prijmeni+b.jmeno,'cs'); });
+
+  var list = document.getElementById('acc-list');
+  if (!data.length) {
+    list.innerHTML = '<div class="empty">ŽÁDNÉ ÚČTY</div>';
+    return;
+  }
+
+  list.innerHTML = data.map(function(a){
+    return '<div class="acc-card">' +
+      '<div class="acc-name">' + a.jmeno.toUpperCase() + ' ' + a.prijmeni.toUpperCase() + '</div>' +
+      '<div class="acc-field"><span class="acc-field-label">ČÍSLO ÚČTU</span><span class="acc-field-val">' + a.ucet + '</span></div>' +
+      (a.iban ? '<div class="acc-field"><span class="acc-field-label">IBAN</span><span class="acc-field-val">' + a.iban + '</span></div>' : '') +
+      (a.poznamka ? '<div class="acc-field"><span class="acc-field-label">POZNÁMKA</span><span class="acc-field-val note">' + a.poznamka + '</span></div>' : '') +
+      '<div class="acc-actions">' +
+        '<button class="btn-copy" onclick="copyText(\'' + a.ucet + '\')">KOPÍROVAT ÚČET</button>' +
+        (a.iban ? '<button class="btn-copy" onclick="copyText(\'' + a.iban + '\')">KOPÍROVAT IBAN</button>' : '') +
+        '<button class="btn-del" onclick="deleteAccount(' + a.id + ')">✕</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+renderList();
+</script>
+</body>
+</html>
