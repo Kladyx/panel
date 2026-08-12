@@ -17716,18 +17716,23 @@ var LS_KEY="kladyx_user_apps";
 var LS_ICONS="kladyx_custom_icons";
 var _iconStorage=null;
 var _iconDb=null;
+function dbg(txt){var el=document.getElementById("top-sync-status");if(el){el.textContent=txt;el.style.color="#ffaa00";}}
 function initIconStorage(){
   try{
-    if(typeof firebase==="undefined"){setTimeout(initIconStorage,1000);return;}
+    if(typeof firebase==="undefined"){dbg("[1] Cek\u00e1m na firebase SDK...");setTimeout(initIconStorage,1000);return;}
+    dbg("[2] SDK OK, inicializuji app...");
     var app;
     try{app=firebase.app("moje_apky_icons");}
     catch(e){
       app=firebase.initializeApp({apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"},"moje_apky_icons");
     }
+    dbg("[3] App OK, storage()...");
     _iconStorage=app.storage();
+    dbg("[4] Storage OK, database()...");
     _iconDb=app.database();
+    dbg("[5] DB OK, initFirebase()...");
     initFirebase();
-  }catch(e){console.warn("initIconStorage:",e);setTimeout(initIconStorage,1500);}
+  }catch(e){dbg("[X] Chyba: "+(e&&e.message?e.message:e));console.warn("initIconStorage:",e);setTimeout(initIconStorage,1500);}
 }
 initIconStorage();
 function getStorage(){try{var s=window.parent.localStorage;s.getItem("__test__");return s;}catch(e){return localStorage;}}
@@ -17787,16 +17792,17 @@ function saveIconsLocal(){try{getStorage().setItem(LS_ICONS,JSON.stringify(_cust
 
 function initFirebase(){
   try{
-    if(!_iconDb){return;}
+    if(!_iconDb){dbg("[6] _iconDb null, opakuji za 1s");setTimeout(initFirebase,1000);return;}
+    dbg("[7] Pripojuji listener na kladyx_icons...");
     _fbRef=_iconDb.ref("kladyx_icons");
     _fbRef.on("value",function(snap){
       if(snap.exists()&&snap.val()){Object.assign(_customIcons,snap.val());saveIconsLocal();render();setSyncStatus("\u2601 Sync \u2713","#34d399");setPersistentSync(true);try{if(window.parent&&window.parent.applyCustomIcons)window.parent.applyCustomIcons();}catch(e){}}
-      else{setSyncStatus("\u2601 Online","#34d399");setPersistentSync(true);}
-    },function(){setSyncStatus("\u2601 Offline","#f87171");setPersistentSync(false);});
+      else{setSyncStatus("\u2601 Online (pr\u00E1zdno)","#34d399");setPersistentSync(true);}
+    },function(err){dbg("[X] Listener chyba: "+(err&&err.code?err.code:err));setSyncStatus("\u2601 Offline","#f87171");setPersistentSync(false);});
     if(Object.keys(_pendingSave).length>0){
       _fbRef.update(_pendingSave).then(function(){_pendingSave={};}).catch(function(){});
     }
-  }catch(e){setTimeout(initFirebase,1500);}
+  }catch(e){dbg("[X] initFirebase chyba: "+(e&&e.message?e.message:e));setTimeout(initFirebase,1500);}
 }
 
 var _pendingSave={};
