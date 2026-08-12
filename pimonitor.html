@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v4.5Pi">
-<title>Pi Monitor v4.5Pi</title>
+<meta name="version" content="v4.7Pi">
+<title>Pi Monitor v4.7Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -52,6 +52,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .dot-ok{background:var(--green);box-shadow:0 0 5px var(--green);}
 .dot-err{background:var(--red);box-shadow:0 0 5px var(--red);}
+.dot-disc{background:var(--warn);box-shadow:0 0 5px var(--warn);}
 .dot-wait{background:var(--warn);box-shadow:0 0 5px var(--warn);animation:pulse .8s infinite alternate;}
 @keyframes pulse{from{opacity:.3}to{opacity:1}}
 @keyframes pulse-green{0%{color:var(--green);text-shadow:0 0 8px var(--green)}50%{color:rgba(0,255,136,0.5)}100%{color:var(--green);text-shadow:0 0 8px var(--green)}}
@@ -61,6 +62,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .net-val.net-danger{color:var(--red);text-shadow:0 0 8px var(--red);animation:pulse-red 1.5s infinite;}
 .svc-stat.on{animation:pulse-green 1.2s infinite;}
 .svc-stat.off{animation:pulse-red 1.2s infinite;}
+.svc-stat.disc{color:var(--warn);text-shadow:0 0 8px var(--warn);animation:pulse-yellow 2s infinite;}
 .svc-name{flex:1;font-size:0.65rem;color:#c0cce0;}
 .svc-st{font-size:0.58rem;color:var(--muted);}
 /* NET */
@@ -95,7 +97,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v4.5Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v4.7Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -137,7 +139,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="svc-row"><div class="dot dot-wait" id="d-eq"></div><div class="svc-name">kladyx-equalizer</div><div class="svc-st" id="s-eq">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-irbridge"></div><div class="svc-name">kladyx-irbridge</div><div class="svc-st" id="s-irbridge">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-rpi"></div><div class="svc-name">kladyx-rpi</div><div class="svc-st" id="s-rpi">…</div></div>
-  <div class="svc-row"><div class="dot dot-wait" id="d-plugbridge"></div><div class="svc-name">kladyx-plugbridge</div><div class="svc-st" id="s-plugbridge">…</div></div>
+  <div class="svc-row"><div class="dot dot-disc" id="d-plugbridge"></div><div class="svc-name">kladyx-plugbridge</div><div class="svc-st svc-stat disc" id="s-plugbridge">DISCONNECTED</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-pitransfer"></div><div class="svc-name">kladyx-pitransfer</div><div class="svc-st" id="s-pitransfer">…</div></div>
 </div>
 
@@ -307,6 +309,11 @@ function setSvc(id,ok,isPC){
     }
     return;
   }
+  if(id==='plugbridge'&&!ok){
+    if(d)d.className='dot dot-disc';
+    if(s){s.textContent='DISCONNECTED';s.className='svc-stat disc';}
+    return;
+  }
   if(d)d.className='dot '+(ok?'dot-ok':'dot-err');
   if(s){
     s.textContent=ok?'CONNECTED ON':'CONNECTED OFF';
@@ -378,7 +385,7 @@ function showOffline(fromFirebase){
   });
   // Pi4 offline = nemame data z piStats -> u techto sluzeb nelzeme, ukazeme ?
   // tapopy a irbridge maji vlastni fetch (tapoDb/irDb lastSeen), PC sluzby resi checkPC()
-  ['tapo','prijate','plugbridge','pitransfer'].forEach(function(id){
+  ['tapo','prijate','pitransfer'].forEach(function(id){
     var d=document.getElementById('d-'+id);
     if(d)d.className='dot dot-wait';
     var s=document.getElementById('s-'+id);
@@ -455,7 +462,7 @@ function loadStats(){
     // Services z piStats - POUZE sluzby ktere skutecne bezi na Pi4 jako systemd.
     // transfer/upload/nextsync/obs jsou .bat na PC, Pi4 je nevidi -> resi checkPC()
     if(d.services){
-      ['tapo','prijate','plugbridge','pitransfer'].forEach(function(k){
+      ['tapo','prijate','pitransfer'].forEach(function(k){
         if(d.services[k]!==undefined)setSvc(k,d.services[k]===true||d.services[k]==='active');
       });
     }
@@ -468,7 +475,7 @@ function loadStats(){
     // Restarty služeb
     if(d.restarts){var rk=['tp','tb','ir','pm','pb','pt','pl'];rk.forEach(function(k){var e=document.getElementById('r-'+k);if(e){e.textContent=d.restarts[k]!==undefined?d.restarts[k]:'—';e.style.color=d.restarts[k]>0?'#ffaa00':'#00ff88';}});}
     // Aktivní skripty - ze services pole, jen ty co jsou true/active na Pi
-    var svcMap={tapo:'tapobridge',tapo_py:'tapo-py',prijate:'prijatelister',plugbridge:'plugbridge',pitransfer:'pitransfer',irbridge:'irbridge',rpi:'rpi'};
+    var svcMap={tapo:'tapobridge',tapo_py:'tapo-py',prijate:'prijatelister',pitransfer:'pitransfer',irbridge:'irbridge',rpi:'rpi'};
     _piActiveList=[];
     if(d.services){
       Object.keys(svcMap).forEach(function(k){

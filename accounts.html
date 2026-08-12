@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="v1.3Kl">
+<meta name="version" content="v1.4Kl">
 <title>ACCOUNTS · KLADYXLAND</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -259,6 +259,74 @@
     transition: background .15s;
   }
   .btn-del:hover { background: rgba(255,50,50,.15); }
+  .btn-edit {
+    padding: 8px 14px;
+    background: rgba(255,180,0,.06);
+    border: 1px solid rgba(255,180,0,.3);
+    border-radius: 7px;
+    color: rgba(255,190,0,.85);
+    font-family: 'Orbitron', monospace;
+    font-size: .45rem;
+    letter-spacing: .1em;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-edit:hover { background: rgba(255,180,0,.15); }
+
+  /* EDIT MODAL */
+  #edit-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,5,15,.93);
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 20px 16px 60px;
+  }
+  #edit-modal.open { display: block; }
+  .modal-inner {
+    background: rgba(0,20,40,.97);
+    border: 1px solid rgba(0,245,255,.3);
+    border-radius: 14px;
+    padding: 24px 18px;
+    max-width: 480px;
+    margin: 40px auto;
+  }
+  .modal-title {
+    font-size: .65rem;
+    letter-spacing: .22em;
+    color: #00f5ff;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(0,245,255,.4);
+  }
+  .btn-save {
+    flex: 1;
+    padding: 11px;
+    background: rgba(0,245,255,.1);
+    border: 1.5px solid rgba(0,245,255,.5);
+    border-radius: 8px;
+    color: #00f5ff;
+    font-family: 'Orbitron', monospace;
+    font-size: .55rem;
+    letter-spacing: .15em;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background .2s;
+  }
+  .btn-save:hover { background: rgba(0,245,255,.2); }
+  .btn-cancel {
+    padding: 11px 18px;
+    background: rgba(100,100,100,.08);
+    border: 1px solid rgba(100,100,100,.3);
+    border-radius: 8px;
+    color: rgba(200,200,200,.6);
+    font-family: 'Orbitron', monospace;
+    font-size: .55rem;
+    letter-spacing: .1em;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-cancel:hover { background: rgba(100,100,100,.18); }
 
   /* EMPTY */
   .empty {
@@ -360,7 +428,7 @@
 <div class="header">
   <h1>⚡ ACCOUNTS</h1>
   <div class="sub">KLADYXLAND · SPRÁVA ÚČTŮ</div>
-  <div class="version">v1.3Kl</div>
+  <div class="version">v1.4Kl</div>
   <div style="margin-top:8px;"><span id="sync-dot" style="font-size:.65rem;color:#4a6d90;letter-spacing:.08em;">⏳ Načítám...</span></div>
 </div>
 
@@ -418,6 +486,52 @@
 <div class="acc-list" id="acc-list"></div>
 
 </div><!-- /accounts-main -->
+
+<!-- EDIT MODAL -->
+<div id="edit-modal">
+  <div class="modal-inner">
+    <div class="modal-title">✎ UPRAVIT ÚČET</div>
+    <input type="hidden" id="e-id">
+    <div class="form-row">
+      <div class="form-group">
+        <label>JMÉNO</label>
+        <input type="text" id="e-jmeno" placeholder="Jméno">
+      </div>
+      <div class="form-group">
+        <label>PŘÍJMENÍ</label>
+        <input type="text" id="e-prijmeni" placeholder="Příjmení">
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>ČÍSLO ÚČTU</label>
+      <div class="account-row">
+        <div class="predcisli">
+          <input type="text" id="e-predcisli" class="account-num" placeholder="předčíslí" maxlength="6">
+        </div>
+        <div class="separator">-</div>
+        <div class="cislo-uctu">
+          <input type="text" id="e-cislo" class="account-num" placeholder="číslo účtu" maxlength="10">
+        </div>
+        <div class="separator">/</div>
+        <div class="predcisli">
+          <input type="text" id="e-kod" class="account-num" placeholder="kód banky" maxlength="4">
+        </div>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>IBAN</label>
+      <input type="text" id="e-iban" class="account-num" placeholder="CZ00 0000 0000 0000 0000 0000">
+    </div>
+    <div class="form-group" style="margin-bottom:20px;">
+      <label>POZNÁMKA</label>
+      <textarea id="e-poznamka" placeholder="volitelný popis..."></textarea>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-save" onclick="saveEditAccount()">💾 ULOŽIT ZMĚNY</button>
+      <button class="btn-cancel" onclick="closeEditModal()">✕ ZRUŠIT</button>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -552,6 +666,66 @@ function renderList() {
   try { _renderFromData(JSON.parse(localStorage.getItem(STORE_KEY)) || []); } catch(e) {}
 }
 
+function editAccount(id) {
+  var data = [];
+  try { data = JSON.parse(localStorage.getItem(STORE_KEY)) || []; } catch(e) {}
+  var acc = data.find(function(a) { return a.id === id; });
+  if (!acc) { toast('⚠ ÚČET NENALEZEN'); return; }
+  document.getElementById('e-id').value = id;
+  document.getElementById('e-jmeno').value = acc.jmeno || '';
+  document.getElementById('e-prijmeni').value = acc.prijmeni || '';
+  document.getElementById('e-iban').value = acc.iban || '';
+  document.getElementById('e-poznamka').value = acc.poznamka || '';
+  // Parsování ucet: "predcisli-cislo/kod" nebo "cislo/kod"
+  var ucet = acc.ucet || '';
+  var predcisli = '', cislo = '', kod = '';
+  if (ucet.indexOf('-') !== -1) {
+    var hp = ucet.split('-');
+    predcisli = hp[0];
+    var zbytek = hp[1] || '';
+    var zp = zbytek.split('/');
+    cislo = zp[0] || '';
+    kod = zp[1] || '';
+  } else {
+    var zp = ucet.split('/');
+    cislo = zp[0] || '';
+    kod = zp[1] || '';
+  }
+  document.getElementById('e-predcisli').value = predcisli;
+  document.getElementById('e-cislo').value = cislo;
+  document.getElementById('e-kod').value = kod;
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+}
+
+function saveEditAccount() {
+  var id = parseInt(document.getElementById('e-id').value, 10);
+  var jmeno = document.getElementById('e-jmeno').value.trim();
+  var prijmeni = document.getElementById('e-prijmeni').value.trim();
+  var predcisli = document.getElementById('e-predcisli').value.trim();
+  var cislo = document.getElementById('e-cislo').value.trim();
+  var kod = document.getElementById('e-kod').value.trim();
+  var iban = document.getElementById('e-iban').value.trim();
+  var poznamka = document.getElementById('e-poznamka').value.trim();
+  if (!jmeno || !prijmeni || !cislo || !kod) { toast('⚠ VYPLŇTE POVINNÁ POLE'); return; }
+  var ucet = predcisli ? predcisli + '-' + cislo + '/' + kod : cislo + '/' + kod;
+  setSyncStatus('⏳ Ukládám...', '#f39c12');
+  _ref.child('id_' + id).set({ id: id, jmeno: jmeno, prijmeni: prijmeni, ucet: ucet, iban: iban, poznamka: poznamka })
+    .then(function() {
+      setSyncStatus('✅ Synchronizováno', '#2ecc71');
+      toast('✓ ÚČET UPRAVEN');
+      closeEditModal();
+    })
+    .catch(function(e) {
+      console.error(e);
+      setSyncStatus('❌ Chyba uložení', '#e74c3c');
+      toast('⚠ CHYBA ULOŽENÍ');
+    });
+}
+
 function _renderFromData(data) {
   var q = document.getElementById('search').value.trim().toLowerCase();
   var filtered = q ? data.filter(function(a) {
@@ -570,6 +744,7 @@ function _renderFromData(data) {
       '<div class="acc-actions">' +
         '<button class="btn-copy" onclick="copyText(\'' + a.ucet + '\')">KOPÍROVAT ÚČET</button>' +
         (a.iban ? '<button class="btn-copy" onclick="copyText(\'' + a.iban + '\')">KOPÍROVAT IBAN</button>' : '') +
+        '<button class="btn-edit" onclick="editAccount(' + a.id + ')">✎</button>' +
         '<button class="btn-del" onclick="deleteAccount(' + a.id + ')">✕</button>' +
       '</div>' +
     '</div>';
