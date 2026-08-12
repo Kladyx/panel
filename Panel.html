@@ -235,7 +235,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.3.1.Pro - 2026/27 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.3.0.Pro - 2026/27 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -443,11 +443,6 @@
       <div class="bd"></div><div class="bi">🏢</div><div class="bl">Residence</div>
     </button>
 
-    <button class="app-btn" id="btn-accounts" style="--ac:#00f5ff;--ac-rgb:0,245,255" onclick="openApp('accounts')">
-      <div class="app-dot"></div>
-      <div class="bd"></div><div class="bi">👥</div><div class="bl">Účty</div>
-    </button>
-
   </div>
   <div class="iframe-wrap">
     <div class="welcome" id="welcome">
@@ -551,7 +546,6 @@
         <div class="wcard" onclick="openApp('firebase')" onmouseover="this.style.borderColor='#ff9900';this.style.boxShadow='0 0 14px rgba(255,153,0,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff9900;box-shadow:0 0 6px #ff9900"></span><div class="wi">🔥</div><div class="wn">Firebase</div><div class="wd">Konzole databáze</div></div>
         <div class="wcard" onclick="openApp('speakup')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">🎤</div><div class="wn">SpeakUp</div><div class="wd">Angličtina EN</div></div>
         <div class="wcard" onclick="openApp('residence')" onmouseover="this.style.borderColor='#ff6b35';this.style.boxShadow='0 0 14px rgba(255,107,53,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff6b35;box-shadow:0 0 6px #ff6b35"></span><div class="wi">🏢</div><div class="wn">Residence</div><div class="wd">Záznamy SVJ</div></div>
-        <div class="wcard" onclick="openApp('accounts')" onmouseover="this.style.borderColor='#00f5ff';this.style.boxShadow='0 0 14px rgba(0,245,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00f5ff;box-shadow:0 0 6px #00f5ff"></span><div class="wi">👥</div><div class="wn">Účty</div><div class="wd">Správa účtů</div></div>
 
       </div>
       <div style="margin-top:22px;display:flex;align-items:center;justify-content:center;gap:24px;padding:12px 20px;border:1px solid rgba(0,212,255,0.1);border-radius:8px;background:rgba(255,255,255,0.025);">
@@ -604,7 +598,6 @@
     <iframe id="frame-firebase" class="app-frame" title="firebase" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-top-navigation" allowfullscreen></iframe>
     <iframe id="frame-speakup" class="app-frame" title="speakup" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allow="microphone *" allowfullscreen></iframe>
     <iframe id="frame-residence" class="app-frame" title="residence" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
-    <iframe id="frame-accounts" class="app-frame" title="accounts" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
 
   </div>
 </div>
@@ -17680,9 +17673,11 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"><\/script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
 </head>
 <body>
 <h1>&#128100; Moje Apky</h1>
+<div id="top-sync-status" style="font-size:0.75rem;color:#5a6488;margin:-8px 0 12px;">&#9729; Pripojuji...</div>
 <ul class="app-list" id="app-list"></ul>
 <div class="add-box">
   <h2>&#10133; PRIDAT NOVOU APLIKACI</h2>
@@ -17720,6 +17715,7 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 var LS_KEY="kladyx_user_apps";
 var LS_ICONS="kladyx_custom_icons";
 var _iconStorage=null;
+var _iconDb=null;
 function initIconStorage(){
   try{
     if(typeof firebase==="undefined"){setTimeout(initIconStorage,1000);return;}
@@ -17729,7 +17725,9 @@ function initIconStorage(){
       app=firebase.initializeApp({apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"},"moje_apky_icons");
     }
     _iconStorage=app.storage();
-  }catch(e){console.warn("initIconStorage:",e);}
+    _iconDb=app.database();
+    initFirebase();
+  }catch(e){console.warn("initIconStorage:",e);setTimeout(initIconStorage,1500);}
 }
 initIconStorage();
 function getStorage(){try{var s=window.parent.localStorage;s.getItem("__test__");return s;}catch(e){return localStorage;}}
@@ -17763,7 +17761,7 @@ var DEFAULT=[
   "\uD83E\uDE78 Gluk\u00F3za","\uD83C\uDF99 OBS Status","\uD83C\uDF24 Po\u010Das\u00ED","\uD83D\uDCDD Pozn\u00E1mky","\uD83D\uDCC5 Kalend\u00E1\u0159",
   "\uD83D\uDD79 ZX Next","\uD83D\uDCD6 Manu\u00E1ly","\uD83D\uDCDA \u010Dte\u010Dka","\uD83C\uDDEC\uD83C\uDDE7 WordMaster","\uD83D\uDCFB Multitrack",
   "\uD83D\uDFE2 Status","\uD83C\uDFA4 Radio ID","\uD83C\uDFAE ZX Games","\uD83C\uDF0D World Time","\uD83C\uDF10 P\u0159eklada\u010D",
-  "\uD83D\uDCE1 NextSync","\uD83D\uDCF8 Co to je???","\uD83C\uDFB5 KladyxAmp","\uD83D\uDE80 SpeedTest","\uD83D\uDCE4 Transfer","\uD83C\uDFE0 KladyxHome","\uD83C\uDF53 Pi Monitor","\uD83C\uDF9B\uFE0F Equalizer","\u2699\uFE0F Scripty","\uD83C\uDFE2 Residence","🎤 SpeakUp","👥 Účty"
+  "\uD83D\uDCE1 NextSync","\uD83D\uDCF8 Co to je???","\uD83C\uDFB5 KladyxAmp","\uD83D\uDE80 SpeedTest","\uD83D\uDCE4 Transfer","\uD83C\uDFE0 KladyxHome","\uD83C\uDF53 Pi Monitor","\uD83C\uDF9B\uFE0F Equalizer","\u2699\uFE0F Scripty","\uD83C\uDFE2 Residence","🎤 SpeakUp"
 ];
 
 var APP_IDS={
@@ -17774,7 +17772,7 @@ var APP_IDS={
   "ZX Next":"zxnext","Manu\u00E1ly":"manualy","\u010Dte\u010Dka":"reader","WordMaster":"wordmaster",
   "Multitrack":"multitrack","Status":"status","Radio ID":"radio",
   "ZX Games":"zxgames","World Time":"worldtime","P\u0159eklada\u010D":"prekladac",
-  "NextSync":"nextsync","Scripty":"scripty","Co to je???":"cotoje","KladyxAmp":"kladyxamp","SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer","Residence":"residence","SpeakUp":"speakup","Účty":"accounts"
+  "NextSync":"nextsync","Scripty":"scripty","Co to je???":"cotoje","KladyxAmp":"kladyxamp","SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer","Residence":"residence","SpeakUp":"speakup"
 };
 
 var selectedAddIcon=QUICK_ICONS[0];
@@ -17789,14 +17787,12 @@ function saveIconsLocal(){try{getStorage().setItem(LS_ICONS,JSON.stringify(_cust
 
 function initFirebase(){
   try{
-    var fb=window.parent.firebase;
-    if(!fb){setTimeout(initFirebase,1500);return;}
-    var db=fb.database();
-    _fbRef=db.ref("kladyx_icons");
+    if(!_iconDb){return;}
+    _fbRef=_iconDb.ref("kladyx_icons");
     _fbRef.on("value",function(snap){
-      if(snap.exists()&&snap.val()){Object.assign(_customIcons,snap.val());saveIconsLocal();render();setSyncStatus("\u2601 Sync \u2713","#34d399");}
-      else{setSyncStatus("\u2601 Online","#34d399");}
-    },function(){setSyncStatus("\u2601 Offline","#f87171");});
+      if(snap.exists()&&snap.val()){Object.assign(_customIcons,snap.val());saveIconsLocal();render();setSyncStatus("\u2601 Sync \u2713","#34d399");setPersistentSync(true);}
+      else{setSyncStatus("\u2601 Online","#34d399");setPersistentSync(true);}
+    },function(){setSyncStatus("\u2601 Offline","#f87171");setPersistentSync(false);});
     if(Object.keys(_pendingSave).length>0){
       _fbRef.update(_pendingSave).then(function(){_pendingSave={};}).catch(function(){});
     }
@@ -17814,6 +17810,12 @@ function saveIconToFirebase(appId,icon){
 }
 
 function setSyncStatus(txt,color){var el=document.getElementById("sync-status");if(el){el.textContent=txt;el.style.color=color||"#5a6488";}}
+function setPersistentSync(ok){
+  var el=document.getElementById("top-sync-status");
+  if(!el)return;
+  if(ok){el.textContent="\u2601 Synchronizov\u00e1no";el.style.color="#34d399";}
+  else{el.textContent="\u2601 Offline";el.style.color="#f87171";}
+}
 function loadCustom(){try{return JSON.parse(getStorage().getItem(LS_KEY)||"[]");}catch(e){return[];}}
 function saveCustom(arr){try{getStorage().setItem(LS_KEY,JSON.stringify(arr));}catch(e){}}
 
@@ -18049,7 +18051,7 @@ if(iconFileInput){
           ref.put(blob,{contentType:"image/jpeg"}).then(function(snap){
             return snap.ref.getDownloadURL();
           }).then(function(url){
-            var imgHtml='<img src="'+url+'" style="width:28px;height:28px;object-fit:cover;border-radius:6px;">';
+            var imgHtml='<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
             _editSelectedIcon=imgHtml;
             var cur=document.getElementById("modal-current-icon");
             if(cur)cur.innerHTML=imgHtml;
@@ -18057,7 +18059,7 @@ if(iconFileInput){
             if(statusEl){statusEl.textContent="Hotovo, klikni Ulozit ikonu";statusEl.style.color="#34d399";}
           }).catch(function(err){
             console.warn("icon upload:",err);
-            if(statusEl){statusEl.textContent="Chyba nahravani";statusEl.style.color="#f87171";}
+            if(statusEl){statusEl.textContent="Chyba: "+(err&&err.code?err.code:(err&&err.message?err.message:String(err)));statusEl.style.color="#f87171";}
           });
         },"image/jpeg",0.85);
       };
@@ -19775,7 +19777,6 @@ initFB();
 </html>
 `;
 
-APP_HTML["accounts"] = null;
 
 function openApp(id) {
   if (id === 'firebase') {
@@ -19829,8 +19830,6 @@ function openApp(id) {
             frame.src = 'https://console.firebase.google.com/u/1/project/kladyxland/usage';
           } else if (id === 'speakup') {
             frame.src = 'https://kladyx.github.io/panel/speakup.html';
-          } else if (id === 'accounts') {
-            frame.src = 'https://kladyx.github.io/panel/accounts.html';
           } else if (id === 'scripty') {
             frame.src = 'https://kladyx.github.io/panel/scripty.html';
           } else {
@@ -20288,7 +20287,7 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
     "Multitrack":"multitrack","Status":"status","Radio ID":"radio",
     "ZX Games":"zxgames","World Time":"worldtime","Překladač":"prekladac",
     "NextSync":"nextsync","Scripty":"scripty","Co to je???":"cotoje","KladyxAmp":"kladyxamp",
-    "SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer","Residence":"residence","SpeakUp":"speakup","Účty":"accounts"
+    "SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer","Residence":"residence","SpeakUp":"speakup"
   };
   try {
     var raw = localStorage.getItem('kladyx_custom_icons');
@@ -20606,7 +20605,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='4.2.9.Pro';
+  var CURRENT='4.3.0.Pro';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
