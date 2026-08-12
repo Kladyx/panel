@@ -18108,7 +18108,7 @@ if(saveBtn){
       if(appId){
         var btnEl=window.parent.document.querySelector("#btn-"+appId+" .bi");
         if(btnEl)btnEl.innerHTML=_editSelectedIcon;
-        var wcEl=window.parent.document.querySelector(".wcard[onclick*=\"'"+appId+"'\"] .wi");
+        var wcEl=window.parent.document.querySelector(".wcard[onclick*="+appId+"] .wi");
         if(wcEl)wcEl.innerHTML=_editSelectedIcon;
       }
     }catch(e){}
@@ -20327,7 +20327,7 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
       var btnBi = document.querySelector('#btn-' + appId + ' .bi');
       if (btnBi) btnBi.innerHTML = icon;
       // wcard .wi
-      var wcWi = document.querySelector('.wcard[onclick*="\'' + appId + '\'"] .wi');
+      var wcWi = document.querySelector('.wcard[onclick*="' + appId + '"] .wi');
       if (wcWi) wcWi.innerHTML = icon;
     });
   } catch(e) {}
