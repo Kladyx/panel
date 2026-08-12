@@ -111,6 +111,7 @@
     .app-dot { display:block; position:absolute; top:3px; right:3px; width:8px; height:8px; border-radius:50%; background:var(--ac); box-shadow:0 0 6px var(--ac); animation:appDotBlink 1.5s ease-in-out infinite; z-index:10; opacity:1; }
     @keyframes appDotBlink { 0%, 100% { opacity:1; box-shadow:0 0 6px var(--ac), 0 0 12px var(--ac); } 50% { opacity:0.4; box-shadow:0 0 2px var(--ac); } }
     .bi { font-size:1.1rem; line-height:1; }
+    .bi img { width:22px; height:22px; object-fit:cover; border-radius:5px; vertical-align:middle; display:inline-block; }
     .bl { font-size:0.52rem; letter-spacing:1px; text-transform:uppercase; color:var(--muted); }
     .app-btn.active .bl { color:var(--ac); }
     .bd { position:absolute; top:4px; right:5px; width:4px; height:4px; border-radius:50%; background:#00ff88; box-shadow:0 0 5px #00ff88; opacity:0; transition:opacity 0.3s; }
@@ -136,6 +137,7 @@
     .wdot { position:absolute !important; top:6px !important; right:6px !important; width:10px !important; height:10px !important; border-radius:50% !important; z-index:999 !important; pointer-events:none !important; display:block !important; animation:wdotBlink 1.2s ease-in-out infinite !important; }
     @keyframes wdotBlink { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.2; transform:scale(0.6); } }
     .wi { font-size:1.5rem; }
+    .wi img { width:30px; height:30px; object-fit:cover; border-radius:6px; vertical-align:middle; display:inline-block; }
     .wn { font-size:0.56rem; letter-spacing:1px; text-transform:uppercase; color:var(--light); }
     .wd { font-size:0.5rem; color:var(--muted); }
     .eq-wrap{display:flex;gap:20px;justify-content:center;align-items:flex-end;margin:8px 0 4px;}
@@ -235,7 +237,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.3.2.Pro - 2026/27 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.3.3.Pro - 2026/27 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -17633,6 +17635,7 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 .num{font-size:0.72rem;font-weight:800;color:#a78bfa;min-width:22px;}
 .name{flex:1;color:#e0e0f0;}
 .icon-cell{font-size:1.2rem;min-width:28px;text-align:center;}
+.icon-cell img{width:28px;height:28px;object-fit:cover;border-radius:6px;vertical-align:middle;display:inline-block;}
 .btn-edit{background:none;border:none;color:#a78bfa;cursor:pointer;font-size:0.85rem;padding:2px 5px;border-radius:6px;opacity:0.7;flex-shrink:0;}
 .btn-edit:hover{opacity:1;background:rgba(167,139,250,0.15);}
 .del{background:none;border:none;color:#f87171;cursor:pointer;font-size:0.95rem;padding:2px 6px;border-radius:6px;opacity:0.6;flex-shrink:0;}
@@ -17644,6 +17647,7 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 .modal h3{font-size:0.9rem;font-weight:800;color:#a78bfa;letter-spacing:1px;}
 .modal-current{display:flex;align-items:center;gap:10px;font-size:0.85rem;color:#aaa;}
 .big-icon{font-size:2rem;}
+.big-icon img{width:48px;height:48px;object-fit:cover;border-radius:10px;vertical-align:middle;display:inline-block;}
 .emoji-search{width:100%;padding:8px 12px;border-radius:8px;border:1.5px solid rgba(167,139,250,0.25);background:#0a0a1a;color:#e0e0f0;font-size:0.9rem;font-family:inherit;outline:none;}
 .emoji-search:focus{border-color:#a78bfa;}
 .cat-tabs{display:flex;gap:5px;flex-wrap:wrap;}
@@ -18063,7 +18067,7 @@ if(iconFileInput){
           ref.put(blob,{contentType:"image/jpeg"}).then(function(snap){
             return snap.ref.getDownloadURL();
           }).then(function(url){
-            var imgHtml='<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+            var imgHtml='<img src="'+url+'" alt="">';
             _editSelectedIcon=imgHtml;
             var cur=document.getElementById("modal-current-icon");
             if(cur)cur.innerHTML=imgHtml;
@@ -19695,7 +19699,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v4.3.2.Pro</div>
+<div class="ver">v4.3.3.Pro</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -20617,7 +20621,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='4.3.2.Pro';
+  var CURRENT='4.3.3.Pro';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
