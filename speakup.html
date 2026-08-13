@@ -405,9 +405,17 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 
 <div class="hdr">
   <h1>SPEAKUP</h1>
-  <span class="ver">v6.5Kl</span>
+  <span class="ver">v6.6Kl</span>
 </div>
 <div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
+
+<!-- ZALOHA POKROKU -->
+<div style="display:flex;gap:8px;justify-content:center;padding:8px 12px;flex-wrap:wrap;">
+  <button onclick="exportProgress()" style="font-size:.7rem;padding:6px 14px;background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.35);color:#00ff88;border-radius:6px;cursor:pointer;font-family:inherit;">&#128190; Zalohovat pokrok</button>
+  <button onclick="document.getElementById('importFile').click()" style="font-size:.7rem;padding:6px 14px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.35);color:#00d4ff;border-radius:6px;cursor:pointer;font-family:inherit;">&#128229; Obnovit pokrok</button>
+  <input type="file" id="importFile" accept=".json,application/json" style="display:none" onchange="importProgress(this)">
+</div>
+<div id="backupStatus" style="text-align:center;font-size:.68rem;min-height:16px;color:rgba(255,255,255,.4);"></div>
 
 <!-- SCORE -->
 <div class="scorebar">
@@ -3160,7 +3168,64 @@ function vocEvalPronunciation(heard, confidence){
   document.getElementById('vocCz').classList.add('show');
 }
 
+/* ===== ZALOHA / OBNOVA POKROKU ===== */
+function bkStatus(txt,color){
+  var el=document.getElementById('backupStatus');
+  if(el){el.textContent=txt;el.style.color=color||'rgba(255,255,255,.4)';}
+}
+
+function exportProgress(){
+  try{
+    var data={};
+    for(var i=0;i<localStorage.length;i++){
+      var k=localStorage.key(i);
+      if(k&&k.indexOf('su_')===0){data[k]=localStorage.getItem(k);}
+    }
+    var cnt=Object.keys(data).length;
+    if(cnt===0){bkStatus('Zadny pokrok k zalohovani','#ffaa00');return;}
+    var payload={app:'speakup',version:1,exported:new Date().toISOString(),data:data};
+    var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    var d=new Date();
+    var stamp=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    a.href=url; a.download='speakup-zaloha-'+stamp+'.json';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},100);
+    bkStatus('Zalohovano '+cnt+' polozek \u2713','#00ff88');
+  }catch(e){bkStatus('Chyba zalohy: '+(e&&e.message?e.message:e),'#ff4444');}
+}
+
+function importProgress(inp){
+  var file=inp.files&&inp.files[0];
+  inp.value='';
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var payload=JSON.parse(ev.target.result);
+      if(!payload||payload.app!=='speakup'||!payload.data){
+        bkStatus('Neplatny soubor zalohy','#ff4444');return;
+      }
+      var keys=Object.keys(payload.data);
+      if(keys.length===0){bkStatus('Zaloha je prazdna','#ffaa00');return;}
+      var when=payload.exported?(' ze dne '+payload.exported.substring(0,10)):'';
+      if(!confirm('Obnovit '+keys.length+' polozek'+when+'?\n\nSoucasny pokrok v teto aplikaci bude prepsan.')){
+        bkStatus('Obnoveni zruseno');return;
+      }
+      for(var i=localStorage.length-1;i>=0;i--){
+        var k=localStorage.key(i);
+        if(k&&k.indexOf('su_')===0){localStorage.removeItem(k);}
+      }
+      keys.forEach(function(k){
+        if(k.indexOf('su_')===0){localStorage.setItem(k,payload.data[k]);}
+      });
+      bkStatus('Obnoveno '+keys.length+' polozek \u2713 Nacitam znovu...','#00ff88');
+      setTimeout(function(){location.reload();},1200);
+    }catch(e){bkStatus('Chyba obnovy: '+(e&&e.message?e.message:e),'#ff4444');}
+  };
+  reader.onerror=function(){bkStatus('Soubor se nepodarilo precist','#ff4444');};
+  reader.readAsText(file);
+}
 
 </script>
-</body>
-</html>
