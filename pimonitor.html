@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v4.8Pi">
-<title>Pi Monitor v4.8Pi</title>
+<meta name="version" content="v4.9Pi">
+<title>Pi Monitor v4.9Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -97,7 +97,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v4.8Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v4.9Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -141,6 +141,9 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="svc-row"><div class="dot dot-wait" id="d-rpi"></div><div class="svc-name">kladyx-rpi</div><div class="svc-st" id="s-rpi">…</div></div>
   <div class="svc-row"><div class="dot dot-disc" id="d-plugbridge"></div><div class="svc-name">kladyx-plugbridge</div><div class="svc-stat disc" id="s-plugbridge">DISCONNECTED</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-pitransfer"></div><div class="svc-name">kladyx-pitransfer</div><div class="svc-st" id="s-pitransfer">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-pimonitor"></div><div class="svc-name">kladyx-pimonitor</div><div class="svc-st" id="s-pimonitor">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-taporestart"></div><div class="svc-name">kladyx-tapo-restart</div><div class="svc-st" id="s-taporestart">…</div></div>
+  <div class="svc-row"><div class="dot dot-disc" id="d-tuyaplug"></div><div class="svc-name">kladyx-tuya-plug</div><div class="svc-stat disc" id="s-tuyaplug">DISCONNECTED</div></div>
 </div>
 
 <div class="section">
@@ -462,7 +465,7 @@ function loadStats(){
     // Services z piStats - POUZE sluzby ktere skutecne bezi na Pi4 jako systemd.
     // transfer/upload/nextsync/obs jsou .bat na PC, Pi4 je nevidi -> resi checkPC()
     if(d.services){
-      ['tapo','prijate','pitransfer'].forEach(function(k){
+      ['tapo','prijate','pitransfer','pimonitor','taporestart','tuyaplug'].forEach(function(k){
         if(d.services[k]!==undefined)setSvc(k,d.services[k]===true||d.services[k]==='active');
       });
     }
@@ -475,7 +478,7 @@ function loadStats(){
     // Restarty služeb
     if(d.restarts){var rk=['tp','tb','ir','pm','pb','pt','pl'];rk.forEach(function(k){var e=document.getElementById('r-'+k);if(e){e.textContent=d.restarts[k]!==undefined?d.restarts[k]:'—';e.style.color=d.restarts[k]>0?'#ffaa00':'#00ff88';}});}
     // Aktivní skripty - ze services pole, jen ty co jsou true/active na Pi
-    var svcMap={tapo:'tapobridge',tapo_py:'tapo-py',prijate:'prijatelister',pitransfer:'pitransfer',irbridge:'irbridge',rpi:'rpi'};
+    var svcMap={tapo:'tapobridge',tapo_py:'tapo-py',prijate:'prijatelister',pitransfer:'pitransfer',irbridge:'irbridge',rpi:'rpi',pimonitor:'pimonitor',taporestart:'tapo-restart',tuyaplug:'tuya-plug'};
     _piActiveList=[];
     if(d.services){
       Object.keys(svcMap).forEach(function(k){
