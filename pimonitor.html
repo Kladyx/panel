@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v4.9Pi">
+<meta name="version" content="v4.10Pi">
 <title>Pi Monitor v4.9Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
@@ -388,7 +388,7 @@ function showOffline(fromFirebase){
   });
   // Pi4 offline = nemame data z piStats -> u techto sluzeb nelzeme, ukazeme ?
   // tapopy a irbridge maji vlastni fetch (tapoDb/irDb lastSeen), PC sluzby resi checkPC()
-  ['tapo','prijate','pitransfer'].forEach(function(id){
+  ['tapo','prijate','pitransfer','pimonitor','taporestart'].forEach(function(id){
     var d=document.getElementById('d-'+id);
     if(d)d.className='dot dot-wait';
     var s=document.getElementById('s-'+id);
@@ -473,6 +473,8 @@ function loadStats(){
     // Pi ON (data přišla → Pi běží)
     setPiState(true);
     setSvc('rpi',true);
+    setSvc('pimonitor',true);    // piStats přišla = pimonitor evidentně běží
+    setSvc('taporestart',true);  // Pi ON = cron nastaven = aktivní
     // Procesy (pokud Pi posle realna data, prepise ACTIVE ON)
     if(d.proc_count!==undefined){var el=document.getElementById('net-proc');el.textContent=d.proc_count;el.classList.remove('net-active');}
     // Restarty služeb
