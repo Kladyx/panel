@@ -554,9 +554,12 @@ function loadStats(){
     var el=document.getElementById('cloud-obs');
     if(!el)return;
     if(!d){
-      el.innerHTML='<span class="dot dot-err"></span> OFFLINE';
-      el.className='net-val';
-      el.style.cssText='';
+      el.innerHTML='DISCONNECTED';
+      el.className='net-val disc';
+      el.style.color='var(--warn)';
+      el.style.textShadow='0 0 8px rgba(255,170,0,0.5)';
+      el.style.animation='pulse-yellow 2s infinite';
+      el.style.fontWeight='';
       return;
     }
     var ts=d.ts||d.timestamp||0;
@@ -564,30 +567,40 @@ function loadStats(){
     var active=d.outputActive===true||d.active===true;
     var fresh=ts>0&&age<120000;
     if(!fresh){
-      el.innerHTML='<span class="dot dot-warn"></span> —';
-      el.className='net-val';
-      el.style.cssText='';
+      el.innerHTML='DISCONNECTED';
+      el.className='net-val disc';
+      el.style.color='var(--warn)';
+      el.style.textShadow='0 0 8px rgba(255,170,0,0.5)';
+      el.style.animation='pulse-yellow 2s infinite';
+      el.style.fontWeight='';
       return;
     }
     if(active){
-      el.innerHTML='🔴 ON AIR';
+      el.innerHTML='CONNECTED ON';
       el.className='net-val';
-      el.style.color='#ff3c5a';
-      el.style.textShadow='0 0 10px rgba(255,60,90,0.7)';
-      el.style.animation='pulse-red 1.2s infinite';
+      el.style.color='var(--green)';
+      el.style.textShadow='0 0 8px rgba(0,255,136,0.6)';
+      el.style.animation='pulse-green 1.2s infinite';
       el.style.fontWeight='700';
     } else {
-      el.innerHTML='OFF';
+      el.innerHTML='CONNECTED OFF';
       el.className='net-val';
-      el.style.color='var(--muted)';
-      el.style.textShadow='';
-      el.style.animation='';
+      el.style.color='var(--red)';
+      el.style.textShadow='0 0 8px rgba(255,60,90,0.5)';
+      el.style.animation='pulse-red 1.5s infinite';
       el.style.fontWeight='';
     }
   })
   .catch(function(){
     var el=document.getElementById('cloud-obs');
-    if(el){el.innerHTML='<span class="dot dot-err"></span> ERR';el.className='net-val';el.style.cssText='';}
+    if(el){
+      el.innerHTML='DISCONNECTED';
+      el.className='net-val';
+      el.style.color='var(--warn)';
+      el.style.textShadow='0 0 8px rgba(255,170,0,0.5)';
+      el.style.animation='pulse-yellow 2s infinite';
+      el.style.fontWeight='';
+    }
   });
   // PC sluzby - nezavisle na piStats (funguje i kdyz je Pi4 vypnuty)
   checkPC();
