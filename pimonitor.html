@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v4.10Pi">
-<title>Pi Monitor v4.11Pi</title>
+<meta name="version" content="v4.12Pi">
+<title>Pi Monitor v4.12Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -185,6 +185,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="net-row"><div class="net-lbl">Web KladyxLand project.</div><div class="net-val" id="cloud-web"><span class="dot dot-wait"></span> ...</div></div>
   <div class="net-row"><div class="net-lbl">Multifunkční Panel project.</div><div class="net-val" id="cloud-panel"><span class="dot dot-wait"></span> ...</div></div>
   <div class="net-row"><div class="net-lbl">Transfer app</div><div class="net-val" id="cloud-transfer"><span class="dot dot-wait"></span> ...</div></div>
+  <div class="net-row"><div class="net-lbl">OBS Stream</div><div class="net-val" id="cloud-obs"><span class="dot dot-wait"></span> ...</div></div>
   <div style="text-align:right;margin-top:6px;"><button onclick="clearPrijate()" style="background:rgba(255,50,50,.15);border:1px solid rgba(255,50,50,.4);color:#ff4444;padding:4px 12px;border-radius:6px;font-size:.7rem;cursor:pointer;">🗑 Smazat přijaté</button></div>
 </div>
 
@@ -396,6 +397,9 @@ function showOffline(fromFirebase){
     if(s){s.textContent='?';s.className='svc-st';}
   });
   setSvc('rpi',false);
+  // Reset OBS status
+  var obsEl=document.getElementById('cloud-obs');
+  if(obsEl){obsEl.innerHTML='<span class="dot dot-wait"></span> ...';obsEl.className='net-val';obsEl.style.cssText='';}
   // Equalizer je nyni soucasti PC_SVC -> resi ho checkPC() spolu s ostatnimi PC sluzbami
   // Pi OFF (data nepřišla → Pi je vypnutý)
   setPiState(false);
@@ -543,6 +547,48 @@ function loadStats(){
     setDev('p110',d&&d.on===true,!!(ts&&(Date.now()-ts<150000)));
   })
   .catch(function(){setDev('p110',false,false);});
+  // OBS Stream status - obs-bridge.js na PC zapisuje do /status/obs
+  fbFetch(fbUrl('/status/obs.json'),{signal:AbortSignal.timeout(5000)})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    var el=document.getElementById('cloud-obs');
+    if(!el)return;
+    if(!d){
+      el.innerHTML='<span class="dot dot-err"></span> OFFLINE';
+      el.className='net-val';
+      el.style.cssText='';
+      return;
+    }
+    var ts=d.ts||d.timestamp||0;
+    var age=Date.now()-ts;
+    var active=d.outputActive===true||d.active===true;
+    var fresh=ts>0&&age<120000;
+    if(!fresh){
+      el.innerHTML='<span class="dot dot-warn"></span> —';
+      el.className='net-val';
+      el.style.cssText='';
+      return;
+    }
+    if(active){
+      el.innerHTML='🔴 ON AIR';
+      el.className='net-val';
+      el.style.color='#ff3c5a';
+      el.style.textShadow='0 0 10px rgba(255,60,90,0.7)';
+      el.style.animation='pulse-red 1.2s infinite';
+      el.style.fontWeight='700';
+    } else {
+      el.innerHTML='OFF';
+      el.className='net-val';
+      el.style.color='var(--muted)';
+      el.style.textShadow='';
+      el.style.animation='';
+      el.style.fontWeight='';
+    }
+  })
+  .catch(function(){
+    var el=document.getElementById('cloud-obs');
+    if(el){el.innerHTML='<span class="dot dot-err"></span> ERR';el.className='net-val';el.style.cssText='';}
+  });
   // PC sluzby - nezavisle na piStats (funguje i kdyz je Pi4 vypnuty)
   checkPC();
 }
