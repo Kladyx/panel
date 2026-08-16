@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v4.13Pi">
-<title>Pi Monitor v4.13Pi</title>
+<meta name="version" content="v5.0Pi">
+<title>Pi Monitor v5.0Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -30,7 +30,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .card .val{font-size:1.5rem;font-weight:700;color:var(--red);text-shadow:0 0 12px rgba(255,60,90,0.4);line-height:1;}
 .card .unit{font-size:0.55rem;color:#8090b0;margin-top:1px;}
 .bar-wrap{background:rgba(255,255,255,0.06);border-radius:4px;height:5px;margin-top:6px;overflow:hidden;}
-.bar{height:5px;border-radius:4px;transition:width .6s;}
+.bar{height:5px;border-radius:4px;transition:width 1.0s cubic-bezier(0.4,0,0.2,1),background 0.5s ease;}
 .bar-ok{background:linear-gradient(90deg,#00ff88,#00cc66);}
 .bar-warn{background:linear-gradient(90deg,#ffaa00,#ff6600);}
 .bar-hot{background:linear-gradient(90deg,#ff6600,#ff3c5a);}
@@ -44,42 +44,57 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .uptime-val{font-size:0.95rem;color:var(--cyan);text-shadow:0 0 8px rgba(0,212,255,0.4);letter-spacing:2px;}
 .uptime-val.cons{color:var(--warn);text-shadow:0 0 8px rgba(255,170,0,0.4);}
 .uptime-lbl{font-size:0.45rem;letter-spacing:2px;color:var(--muted);margin-top:2px;}
-/* ═══ NOVÉ ANIMACE ═══════════════════════════════════ */
-/* Rotující ozubené kolo */
+/* ═══ ANIMACE v5.0Pi ══════════════════════════════════ */
+
+/* 1. Rotující ozubené kolo - rychlejší a větší */
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.gear-spin{display:inline-block;animation:spin 4s linear infinite;transform-origin:center;}
+.gear-spin{display:inline-block;animation:spin 2s linear infinite;transform-origin:center;font-size:1.1em;filter:drop-shadow(0 0 4px rgba(255,60,90,0.8));}
 
-/* Plynulé progress bary */
-.bar{transition:width 0.9s cubic-bezier(0.4,0,0.2,1),background 0.5s ease;}
-
-/* Scan line na h1 */
-@keyframes scanline{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}
+/* 2. Scanline přes nadpis - výraznější */
+@keyframes scanline{0%{transform:translateX(-200%)}100%{transform:translateX(600%)}}
 .h1-wrap{position:relative;overflow:hidden;display:inline-block;}
-.h1-wrap::after{content:'';position:absolute;top:0;left:0;width:30%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,60,90,0.15),transparent);animation:scanline 3.5s ease-in-out infinite;}
+.h1-wrap::after{content:'';position:absolute;top:0;left:0;width:25%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,60,90,0.5),rgba(255,255,255,0.2),transparent);animation:scanline 2.5s ease-in-out infinite;}
 
-/* Floating uptime box */
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-.uptime{animation:float 4s ease-in-out infinite;}
+/* 3. Plynulé progress bary - viz .bar výše */
 
-/* Matrix rain efekt na sec-title */
-@keyframes glitch{0%,95%,100%{opacity:1;text-shadow:0 0 8px currentColor}96%{opacity:0.7;text-shadow:2px 0 8px currentColor}97%{opacity:1;text-shadow:-2px 0 8px currentColor}}
-.sec-title{animation:glitch 6s infinite;}
+/* 4. Floating uptime box - více pohybu */
+@keyframes float{0%,100%{transform:translateY(0);box-shadow:0 2px 10px rgba(0,212,255,0.1)}50%{transform:translateY(-5px);box-shadow:0 8px 20px rgba(0,212,255,0.2)}}
+.uptime{animation:float 3s ease-in-out infinite;}
 
-/* Blikající info na verzi */
-@keyframes blink-ver{0%,90%,100%{opacity:1}91%{opacity:0.4}}
-.sub{animation:blink-ver 5s infinite;}
+/* 5. Glitch efekt na sec-title - výraznější a častější */
+@keyframes glitch{
+  0%,88%,100%{opacity:1;transform:translateX(0);text-shadow:0 0 8px currentColor}
+  89%{opacity:0.8;transform:translateX(-3px);text-shadow:3px 0 10px rgba(255,60,90,0.9)}
+  90%{opacity:1;transform:translateX(3px);text-shadow:-3px 0 10px rgba(0,255,136,0.9)}
+  91%{opacity:0.9;transform:translateX(-1px);text-shadow:1px 0 6px currentColor}
+  92%{opacity:1;transform:translateX(0);}
+}
+.sec-title{animation:glitch 3.5s infinite;}
 
-/* Pulsující teplota - OK stav */
-@keyframes temp-glow{0%,100%{text-shadow:0 0 6px var(--green)}50%{text-shadow:0 0 18px var(--green),0 0 30px rgba(0,255,136,0.3)}}
-.temp-ok-pulse{animation:temp-glow 2.5s ease-in-out infinite;}
+/* 6. Blikání verze */
+@keyframes blink-ver{0%,85%,100%{opacity:1}86%{opacity:0.3}90%{opacity:1}92%{opacity:0.3}95%{opacity:1}}
+.sub{animation:blink-ver 4s infinite;}
 
-/* Animovaný border na section při hover */
+/* 7. Zelený glow na teplotu OK */
+@keyframes temp-glow{0%,100%{text-shadow:0 0 6px var(--green)}50%{text-shadow:0 0 20px var(--green),0 0 40px rgba(0,255,136,0.4)}}
+.temp-ok-pulse{animation:temp-glow 2s ease-in-out infinite;}
+
+/* 8. Hover efekt na sekce */
 .section{transition:border-color 0.3s ease,box-shadow 0.3s ease;}
-.section:hover{border-color:rgba(255,60,90,0.3);box-shadow:0 0 12px rgba(255,60,90,0.08);}
+.section:hover{border-color:rgba(255,60,90,0.35);box-shadow:0 0 16px rgba(255,60,90,0.1);}
 
-/* Živý čítač restartů - glow při >0 */
-@keyframes count-glow{0%,100%{text-shadow:0 0 4px var(--warn)}50%{text-shadow:0 0 14px var(--warn),0 0 25px rgba(255,170,0,0.4)}}
-.restart-active{animation:count-glow 2s ease-in-out infinite;}
+/* 9. Glow na aktivní restarty */
+@keyframes count-glow{0%,100%{text-shadow:0 0 4px var(--warn)}50%{text-shadow:0 0 16px var(--warn),0 0 30px rgba(255,170,0,0.5)}}
+.restart-active{animation:count-glow 1.5s ease-in-out infinite;}
+
+/* 10. Pulsující border na kartách při načítání */
+@keyframes card-appear{0%{opacity:0;transform:translateY(4px)}100%{opacity:1;transform:translateY(0)}}
+.card{animation:card-appear 0.5s ease forwards;}
+
+/* 11. Live dot - výraznější puls */
+@keyframes pulse{0%{opacity:0.2;transform:scale(0.8)}50%{opacity:1;transform:scale(1.2)}100%{opacity:0.2;transform:scale(0.8)}}
+.dot-wait{animation:pulse 1s ease-in-out infinite;}
+
 /* ══════════════════════════════════════════════════════ */
 .section{background:rgba(255,255,255,0.03);border:1px solid rgba(255,60,90,0.12);border-radius:10px;padding:8px 12px;margin-bottom:10px;}
 .sec-title{font-size:0.48rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
