@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v5.2Pi">
-<title>Pi Monitor v5.2Pi</title>
+<meta name="version" content="v5.1Pi">
+<title>Pi Monitor v5.1Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -45,35 +45,25 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .uptime-val.cons{color:var(--warn);text-shadow:0 0 8px rgba(255,170,0,0.4);}
 .uptime-lbl{font-size:0.45rem;letter-spacing:2px;color:var(--muted);margin-top:2px;}
 /* SERVICES */
-.section{background:rgba(255,255,255,0.03);border:1px solid rgba(255,60,90,0.12);border-radius:10px;padding:8px 12px;margin-bottom:10px;}
-.sec-title{font-size:0.48rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
-
-/* ═══ ANIMACE v5.0Pi ══════════════════════════════════ */
+/* ═══ ANIMACE v5.1Pi ══════════════════════════════════ */
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .gear-spin{display:inline-block;animation:spin 1.5s linear infinite;transform-origin:center;font-size:1.2em;color:var(--red);filter:drop-shadow(0 0 6px rgba(255,60,90,0.9));}
-
 @keyframes scanline{0%{transform:translateX(-200%)}100%{transform:translateX(600%)}}
 .h1-wrap{position:relative;overflow:hidden;display:inline-block;}
 .h1-wrap::after{content:'';position:absolute;top:0;left:0;width:25%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,60,90,0.6),rgba(255,200,200,0.3),transparent);animation:scanline 2.5s ease-in-out infinite;}
-
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.uptime{animation:float 3s ease-in-out infinite;will-change:transform;}
-
-@keyframes glitch{0%,85%,100%{opacity:1;transform:translateX(0)}86%{opacity:0.7;transform:translateX(-3px)}88%{opacity:1;transform:translateX(2px)}90%{transform:translateX(0)}}.sec-title{animation:glitch 3s infinite;}
-
-@keyframes temp-glow{0%,100%{opacity:0.65}50%{opacity:1}}
+@keyframes float{0%,100%{transform:translateY(0);box-shadow:0 2px 10px rgba(0,212,255,0.1)}50%{transform:translateY(-6px);box-shadow:0 10px 24px rgba(0,212,255,0.25)}}
+.uptime{animation:float 3s ease-in-out infinite;}
+@keyframes glitch{0%,85%,100%{opacity:1;transform:translateX(0)}86%{opacity:0.7;transform:translateX(-3px);text-shadow:3px 0 8px rgba(255,60,90,0.9)}88%{opacity:1;transform:translateX(2px);text-shadow:-2px 0 8px rgba(0,255,136,0.8)}90%{transform:translateX(0)}}
+@keyframes temp-glow{0%,100%{text-shadow:0 0 6px var(--green)}50%{text-shadow:0 0 22px var(--green),0 0 44px rgba(0,255,136,0.5)}}
 .temp-ok-pulse{animation:temp-glow 2s ease-in-out infinite;}
-
-@keyframes count-glow{0%,100%{opacity:0.55}50%{opacity:1}}
+@keyframes count-glow{0%,100%{text-shadow:0 0 4px var(--warn)}50%{text-shadow:0 0 18px var(--warn),0 0 36px rgba(255,170,0,0.6)}}
 .restart-active{animation:count-glow 1.5s ease-in-out infinite;}
-
-@keyframes pulse{0%{opacity:0.2;transform:scale(0.8)}50%{opacity:1;transform:scale(1.3)}100%{opacity:0.2;transform:scale(0.8)}}
-.dot-wait{animation:pulse 1s ease-in-out infinite;}
-
-.bar{transition:width 1s cubic-bezier(0.4,0,0.2,1),background 0.5s ease;}
-.section{transition:border-color 0.3s,box-shadow 0.3s;}
-.section:hover{border-color:rgba(255,60,90,0.4);box-shadow:0 0 18px rgba(255,60,90,0.12);}
+@keyframes barpulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.dot-wait{animation:barpulse 1s ease-in-out infinite;}
 /* ══════════════════════════════════════════════════════ */
+.section{background:rgba(255,255,255,0.03);border:1px solid rgba(255,60,90,0.12);border-radius:10px;padding:8px 12px;margin-bottom:10px;transition:border-color 0.3s,box-shadow 0.3s;}
+.section:hover{border-color:rgba(255,60,90,0.4);box-shadow:0 0 18px rgba(255,60,90,0.12);}
+.sec-title{font-size:0.48rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;animation:glitch 3s infinite;}
 .svc-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
 .svc-row:last-child{border-bottom:none;}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
@@ -119,89 +109,12 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .pistate-box.on-active{border-color:var(--green);background:rgba(0,255,136,0.12);color:var(--green);text-shadow:0 0 8px var(--green);box-shadow:0 0 12px rgba(0,255,136,0.3);animation:pulse-green 1.5s infinite;}
 .pistate-box.off-active{border-color:var(--red);background:rgba(255,60,90,0.12);color:var(--red);text-shadow:0 0 8px var(--red);box-shadow:0 0 12px rgba(255,60,90,0.3);animation:pulse-red 1.5s infinite;}
 .footer{text-align:center;font-size:0.45rem;color:rgba(90,100,136,0.4);letter-spacing:2px;margin-top:6px;}
-
-/* ═══ EXTRA ANIMACE v5.0Pi ════════════════════════════════════ */
-/* CRT scanline overlay */
-.scanline-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;background:repeating-linear-gradient(to bottom,transparent 0px,transparent 3px,rgba(0,0,0,0.045) 3px,rgba(0,0,0,0.045) 4px);}
-
-/* Scan beam shora dolů v5.1Pi */
-@keyframes scan-beam{
-  0%{top:-12px;opacity:0;}
-  3%{opacity:1;}
-  97%{opacity:1;}
-  100%{top:100vh;opacity:0;}
-}
-.scanline-overlay::after{
-  content:'';
-  position:fixed;
-  left:0;
-  top:0;
-  width:100%;
-  height:12px;
-  background:linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(0,212,255,0.04) 15%,
-    rgba(0,212,255,0.22) 40%,
-    rgba(180,240,255,0.55) 50%,
-    rgba(0,212,255,0.22) 60%,
-    rgba(0,212,255,0.04) 85%,
-    transparent 100%
-  );
-  box-shadow:0 0 18px 4px rgba(0,212,255,0.18),0 0 4px 1px rgba(180,240,255,0.35);
-  animation:scan-beam 12s cubic-bezier(0.4,0,0.6,1) infinite;
-  pointer-events:none;
-  z-index:9999;
-  will-change:top;
-}
-
-/* H1 neon dech — filter:brightness je GPU-accelerated */
-@keyframes h1-neon{0%,100%{filter:brightness(1)}50%{filter:brightness(1.6)}}
-h1{animation:h1-neon 1.8s ease-in-out infinite;will-change:filter;}
-
-/* Card slide-in při načtení (one-shot) */
-@keyframes card-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.card:nth-child(1){animation:card-in 0.38s 0.05s ease-out both;}
-.card:nth-child(2){animation:card-in 0.38s 0.15s ease-out both;}
-.card:nth-child(3){animation:card-in 0.38s 0.25s ease-out both;}
-.card:nth-child(4){animation:card-in 0.38s 0.35s ease-out both;}
-
-/* Shimmer bary — translateX je GPU-accelerated, žádný repaint */
-@keyframes bar-shimmer{from{transform:translateX(-100%)}to{transform:translateX(350%)}
-}
-.bar{transition:width 1s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;will-change:transform;}
-.bar::after{content:'';position:absolute;top:0;left:0;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.42),transparent);animation:bar-shimmer 2s linear infinite;border-radius:4px;pointer-events:none;}
-.bar-ok{background:linear-gradient(90deg,#00ff88,#00cc66);}
-.bar-warn{background:linear-gradient(90deg,#ffaa00,#ff6600);}
-.bar-hot{background:linear-gradient(90deg,#ff6600,#ff3c5a);}
-
-/* Radar rotace na SÍŤ sekci */
-@keyframes radar{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-.radar-icon{display:inline-block;animation:radar 3s linear infinite;font-style:normal;}
-
-/* Pi ON stav — ring pulse záření */
-@keyframes ring-pulse{0%{box-shadow:0 0 0 0 rgba(0,255,136,0.55),0 0 12px rgba(0,255,136,0.3)}70%{box-shadow:0 0 0 10px rgba(0,255,136,0),0 0 12px rgba(0,255,136,0.3)}100%{box-shadow:0 0 0 0 rgba(0,255,136,0),0 0 12px rgba(0,255,136,0.3)}}
-.pistate-box.on-active{animation:pulse-green 1.5s infinite,ring-pulse 1.6s ease-out infinite!important;}
-
-/* Živé hodiny — blikající dvojtečka */
-@keyframes blink-col{0%,49%{opacity:1}50%,100%{opacity:0}}
-.clock-colon{animation:blink-col 1s step-end infinite;}
-
-/* Sekce slide-in při načtení */
-@keyframes sec-in{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
-.section:nth-of-type(1){animation:sec-in 0.4s 0.1s ease-out both;}
-.section:nth-of-type(2){animation:sec-in 0.4s 0.2s ease-out both;}
-.section:nth-of-type(3){animation:sec-in 0.4s 0.3s ease-out both;}
-.section:nth-of-type(4){animation:sec-in 0.4s 0.4s ease-out both;}
-.section:nth-of-type(5){animation:sec-in 0.4s 0.5s ease-out both;}
-/* ══════════════════════════════════════════════════════════════ */
 </style>
 </head>
 <body>
-<div class="scanline-overlay"></div>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.2Pi</span> · <span id="live-clock" style="color:var(--cyan);letter-spacing:1px;font-weight:700;text-shadow:0 0 8px rgba(0,212,255,0.6);"></span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v4.11Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -271,7 +184,7 @@ h1{animation:h1-neon 1.8s ease-in-out infinite;will-change:filter;}
 </div>
 
 <div class="section">
-  <div class="sec-title"><span class="radar-icon">📡</span> SÍŤ</div>
+  <div class="sec-title">🌐 SÍŤ</div>
   <div class="net-row"><div class="net-lbl">IP adresa</div><div class="net-val" id="net-ip">—</div></div>
   <div class="net-row"><div class="net-lbl">Poslední data</div><div class="net-val" id="net-hb">—</div></div>
   <div class="net-row"><div class="net-lbl">Stáří dat</div><div class="net-val" id="net-age">—</div></div>
@@ -673,7 +586,7 @@ function loadStats(){
     }
     var ts=d.ts||d.timestamp||0;
     var age=Date.now()-ts;
-    var active=d.outputActive===true||d.active===true;
+    var active=d.state==='online'||d.outputActive===true||d.active===true;
     var fresh=ts>0&&age<120000;
     if(!fresh){
       el.innerHTML='DISCONNECTED';
@@ -890,20 +803,6 @@ function checkCloudStatus() {
 }
 checkCloudStatus();
 setInterval(checkCloudStatus, 120000);
-
-// ─── ŽIVÉ HODINY ─────────────────────────────────────
-(function liveClock(){
-  function tick(){
-    var n=new Date();
-    var h=('0'+n.getHours()).slice(-2);
-    var m=('0'+n.getMinutes()).slice(-2);
-    var s=('0'+n.getSeconds()).slice(-2);
-    var el=document.getElementById('live-clock');
-    if(el)el.innerHTML=h+'<span class="clock-colon">:</span>'+m+'<span class="clock-colon">:</span>'+s;
-  }
-  tick();
-  setInterval(tick,1000);
-})();
 
 function clearPrijate() {
   var btn = event.target;
