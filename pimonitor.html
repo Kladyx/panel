@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v4.7Pi">
-<title>Pi Monitor v4.7Pi</title>
+<meta name="version" content="v5.2Pi">
+<title>Pi Monitor v5.2Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -47,6 +47,33 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 /* SERVICES */
 .section{background:rgba(255,255,255,0.03);border:1px solid rgba(255,60,90,0.12);border-radius:10px;padding:8px 12px;margin-bottom:10px;}
 .sec-title{font-size:0.48rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+
+/* ═══ ANIMACE v5.0Pi ══════════════════════════════════ */
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.gear-spin{display:inline-block;animation:spin 1.5s linear infinite;transform-origin:center;font-size:1.2em;color:var(--red);filter:drop-shadow(0 0 6px rgba(255,60,90,0.9));}
+
+@keyframes scanline{0%{transform:translateX(-200%)}100%{transform:translateX(600%)}}
+.h1-wrap{position:relative;overflow:hidden;display:inline-block;}
+.h1-wrap::after{content:'';position:absolute;top:0;left:0;width:25%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,60,90,0.6),rgba(255,200,200,0.3),transparent);animation:scanline 2.5s ease-in-out infinite;}
+
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.uptime{animation:float 3s ease-in-out infinite;will-change:transform;}
+
+@keyframes glitch{0%,85%,100%{opacity:1;transform:translateX(0)}86%{opacity:0.7;transform:translateX(-3px)}88%{opacity:1;transform:translateX(2px)}90%{transform:translateX(0)}}.sec-title{animation:glitch 3s infinite;}
+
+@keyframes temp-glow{0%,100%{opacity:0.65}50%{opacity:1}}
+.temp-ok-pulse{animation:temp-glow 2s ease-in-out infinite;}
+
+@keyframes count-glow{0%,100%{opacity:0.55}50%{opacity:1}}
+.restart-active{animation:count-glow 1.5s ease-in-out infinite;}
+
+@keyframes pulse{0%{opacity:0.2;transform:scale(0.8)}50%{opacity:1;transform:scale(1.3)}100%{opacity:0.2;transform:scale(0.8)}}
+.dot-wait{animation:pulse 1s ease-in-out infinite;}
+
+.bar{transition:width 1s cubic-bezier(0.4,0,0.2,1),background 0.5s ease;}
+.section{transition:border-color 0.3s,box-shadow 0.3s;}
+.section:hover{border-color:rgba(255,60,90,0.4);box-shadow:0 0 18px rgba(255,60,90,0.12);}
+/* ══════════════════════════════════════════════════════ */
 .svc-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
 .svc-row:last-child{border-bottom:none;}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
@@ -68,7 +95,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 /* NET */
 .net-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
 .net-row:last-child{border-bottom:none;}
-.net-lbl{font-size:0.55rem;color:var(--muted);}
+.net-lbl{font-size:0.58rem;color:rgba(255,255,255,0.55);}
 .net-val{font-size:0.65rem;color:var(--cyan);}
 .net-val.net-active{color:var(--green);text-shadow:0 0 8px var(--green);animation:pulse-green 1.5s infinite;}
 .net-val.net-scripts{color:#ffdd00;font-size:0.58rem;overflow:hidden;max-width:68%;white-space:nowrap;}
@@ -92,12 +119,89 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .pistate-box.on-active{border-color:var(--green);background:rgba(0,255,136,0.12);color:var(--green);text-shadow:0 0 8px var(--green);box-shadow:0 0 12px rgba(0,255,136,0.3);animation:pulse-green 1.5s infinite;}
 .pistate-box.off-active{border-color:var(--red);background:rgba(255,60,90,0.12);color:var(--red);text-shadow:0 0 8px var(--red);box-shadow:0 0 12px rgba(255,60,90,0.3);animation:pulse-red 1.5s infinite;}
 .footer{text-align:center;font-size:0.45rem;color:rgba(90,100,136,0.4);letter-spacing:2px;margin-top:6px;}
+
+/* ═══ EXTRA ANIMACE v5.0Pi ════════════════════════════════════ */
+/* CRT scanline overlay */
+.scanline-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;background:repeating-linear-gradient(to bottom,transparent 0px,transparent 3px,rgba(0,0,0,0.045) 3px,rgba(0,0,0,0.045) 4px);}
+
+/* Scan beam shora dolů v5.1Pi */
+@keyframes scan-beam{
+  0%{top:-12px;opacity:0;}
+  3%{opacity:1;}
+  97%{opacity:1;}
+  100%{top:100vh;opacity:0;}
+}
+.scanline-overlay::after{
+  content:'';
+  position:fixed;
+  left:0;
+  top:0;
+  width:100%;
+  height:12px;
+  background:linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0,212,255,0.04) 15%,
+    rgba(0,212,255,0.22) 40%,
+    rgba(180,240,255,0.55) 50%,
+    rgba(0,212,255,0.22) 60%,
+    rgba(0,212,255,0.04) 85%,
+    transparent 100%
+  );
+  box-shadow:0 0 18px 4px rgba(0,212,255,0.18),0 0 4px 1px rgba(180,240,255,0.35);
+  animation:scan-beam 12s cubic-bezier(0.4,0,0.6,1) infinite;
+  pointer-events:none;
+  z-index:9999;
+  will-change:top;
+}
+
+/* H1 neon dech — filter:brightness je GPU-accelerated */
+@keyframes h1-neon{0%,100%{filter:brightness(1)}50%{filter:brightness(1.6)}}
+h1{animation:h1-neon 1.8s ease-in-out infinite;will-change:filter;}
+
+/* Card slide-in při načtení (one-shot) */
+@keyframes card-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.card:nth-child(1){animation:card-in 0.38s 0.05s ease-out both;}
+.card:nth-child(2){animation:card-in 0.38s 0.15s ease-out both;}
+.card:nth-child(3){animation:card-in 0.38s 0.25s ease-out both;}
+.card:nth-child(4){animation:card-in 0.38s 0.35s ease-out both;}
+
+/* Shimmer bary — translateX je GPU-accelerated, žádný repaint */
+@keyframes bar-shimmer{from{transform:translateX(-100%)}to{transform:translateX(350%)}
+}
+.bar{transition:width 1s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;will-change:transform;}
+.bar::after{content:'';position:absolute;top:0;left:0;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.42),transparent);animation:bar-shimmer 2s linear infinite;border-radius:4px;pointer-events:none;}
+.bar-ok{background:linear-gradient(90deg,#00ff88,#00cc66);}
+.bar-warn{background:linear-gradient(90deg,#ffaa00,#ff6600);}
+.bar-hot{background:linear-gradient(90deg,#ff6600,#ff3c5a);}
+
+/* Radar rotace na SÍŤ sekci */
+@keyframes radar{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.radar-icon{display:inline-block;animation:radar 3s linear infinite;font-style:normal;}
+
+/* Pi ON stav — ring pulse záření */
+@keyframes ring-pulse{0%{box-shadow:0 0 0 0 rgba(0,255,136,0.55),0 0 12px rgba(0,255,136,0.3)}70%{box-shadow:0 0 0 10px rgba(0,255,136,0),0 0 12px rgba(0,255,136,0.3)}100%{box-shadow:0 0 0 0 rgba(0,255,136,0),0 0 12px rgba(0,255,136,0.3)}}
+.pistate-box.on-active{animation:pulse-green 1.5s infinite,ring-pulse 1.6s ease-out infinite!important;}
+
+/* Živé hodiny — blikající dvojtečka */
+@keyframes blink-col{0%,49%{opacity:1}50%,100%{opacity:0}}
+.clock-colon{animation:blink-col 1s step-end infinite;}
+
+/* Sekce slide-in při načtení */
+@keyframes sec-in{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.section:nth-of-type(1){animation:sec-in 0.4s 0.1s ease-out both;}
+.section:nth-of-type(2){animation:sec-in 0.4s 0.2s ease-out both;}
+.section:nth-of-type(3){animation:sec-in 0.4s 0.3s ease-out both;}
+.section:nth-of-type(4){animation:sec-in 0.4s 0.4s ease-out both;}
+.section:nth-of-type(5){animation:sec-in 0.4s 0.5s ease-out both;}
+/* ══════════════════════════════════════════════════════════════ */
 </style>
 </head>
 <body>
+<div class="scanline-overlay"></div>
 
-<h1>🍓 PI MONITOR</h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v4.7Pi</span></div>
+<h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.2Pi</span> · <span id="live-clock" style="color:var(--cyan);letter-spacing:1px;font-weight:700;text-shadow:0 0 8px rgba(0,212,255,0.6);"></span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -128,7 +232,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 </div>
 
 <div class="section">
-  <div class="sec-title">⚙ SYSTEMD SERVICES</div>
+  <div class="sec-title"><span class="gear-spin">⚙</span> SYSTEMD SERVICES</div>
   <div class="svc-row"><div class="dot dot-wait" id="d-tapo"></div><div class="svc-name">kladyx-tapobridge</div><div class="svc-st" id="s-tapo">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-tapopy"></div><div class="svc-name">kladyx-tapo-py</div><div class="svc-st" id="s-tapopy">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-transfer"></div><div class="svc-name">kladyx-transferwatcher</div><div class="svc-st" id="s-transfer">…</div></div>
@@ -139,8 +243,11 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="svc-row"><div class="dot dot-wait" id="d-eq"></div><div class="svc-name">kladyx-equalizer</div><div class="svc-st" id="s-eq">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-irbridge"></div><div class="svc-name">kladyx-irbridge</div><div class="svc-st" id="s-irbridge">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-rpi"></div><div class="svc-name">kladyx-rpi</div><div class="svc-st" id="s-rpi">…</div></div>
-  <div class="svc-row"><div class="dot dot-disc" id="d-plugbridge"></div><div class="svc-name">kladyx-plugbridge</div><div class="svc-st svc-stat disc" id="s-plugbridge">DISCONNECTED</div></div>
+  <div class="svc-row"><div class="dot dot-disc" id="d-plugbridge"></div><div class="svc-name">kladyx-plugbridge</div><div class="svc-stat disc" id="s-plugbridge">DISCONNECTED</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-pitransfer"></div><div class="svc-name">kladyx-pitransfer</div><div class="svc-st" id="s-pitransfer">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-pimonitor"></div><div class="svc-name">kladyx-pimonitor</div><div class="svc-st" id="s-pimonitor">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-taporestart"></div><div class="svc-name">kladyx-tapo-restart</div><div class="svc-st" id="s-taporestart">…</div></div>
+  <div class="svc-row"><div class="dot dot-disc" id="d-tuyaplug"></div><div class="svc-name">kladyx-tuya-plug</div><div class="svc-stat disc" id="s-tuyaplug">DISCONNECTED</div></div>
 </div>
 
 <div class="section">
@@ -164,7 +271,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 </div>
 
 <div class="section">
-  <div class="sec-title">🌐 SÍŤ</div>
+  <div class="sec-title"><span class="radar-icon">📡</span> SÍŤ</div>
   <div class="net-row"><div class="net-lbl">IP adresa</div><div class="net-val" id="net-ip">—</div></div>
   <div class="net-row"><div class="net-lbl">Poslední data</div><div class="net-val" id="net-hb">—</div></div>
   <div class="net-row"><div class="net-lbl">Stáří dat</div><div class="net-val" id="net-age">—</div></div>
@@ -181,6 +288,8 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="net-row"><div class="net-lbl">Pi Transfer</div><div class="net-val" id="cloud-pitransfer"><span class="dot dot-wait"></span> ...</div></div>
   <div class="net-row"><div class="net-lbl">Web KladyxLand project.</div><div class="net-val" id="cloud-web"><span class="dot dot-wait"></span> ...</div></div>
   <div class="net-row"><div class="net-lbl">Multifunkční Panel project.</div><div class="net-val" id="cloud-panel"><span class="dot dot-wait"></span> ...</div></div>
+  <div class="net-row"><div class="net-lbl">Transfer app</div><div class="net-val" id="cloud-transfer"><span class="dot dot-wait"></span> ...</div></div>
+  <div class="net-row"><div class="net-lbl">OBS Stream</div><div class="net-val" id="cloud-obs"><span class="dot dot-wait"></span> ...</div></div>
   <div style="text-align:right;margin-top:6px;"><button onclick="clearPrijate()" style="background:rgba(255,50,50,.15);border:1px solid rgba(255,50,50,.4);color:#ff4444;padding:4px 12px;border-radius:6px;font-size:.7rem;cursor:pointer;">🗑 Smazat přijaté</button></div>
 </div>
 
@@ -385,13 +494,16 @@ function showOffline(fromFirebase){
   });
   // Pi4 offline = nemame data z piStats -> u techto sluzeb nelzeme, ukazeme ?
   // tapopy a irbridge maji vlastni fetch (tapoDb/irDb lastSeen), PC sluzby resi checkPC()
-  ['tapo','prijate','pitransfer'].forEach(function(id){
+  ['tapo','prijate','pitransfer','pimonitor','taporestart'].forEach(function(id){
     var d=document.getElementById('d-'+id);
     if(d)d.className='dot dot-wait';
     var s=document.getElementById('s-'+id);
     if(s){s.textContent='?';s.className='svc-st';}
   });
   setSvc('rpi',false);
+  // Reset OBS status
+  var obsEl=document.getElementById('cloud-obs');
+  if(obsEl){obsEl.innerHTML='<span class="dot dot-wait"></span> ...';obsEl.className='net-val';obsEl.style.cssText='';}
   // Equalizer je nyni soucasti PC_SVC -> resi ho checkPC() spolu s ostatnimi PC sluzbami
   // Pi OFF (data nepřišla → Pi je vypnutý)
   setPiState(false);
@@ -427,10 +539,15 @@ function loadStats(){
     setBar('bar-ram',ram);
     // Teplota
     var temp=parseFloat(d.temp_c||0).toFixed(1);
-    document.getElementById('val-temp').textContent=temp;
+    var tempVal=document.getElementById('val-temp');
+    tempVal.textContent=temp;
     setBar('bar-temp',parseFloat(temp)/85*100);
-    var tempCard=document.getElementById('val-temp').closest('.card');
-    if(tempCard)tempCard.className='card'+(parseFloat(temp)>65?' temp-warn':'');
+    var tempCard=tempVal.closest('.card');
+    if(tempCard){
+      tempCard.className='card'+(parseFloat(temp)>65?' temp-warn':'');
+      if(parseFloat(temp)<=65){tempVal.classList.add('temp-ok-pulse');}
+      else{tempVal.classList.remove('temp-ok-pulse');}
+    }
     // Disk
     var disk=Math.round(d.disk_pct||0);
     document.getElementById('val-disk').textContent=disk;
@@ -462,7 +579,7 @@ function loadStats(){
     // Services z piStats - POUZE sluzby ktere skutecne bezi na Pi4 jako systemd.
     // transfer/upload/nextsync/obs jsou .bat na PC, Pi4 je nevidi -> resi checkPC()
     if(d.services){
-      ['tapo','prijate','pitransfer'].forEach(function(k){
+      ['tapo','prijate','pitransfer','pimonitor','taporestart','tuyaplug'].forEach(function(k){
         if(d.services[k]!==undefined)setSvc(k,d.services[k]===true||d.services[k]==='active');
       });
     }
@@ -470,12 +587,14 @@ function loadStats(){
     // Pi ON (data přišla → Pi běží)
     setPiState(true);
     setSvc('rpi',true);
+    setSvc('pimonitor',true);    // piStats přišla = pimonitor evidentně běží
+    setSvc('taporestart',true);  // Pi ON = cron nastaven = aktivní
     // Procesy (pokud Pi posle realna data, prepise ACTIVE ON)
     if(d.proc_count!==undefined){var el=document.getElementById('net-proc');el.textContent=d.proc_count;el.classList.remove('net-active');}
     // Restarty služeb
-    if(d.restarts){var rk=['tp','tb','ir','pm','pb','pt','pl'];rk.forEach(function(k){var e=document.getElementById('r-'+k);if(e){e.textContent=d.restarts[k]!==undefined?d.restarts[k]:'—';e.style.color=d.restarts[k]>0?'#ffaa00':'#00ff88';}});}
+    if(d.restarts){var rk=['tp','tb','ir','pm','pb','pt','pl'];rk.forEach(function(k){var e=document.getElementById('r-'+k);if(e){var cnt=d.restarts[k]!==undefined?d.restarts[k]:0;e.textContent=cnt;e.style.color=cnt>0?'#ffaa00':'#00ff88';if(cnt>0){e.classList.add('restart-active');}else{e.classList.remove('restart-active');}}});}
     // Aktivní skripty - ze services pole, jen ty co jsou true/active na Pi
-    var svcMap={tapo:'tapobridge',tapo_py:'tapo-py',prijate:'prijatelister',pitransfer:'pitransfer',irbridge:'irbridge',rpi:'rpi'};
+    var svcMap={tapo:'tapobridge',tapo_py:'tapo-py',prijate:'prijatelister',pitransfer:'pitransfer',irbridge:'irbridge',rpi:'rpi',pimonitor:'pimonitor',taporestart:'tapo-restart',tuyaplug:'tuya-plug'};
     _piActiveList=[];
     if(d.services){
       Object.keys(svcMap).forEach(function(k){
@@ -537,6 +656,61 @@ function loadStats(){
     setDev('p110',d&&d.on===true,!!(ts&&(Date.now()-ts<150000)));
   })
   .catch(function(){setDev('p110',false,false);});
+  // OBS Stream status - obs-bridge.js na PC zapisuje do /status/obs
+  fbFetch(fbUrl('/status/obs.json'),{signal:AbortSignal.timeout(5000)})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    var el=document.getElementById('cloud-obs');
+    if(!el)return;
+    if(!d){
+      el.innerHTML='DISCONNECTED';
+      el.className='net-val disc';
+      el.style.color='var(--warn)';
+      el.style.textShadow='0 0 8px rgba(255,170,0,0.5)';
+      el.style.animation='pulse-yellow 2s infinite';
+      el.style.fontWeight='';
+      return;
+    }
+    var ts=d.ts||d.timestamp||0;
+    var age=Date.now()-ts;
+    var active=d.outputActive===true||d.active===true;
+    var fresh=ts>0&&age<120000;
+    if(!fresh){
+      el.innerHTML='DISCONNECTED';
+      el.className='net-val disc';
+      el.style.color='var(--warn)';
+      el.style.textShadow='0 0 8px rgba(255,170,0,0.5)';
+      el.style.animation='pulse-yellow 2s infinite';
+      el.style.fontWeight='';
+      return;
+    }
+    if(active){
+      el.innerHTML='CONNECTED ON';
+      el.className='net-val';
+      el.style.color='var(--green)';
+      el.style.textShadow='0 0 8px rgba(0,255,136,0.6)';
+      el.style.animation='pulse-green 1.2s infinite';
+      el.style.fontWeight='700';
+    } else {
+      el.innerHTML='CONNECTED OFF';
+      el.className='net-val';
+      el.style.color='var(--red)';
+      el.style.textShadow='0 0 8px rgba(255,60,90,0.5)';
+      el.style.animation='pulse-red 1.5s infinite';
+      el.style.fontWeight='';
+    }
+  })
+  .catch(function(){
+    var el=document.getElementById('cloud-obs');
+    if(el){
+      el.innerHTML='DISCONNECTED';
+      el.className='net-val';
+      el.style.color='var(--warn)';
+      el.style.textShadow='0 0 8px rgba(255,170,0,0.5)';
+      el.style.animation='pulse-yellow 2s infinite';
+      el.style.fontWeight='';
+    }
+  });
   // PC sluzby - nezavisle na piStats (funguje i kdyz je Pi4 vypnuty)
   checkPC();
 }
@@ -706,9 +880,30 @@ function checkCloudStatus() {
   }).catch(function(){
     pEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">OFFLINE</span>';
   });
+  // Transfer app - přímý fetch na GitHub Pages
+  var trEl=document.getElementById('cloud-transfer');
+  fetch('https://kladyx.github.io/transfer.html',{mode:'no-cors',cache:'no-store'}).then(function(){
+    trEl.innerHTML='<span class="dot dot-ok"></span> <span style="color:#00ff88;font-weight:700;">ONLINE</span>';
+  }).catch(function(){
+    trEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">OFFLINE</span>';
+  });
 }
 checkCloudStatus();
 setInterval(checkCloudStatus, 120000);
+
+// ─── ŽIVÉ HODINY ─────────────────────────────────────
+(function liveClock(){
+  function tick(){
+    var n=new Date();
+    var h=('0'+n.getHours()).slice(-2);
+    var m=('0'+n.getMinutes()).slice(-2);
+    var s=('0'+n.getSeconds()).slice(-2);
+    var el=document.getElementById('live-clock');
+    if(el)el.innerHTML=h+'<span class="clock-colon">:</span>'+m+'<span class="clock-colon">:</span>'+s;
+  }
+  tick();
+  setInterval(tick,1000);
+})();
 
 function clearPrijate() {
   var btn = event.target;
