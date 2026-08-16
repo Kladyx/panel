@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v3.6Kl</title>
+<title>KladyxTransfer v3.7Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -201,7 +201,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v3.6Kl • Firebase + GitHub</div>
+  <div class="version">v3.7Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -390,6 +390,14 @@
     </div>
 
     <div class="status" id="statusFbDl"></div>
+
+    <div style="margin-top:12px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
+      <div class="desc2">🔒 Firebase Rules</div>
+      <div>
+        <button class="sendbtn" style="background:linear-gradient(135deg,#7b00ff,#00aaff);margin-top:4px;" onclick="fbDownloadRules()">⬇️ Stáhnout Rules (rules.json)</button>
+      </div>
+      <div class="status" id="statusFbRules"></div>
+    </div>
 
     <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
       <div class="desc2">Nahrát upravený JSON zpět</div>
@@ -1405,7 +1413,51 @@ function fbLogin(callback) {
   xhr.send(JSON.stringify({ email: email, password: pass, returnSecureToken: true }));
 }
 
-function fbDownload() {
+function fbDownloadRules() {
+  var status = document.getElementById('statusFbRules');
+  function doRules(token) {
+    status.textContent = '📡 Stahuji rules.json...';
+    status.className = 'status';
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', FB_DB_URL + '/.settings/rules.json?auth=' + encodeURIComponent(token));
+    xhr.responseType = 'blob';
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(xhr.response);
+        a.download = 'rules.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+        status.textContent = '✅ Staženo: rules.json';
+        status.className = 'status done';
+        playDing();
+        addFbHistoryItem('download', '.settings/rules');
+      } else {
+        status.textContent = '❌ Chyba ' + xhr.status + (xhr.status === 401 ? ' — zkontroluj přihlášení' : '');
+        status.className = 'status';
+      }
+    };
+    xhr.onerror = function() {
+      status.textContent = '❌ Chyba sítě';
+      status.className = 'status';
+    };
+    xhr.send();
+  }
+  if (fbIdToken) {
+    doRules(fbIdToken);
+  } else {
+    status.textContent = '🔑 Přihlašuji...';
+    status.className = 'status';
+    fbLogin(function(err) {
+      if (err) { status.textContent = '❌ ' + err; status.className = 'status'; return; }
+      doRules(fbIdToken);
+    });
+  }
+}
+
+
   var node = document.getElementById('fbNode').value;
   var status = document.getElementById('statusFbDl');
   var isRules = (node === '__rules__');
