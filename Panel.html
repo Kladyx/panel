@@ -111,6 +111,7 @@
     .app-dot { display:block; position:absolute; top:3px; right:3px; width:8px; height:8px; border-radius:50%; background:var(--ac); box-shadow:0 0 6px var(--ac); animation:appDotBlink 1.5s ease-in-out infinite; z-index:10; opacity:1; }
     @keyframes appDotBlink { 0%, 100% { opacity:1; box-shadow:0 0 6px var(--ac), 0 0 12px var(--ac); } 50% { opacity:0.4; box-shadow:0 0 2px var(--ac); } }
     .bi { font-size:1.1rem; line-height:1; }
+    .bi img { width:22px; height:22px; object-fit:cover; border-radius:5px; vertical-align:middle; display:inline-block; }
     .bl { font-size:0.52rem; letter-spacing:1px; text-transform:uppercase; color:var(--muted); }
     .app-btn.active .bl { color:var(--ac); }
     .bd { position:absolute; top:4px; right:5px; width:4px; height:4px; border-radius:50%; background:#00ff88; box-shadow:0 0 5px #00ff88; opacity:0; transition:opacity 0.3s; }
@@ -136,6 +137,7 @@
     .wdot { position:absolute !important; top:6px !important; right:6px !important; width:10px !important; height:10px !important; border-radius:50% !important; z-index:999 !important; pointer-events:none !important; display:block !important; animation:wdotBlink 1.2s ease-in-out infinite !important; }
     @keyframes wdotBlink { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.2; transform:scale(0.6); } }
     .wi { font-size:1.5rem; }
+    .wi img { width:30px; height:30px; object-fit:cover; border-radius:6px; vertical-align:middle; display:inline-block; }
     .wn { font-size:0.56rem; letter-spacing:1px; text-transform:uppercase; color:var(--light); }
     .wd { font-size:0.5rem; color:var(--muted); }
     .eq-wrap{display:flex;gap:20px;justify-content:center;align-items:flex-end;margin:8px 0 4px;}
@@ -235,7 +237,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.2.9.Pro - 2026/27 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.4.3.Pro - 2026/27 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -408,6 +410,10 @@
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🚀</div><div class="bl">SpeedTest</div>
     </button>
+    <button class="app-btn" id="btn-starter" style="--ac:#00ff88;--ac-rgb:0,255,136" onclick="openApp('starter')">
+      <div class="app-dot"></div>
+      <div class="bd"></div><div class="bi">🚀</div><div class="bl">Starter</div>
+    </button>
     <button class="app-btn" id="btn-transfer" style="--ac:#ff6600;--ac-rgb:255,102,0" onclick="openApp('transfer')">
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">📤</div><div class="bl">Transfer</div>
@@ -424,10 +430,6 @@
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🎛️</div><div class="bl">Equalizer</div>
     </button>
-    <button class="app-btn" id="btn-starter" style="--ac:#00ff88;--ac-rgb:0,255,136" onclick="openApp('starter')">
-      <div class="app-dot"></div>
-      <div class="bd"></div><div class="bi">🚀</div><div class="bl">Starter</div>
-    </button>
     <button class="app-btn" id="btn-firebase" style="--ac:#ff9900;--ac-rgb:255,153,0" onclick="openApp('firebase')">
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🔥</div><div class="bl">Firebase</div>
@@ -436,6 +438,11 @@
     <button class="app-btn" id="btn-speakup" style="--ac:#00d4ff;--ac-rgb:0,212,255" onclick="openApp('speakup')">
       <div class="app-dot"></div>
       <div class="bd"></div><div class="bi">🎤</div><div class="bl">SpeakUp</div>
+    </button>
+
+    <button class="app-btn" id="btn-accounts" style="--ac:#00e676;--ac-rgb:0,230,118" onclick="openApp('accounts')">
+      <div class="app-dot"></div>
+      <div class="bd"></div><div class="bi">🔐</div><div class="bl">Accounts</div>
     </button>
 
     <button class="app-btn" id="btn-residence" style="--ac:#ff6b35;--ac-rgb:255,107,53" onclick="openApp('residence')">
@@ -538,13 +545,14 @@
         <div class="wcard" onclick="openApp('cotoje')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">📸</div><div class="wn">Co to je???</div><div class="wd">AI Rozpoznávač</div></div>
         <div class="wcard" onclick="openApp('kladyxamp')" onmouseover="this.style.borderColor='#ff00ff';this.style.boxShadow='0 0 14px rgba(255,0,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff00ff;box-shadow:0 0 6px #ff00ff"></span><div class="wi">🎵</div><div class="wn">KladyxAmp</div><div class="wd">MP3 Přehrávač</div></div>
         <div class="wcard" onclick="openApp('speedtest')" onmouseover="this.style.borderColor='#00ff66';this.style.boxShadow='0 0 14px rgba(0,255,102,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00ff66;box-shadow:0 0 6px #00ff66"></span><div class="wi">🚀</div><div class="wn">SpeedTest</div><div class="wd">Test rychlosti sítě</div></div>
+        <div class="wcard" onclick="openApp('starter')" onmouseover="this.style.borderColor='#00ff88';this.style.boxShadow='0 0 14px rgba(0,255,136,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00ff88;box-shadow:0 0 6px #00ff88"></span><div class="wi">🚀</div><div class="wn">Starter</div><div class="wd">App Launcher</div></div>
         <div class="wcard" onclick="openApp('transfer')" onmouseover="this.style.borderColor='#ff6600';this.style.boxShadow='0 0 14px rgba(255,102,0,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff6600;box-shadow:0 0 6px #ff6600"></span><div class="wi">📤</div><div class="wn">Transfer</div><div class="wd">Mobil → PC</div></div>
         <div class="wcard" onclick="openApp('kladyxhome')" onmouseover="this.style.borderColor='#00aaff';this.style.boxShadow='0 0 14px rgba(0,170,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00aaff;box-shadow:0 0 6px #00aaff"></span><div class="wi">🏠</div><div class="wn">KladyxHome</div><div class="wd">Smart Home</div></div>
         <div class="wcard" onclick="openApp('pimonitor')" onmouseover="this.style.borderColor='#ff3c5a';this.style.boxShadow='0 0 14px rgba(255,60,90,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff3c5a;box-shadow:0 0 6px #ff3c5a"></span><div class="wi">🍓</div><div class="wn">Pi Monitor</div><div class="wd">RPi4 Dashboard</div></div>
         <div class="wcard" onclick="openApp('equalizer')" onmouseover="this.style.borderColor='#ff00ff';this.style.boxShadow='0 0 14px rgba(255,0,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff00ff;box-shadow:0 0 6px #ff00ff"></span><div class="wi">🎛️</div><div class="wn">Equalizer</div><div class="wd">Stereo VU Meter</div></div>
-        <div class="wcard" onclick="openApp('starter')" onmouseover="this.style.borderColor='#00ff88';this.style.boxShadow='0 0 14px rgba(0,255,136,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00ff88;box-shadow:0 0 6px #00ff88"></span><div class="wi">🚀</div><div class="wn">Starter</div><div class="wd">App Launcher</div></div>
         <div class="wcard" onclick="openApp('firebase')" onmouseover="this.style.borderColor='#ff9900';this.style.boxShadow='0 0 14px rgba(255,153,0,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff9900;box-shadow:0 0 6px #ff9900"></span><div class="wi">🔥</div><div class="wn">Firebase</div><div class="wd">Konzole databáze</div></div>
         <div class="wcard" onclick="openApp('speakup')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00d4ff;box-shadow:0 0 6px #00d4ff"></span><div class="wi">🎤</div><div class="wn">SpeakUp</div><div class="wd">Angličtina EN</div></div>
+        <div class="wcard" onclick="openApp('accounts')" onmouseover="this.style.borderColor='#00e676';this.style.boxShadow='0 0 14px rgba(0,230,118,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#00e676;box-shadow:0 0 6px #00e676"></span><div class="wi">🔐</div><div class="wn">Accounts</div><div class="wd">Účty a přístupy</div></div>
         <div class="wcard" onclick="openApp('residence')" onmouseover="this.style.borderColor='#ff6b35';this.style.boxShadow='0 0 14px rgba(255,107,53,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#ff6b35;box-shadow:0 0 6px #ff6b35"></span><div class="wi">🏢</div><div class="wn">Residence</div><div class="wd">Záznamy SVJ</div></div>
 
       </div>
@@ -597,6 +605,7 @@
     <iframe id="frame-starter" class="app-frame" title="starter" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-top-navigation" allowfullscreen></iframe>
     <iframe id="frame-firebase" class="app-frame" title="firebase" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-top-navigation" allowfullscreen></iframe>
     <iframe id="frame-speakup" class="app-frame" title="speakup" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allow="microphone *" allowfullscreen></iframe>
+    <iframe id="frame-accounts" class="app-frame" title="accounts" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-residence" class="app-frame" title="residence" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
 
   </div>
@@ -2368,7 +2377,7 @@ APP_HTML["cd"] = `<!DOCTYPE html>
         photoURL = await ref.getDownloadURL();
         currentPhoto = photoURL;
         currentPhotoFile = null;
-      } catch(e) { console.error('Upload fotky selhal:', e); }
+      } catch(e) { console.error('Upload fotky selhal:', e); _setSyncStatus('⚠ Foto se nenahralo: ' + (e.code||e.message||e), '#f39c12'); }
     }
 
     const recordData = {
@@ -3341,20 +3350,28 @@ APP_HTML["hardware"] = `<!DOCTYPE html>
 
 <script>
   // ── FIREBASE SYNC ─────────────────────────────────────────────
-  const _fbConfig = {
-    apiKey: "AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",
-    authDomain: "kladyxland.firebaseapp.com",
-    databaseURL: "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "kladyxland",
-    storageBucket: "kladyxland.firebasestorage.app",
-    messagingSenderId: "178078059030",
-    appId: "1:178078059030:web:8d8a0271b23a7aca2b4337"
-  };
-  if (!firebase.apps.length) firebase.initializeApp(_fbConfig);
-  firebase.auth().signInAnonymously().catch(e => console.warn('Auth:', e));
-  const _db = firebase.database();
-  const _storage = firebase.storage();
-  const _hwRef = _db.ref('hardwareDb');
+  // Vlastni pojmenovana instance "kladyx_hw" - nechyba s jinymi instancemi
+  var _db, _storage, _hwRef, _hwAuth;
+  (function(){
+    var _cfg = {
+      apiKey: "AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",
+      authDomain: "kladyxland.firebaseapp.com",
+      databaseURL: "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "kladyxland",
+      storageBucket: "kladyxland.firebasestorage.app",
+      messagingSenderId: "178078059030",
+      appId: "1:178078059030:web:8d8a0271b23a7aca2b4337"
+    };
+    var _app;
+    try { _app = firebase.app('kladyx_hw'); } catch(e) {
+      _app = firebase.initializeApp(_cfg, 'kladyx_hw');
+    }
+    _db = _app.database();
+    _storage = _app.storage();
+    _hwAuth = _app.auth();
+    _hwAuth.signInAnonymously().catch(function(e){console.warn('HW Auth:',e);});
+  })();
+  _hwRef = _db.ref('hardwareDb');
 
   function _setSyncStatus(msg, color) {
     const el = document.getElementById('sync-dot');
@@ -3393,9 +3410,20 @@ APP_HTML["hardware"] = `<!DOCTYPE html>
     const obj = {};
     items.forEach(it => { obj['id_' + it.id] = it; });
     _setSyncStatus('⏳ Ukládám...', '#f39c12');
+    // Base64 fotky nafukuji objekt pres limit RTDB -> nezapisujeme je
+    var _stripped = 0;
+    Object.keys(obj).forEach(function(k){
+      if (obj[k].photo && obj[k].photo.indexOf('data:') === 0) {
+        obj[k] = Object.assign({}, obj[k], {photo: null});
+        _stripped++;
+      }
+    });
     _hwRef.set(obj)
-      .then(() => _setSyncStatus('✅ Synchronizováno', '#2ecc71'))
-      .catch(e => { console.error('Firebase save error:', e); _setSyncStatus('❌ Chyba sync', '#e74c3c'); });
+      .then(() => _setSyncStatus(_stripped ? ('✅ Ulozeno (' + _stripped + ' starych fotek vynechano)') : '✅ Synchronizováno', '#2ecc71'))
+      .catch(e => {
+        var msg = e && e.code ? e.code : (e && e.message ? e.message : String(e));
+        _setSyncStatus('❌ ' + msg, '#e74c3c');
+      });
   }
 
   function updateBadge() {
@@ -3679,7 +3707,7 @@ APP_HTML["hardware"] = `<!DOCTYPE html>
         const ref = _storage.ref('hardware/' + Date.now() + '_' + compressed.name);
         await ref.put(compressed);
         photoURL = await ref.getDownloadURL();
-      } catch(e) { console.error('Upload fotky selhal:', e); }
+      } catch(e) { console.error('Upload fotky selhal:', e); _setSyncStatus('⚠ Foto se nenahralo: ' + (e.code||e.message||e), '#f39c12'); }
     }
 
     const itemData = {
@@ -3957,7 +3985,7 @@ APP_HTML["hardware"] = `<!DOCTYPE html>
   // ─────────────────────────────────────────────────────
   
   let _firstHwLoad = true;
-  firebase.auth().onAuthStateChanged(user => {
+  _hwAuth.onAuthStateChanged(user => {
     if (!user) return;
     _hwRef.once('value', (snapshot) => {
     const fbData = snapshot.val();
@@ -5472,7 +5500,7 @@ APP_HTML["lp"] = `<!DOCTYPE html>
         photoURL = await ref.getDownloadURL();
         currentPhoto = photoURL;
         currentPhotoFile = null;
-      } catch(e) { console.error('Upload fotky selhal:', e); }
+      } catch(e) { console.error('Upload fotky selhal:', e); _setSyncStatus('⚠ Foto se nenahralo: ' + (e.code||e.message||e), '#f39c12'); }
     }
 
     const recordData = {
@@ -15842,6 +15870,10 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
     <div class="item checking" id="i-fb-equalizer"><div class="dot checking" id="d-fb-equalizer"></div><div class="name">🚨 Equalizer</div><div class="st checking" id="s-fb-equalizer">…</div></div>
     <div class="item checking" id="i-fb-multitrack"><div class="dot checking" id="d-fb-multitrack"></div><div class="name">🎚️ Multitrack</div><div class="st checking" id="s-fb-multitrack">…</div></div>
     <div class="item checking" id="i-fb-housetime"><div class="dot checking" id="d-fb-housetime"></div><div class="name">🎧 HouseTime</div><div class="st checking" id="s-fb-housetime">…</div></div>
+    <div class="item checking" id="i-fb-residence"><div class="dot checking" id="d-fb-residence"></div><div class="name">🏢 Residence</div><div class="st checking" id="s-fb-residence">…</div></div>
+    <div class="item checking" id="i-fb-speakup"><div class="dot checking" id="d-fb-speakup"></div><div class="name">🎤 SpeakUp</div><div class="st checking" id="s-fb-speakup">…</div></div>
+    <div class="item checking" id="i-fb-accounts"><div class="dot checking" id="d-fb-accounts"></div><div class="name">🔐 Accounts</div><div class="st checking" id="s-fb-accounts">…</div></div>
+    <div class="item checking" id="i-fb-starter"><div class="dot checking" id="d-fb-starter"></div><div class="name">🚀 Starter</div><div class="st checking" id="s-fb-starter">…</div></div>
   </div>
 </div>
 
@@ -15987,7 +16019,7 @@ function setS(id, state, text) {
 }
 
 // ── Firebase DB check → cascade to all FB apps ──
-var FB_APPS = ['odecty','cd','hardware','lp','platby','jidlo','gluco','notes','kalendar','arch','zxnext','wordmaster','password','manualy','zxgames','worldtime','user','scripty','nextsync','kladyxhome','pimonitor','equalizer','multitrack','housetime'];
+var FB_APPS = ['odecty','cd','hardware','lp','platby','jidlo','gluco','notes','kalendar','arch','zxnext','wordmaster','password','manualy','zxgames','worldtime','user','scripty','nextsync','kladyxhome','pimonitor','equalizer','multitrack','housetime','residence','speakup','accounts','starter'];
 
 function setFbApps(state) {
   var txt = state==='ok' ? 'Online ✓' : 'Offline ✗';
@@ -17633,6 +17665,7 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 .num{font-size:0.72rem;font-weight:800;color:#a78bfa;min-width:22px;}
 .name{flex:1;color:#e0e0f0;}
 .icon-cell{font-size:1.2rem;min-width:28px;text-align:center;}
+.icon-cell img{width:28px;height:28px;object-fit:cover;border-radius:6px;vertical-align:middle;display:inline-block;}
 .btn-edit{background:none;border:none;color:#a78bfa;cursor:pointer;font-size:0.85rem;padding:2px 5px;border-radius:6px;opacity:0.7;flex-shrink:0;}
 .btn-edit:hover{opacity:1;background:rgba(167,139,250,0.15);}
 .del{background:none;border:none;color:#f87171;cursor:pointer;font-size:0.95rem;padding:2px 6px;border-radius:6px;opacity:0.6;flex-shrink:0;}
@@ -17644,6 +17677,7 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 .modal h3{font-size:0.9rem;font-weight:800;color:#a78bfa;letter-spacing:1px;}
 .modal-current{display:flex;align-items:center;gap:10px;font-size:0.85rem;color:#aaa;}
 .big-icon{font-size:2rem;}
+.big-icon img{width:48px;height:48px;object-fit:cover;border-radius:10px;vertical-align:middle;display:inline-block;}
 .emoji-search{width:100%;padding:8px 12px;border-radius:8px;border:1.5px solid rgba(167,139,250,0.25);background:#0a0a1a;color:#e0e0f0;font-size:0.9rem;font-family:inherit;outline:none;}
 .emoji-search:focus{border-color:#a78bfa;}
 .cat-tabs{display:flex;gap:5px;flex-wrap:wrap;}
@@ -17673,9 +17707,11 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"><\/script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
 </head>
 <body>
 <h1>&#128100; Moje Apky</h1>
+<div id="top-sync-status" style="font-size:0.75rem;color:#5a6488;margin:-8px 0 12px;">&#9729; Pripojuji...</div>
 <ul class="app-list" id="app-list"></ul>
 <div class="add-box">
   <h2>&#10133; PRIDAT NOVOU APLIKACI</h2>
@@ -17713,6 +17749,7 @@ h1{font-size:1rem;font-weight:800;letter-spacing:2px;color:#a78bfa;text-transfor
 var LS_KEY="kladyx_user_apps";
 var LS_ICONS="kladyx_custom_icons";
 var _iconStorage=null;
+var _iconDb=null;
 function initIconStorage(){
   try{
     if(typeof firebase==="undefined"){setTimeout(initIconStorage,1000);return;}
@@ -17722,7 +17759,13 @@ function initIconStorage(){
       app=firebase.initializeApp({apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",authDomain:"kladyxland.firebaseapp.com",databaseURL:"https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",projectId:"kladyxland",storageBucket:"kladyxland.firebasestorage.app",messagingSenderId:"178078059030",appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"},"moje_apky_icons");
     }
     _iconStorage=app.storage();
-  }catch(e){console.warn("initIconStorage:",e);}
+    try{
+      var pfb=window.parent.firebase;
+      if(pfb&&pfb.apps&&pfb.apps.length){_iconDb=pfb.database();}
+      else{_iconDb=app.database();}
+    }catch(e2){_iconDb=app.database();}
+    initFirebase();
+  }catch(e){console.warn("initIconStorage:",e);setTimeout(initIconStorage,1500);}
 }
 initIconStorage();
 function getStorage(){try{var s=window.parent.localStorage;s.getItem("__test__");return s;}catch(e){return localStorage;}}
@@ -17756,7 +17799,7 @@ var DEFAULT=[
   "\uD83E\uDE78 Gluk\u00F3za","\uD83C\uDF99 OBS Status","\uD83C\uDF24 Po\u010Das\u00ED","\uD83D\uDCDD Pozn\u00E1mky","\uD83D\uDCC5 Kalend\u00E1\u0159",
   "\uD83D\uDD79 ZX Next","\uD83D\uDCD6 Manu\u00E1ly","\uD83D\uDCDA \u010Dte\u010Dka","\uD83C\uDDEC\uD83C\uDDE7 WordMaster","\uD83D\uDCFB Multitrack",
   "\uD83D\uDFE2 Status","\uD83C\uDFA4 Radio ID","\uD83C\uDFAE ZX Games","\uD83C\uDF0D World Time","\uD83C\uDF10 P\u0159eklada\u010D",
-  "\uD83D\uDCE1 NextSync","\uD83D\uDCF8 Co to je???","\uD83C\uDFB5 KladyxAmp","\uD83D\uDE80 SpeedTest","\uD83D\uDCE4 Transfer","\uD83C\uDFE0 KladyxHome","\uD83C\uDF53 Pi Monitor","\uD83C\uDF9B\uFE0F Equalizer","\u2699\uFE0F Scripty","\uD83C\uDFE2 Residence","🎤 SpeakUp"
+  "\uD83D\uDCE1 NextSync","\uD83D\uDCF8 Co to je???","\uD83C\uDFB5 KladyxAmp","\uD83D\uDE80 SpeedTest","\uD83D\uDCE4 Transfer","\uD83C\uDFE0 KladyxHome","\uD83C\uDF53 Pi Monitor","\uD83C\uDF9B\uFE0F Equalizer","\u2699\uFE0F Scripty","\uD83C\uDFE2 Residence","🎤 SpeakUp","🔐 Accounts","\uD83D\uDE80 Starter","\uD83C\uDFE0 Dom\u016F","\uD83D\uDC64 Moje Apky"
 ];
 
 var APP_IDS={
@@ -17767,7 +17810,7 @@ var APP_IDS={
   "ZX Next":"zxnext","Manu\u00E1ly":"manualy","\u010Dte\u010Dka":"reader","WordMaster":"wordmaster",
   "Multitrack":"multitrack","Status":"status","Radio ID":"radio",
   "ZX Games":"zxgames","World Time":"worldtime","P\u0159eklada\u010D":"prekladac",
-  "NextSync":"nextsync","Scripty":"scripty","Co to je???":"cotoje","KladyxAmp":"kladyxamp","SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer","Residence":"residence","SpeakUp":"speakup"
+  "NextSync":"nextsync","Scripty":"scripty","Co to je???":"cotoje","KladyxAmp":"kladyxamp","SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer","Residence":"residence","SpeakUp":"speakup","Accounts":"accounts","Starter":"starter","Dom\u016F":"home","Moje Apky":"user"
 };
 
 var selectedAddIcon=QUICK_ICONS[0];
@@ -17782,14 +17825,20 @@ function saveIconsLocal(){try{getStorage().setItem(LS_ICONS,JSON.stringify(_cust
 
 function initFirebase(){
   try{
-    var fb=window.parent.firebase;
-    if(!fb){setTimeout(initFirebase,1500);return;}
-    var db=fb.database();
-    _fbRef=db.ref("kladyx_icons");
+    if(!_iconDb){return;}
+    _fbRef=_iconDb.ref("kladyx_icons");
     _fbRef.on("value",function(snap){
-      if(snap.exists()&&snap.val()){Object.assign(_customIcons,snap.val());saveIconsLocal();render();setSyncStatus("\u2601 Sync \u2713","#34d399");}
-      else{setSyncStatus("\u2601 Online","#34d399");}
-    },function(){setSyncStatus("\u2601 Offline","#f87171");});
+      var remote=(snap.exists()&&snap.val())?snap.val():{};
+      var missing={};
+      Object.keys(_customIcons).forEach(function(k){if(_customIcons[k]&&!remote[k])missing[k]=_customIcons[k];});
+      Object.assign(_customIcons,remote);
+      saveIconsLocal();render();
+      setSyncStatus("\u2601 Sync \u2713","#34d399");setPersistentSync(true);
+      if(!_pushedOnce&&Object.keys(missing).length>0){
+        _pushedOnce=true;
+        _fbRef.update(missing).then(function(){setSyncStatus("\u2601 Doplneno "+Object.keys(missing).length+" ikon \u2713","#34d399");}).catch(function(){});
+      }
+    },function(){setSyncStatus("\u2601 Offline","#f87171");setPersistentSync(false);});
     if(Object.keys(_pendingSave).length>0){
       _fbRef.update(_pendingSave).then(function(){_pendingSave={};}).catch(function(){});
     }
@@ -17797,16 +17846,31 @@ function initFirebase(){
 }
 
 var _pendingSave={};
+var _pushedOnce=false;
 
 function saveIconToFirebase(appId,icon){
   _pendingSave[appId]=icon;
-  if(!_fbRef){return;}
+  var top=document.getElementById("top-sync-status");
+  function show(t,c){if(top){top.textContent=t;top.style.color=c;}setSyncStatus(t,c);}
+  if(!_fbRef){show("CHYBA: nen\u00ed spojen\u00ed s DB","#f87171");return;}
   var upd=_pendingSave;
   _pendingSave={};
-  _fbRef.update(upd).then(function(){setSyncStatus("\u2601 Ulo\u017Eeno \u2713","#34d399");setTimeout(function(){setSyncStatus("","");},2000);}).catch(function(){});
+  show("Zapisuji do DB...","#ffaa00");
+  _fbRef.update(upd).then(function(){
+    show("ZAPS\u00c1NO do DB \u2713","#34d399");
+  }).catch(function(err){
+    var c=(err&&err.code)?err.code:(err&&err.message?err.message:String(err));
+    show("CHYBA: "+c,"#f87171");
+  });
 }
 
 function setSyncStatus(txt,color){var el=document.getElementById("sync-status");if(el){el.textContent=txt;el.style.color=color||"#5a6488";}}
+function setPersistentSync(ok){
+  var el=document.getElementById("top-sync-status");
+  if(!el)return;
+  if(ok){el.textContent="\u2601 Synchronizov\u00e1no";el.style.color="#34d399";}
+  else{el.textContent="\u2601 Offline";el.style.color="#f87171";}
+}
 function loadCustom(){try{return JSON.parse(getStorage().getItem(LS_KEY)||"[]");}catch(e){return[];}}
 function saveCustom(arr){try{getStorage().setItem(LS_KEY,JSON.stringify(arr));}catch(e){}}
 
@@ -18042,7 +18106,7 @@ if(iconFileInput){
           ref.put(blob,{contentType:"image/jpeg"}).then(function(snap){
             return snap.ref.getDownloadURL();
           }).then(function(url){
-            var imgHtml='<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+            var imgHtml='<img src="'+url+'" alt="">';
             _editSelectedIcon=imgHtml;
             var cur=document.getElementById("modal-current-icon");
             if(cur)cur.innerHTML=imgHtml;
@@ -18050,7 +18114,7 @@ if(iconFileInput){
             if(statusEl){statusEl.textContent="Hotovo, klikni Ulozit ikonu";statusEl.style.color="#34d399";}
           }).catch(function(err){
             console.warn("icon upload:",err);
-            if(statusEl){statusEl.textContent="Chyba nahravani";statusEl.style.color="#f87171";}
+            if(statusEl){statusEl.textContent="Chyba: "+(err&&err.code?err.code:(err&&err.message?err.message:String(err)));statusEl.style.color="#f87171";}
           });
         },"image/jpeg",0.85);
       };
@@ -19674,7 +19738,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v4.2.9.Pro</div>
+<div class="ver">v4.4.3.Pro</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -19821,6 +19885,8 @@ function openApp(id) {
             frame.src = 'https://console.firebase.google.com/u/1/project/kladyxland/usage';
           } else if (id === 'speakup') {
             frame.src = 'https://kladyx.github.io/panel/speakup.html';
+          } else if (id === 'accounts') {
+            frame.src = 'https://kladyx.github.io/panel/accounts.html';
           } else if (id === 'scripty') {
             frame.src = 'https://kladyx.github.io/panel/scripty.html';
           } else {
@@ -20278,7 +20344,7 @@ function googleSignOut() { if(_gateAuth)_gateAuth.signOut().then(function(){loca
     "Multitrack":"multitrack","Status":"status","Radio ID":"radio",
     "ZX Games":"zxgames","World Time":"worldtime","Překladač":"prekladac",
     "NextSync":"nextsync","Scripty":"scripty","Co to je???":"cotoje","KladyxAmp":"kladyxamp",
-    "SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer","Residence":"residence","SpeakUp":"speakup"
+    "SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer","Residence":"residence","SpeakUp":"speakup","Accounts":"accounts","Starter":"starter","Dom\u016F":"home","Moje Apky":"user"
   };
   try {
     var raw = localStorage.getItem('kladyx_custom_icons');
@@ -20596,7 +20662,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='4.2.9.Pro';
+  var CURRENT='4.4.3.Pro';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
