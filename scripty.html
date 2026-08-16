@@ -46,8 +46,8 @@ body{
 .head,.sub,.btns,.stav,.info{position:relative;z-index:2;}
 /* HLAVIČKA */
 .head{display:flex;align-items:center;gap:14px;margin-bottom:8px;}
-.gear{font-size:1.6rem;filter:drop-shadow(0 0 8px rgba(0,245,255,.6));}
-.gear.on{animation:spin 4s linear infinite;}
+.gear{font-size:1.6rem;filter:drop-shadow(0 0 8px rgba(0,245,255,.6));animation:spin 4s linear infinite;will-change:transform;}
+.gear.on{}
 @keyframes spin{to{transform:rotate(360deg);}}
 .title{color:#00f5ff;font-size:1.15rem;letter-spacing:.25em;font-weight:900;text-shadow:0 0 12px rgba(0,245,255,.5),0 0 24px rgba(0,245,255,.2);}
 .sub{color:#4a5060;font-size:.55rem;letter-spacing:.2em;margin-bottom:36px;font-weight:500;}
@@ -62,24 +62,28 @@ button{
 #bon{border:1.5px solid rgba(0,255,136,.28);color:#00ff88;}
 #boff{border:1.5px solid rgba(255,60,90,.28);color:#ff3c5a;}
 #bon:active,#boff:active{transform:scale(.95);}
-/* AKTIVNÍ STAV — pulsace */
+/* AKTIVNÍ STAV — filter:brightness je GPU-accelerated, žádný repaint */
 .on-active{
   background:rgba(0,255,136,.15)!important;
   border-color:rgba(0,255,136,.9)!important;
+  box-shadow:0 0 22px rgba(0,255,136,.7),inset 0 0 16px rgba(0,255,136,.2);
   animation:pulsOn 1.6s ease-in-out infinite;
+  will-change:filter;
 }
 .off-active{
   background:rgba(255,60,90,.12)!important;
   border-color:rgba(255,60,90,.9)!important;
+  box-shadow:0 0 18px rgba(255,60,90,.65),inset 0 0 14px rgba(255,60,90,.2);
   animation:pulsOff 1.6s ease-in-out infinite;
+  will-change:filter;
 }
 @keyframes pulsOn{
-  0%,100%{box-shadow:0 0 10px rgba(0,255,136,.5),inset 0 0 12px rgba(0,255,136,.15);}
-  50%{box-shadow:0 0 28px rgba(0,255,136,.9),0 0 45px rgba(0,255,136,.3),inset 0 0 20px rgba(0,255,136,.25);}
+  0%,100%{filter:brightness(.85);}
+  50%{filter:brightness(1.35);}
 }
 @keyframes pulsOff{
-  0%,100%{box-shadow:0 0 10px rgba(255,60,90,.5),inset 0 0 12px rgba(255,60,90,.15);}
-  50%{box-shadow:0 0 24px rgba(255,60,90,.85),0 0 40px rgba(255,60,90,.25),inset 0 0 18px rgba(255,60,90,.22);}
+  0%,100%{filter:brightness(.85);}
+  50%{filter:brightness(1.35);}
 }
 /* NEAKTIVNÍ STAV — ztlumené */
 .dim{opacity:.35;filter:saturate(.5);}
@@ -131,13 +135,13 @@ button{
   <div class="head">
     <div class="gear" id="gear">⚙️</div>
     <div class="title">SCRIPTY</div>
-  <div style="font-size:.38rem;color:#000000;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v3.1</div>
+  <div style="font-size:.38rem;color:#000000;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v3.3</div>
   </div>
   <div style="position:relative;z-index:2;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
     <button onclick="(window.top||window).open('https://console.firebase.google.com/u/1/project/kladyxland/usage','_blank','noopener,noreferrer')" style="display:inline-block;padding:6px 16px;border:1.5px solid rgba(255,165,0,.6);border-radius:8px;background:rgba(255,165,0,.08);color:#ffa500;font-family:'Orbitron',monospace;font-size:.38rem;letter-spacing:.12em;font-weight:700;cursor:pointer;box-shadow:0 0 8px rgba(255,165,0,.2);">
       🔥 FIREBASE CONSOLE · USAGE
     </button>
-    <button onclick="(window.top||window).location.href='intent://#Intent;package=org.connectbot;end'" style="display:inline-block;padding:6px 16px;border:1.5px solid rgba(0,245,255,.6);border-radius:8px;background:rgba(0,245,255,.08);color:#00f5ff;font-family:'Orbitron',monospace;font-size:.38rem;letter-spacing:.12em;font-weight:700;cursor:pointer;box-shadow:0 0 8px rgba(0,245,255,.2);">
+    <button onclick="(function(){var f=document.createElement('iframe');f.style.cssText='display:none;width:0;height:0;border:0;';f.src='intent://#Intent;package=org.connectbot;end';document.body.appendChild(f);setTimeout(function(){document.body.removeChild(f);},1500);})()" style="display:inline-block;padding:6px 16px;border:1.5px solid rgba(0,245,255,.6);border-radius:8px;background:rgba(0,245,255,.08);color:#00f5ff;font-family:'Orbitron',monospace;font-size:.38rem;letter-spacing:.12em;font-weight:700;cursor:pointer;box-shadow:0 0 8px rgba(0,245,255,.2);">
       🖥 CONNECTBOT
     </button>
   </div>
