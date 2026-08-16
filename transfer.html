@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v3.4Kl</title>
+<title>KladyxTransfer v3.7Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -201,7 +201,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v3.4Kl • Firebase + GitHub</div>
+  <div class="version">v3.7Kl • Firebase + GitHub</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -369,6 +369,74 @@
     <div class="desc">Historie GitHub</div>
     <div id="ghHistory" style="margin-top:10px;font-size:.85rem;color:rgba(255,255,255,.7);max-height:300px;overflow-y:auto;"></div>
     <button class="sendbtn" onclick="clearGhHistory()" style="margin-top:10px;font-size:.75rem;padding:8px;background:rgba(255,0,0,.15);border-color:rgba(255,0,0,.4);color:#ff6666;">🗑 Smazat historii</button>
+  </div>
+
+
+  <div class="box" style="margin-top:20px">
+    <div class="icon">🔥</div>
+    <div class="desc">Firebase Realtime Database</div>
+    <div class="desc2">Stáhnout / nahrát JSON uzel</div>
+
+    <select class="gh-select" id="fbNode">
+      <option value="hardwareDb">hardwareDb</option>
+      <option value="lpRecordsDb">lpRecordsDb</option>
+      <option value="cdRecordsDb">cdRecordsDb</option>
+      <option value="galleryRef">galleryRef</option>
+    </select>
+
+    <div style="margin-top:6px;margin-bottom:4px;">
+      <input class="gh-input" id="fbCustomNode" type="text" placeholder="nebo vlastní uzel (např. mujUzel)" oninput="saveFbCustomNode()" autocomplete="off" autocorrect="off" spellcheck="false" style="margin-bottom:0;">
+    </div>
+    <div style="font-size:.75rem;color:rgba(255,255,255,.35);margin-bottom:10px;text-align:left;">Vlastní uzel má přednost před výběrem výše</div>
+
+    <div>
+      <button class="sendbtn" style="background:linear-gradient(135deg,#ff6600,#ff0066);" onclick="fbDownload()">⬇️ Stáhnout JSON</button>
+    </div>
+
+    <div class="status" id="statusFbDl"></div>
+
+    <div style="margin-top:10px;">
+      <button class="sendbtn" style="background:linear-gradient(135deg,#334,#556);color:#aaf;font-size:.85rem;padding:9px 18px;" onclick="fbDownloadRules()">📋 Stáhnout Rules</button>
+    </div>
+    <div class="status" id="statusFbRules"></div>
+
+    <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
+      <div class="desc2">Nahrát upravený JSON zpět</div>
+
+      <label class="pickbtn" for="fileInputFb">📁 Vybrat JSON</label>
+      <input type="file" id="fileInputFb" accept=".json" onchange="onFbFileSelected()">
+      <div class="filename" id="fileNameFb">Žádný soubor nevybrán</div>
+
+      <div>
+        <button class="sendbtn" id="sendBtnFb" onclick="fbUpload()" disabled style="background:linear-gradient(135deg,#ff3300,#ff0066);">🔥 Nahrát do Firebase</button>
+      </div>
+
+      <div class="status" id="statusFbUp"></div>
+
+      <div class="progress-wrap" id="progressWrapFb">
+        <div class="progress-bar" id="progressBarFb"></div>
+        <div class="progress-text" id="progressTextFb">0%</div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
+      <div class="desc2">Firebase přihlášení (pro nahrávání)</div>
+      <div id="fbSavedMsg"></div>
+      <div class="gh-token-row">
+        <input class="gh-input" id="fbEmail" type="email" placeholder="email" style="margin-bottom:0">
+      </div>
+      <div class="gh-token-row" style="margin-top:6px">
+        <input class="gh-input" id="fbPass" type="password" placeholder="heslo" style="margin-bottom:0">
+        <button class="gh-save-btn" onclick="saveFbCreds()">Uložit</button>
+      </div>
+      <div class="gh-exp-info" id="fbAuthStatus" style="color:rgba(255,255,255,.35);">Nepřihlášen</div>
+    </div>
+
+    <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
+      <div class="desc2">📋 Firebase historie</div>
+      <div id="fbHistory" style="margin-top:8px;font-size:.85rem;color:rgba(255,255,255,.7);max-height:200px;overflow-y:auto;"></div>
+      <button class="sendbtn" onclick="clearFbHistory()" style="margin-top:8px;font-size:.75rem;padding:6px;background:rgba(255,0,0,.15);color:#ff6666;">🗑 Smazat historii</button>
+    </div>
   </div>
 
   <div class="footer">přes Firebase Realtime Database + GitHub API</div>
@@ -1259,6 +1327,370 @@ function loadPendingQueue() {
   };
   xhr.send();
 }
+
+// ─── Firebase Database Download/Upload (v3.7Kl) ────
+var FB_DB_URL = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
+var FB_API_KEY = 'AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8';
+var FB_AUTH_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + FB_API_KEY;
+var selectedFbFile = null;
+var fbIdToken = null;
+
+function getFbEmail() { return getStorage().getItem('fb_email') || ''; }
+function getFbPass() { return getStorage().getItem('fb_pass') || ''; }
+
+function saveFbCreds() {
+  var email = document.getElementById('fbEmail').value.trim();
+  var pass = document.getElementById('fbPass').value.trim();
+  if (!email || !pass) return;
+  getStorage().setItem('fb_email', email);
+  getStorage().setItem('fb_pass', pass);
+  document.getElementById('fbEmail').value = '';
+  document.getElementById('fbPass').value = '';
+  var msg = document.getElementById('fbSavedMsg');
+  msg.innerHTML = '<span class="gh-saved">Údaje uloženy</span>';
+  setTimeout(function() { msg.innerHTML = ''; }, 3000);
+  fbIdToken = null;
+  var el = document.getElementById('fbAuthStatus');
+  el.textContent = 'Údaje uloženy, přihlášení proběhne při uploadu';
+  el.style.color = '#ffaa00';
+  el.className = 'gh-exp-info gh-exp-warn';
+}
+
+function fbLogin(callback) {
+  var email = getFbEmail();
+  var pass = getFbPass();
+  if (!email || !pass) {
+    callback('Nejdřív zadej a ulož Firebase přihlašovací údaje');
+    return;
+  }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', FB_AUTH_URL);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onload = function() {
+    var el = document.getElementById('fbAuthStatus');
+    if (xhr.status === 200) {
+      try {
+        var data = JSON.parse(xhr.responseText);
+        fbIdToken = data.idToken;
+        el.textContent = '🟢 Přihlášen';
+        el.style.color = '#00ff88';
+        el.className = 'gh-exp-info gh-exp-ok';
+        callback(null);
+      } catch(e) {
+        fbIdToken = null;
+        el.textContent = '🔴 Chyba parsování odpovědi';
+        el.style.color = '#ff4444';
+        el.className = 'gh-exp-info gh-exp-dead';
+        callback('Chyba parsování odpovědi');
+      }
+    } else {
+      var errMsg = 'Přihlášení selhalo';
+      try {
+        var err = JSON.parse(xhr.responseText);
+        if (err.error && err.error.message) errMsg += ': ' + err.error.message;
+      } catch(e) {}
+      fbIdToken = null;
+      el.textContent = '🔴 ' + errMsg;
+      el.style.color = '#ff4444';
+      el.className = 'gh-exp-info gh-exp-dead';
+      callback(errMsg);
+    }
+  };
+  xhr.onerror = function() {
+    var el = document.getElementById('fbAuthStatus');
+    el.textContent = '🔴 Chyba sítě';
+    el.style.color = '#ff4444';
+    el.className = 'gh-exp-info gh-exp-dead';
+    callback('Chyba sítě při přihlašování');
+  };
+  xhr.send(JSON.stringify({ email: email, password: pass, returnSecureToken: true }));
+}
+
+function getFbNode() {
+  var custom = (document.getElementById('fbCustomNode').value || '').trim();
+  return custom || document.getElementById('fbNode').value;
+}
+
+function saveFbCustomNode() {
+  var val = (document.getElementById('fbCustomNode').value || '').trim();
+  if (val) { getStorage().setItem('fb_custom_node', val); }
+  else { getStorage().removeItem('fb_custom_node'); }
+}
+
+function fbDownload() {
+  var node = getFbNode();
+  var status = document.getElementById('statusFbDl');
+  status.textContent = '📡 Stahuji /' + node + '...';
+  status.className = 'status';
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', FB_DB_URL + '/' + node + '.json');
+  xhr.responseType = 'blob';
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(xhr.response);
+      a.download = node + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+      status.textContent = '✅ Staženo: ' + node + '.json';
+      status.className = 'status done';
+      playDing();
+      addFbHistoryItem('download', node);
+    } else {
+      status.textContent = '❌ Chyba ' + xhr.status;
+      status.className = 'status';
+    }
+  };
+  xhr.onerror = function() {
+    status.textContent = '❌ Chyba sítě';
+    status.className = 'status';
+  };
+  xhr.send();
+}
+
+function onFbFileSelected() {
+  var input = document.getElementById('fileInputFb');
+  selectedFbFile = input.files[0] || null;
+  var nameEl = document.getElementById('fileNameFb');
+  var btn = document.getElementById('sendBtnFb');
+  document.getElementById('statusFbUp').textContent = '';
+  if (selectedFbFile) {
+    var sizeMB = (selectedFbFile.size / 1e6).toFixed(2);
+    nameEl.textContent = selectedFbFile.name + ' (' + sizeMB + ' MB)';
+    btn.disabled = false;
+  } else {
+    nameEl.textContent = 'Žádný soubor nevybrán';
+    btn.disabled = true;
+  }
+}
+
+function fbUpload() {
+  if (!selectedFbFile) return;
+  var node = getFbNode();
+
+  // Pojistka 1: kontrola názvu souboru vs cíl
+  var uploadName = selectedFbFile.name.replace(/\.json$/i, '').toLowerCase();
+  if (uploadName !== node.toLowerCase()) {
+    if (!confirm('⚠️ POZOR!\n\nNázev souboru: ' + selectedFbFile.name + '\nCílový uzel: /' + node + '\n\nNázvy se LIŠÍ!\nOpravdu přepsat?')) return;
+  }
+
+  // Pojistka 2: potvrzení přepisu
+  if (!confirm('⚠️ Toto PŘEPÍŠE celý uzel /' + node + '\n\nSoubor: ' + selectedFbFile.name + '\n\nOpravdu pokračovat?')) return;
+
+  var btn = document.getElementById('sendBtnFb');
+  var status = document.getElementById('statusFbUp');
+  var pWrap = document.getElementById('progressWrapFb');
+  var pBar = document.getElementById('progressBarFb');
+  var pText = document.getElementById('progressTextFb');
+  btn.disabled = true;
+
+  function doUpload() {
+    status.textContent = '📤 Čtu soubor...';
+    status.className = 'status';
+    pWrap.style.display = 'block';
+    pBar.style.width = '0%';
+    pText.textContent = '0%';
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var content = e.target.result;
+      try {
+        JSON.parse(content);
+      } catch(err) {
+        pWrap.style.display = 'none';
+        status.textContent = '❌ Neplatný JSON: ' + err.message;
+        status.className = 'status';
+        btn.disabled = false;
+        return;
+      }
+      pBar.style.width = '30%';
+      pText.textContent = '30%';
+      status.textContent = '📡 Odesílám do Firebase...';
+
+      var url = FB_DB_URL + '/' + node + '.json?auth=' + encodeURIComponent(fbIdToken);
+      var xhr = new XMLHttpRequest();
+      xhr.open('PUT', url);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.timeout = 60000;
+      xhr.upload.onprogress = function(ev) {
+        if (ev.lengthComputable) {
+          var pct = 30 + Math.round((ev.loaded / ev.total) * 70);
+          pBar.style.width = pct + '%';
+          pText.textContent = pct + '%';
+        }
+      };
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          pBar.style.width = '100%';
+          pText.textContent = '100% ✓';
+          status.textContent = '✅ Nahráno do /' + node;
+          status.className = 'status done';
+          playDing();
+          addFbHistoryItem('upload', node);
+          setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
+        } else {
+          pWrap.style.display = 'none';
+          var errMsg = '';
+          try { errMsg = JSON.parse(xhr.responseText).error || xhr.responseText; } catch(ex) { errMsg = xhr.responseText; }
+          status.textContent = '❌ Firebase chyba ' + xhr.status + ': ' + errMsg;
+          status.className = 'status';
+        }
+        btn.disabled = false;
+      };
+      xhr.onerror = function() {
+        pWrap.style.display = 'none';
+        status.textContent = '❌ Chyba sítě';
+        status.className = 'status';
+        btn.disabled = false;
+      };
+      xhr.ontimeout = function() {
+        pWrap.style.display = 'none';
+        status.textContent = '⏱️ Timeout — Firebase neodpovídá do 60 s';
+        status.className = 'status';
+        btn.disabled = false;
+      };
+      xhr.send(content);
+    };
+    reader.onerror = function() {
+      pWrap.style.display = 'none';
+      status.textContent = '❌ Chyba při čtení souboru';
+      status.className = 'status';
+      btn.disabled = false;
+    };
+    reader.readAsText(selectedFbFile);
+  }
+
+  if (fbIdToken) {
+    doUpload();
+  } else {
+    status.textContent = '🔑 Přihlašuji se...';
+    status.className = 'status';
+    fbLogin(function(err) {
+      if (err) {
+        status.textContent = '❌ ' + err;
+        status.className = 'status';
+        btn.disabled = false;
+        return;
+      }
+      doUpload();
+    });
+  }
+}
+
+// ─── Firebase Historie ──────────────────────────────
+function addFbHistoryItem(type, node) {
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('fb_history') || '[]'); } catch(e) {}
+  var now = new Date();
+  var ts = now.getDate() + '.' + (now.getMonth()+1) + '. ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  hist.unshift({ type: type, node: node, ts: ts });
+  if (hist.length > 30) hist = hist.slice(0, 30);
+  store.setItem('fb_history', JSON.stringify(hist));
+  renderFbHistory();
+}
+
+function fbDownloadRules() {
+  var status = document.getElementById('statusFbRules');
+  status.textContent = '🔑 Přihlašuji se...';
+  status.className = 'status';
+  function doDownload() {
+    status.textContent = '📡 Stahuji rules...';
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', FB_DB_URL + '/.settings/rules.json?auth=' + encodeURIComponent(fbIdToken));
+    xhr.responseType = 'blob';
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(xhr.response);
+        a.download = 'rules.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+        status.textContent = '✅ Staženo: rules.json';
+        status.className = 'status done';
+        playDing();
+        addFbHistoryItem('download', '.settings/rules');
+      } else {
+        status.textContent = '❌ Chyba ' + xhr.status;
+        status.className = 'status';
+      }
+    };
+    xhr.onerror = function() {
+      status.textContent = '❌ Chyba sítě';
+      status.className = 'status';
+    };
+    xhr.send();
+  }
+  if (fbIdToken) {
+    doDownload();
+  } else {
+    fbLogin(function(err) {
+      if (err) {
+        status.textContent = '❌ ' + err;
+        status.className = 'status';
+        return;
+      }
+      doDownload();
+    });
+  }
+}
+
+function renderFbHistory() {
+  var el = document.getElementById('fbHistory');
+  if (!el) return;
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('fb_history') || '[]'); } catch(e) {}
+  if (hist.length === 0) {
+    el.innerHTML = '<div style="color:rgba(255,255,255,.3);text-align:center;">Zatím prázdná</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < hist.length; i++) {
+    var h = hist[i];
+    var icon = h.type === 'upload' ? '🔥 ↑' : '⬇️ ↓';
+    var color = h.type === 'upload' ? '#ff6600' : '#00ccff';
+    html += '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;">';
+    html += '<span style="color:' + color + ';flex:1;">' + icon + ' /' + escapeHtml(h.node) + '</span>';
+    html += '<span style="color:rgba(255,255,255,.35);font-size:.75rem;margin-right:8px;">' + h.ts + '</span>';
+    html += '<span onclick="deleteFbHistoryItem(' + i + ')" style="cursor:pointer;font-size:.85rem;color:#ff4444;padding:2px 6px;">✕</span>';
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function deleteFbHistoryItem(idx) {
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('fb_history') || '[]'); } catch(e) {}
+  hist.splice(idx, 1);
+  store.setItem('fb_history', JSON.stringify(hist));
+  renderFbHistory();
+}
+
+function clearFbHistory() {
+  getStorage().removeItem('fb_history');
+  renderFbHistory();
+}
+
+(function() {
+  var email = getFbEmail();
+  if (email) {
+    var msg = document.getElementById('fbSavedMsg');
+    if (msg) msg.innerHTML = '<span class="gh-saved">Údaje uloženy (' + escapeHtml(email) + ')</span>';
+  }
+  var savedNode = getStorage().getItem('fb_custom_node') || '';
+  if (savedNode) {
+    var el = document.getElementById('fbCustomNode');
+    if (el) el.value = savedNode;
+  }
+  renderFbHistory();
+})();
+
 loadPendingQueue();
 </script>
 </body>
