@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v5.0Pi">
-<title>Pi Monitor v5.0Pi</title>
+<meta name="version" content="v5.1Pi">
+<title>Pi Monitor v5.1Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -124,6 +124,37 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 /* CRT scanline overlay */
 .scanline-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;background:repeating-linear-gradient(to bottom,transparent 0px,transparent 3px,rgba(0,0,0,0.045) 3px,rgba(0,0,0,0.045) 4px);}
 
+/* Scan beam shora dolů v5.1Pi */
+@keyframes scan-beam{
+  0%{top:-12px;opacity:0;}
+  3%{opacity:1;}
+  97%{opacity:1;}
+  100%{top:100vh;opacity:0;}
+}
+.scanline-overlay::after{
+  content:'';
+  position:fixed;
+  left:0;
+  top:0;
+  width:100%;
+  height:12px;
+  background:linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0,212,255,0.04) 15%,
+    rgba(0,212,255,0.22) 40%,
+    rgba(180,240,255,0.55) 50%,
+    rgba(0,212,255,0.22) 60%,
+    rgba(0,212,255,0.04) 85%,
+    transparent 100%
+  );
+  box-shadow:0 0 18px 4px rgba(0,212,255,0.18),0 0 4px 1px rgba(180,240,255,0.35);
+  animation:scan-beam 6s cubic-bezier(0.4,0,0.6,1) infinite;
+  pointer-events:none;
+  z-index:9999;
+  will-change:top;
+}
+
 /* H1 neon dech — filter:brightness je GPU-accelerated */
 @keyframes h1-neon{0%,100%{filter:brightness(1)}50%{filter:brightness(1.6)}}
 h1{animation:h1-neon 1.8s ease-in-out infinite;will-change:filter;}
@@ -170,7 +201,7 @@ h1{animation:h1-neon 1.8s ease-in-out infinite;will-change:filter;}
 <div class="scanline-overlay"></div>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.0Pi</span> · <span id="live-clock" style="color:var(--cyan);letter-spacing:1px;font-weight:700;text-shadow:0 0 8px rgba(0,212,255,0.6);"></span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.1Pi</span> · <span id="live-clock" style="color:var(--cyan);letter-spacing:1px;font-weight:700;text-shadow:0 0 8px rgba(0,212,255,0.6);"></span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
