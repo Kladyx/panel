@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v4.12Pi">
-<title>Pi Monitor v4.12Pi</title>
+<meta name="version" content="v4.13Pi">
+<title>Pi Monitor v4.13Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -44,7 +44,43 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .uptime-val{font-size:0.95rem;color:var(--cyan);text-shadow:0 0 8px rgba(0,212,255,0.4);letter-spacing:2px;}
 .uptime-val.cons{color:var(--warn);text-shadow:0 0 8px rgba(255,170,0,0.4);}
 .uptime-lbl{font-size:0.45rem;letter-spacing:2px;color:var(--muted);margin-top:2px;}
-/* SERVICES */
+/* ═══ NOVÉ ANIMACE ═══════════════════════════════════ */
+/* Rotující ozubené kolo */
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.gear-spin{display:inline-block;animation:spin 4s linear infinite;transform-origin:center;}
+
+/* Plynulé progress bary */
+.bar{transition:width 0.9s cubic-bezier(0.4,0,0.2,1),background 0.5s ease;}
+
+/* Scan line na h1 */
+@keyframes scanline{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}
+.h1-wrap{position:relative;overflow:hidden;display:inline-block;}
+.h1-wrap::after{content:'';position:absolute;top:0;left:0;width:30%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,60,90,0.15),transparent);animation:scanline 3.5s ease-in-out infinite;}
+
+/* Floating uptime box */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.uptime{animation:float 4s ease-in-out infinite;}
+
+/* Matrix rain efekt na sec-title */
+@keyframes glitch{0%,95%,100%{opacity:1;text-shadow:0 0 8px currentColor}96%{opacity:0.7;text-shadow:2px 0 8px currentColor}97%{opacity:1;text-shadow:-2px 0 8px currentColor}}
+.sec-title{animation:glitch 6s infinite;}
+
+/* Blikající info na verzi */
+@keyframes blink-ver{0%,90%,100%{opacity:1}91%{opacity:0.4}}
+.sub{animation:blink-ver 5s infinite;}
+
+/* Pulsující teplota - OK stav */
+@keyframes temp-glow{0%,100%{text-shadow:0 0 6px var(--green)}50%{text-shadow:0 0 18px var(--green),0 0 30px rgba(0,255,136,0.3)}}
+.temp-ok-pulse{animation:temp-glow 2.5s ease-in-out infinite;}
+
+/* Animovaný border na section při hover */
+.section{transition:border-color 0.3s ease,box-shadow 0.3s ease;}
+.section:hover{border-color:rgba(255,60,90,0.3);box-shadow:0 0 12px rgba(255,60,90,0.08);}
+
+/* Živý čítač restartů - glow při >0 */
+@keyframes count-glow{0%,100%{text-shadow:0 0 4px var(--warn)}50%{text-shadow:0 0 14px var(--warn),0 0 25px rgba(255,170,0,0.4)}}
+.restart-active{animation:count-glow 2s ease-in-out infinite;}
+/* ══════════════════════════════════════════════════════ */
 .section{background:rgba(255,255,255,0.03);border:1px solid rgba(255,60,90,0.12);border-radius:10px;padding:8px 12px;margin-bottom:10px;}
 .sec-title{font-size:0.48rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
 .svc-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
@@ -96,7 +132,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 </head>
 <body>
 
-<h1>🍓 PI MONITOR</h1>
+<h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
 <div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v4.11Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
@@ -128,7 +164,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 </div>
 
 <div class="section">
-  <div class="sec-title">⚙ SYSTEMD SERVICES</div>
+  <div class="sec-title"><span class="gear-spin">⚙</span> SYSTEMD SERVICES</div>
   <div class="svc-row"><div class="dot dot-wait" id="d-tapo"></div><div class="svc-name">kladyx-tapobridge</div><div class="svc-st" id="s-tapo">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-tapopy"></div><div class="svc-name">kladyx-tapo-py</div><div class="svc-st" id="s-tapopy">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-transfer"></div><div class="svc-name">kladyx-transferwatcher</div><div class="svc-st" id="s-transfer">…</div></div>
@@ -438,7 +474,16 @@ function loadStats(){
     document.getElementById('val-temp').textContent=temp;
     setBar('bar-temp',parseFloat(temp)/85*100);
     var tempCard=document.getElementById('val-temp').closest('.card');
-    if(tempCard)tempCard.className='card'+(parseFloat(temp)>65?' temp-warn':'');
+    var tempVal=document.getElementById('val-temp');
+    if(tempCard){
+      tempCard.className='card'+(parseFloat(temp)>65?' temp-warn':'');
+      // OK stav - zelený glow puls
+      if(parseFloat(temp)<=65){
+        tempVal.classList.add('temp-ok-pulse');
+      } else {
+        tempVal.classList.remove('temp-ok-pulse');
+      }
+    }
     // Disk
     var disk=Math.round(d.disk_pct||0);
     document.getElementById('val-disk').textContent=disk;
@@ -483,7 +528,7 @@ function loadStats(){
     // Procesy (pokud Pi posle realna data, prepise ACTIVE ON)
     if(d.proc_count!==undefined){var el=document.getElementById('net-proc');el.textContent=d.proc_count;el.classList.remove('net-active');}
     // Restarty služeb
-    if(d.restarts){var rk=['tp','tb','ir','pm','pb','pt','pl'];rk.forEach(function(k){var e=document.getElementById('r-'+k);if(e){e.textContent=d.restarts[k]!==undefined?d.restarts[k]:'—';e.style.color=d.restarts[k]>0?'#ffaa00':'#00ff88';}});}
+    if(d.restarts){var rk=['tp','tb','ir','pm','pb','pt','pl'];rk.forEach(function(k){var e=document.getElementById('r-'+k);if(e){var cnt=d.restarts[k]!==undefined?d.restarts[k]:0;e.textContent=cnt;e.style.color=cnt>0?'#ffaa00':'#00ff88';if(cnt>0){e.classList.add('restart-active');}else{e.classList.remove('restart-active');}}});}
     // Aktivní skripty - ze services pole, jen ty co jsou true/active na Pi
     var svcMap={tapo:'tapobridge',tapo_py:'tapo-py',prijate:'prijatelister',pitransfer:'pitransfer',irbridge:'irbridge',rpi:'rpi',pimonitor:'pimonitor',taporestart:'tapo-restart',tuyaplug:'tuya-plug'};
     _piActiveList=[];
