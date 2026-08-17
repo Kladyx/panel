@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v5.1Pi">
-<title>Pi Monitor v5.1Pi</title>
+<meta name="version" content="v5.2Pi">
+<title>Pi Monitor v5.2Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -45,7 +45,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .uptime-val.cons{color:var(--warn);text-shadow:0 0 8px rgba(255,170,0,0.4);}
 .uptime-lbl{font-size:0.45rem;letter-spacing:2px;color:var(--muted);margin-top:2px;}
 /* SERVICES */
-/* ═══ ANIMACE v5.1Pi ══════════════════════════════════ */
+/* ═══ ANIMACE v5.2Pi ══════════════════════════════════ */
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .gear-spin{display:inline-block;animation:spin 1.5s linear infinite;transform-origin:center;font-size:1.2em;color:var(--red);filter:drop-shadow(0 0 6px rgba(255,60,90,0.9));}
 @keyframes scanline{0%{transform:translateX(-200%)}100%{transform:translateX(600%)}}
@@ -114,7 +114,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.1Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.2Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -318,6 +318,8 @@ function fmtAge(ms){
 }
 
 function setSvc(id,ok,isPC){
+  // Sleduj stav pro ticker (jen Pi sluzby, PC sluzby resi _svcActive primo)
+  if(!isPC) _svcActive[id]=!!ok;
   var d=document.getElementById('d-'+id);
   var s=document.getElementById('s-'+id);
   if(isPC){
@@ -359,14 +361,11 @@ function setDev(id,on,fresh){
 // POZOR: pole "online" je NESPOLEHLIVE - PC ho pri vypnuti nestihne prepsat na false.
 var PC_SVC=['transfer','upload','nextsync','obs','eq'];
 var _pcOnline=false;
-var _piActiveList=[];
+var _svcActive={};
+// Ticker zobrazuje jen tyto sluzby (ostatni - rpi, tuyaplug, transfer, nextsync atd. - do tickeru nepatri)
+var _tickerNames={'tapo':'tapobridge','tapopy':'tapo-py','prijate':'prijatelister','pitransfer':'pitransfer','irbridge':'irbridge','pimonitor':'pimonitor','taporestart':'tapo-restart','obs':'obs-bridge'};
 function updateTicker(){
-  var list=_piActiveList.slice();
-  if(_pcOnline){
-    ['transferwatcher','uploadserver','nextsync','obsbridge','equalizer'].forEach(function(n){
-      if(list.indexOf(n)<0)list.push(n);
-    });
-  }
+  var list=Object.keys(_tickerNames).filter(function(k){return !!_svcActive[k];}).map(function(k){return _tickerNames[k];});
   var scrEl=document.getElementById('net-scripts-inner');
   if(scrEl)scrEl.textContent=list.length?list.join('  ·  '):'—';
 }
@@ -506,17 +505,7 @@ function loadStats(){
     if(d.proc_count!==undefined){var el=document.getElementById('net-proc');el.textContent=d.proc_count;el.classList.remove('net-active');}
     // Restarty služeb
     if(d.restarts){var rk=['tp','tb','ir','pm','pb','pt','pl'];rk.forEach(function(k){var e=document.getElementById('r-'+k);if(e){var cnt=d.restarts[k]!==undefined?d.restarts[k]:0;e.textContent=cnt;e.style.color=cnt>0?'#ffaa00':'#00ff88';if(cnt>0){e.classList.add('restart-active');}else{e.classList.remove('restart-active');}}});}
-    // Aktivní skripty - ze services pole, jen ty co jsou true/active na Pi
-    var svcMap={tapo:'tapobridge',tapo_py:'tapo-py',prijate:'prijatelister',pitransfer:'pitransfer',irbridge:'irbridge',rpi:'rpi',pimonitor:'pimonitor',taporestart:'tapo-restart',tuyaplug:'tuya-plug'};
-    _piActiveList=[];
-    if(d.services){
-      Object.keys(svcMap).forEach(function(k){
-        if(d.services[k]===true||d.services[k]==='active')_piActiveList.push(svcMap[k]);
-      });
-    }
-    // irbridge a rpi přidáme vždy pokud jsou data čerstvá (Pi je ON)
-    if(_piActiveList.indexOf('irbridge')<0)_piActiveList.push('irbridge');
-    if(_piActiveList.indexOf('rpi')<0)_piActiveList.push('rpi');
+    // Ticker se aktualizuje automaticky ze _svcActive (setSvc to resi)
     updateTicker();
   })
   .catch(function(){showOffline(true);loadFallback();});
@@ -588,6 +577,9 @@ function loadStats(){
     var age=Date.now()-ts;
     var active=d.state==='online';
     var fresh=ts>0&&age<120000;
+    // Ticker: obs-bridge je aktivni kdyz ma cerstvy heartbeat (ts < 2 min)
+    _svcActive['obs']=fresh;
+    updateTicker();
     if(!fresh){
       el.innerHTML='DISCONNECTED';
       el.className='net-val disc';
