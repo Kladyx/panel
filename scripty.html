@@ -141,7 +141,7 @@ button{
     <button onclick="(window.top||window).open('https://console.firebase.google.com/u/1/project/kladyxland/usage','_blank','noopener,noreferrer')" style="display:inline-block;padding:6px 16px;border:1.5px solid rgba(255,165,0,.6);border-radius:8px;background:rgba(255,165,0,.08);color:#ffa500;font-family:'Orbitron',monospace;font-size:.38rem;letter-spacing:.12em;font-weight:700;cursor:pointer;box-shadow:0 0 8px rgba(255,165,0,.2);">
       🔥 FIREBASE CONSOLE · USAGE
     </button>
-    <button onclick="(function(){var f=document.createElement('iframe');f.style.cssText='display:none;width:0;height:0;border:0;';f.src='intent://#Intent;package=org.connectbot;end';document.body.appendChild(f);setTimeout(function(){document.body.removeChild(f);},1500);})()" style="display:inline-block;padding:6px 16px;border:1.5px solid rgba(0,245,255,.6);border-radius:8px;background:rgba(0,245,255,.08);color:#00f5ff;font-family:'Orbitron',monospace;font-size:.38rem;letter-spacing:.12em;font-weight:700;cursor:pointer;box-shadow:0 0 8px rgba(0,245,255,.2);">
+    <button onclick="(window.top||window).location.href='intent://#Intent;package=org.connectbot;end'" style="display:inline-block;padding:6px 16px;border:1.5px solid rgba(0,245,255,.6);border-radius:8px;background:rgba(0,245,255,.08);color:#00f5ff;font-family:'Orbitron',monospace;font-size:.38rem;letter-spacing:.12em;font-weight:700;cursor:pointer;box-shadow:0 0 8px rgba(0,245,255,.2);">
       🖥 CONNECTBOT
     </button>
   </div>
@@ -351,6 +351,17 @@ button{
     {s:'TUYA CLOUD',cmds:[
       {c:'cd /home/pi/tuya && python3 -c "import tinytuya;c=tinytuya.Cloud(apiRegion=\'eu\',apiKey=\'xmsau3w4d9ewgw9gjrwr\',apiSecret=\'039a3435e19c43d4853dcb24b8f149f6\');[print(d.get(\'id\'),\'|\',d.get(\'name\')) for d in c.getdevices()]"',d:'Seznam zarizeni + ID'},
       {c:'cd /home/pi/tuya && python3 -c "import tinytuya,json;c=tinytuya.Cloud(apiRegion=\'eu\',apiKey=\'xmsau3w4d9ewgw9gjrwr\',apiSecret=\'039a3435e19c43d4853dcb24b8f149f6\');print(json.dumps(c.getstatus(\'bf2e719a4cae09486dgar5\'),indent=1))"',d:'Stav lampy z Tuya cloudu'}
+    ]},
+    {s:'WINDOWS PC (CMD)',cmds:[
+      {c:'netstat -n | findstr :1935',d:'RTMP stream aktivni? (OBS vysilani)'},
+      {c:'netstat -n | findstr :4455',d:'OBS WebSocket server bezi?'},
+      {c:'netstat -n -p tcp',d:'Vsechna TCP spojeni'},
+      {c:'tasklist | findstr obs64',d:'OBS proces bezi?'},
+      {c:'tasklist | findstr node',d:'Node.js (obs-bridge) bezi?'},
+      {c:'ipconfig | findstr IPv4',d:'IP adresa PC'},
+      {c:'ping 192.168.0.50',d:'Ping Pi4 (pjsound)'},
+      {c:'ping 192.168.0.106',d:'Ping P115 DJ Studio'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/status/obs.json"',d:'Stav OBS bridge v Firebase'}
     ]},
     {s:'FIREBASE RULES',cmds:[
       {c:'cd /home/pi/tapo && python3 -c "import firebase_admin;from firebase_admin import credentials;import urllib.request,glob;cred=credentials.Certificate([f for f in glob.glob(\'*.json\') if \'firebase\' in f.lower()][0]);app=firebase_admin.initialize_app(cred,{\'databaseURL\':\'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app\'});token=app.credential.get_access_token().access_token;req=urllib.request.Request(\'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/.settings/rules.json\',headers={\'Authorization\':\'Bearer \'+token});print(urllib.request.urlopen(req).read().decode());firebase_admin.delete_app(app)"',d:'RTDB Rules'}
