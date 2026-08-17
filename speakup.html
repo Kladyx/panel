@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SpeakUp v7.1Kl</title>
+<title>SpeakUp v7.2Kl</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
@@ -571,6 +571,11 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 <button class="btn-voc-learned" id="btnVocLearned" onclick="vocMarkLearned()" style="display:none;">✅ Naučeno — přeskočit příště</button>
 <button class="voc-next show" id="vocNext" onclick="vocNextWord()">Další slovo →</button>
 <button class="btn-voc-reset" onclick="vocResetLearned()">🔄 Reset naučených</button>
+
+<button onclick="vocToggleLearnedPanel()" style="width:100%;padding:11px;border-radius:10px;border:1.5px solid rgba(0,212,255,.35);background:rgba(0,212,255,.06);color:#00d4ff;font-size:.82rem;font-weight:700;font-family:inherit;cursor:pointer;margin-top:8px;">📋 Přehled naučených</button>
+<div id="vocLearnedOverview" style="display:none;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px;margin-top:8px;max-height:340px;overflow-y:auto;">
+  <div id="vocLearnedListContent"></div>
+</div>
 
 </div><!-- end sectionVoc -->
 
@@ -7020,6 +7025,8 @@ function vocMarkLearned(){
   if(arr.indexOf(w.w)===-1){ arr.push(w.w); vocSaveLearned(arr); }
   document.getElementById('btnVocLearned').style.display='none';
   updateVocStats();
+  var panel=document.getElementById('vocLearnedOverview');
+  if(panel&&panel.style.display!=='none') vocRefreshLearnedPanel();
   // Přejít na další po 400ms
   setTimeout(vocNextWord, 400);
 }
@@ -7028,6 +7035,35 @@ function vocResetLearned(){
   try{ localStorage.removeItem('su_voc_learned'); }catch(e){}
   updateVocStats();
   vocBuildQueue();
+}
+
+function vocToggleLearnedPanel(){
+  var panel=document.getElementById('vocLearnedOverview');
+  if(panel.style.display==='none'){
+    panel.style.display='block';
+    vocRefreshLearnedPanel();
+  } else {
+    panel.style.display='none';
+  }
+}
+
+function vocRefreshLearnedPanel(){
+  var learned=vocGetLearned();
+  var div=document.getElementById('vocLearnedListContent');
+  if(!div) return;
+  if(learned.length===0){
+    div.innerHTML='<div style="color:rgba(255,255,255,.4);font-size:.8rem;padding:8px 0;">Žádná slova zatím.</div>';
+    return;
+  }
+  var rows=learned.map(function(word){
+    var entry=VOC.find(function(v){return v.w===word;});
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);">'
+      +'<span style="color:#00ff88;font-size:.85rem;font-weight:700;">'+escHtml(word)+'</span>'
+      +(entry?'<span style="color:rgba(255,255,255,.45);font-size:.78rem;">'+escHtml(entry.cz)+'</span>':'')
+      +'</div>';
+  });
+  div.innerHTML='<div style="font-size:.72rem;color:rgba(0,212,255,.7);margin-bottom:10px;letter-spacing:1px;">NAUČENO: '+learned.length+' / '+VOC.length+' SLOV</div>'
+    +rows.join('');
 }
 
 function vocInit(){
@@ -7201,6 +7237,18 @@ function vocEvalPronunciation(heard, confidence){
    +(correct?'':'<div style="font-size:.75rem;margin-top:8px;opacity:.6;">Cíl: <b>'+escHtml(w.w)+'</b></div>');
 
   document.getElementById('vocCz').classList.add('show');
+
+  // Auto-mark jako nauceno kdyz spravne (pct >= 65)
+  if(correct && !vocIsLearned(w.w)){
+    document.getElementById('btnVocLearned').style.display='block';
+    var _autoWord=w.w;
+    clearTimeout(window._vocAutoLearnTimer);
+    window._vocAutoLearnTimer=setTimeout(function(){
+      if(vocIdx<vocQueue.length && vocQueue[vocIdx].w===_autoWord && !vocIsLearned(_autoWord)){
+        vocMarkLearned();
+      }
+    },1800);
+  }
 }
 
 /* ===== ZALOHA / OBNOVA POKROKU ===== */
