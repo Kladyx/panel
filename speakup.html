@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SpeakUp v6.9Kl</title>
+<title>SpeakUp v7.0Kl</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
@@ -405,7 +405,7 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 
 <div class="hdr">
   <h1>SPEAKUP</h1>
-  <span class="ver">v6.9Kl</span>
+  <span class="ver">v7.0Kl</span>
 </div>
 <div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
 
@@ -7007,12 +7007,16 @@ const VOC = [
 /* ===== SLOVÍČKA STATE ===== */
 let vocQueue=[], vocIdx=0, vocDone=0, vocCorrectCount=0, vocScoreSum=0;
 let vocCat='Vše', vocRecRunning=false, vocRecObj=null;
+var _learnedCache=null; // in-memory cache, nečte localStorage pokaždé
 
 // Naučená slovíčka — localStorage
 function vocGetLearned(){
-  try{ return JSON.parse(localStorage.getItem('su_voc_learned')||'[]'); }catch(e){ return []; }
+  if(_learnedCache!==null) return _learnedCache;
+  try{ _learnedCache=JSON.parse(localStorage.getItem('su_voc_learned')||'[]'); }catch(e){ _learnedCache=[]; }
+  return _learnedCache;
 }
 function vocSaveLearned(arr){
+  _learnedCache=arr.slice();
   try{ localStorage.setItem('su_voc_learned', JSON.stringify(arr)); }catch(e){}
 }
 function vocIsLearned(word){
@@ -7032,6 +7036,7 @@ function vocMarkLearned(){
 }
 function vocResetLearned(){
   if(!confirm('Opravdu resetovat všechna naučená slovíčka?')) return;
+  _learnedCache=[];
   try{ localStorage.removeItem('su_voc_learned'); }catch(e){}
   updateVocStats();
   vocBuildQueue();
@@ -7049,10 +7054,13 @@ function vocToggleLearnedPanel(){
 
 function vocRefreshLearnedPanel(){
   var learned=vocGetLearned();
+  // Aktualizuj text tlacitka s poctem
+  var btn=document.querySelector('button[onclick="vocToggleLearnedPanel()"]');
+  if(btn) btn.textContent='📋 Přehled naučených ('+(learned.length)+')';
   var div=document.getElementById('vocLearnedListContent');
   if(!div) return;
   if(learned.length===0){
-    div.innerHTML='<div style="color:rgba(255,255,255,.4);font-size:.8rem;padding:8px 0;">Žádná slova zatím.</div>';
+    div.innerHTML='<div style="color:rgba(255,255,255,.4);font-size:.82rem;padding:10px 0;">Zatím žádné — po správné výslovnosti (≥65%) stiskni ✅ Naučeno</div>';
     return;
   }
   var rows=learned.map(function(word){
@@ -7238,16 +7246,9 @@ function vocEvalPronunciation(heard, confidence){
 
   document.getElementById('vocCz').classList.add('show');
 
-  // Auto-mark jako nauceno kdyz spravne (pct >= 65)
+  // Ukaz tlacitko Nauceno ihned kdyz spravne — uzivatel klikne sam
   if(correct && !vocIsLearned(w.w)){
     document.getElementById('btnVocLearned').style.display='block';
-    var _autoWord=w.w;
-    clearTimeout(window._vocAutoLearnTimer);
-    window._vocAutoLearnTimer=setTimeout(function(){
-      if(vocIdx<vocQueue.length && vocQueue[vocIdx].w===_autoWord && !vocIsLearned(_autoWord)){
-        vocMarkLearned();
-      }
-    },1800);
   }
 }
 
