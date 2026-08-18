@@ -65,6 +65,13 @@ body.edit-mode .add-btn{display:flex;}
 .btn-ok{flex:1;background:rgba(0,245,255,.15);border:1.5px solid rgba(0,245,255,.4);border-radius:10px;padding:14px;color:#00f5ff;font-family:'Orbitron',monospace;font-size:.55rem;cursor:pointer;}
 .btn-no{flex:1;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.2);border-radius:10px;padding:14px;color:rgba(255,255,255,.5);font-family:'Orbitron',monospace;font-size:.55rem;cursor:pointer;}
 .info{position:relative;z-index:2;margin-top:16px;font-size:.4rem;letter-spacing:.12em;color:rgba(255,255,255,.3);text-align:center;}
+.icon-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;}
+.icon-input-group{flex:1;}
+.file-input{display:none;}
+.upload-btn{background:rgba(0,245,255,.1);border:1.5px solid rgba(0,245,255,.3);color:#00f5ff;border-radius:8px;padding:10px 16px;font-family:'Orbitron',monospace;font-size:.5rem;cursor:pointer;letter-spacing:.1em;width:100%;margin-top:4px;-webkit-tap-highlight-color:transparent;}
+.upload-btn:active{background:rgba(0,245,255,.2);}
+.icon-preview{width:80px;height:80px;border-radius:50%;border:2px solid rgba(0,245,255,.4);background:rgba(0,245,255,.05);display:flex;align-items:center;justify-content:center;font-size:2.5rem;overflow:hidden;flex-shrink:0;box-shadow:0 0 12px rgba(0,245,255,.15);}
+.icon-preview img{width:100%;height:100%;object-fit:cover;}
 </style>
 </head>
 <body>
@@ -88,7 +95,15 @@ body.edit-mode .add-btn{display:flex;}
 <div class="overlay" id="overlay">
   <div class="sheet">
     <div class="sheet-title">➕ PŘIDAT APPKU</div>
-    <div class="row"><label class="lbl">IKONA (emoji)</label><input class="inp" id="fIcon" type="text" placeholder="📱" maxlength="4"></div>
+    <div class="icon-row">
+      <div class="icon-input-group">
+        <label class="lbl">IKONA (emoji nebo foto)</label>
+        <input class="inp" id="fIcon" type="text" placeholder="📱" maxlength="4">
+        <button type="button" class="upload-btn" onclick="document.getElementById('fileInput').click()">📱 NAHRÁT FOTO</button>
+        <input type="file" id="fileInput" class="file-input" accept="image/*" onchange="handleImageUpload(event)">
+      </div>
+      <div class="icon-preview" id="iconPreview">📱</div>
+    </div>
     <div class="row"><label class="lbl">NÁZEV</label><input class="inp" id="fName" type="text" placeholder="NÁZEV APPKY" maxlength="20"></div>
     <div class="row"><label class="lbl">TYP</label>
       <select class="sel" id="fType" onchange="typeChanged()">
@@ -136,7 +151,11 @@ function render(){
     var n=a.name.split('|').join('<br>');
     h+='<div class="app-btn" data-color="'+a.color+'" onclick="go('+a.id+')">';
     h+='<div class="del-btn" onclick="event.stopPropagation();del('+a.id+')">×</div>';
-    h+='<div class="app-icon">'+a.icon+'</div>';
+    if(a.icon.startsWith('data:image')){
+      h+='<div class="app-icon"><img src="'+a.icon+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;" alt="app-icon"></div>';
+    }else{
+      h+='<div class="app-icon">'+a.icon+'</div>';
+    }
     h+='<div class="app-name">'+n+'</div></div>';
   });
   if(editMode) h+='<div class="add-btn" onclick="openForm()">＋</div>';
@@ -167,29 +186,75 @@ function del(id){
   save();render();
 }
 
+function handleImageUpload(e){
+  var f=e.target.files[0];
+  if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    var img=new Image();
+    img.onload=function(){
+      var c=document.createElement('canvas');
+      c.width=140;c.height=140;
+      var ctx=c.getContext('2d');
+      ctx.drawImage(img,0,0,140,140);
+      var b64=c.toDataURL('image/jpeg',0.65);
+      document.getElementById('fIcon').value=b64;
+      updateIconPreview();
+    };
+    img.src=ev.target.result;
+  };
+  r.readAsDataURL(f);
+}
+
+function updateIconPreview(){
+  var v=document.getElementById('fIcon').value.trim();
+  var p=document.getElementById('iconPreview');
+  if(v.startsWith('data:image')){
+    p.innerHTML='<img src="'+v+'" alt="icon">';
+  }else{
+    p.textContent=v||'📱';
+  }
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('fIcon').addEventListener('input',function(){
+    if(this.value.trim() && !this.value.startsWith('data:image')){
+      document.getElementById('fileInput').value='';
+    }
+    updateIconPreview();
+  });
+});
+
 function openForm(){
   document.getElementById('fIcon').value='';
+  document.getElementById('fileInput').value='';
   document.getElementById('fName').value='';
   document.getElementById('fType').value='android';
   document.getElementById('fTarget').value='';
   selClr='cyan';typeChanged();renderClrs();
+  updateIconPreview();
   document.getElementById('overlay').className='overlay open';
 }
+
 function closeForm(){document.getElementById('overlay').className='overlay';}
+
 function typeChanged(){
   var t=document.getElementById('fType').value;
   document.getElementById('fLbl').textContent=t==='android'?'PACKAGE NAME':'URL ADRESA';
   document.getElementById('fTarget').placeholder=t==='android'?'com.example.app':'https://...';
 }
+
 function renderClrs(){
   document.getElementById('clrRow').innerHTML=CLRS.map(function(c){
     return '<div class="dot'+(c===selClr?' sel':'')+'" data-c="'+c+'" onclick="pickClr(\''+c+'\')"></div>';
   }).join('');
 }
+
 function pickClr(c){
   selClr=c;
   document.querySelectorAll('.dot').forEach(function(d){d.classList.toggle('sel',d.getAttribute('data-c')===c);});
 }
+
 function saveApp(){
   var icon=document.getElementById('fIcon').value.trim()||'📱';
   var name=document.getElementById('fName').value.trim().toUpperCase();
@@ -200,6 +265,7 @@ function saveApp(){
   apps.push({id:nid++,icon:icon,name:name,type:type,target:target,color:selClr});
   save();closeForm();render();
 }
+
 load();renderClrs();render();
 </script>
 </body>
