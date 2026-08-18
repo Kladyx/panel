@@ -516,7 +516,9 @@ window.runTest = function(mode) {
       statusEl.textContent = '❌ Chyba při zpracování: ' + e.message;
     }
     setBtnsDisabled(false);
-  }; = (err) => {
+  };
+
+  st.onError = (err) => {
     console.error('SpeedTest error:', err);
     statusEl.textContent = '❌ Chyba: ' + (err && (err.message || err.toString()) || 'neznámá chyba');
     setBtnsDisabled(false);
