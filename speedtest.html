@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxSpeed v1.2Kl</title>
+<title>KladyxSpeed v1.7Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -174,7 +174,7 @@
 <body>
 <div class="wrap">
   <div class="title">KLADYXSPEED</div>
-  <div class="version">v1.6 Kl</div>
+  <div class="version">v1.7Kl</div>
 
   <div class="gauge-wrap">
     <div class="gauge-ring">
@@ -188,7 +188,10 @@
 
   <div class="status" id="status">Stiskni START pro test rychlosti</div>
 
-  <button class="btn" id="startBtn" onclick="runTest()">▶ START</button>
+  <div class="btn-row" style="margin-bottom:0;">
+    <button class="btn" id="startBtn" onclick="runTest('fast')" style="font-size:1.1rem;padding:13px 28px;">⚡ RYCHLÝ</button>
+    <button class="btn" id="startBtn2" onclick="runTest('full')" style="font-size:1.1rem;padding:13px 28px;border-color:#00ffff;">🎯 PŘESNÝ</button>
+  </div>
 
   <div class="btn-row">
     <button class="btn-sm" id="resetBtn">🗑 RESET</button>
@@ -380,36 +383,55 @@ function playCompletionSound() {
   }
 }
 
-window.runTest = function() {
-  startBtn.disabled = true;
-  // Odstranit complete vizualizaci z minulého testu
+const MEASUREMENTS_FAST = [
+  { type: 'latency', numPackets: 1 },
+  { type: 'download', bytes: 1e5, count: 1, bypassMinDuration: true },
+  { type: 'latency', numPackets: 8 },
+  { type: 'download', bytes: 1e5, count: 5 },
+  { type: 'download', bytes: 1e6, count: 5 },
+  { type: 'upload', bytes: 1e5, count: 5 },
+  { type: 'upload', bytes: 1e6, count: 4 },
+  { type: 'download', bytes: 1e7, count: 3 },
+  { type: 'upload', bytes: 1e7, count: 2 },
+];
+
+const MEASUREMENTS_FULL = [
+  { type: 'latency', numPackets: 1 },
+  { type: 'download', bytes: 1e5, count: 1, bypassMinDuration: true },
+  { type: 'latency', numPackets: 20 },
+  { type: 'download', bytes: 1e5, count: 9 },
+  { type: 'download', bytes: 1e6, count: 8 },
+  { type: 'upload', bytes: 1e5, count: 8 },
+  { type: 'upload', bytes: 1e6, count: 6 },
+  { type: 'download', bytes: 1e7, count: 6 },
+  { type: 'upload', bytes: 1e7, count: 4 },
+  { type: 'download', bytes: 2.5e7, count: 4 },
+  { type: 'upload', bytes: 2.5e7, count: 4 },
+  { type: 'download', bytes: 1e8, count: 3 },
+  { type: 'upload', bytes: 5e7, count: 3 }
+];
+
+function setBtnsDisabled(disabled) {
+  document.getElementById('startBtn').disabled = disabled;
+  document.getElementById('startBtn2').disabled = disabled;
+}
+
+window.runTest = function(mode) {
+  setBtnsDisabled(true);
   statusEl.classList.remove('complete');
   gaugeLabel.classList.remove('complete');
   pingVal.textContent = '--';
   downVal.textContent = '--';
   upVal.textContent = '--';
   setGauge('--', 'SPOUŠTÍM');
-  statusEl.textContent = 'Spouštím Cloudflare engine...';
+  const modeLabel = mode === 'fast' ? '⚡ RYCHLÝ' : '🎯 PŘESNÝ';
+  statusEl.textContent = 'Spouštím ' + modeLabel + ' test...';
+
+  const measurements = mode === 'fast' ? MEASUREMENTS_FAST : MEASUREMENTS_FULL;
 
   const st = new SpeedTest({
     autoStart: false,
-    // Vypneme packetLoss (vyžaduje vlastní TURN server)
-    // Toto je oficiální výchozí sada měření MÍNUS packetLoss
-    measurements: [
-      { type: 'latency', numPackets: 1 },
-      { type: 'download', bytes: 1e5, count: 1, bypassMinDuration: true },
-      { type: 'latency', numPackets: 20 },
-      { type: 'download', bytes: 1e5, count: 9 },
-      { type: 'download', bytes: 1e6, count: 8 },
-      { type: 'upload', bytes: 1e5, count: 8 },
-      { type: 'upload', bytes: 1e6, count: 6 },
-      { type: 'download', bytes: 1e7, count: 6 },
-      { type: 'upload', bytes: 1e7, count: 4 },
-      { type: 'download', bytes: 2.5e7, count: 4 },
-      { type: 'upload', bytes: 2.5e7, count: 4 },
-      { type: 'download', bytes: 1e8, count: 3 },
-      { type: 'upload', bytes: 5e7, count: 3 }
-    ]
+    measurements: measurements
   });
 
   st.onResultsChange = (info) => {
@@ -493,13 +515,11 @@ window.runTest = function() {
       console.error('onFinish error:', e);
       statusEl.textContent = '❌ Chyba při zpracování: ' + e.message;
     }
-    startBtn.disabled = false;
-  };
-
-  st.onError = (err) => {
+    setBtnsDisabled(false);
+  }; = (err) => {
     console.error('SpeedTest error:', err);
     statusEl.textContent = '❌ Chyba: ' + (err && (err.message || err.toString()) || 'neznámá chyba');
-    startBtn.disabled = false;
+    setBtnsDisabled(false);
   };
 
   st.play();
