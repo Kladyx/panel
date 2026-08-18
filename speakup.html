@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SpeakUp v7.0Kl</title>
+<title>SpeakUp v7.1Kl</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
@@ -405,7 +405,7 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 
 <div class="hdr">
   <h1>SPEAKUP</h1>
-  <span class="ver">v7.0Kl</span>
+  <span class="ver">v7.1Kl</span>
 </div>
 <div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
 
@@ -435,6 +435,7 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 <div class="tab-bar">
   <button class="tab-btn active" id="tabConv" onclick="switchTab('conv')">💬 Konverzace</button>
   <button class="tab-btn" id="tabVoc" onclick="switchTab('voc')">📖 Slovíčka</button>
+  <button class="tab-btn" id="tabDict" onclick="switchTab('dict')">🔍 Slovník</button>
 </div>
 
 <!-- ===== KONVERZACE TAB ===== -->
@@ -578,6 +579,16 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 </div>
 
 </div><!-- end sectionVoc -->
+
+<!-- ===== SLOVNÍK TAB ===== -->
+<div class="tab-section" id="sectionDict">
+  <div style="margin-bottom:12px;">
+    <input id="dictSearch" type="text" placeholder="🔍 Hledej CZ nebo EN..." oninput="dictSearch()"
+      style="width:100%;box-sizing:border-box;padding:13px 14px;border-radius:12px;border:1.5px solid rgba(0,212,255,.35);background:rgba(255,255,255,.05);color:#fff;font-size:.95rem;font-family:inherit;outline:none;">
+  </div>
+  <div id="dictCount" style="font-size:.72rem;color:rgba(255,255,255,.3);margin-bottom:10px;letter-spacing:1px;"></div>
+  <div id="dictResults"></div>
+</div>
 
 
 <script>
@@ -1921,9 +1932,12 @@ init();
 function switchTab(tab){
   document.getElementById('tabConv').classList.toggle('active', tab==='conv');
   document.getElementById('tabVoc').classList.toggle('active', tab==='voc');
+  document.getElementById('tabDict').classList.toggle('active', tab==='dict');
   document.getElementById('sectionConv').classList.toggle('show', tab==='conv');
   document.getElementById('sectionVoc').classList.toggle('show', tab==='voc');
+  document.getElementById('sectionDict').classList.toggle('show', tab==='dict');
   if(tab==='voc') vocInit();
+  if(tab==='dict'){ document.getElementById('dictSearch').value=''; dictSearch(); document.getElementById('dictSearch').focus(); }
 }
 
 /* ===== SLOVÍČKA DATA ===== */
@@ -7072,6 +7086,46 @@ function vocRefreshLearnedPanel(){
   });
   div.innerHTML='<div style="font-size:.72rem;color:rgba(0,212,255,.7);margin-bottom:10px;letter-spacing:1px;">NAUČENO: '+learned.length+' / '+VOC.length+' SLOV</div>'
     +rows.join('');
+}
+
+/* ===== SLOVNÍK — obousměrné vyhledávání ===== */
+function dictSearch(){
+  var q=(document.getElementById('dictSearch').value||'').toLowerCase().trim();
+  var res=document.getElementById('dictResults');
+  var cnt=document.getElementById('dictCount');
+  if(!q){
+    res.innerHTML='<div style="color:rgba(255,255,255,.25);font-size:.85rem;text-align:center;padding:30px 0;">Zadej slovo česky nebo anglicky</div>';
+    cnt.textContent='Celkem '+VOC.length+' slov';
+    return;
+  }
+  var hits=VOC.filter(function(v){
+    return v.w.toLowerCase().indexOf(q)!==-1 || v.cz.toLowerCase().indexOf(q)!==-1;
+  });
+  cnt.textContent=hits.length+' výsledků';
+  if(hits.length===0){
+    res.innerHTML='<div style="color:rgba(255,100,100,.7);font-size:.85rem;text-align:center;padding:30px 0;">Nic nenalezeno</div>';
+    return;
+  }
+  var html=hits.slice(0,80).map(function(v){
+    var learned=vocIsLearned(v.w);
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);">'
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="font-size:.92rem;font-weight:700;color:'+(learned?'#00ff88':'#fff')+';">'+escHtml(v.w)+(learned?' ✓':'')+'</div>'
+      +'<div style="font-size:.8rem;color:rgba(255,255,255,.55);margin-top:2px;">'+escHtml(v.cz)+'</div>'
+      +(v.ph?'<div style="font-size:.72rem;color:rgba(0,212,255,.6);margin-top:2px;">'+escHtml(v.ph)+'</div>':'')
+      +(v.cat?'<div style="font-size:.65rem;color:rgba(255,255,255,.2);margin-top:2px;">'+escHtml(v.cat)+'</div>':'')
+      +'</div>'
+      +'<button onclick="dictPlay(\''+v.w.replace(/'/g,"\\'")+'\')" style="flex-shrink:0;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;font-size:1rem;cursor:pointer;">🔊</button>'
+      +'</div>';
+  }).join('');
+  if(hits.length>80) html+='<div style="color:rgba(255,255,255,.3);font-size:.75rem;text-align:center;padding:10px;">... a '+(hits.length-80)+' dalších — upřesni hledání</div>';
+  res.innerHTML=html;
+}
+function dictPlay(word){
+  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(word);
+  u.lang=ttsLang||'en-US'; u.rate=0.8;
+  window.speechSynthesis.speak(u);
 }
 
 function vocInit(){
