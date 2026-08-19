@@ -237,7 +237,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.4.4/4.Pro - 2026/27 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.4.4/5.Pro - 2026/27 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -19838,139 +19838,6 @@ initFB();
 `;
 
 
-APP_HTML["videos"] = `<!DOCTYPE html>
-<html lang="cs">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Videos</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:#0a0e1a;color:#cce5ff;font-family:'Segoe UI',sans-serif;min-height:100vh;padding:12px;}
-h1{font-size:1rem;color:#ff6600;letter-spacing:2px;margin-bottom:12px;text-transform:uppercase;}
-#add-form{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
-#add-form input{background:#0d1530;border:1px solid rgba(255,102,0,0.35);color:#cce5ff;padding:7px 10px;border-radius:4px;font-size:0.8rem;outline:none;}
-#add-form input:focus{border-color:#ff6600;}
-#add-btn{background:rgba(255,102,0,0.2);border:1px solid rgba(255,102,0,0.5);color:#ff6600;padding:7px;border-radius:4px;cursor:pointer;font-size:0.8rem;letter-spacing:1px;}
-#add-btn:hover{background:rgba(255,102,0,0.35);}
-.vcard{background:#0d1530;border:1px solid rgba(255,102,0,0.2);border-radius:6px;margin-bottom:10px;overflow:hidden;padding:10px;}
-.vtitle{font-size:0.9rem;color:#ff8833;font-weight:bold;margin-bottom:6px;word-break:break-word;}
-.vurl{font-size:0.6rem;color:rgba(255,136,51,0.4);margin-bottom:8px;word-break:break-all;}
-.vbtns{display:flex;gap:6px;flex-wrap:wrap;}
-.vbtns a,.vbtns button{display:inline-flex;align-items:center;gap:4px;padding:8px 14px;border-radius:4px;font-size:0.8rem;cursor:pointer;text-decoration:none;border:none;}
-.vplay{background:rgba(0,200,80,0.25);border:1px solid rgba(0,255,100,0.5);color:#00ff66;}
-.vcopy{background:rgba(0,150,255,0.15);border:1px solid rgba(0,150,255,0.4);color:#44aaff;}
-.vdel{background:rgba(255,0,0,0.12);border:1px solid rgba(255,60,60,0.4);color:#ff4444;}
-#status{font-size:0.7rem;color:#888;margin-bottom:8px;min-height:16px;}
-.empty{text-align:center;color:#444;font-size:0.8rem;margin-top:30px;}
-</style>
-</head>
-<body>
-<h1>\uD83C\uDFAC Videos</h1>
-<div id="status"></div>
-<div id="add-form">
-  <input id="inp-name" type="text" placeholder="N\u00E1zev videa..." maxlength="80">
-  <input id="inp-url" type="url" placeholder="YouTube URL (https://youtu.be/...)">
-  <button id="add-btn">+ P\u0158IDAT VIDEO</button>
-</div>
-<div id="list"></div>
-
-<script>
-var FIREBASE_URL = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/videosDb';
-var videos = {};
-
-function status(msg, col){
-  var el = document.getElementById('status');
-  el.textContent = msg;
-  el.style.color = col || '#888';
-}
-
-function render(){
-  var list = document.getElementById('list');
-  var keys = Object.keys(videos);
-  if(keys.length === 0){
-    list.innerHTML = '<div class="empty">\u017D\u00E1dn\u00E1 videa. P\u0159idej prvn\u00ED!</div>';
-    return;
-  }
-  list.innerHTML = '';
-  keys.sort(function(a,b){ return (videos[b].ts||0)-(videos[a].ts||0); });
-  keys.forEach(function(key){
-    var v = videos[key];
-    var card = document.createElement('div');
-    card.className = 'vcard';
-    card.innerHTML =
-      '<div class="vtitle">' + esc(v.name) + '</div>' +
-      '<div class="vurl">' + esc(v.url) + '</div>' +
-      '<div class="vbtns">' +
-        '<a class="vplay" href="' + esc(v.url) + '" target="_top" rel="noopener">\u25B6 P\u0158EHR\u00C1T</a>' +
-        '<button class="vcopy" data-key="' + key + '" data-action="copy">\uD83D\uDD17 ODKAZ</button>' +
-        '<button class="vdel" data-key="' + key + '" data-action="del">\uD83D\uDDD1 SMAZAT</button>' +
-      '</div>';
-    list.appendChild(card);
-  });
-
-  list.querySelectorAll('[data-action]').forEach(function(btn){
-    btn.onclick = function(){
-      var key = btn.getAttribute('data-key');
-      var action = btn.getAttribute('data-action');
-      if(action === 'copy') copyUrl(key);
-      if(action === 'del') delVideo(key);
-    };
-  });
-}
-
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-function copyUrl(key){
-  var url = videos[key].url;
-  if(navigator.clipboard){ navigator.clipboard.writeText(url).then(function(){ status('Zkop\u00EDrov\u00E1no!', '#00ff88'); setTimeout(function(){ status(''); }, 2000); }); }
-  else{ status('Zkop\u00EDruj ru\u010Dn\u011B: ' + url, '#ff8833'); }
-}
-
-function delVideo(key){
-  if(!confirm('Smazat video "' + videos[key].name + '"?')) return;
-  fetch(FIREBASE_URL + '/' + key + '.json', {method:'DELETE'})
-    .then(function(){ status('Smaz\u00E1no.', '#ff4444'); load(); })
-    .catch(function(){ status('Chyba p\u0159i maz\u00E1n\u00ED.', '#ff4444'); });
-}
-
-function load(){
-  status('Na\u010D\u00EDt\u00E1m...', '#888');
-  fetch(FIREBASE_URL + '.json')
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      videos = data || {};
-      render();
-      status('', '');
-    })
-    .catch(function(){ status('Chyba na\u010D\u00EDt\u00E1n\u00ED.', '#ff4444'); });
-}
-
-document.getElementById('add-btn').onclick = function(){
-  var name = document.getElementById('inp-name').value.trim();
-  var url = document.getElementById('inp-url').value.trim();
-  if(!name || !url){ status('Vypl\u0148 n\u00E1zev i URL.', '#ff8833'); return; }
-  if(!url.startsWith('http')){ status('Neplatn\u00E1 URL.', '#ff4444'); return; }
-  var key = 'v' + Date.now();
-  var entry = {name:name, url:url, ts:Date.now()};
-  status('Ukl\u00E1d\u00E1m...', '#888');
-  fetch(FIREBASE_URL + '/' + key + '.json', {
-    method:'PUT',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(entry)
-  }).then(function(){
-    document.getElementById('inp-name').value = '';
-    document.getElementById('inp-url').value = '';
-    status('Ulo\u017Eeno!', '#00ff88');
-    load();
-  }).catch(function(){ status('Chyba ukl\u00E1d\u00E1n\u00ED.', '#ff4444'); });
-};
-
-load();
-<\/script>
-</body>
-</html>
-`;
 
 function openApp(id) {
   if (id === 'firebase') {
@@ -20024,6 +19891,8 @@ function openApp(id) {
             frame.src = 'https://console.firebase.google.com/u/1/project/kladyxland/usage';
           } else if (id === 'speakup') {
             frame.src = 'https://kladyx.github.io/panel/speakup.html';
+          } else if (id === 'videos') {
+            frame.src = 'https://kladyx.github.io/panel/apps/videos.html';
           } else if (id === 'accounts') {
             frame.src = 'https://kladyx.github.io/panel/accounts.html';
           } else if (id === 'scripty') {
@@ -20801,7 +20670,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='4.4.4/4.Pro';
+  var CURRENT='4.4.4/5.Pro';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
