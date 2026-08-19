@@ -1037,7 +1037,7 @@ function sendToGithub() {
 
   // POJISTKA 1: kontrola názvu souboru vs cíl
   var uploadName = selectedGhFile.name.toLowerCase();
-  var targetName = path.toLowerCase();
+  var targetName = path.split('/').pop().toLowerCase();
   if (uploadName !== targetName) {
     if (!confirm('⚠️ POZOR!\n\nNahráváš: ' + selectedGhFile.name + '\nCíl na GitHubu: ' + path + '\n\nNázvy se LIŠÍ!\nOpravdu přepsat?')) return;
   }
