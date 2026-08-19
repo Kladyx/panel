@@ -30,7 +30,8 @@ body{background:radial-gradient(ellipse at 50% 20%,rgba(0,180,255,.25) 0%,transp
 .grid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:380px;}
 .app-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px 8px;border-radius:14px;border:1.5px solid rgba(0,245,255,.2);background:rgba(255,255,255,.03);cursor:pointer;transition:transform .15s;-webkit-tap-highlight-color:transparent;position:relative;}
 .app-btn:active{transform:scale(.93);}
-.app-icon{font-size:1.8rem;line-height:1;}
+.app-icon{font-size:1.8rem;line-height:1;display:flex;align-items:center;justify-content:center;width:1.8rem;height:1.8rem;}
+.app-icon img{width:1.8rem;height:1.8rem;border-radius:50%;object-fit:cover;display:block;}
 .app-name{font-family:'Orbitron',monospace;font-size:.42rem;font-weight:700;letter-spacing:.1em;color:#e0e8ff;text-align:center;line-height:1.3;}
 [data-color="orange"]{border-color:rgba(255,165,0,.3);}
 [data-color="green"]{border-color:rgba(0,255,136,.3);}
@@ -39,7 +40,9 @@ body{background:radial-gradient(ellipse at 50% 20%,rgba(0,180,255,.25) 0%,transp
 [data-color="cyan"]{border-color:rgba(0,245,255,.3);}
 [data-color="blue"]{border-color:rgba(0,136,255,.3);}
 .del-btn{display:none;position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:50%;background:#ff3c5a;border:2px solid #fff;color:#fff;font-size:14px;line-height:20px;text-align:center;cursor:pointer;z-index:10;font-weight:bold;}
+.edit-icon-btn{display:none;position:absolute;top:-8px;left:-8px;width:24px;height:24px;border-radius:50%;background:#00f5ff;border:2px solid #fff;color:#000;font-size:12px;line-height:20px;text-align:center;cursor:pointer;z-index:10;font-weight:bold;}
 body.edit-mode .del-btn{display:block;}
+body.edit-mode .edit-icon-btn{display:block;}
 body.edit-mode .app-btn{animation:wiggle .4s infinite alternate;}
 @keyframes wiggle{0%{transform:rotate(-1deg);}100%{transform:rotate(1deg);}}
 .add-btn{display:none;flex-direction:column;align-items:center;justify-content:center;padding:18px 8px;border-radius:14px;border:2px dashed rgba(0,245,255,.4);background:rgba(0,245,255,.05);cursor:pointer;font-size:2rem;color:rgba(0,245,255,.6);min-height:100px;}
@@ -64,6 +67,8 @@ body.edit-mode .add-btn{display:flex;}
 .btns{display:flex;gap:10px;margin-top:16px;}
 .btn-ok{flex:1;background:rgba(0,245,255,.15);border:1.5px solid rgba(0,245,255,.4);border-radius:10px;padding:14px;color:#00f5ff;font-family:'Orbitron',monospace;font-size:.55rem;cursor:pointer;}
 .btn-no{flex:1;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.2);border-radius:10px;padding:14px;color:rgba(255,255,255,.5);font-family:'Orbitron',monospace;font-size:.55rem;cursor:pointer;}
+.btn-del{flex:1;background:rgba(255,60,90,.15);border:1.5px solid rgba(255,60,90,.4);border-radius:10px;padding:14px;color:#ff3c5a;font-family:'Orbitron',monospace;font-size:.55rem;cursor:pointer;display:none;}
+body.edit-mode .btn-del{display:block;}
 .info{position:relative;z-index:2;margin-top:16px;font-size:.4rem;letter-spacing:.12em;color:rgba(255,255,255,.3);text-align:center;}
 .icon-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;}
 .icon-input-group{flex:1;}
@@ -94,7 +99,7 @@ body.edit-mode .add-btn{display:flex;}
 <div class="info" id="info">Funguje pouze na Android · Otevře nainstalovanou appku</div>
 <div class="overlay" id="overlay">
   <div class="sheet">
-    <div class="sheet-title">➕ PŘIDAT APPKU</div>
+    <div class="sheet-title" id="sheetTitle">➕ PŘIDAT APPKU</div>
     <div class="icon-row">
       <div class="icon-input-group">
         <label class="lbl">IKONA (emoji nebo foto)</label>
@@ -116,6 +121,7 @@ body.edit-mode .add-btn{display:flex;}
     <div class="btns">
       <button class="btn-no" onclick="closeForm()">ZRUŠIT</button>
       <button class="btn-ok" onclick="saveApp()">ULOŽIT</button>
+      <button class="btn-del" onclick="deleteEditingApp()">SMAZAT</button>
     </div>
   </div>
 </div>
@@ -133,7 +139,7 @@ var DEFS=[
   {id:9,icon:'🌐',name:'KLADYX|WEB',type:'url',target:'https://kladyx.github.io/kladyxland/',color:'cyan'}
 ];
 var CLRS=['cyan','green','purple','orange','red','blue'];
-var apps=[],editMode=false,selClr='cyan',nid=100;
+var apps=[],editMode=false,selClr='cyan',nid=100,editingId=null;
 
 function load(){
   try{
@@ -151,8 +157,9 @@ function render(){
     var n=a.name.split('|').join('<br>');
     h+='<div class="app-btn" data-color="'+a.color+'" onclick="go('+a.id+')">';
     h+='<div class="del-btn" onclick="event.stopPropagation();del('+a.id+')">×</div>';
+    h+='<div class="edit-icon-btn" onclick="event.stopPropagation();editApp('+a.id+')">✏️</div>';
     if(a.icon.startsWith('data:image')){
-      h+='<div class="app-icon"><img src="'+a.icon+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;" alt="app-icon"></div>';
+      h+='<div class="app-icon"><img src="'+a.icon+'" alt="app-icon"></div>';
     }else{
       h+='<div class="app-icon">'+a.icon+'</div>';
     }
@@ -160,7 +167,7 @@ function render(){
   });
   if(editMode) h+='<div class="add-btn" onclick="openForm()">＋</div>';
   g.innerHTML=h;
-  document.getElementById('info').textContent=editMode?'✏️ Úpravy · × smaže · ＋ přidá':'Funguje pouze na Android · Otevře nainstalovanou appku';
+  document.getElementById('info').textContent=editMode?'✏️ Úpravy · ✏️ edituj · × smaže · ＋ přidá':'Funguje pouze na Android · Otevře nainstalovanou appku';
 }
 
 function go(id){
@@ -184,6 +191,22 @@ function del(id){
   if(!confirm('Smazat?'))return;
   apps=apps.filter(function(a){return a.id!==id;});
   save();render();
+}
+
+function editApp(id){
+  var a=apps.filter(function(x){return x.id===id;})[0];
+  if(!a)return;
+  editingId=id;
+  document.getElementById('fIcon').value=a.icon;
+  document.getElementById('fName').value=a.name;
+  document.getElementById('fType').value=a.type;
+  document.getElementById('fTarget').value=a.target;
+  selClr=a.color;
+  typeChanged();
+  renderClrs();
+  updateIconPreview();
+  document.getElementById('sheetTitle').textContent='✏️ UPRAVIT APPKU';
+  document.getElementById('overlay').className='overlay open';
 }
 
 function handleImageUpload(e){
@@ -226,6 +249,7 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 
 function openForm(){
+  editingId=null;
   document.getElementById('fIcon').value='';
   document.getElementById('fileInput').value='';
   document.getElementById('fName').value='';
@@ -233,6 +257,7 @@ function openForm(){
   document.getElementById('fTarget').value='';
   selClr='cyan';typeChanged();renderClrs();
   updateIconPreview();
+  document.getElementById('sheetTitle').textContent='➕ PŘIDAT APPKU';
   document.getElementById('overlay').className='overlay open';
 }
 
@@ -262,7 +287,25 @@ function saveApp(){
   var target=document.getElementById('fTarget').value.trim();
   if(!name){alert('Zadej název');return;}
   if(!target){alert('Zadej package nebo URL');return;}
-  apps.push({id:nid++,icon:icon,name:name,type:type,target:target,color:selClr});
+  
+  if(editingId!==null){
+    var a=apps.filter(function(x){return x.id===editingId;})[0];
+    if(a){
+      a.icon=icon;
+      a.name=name;
+      a.type=type;
+      a.target=target;
+      a.color=selClr;
+    }
+  }else{
+    apps.push({id:nid++,icon:icon,name:name,type:type,target:target,color:selClr});
+  }
+  save();closeForm();render();
+}
+
+function deleteEditingApp(){
+  if(!editingId || !confirm('Smazat tuto appku?'))return;
+  apps=apps.filter(function(a){return a.id!==editingId;});
   save();closeForm();render();
 }
 
