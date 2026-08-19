@@ -7,7 +7,10 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#0a0e1a;color:#cce5ff;font-family:'Segoe UI',sans-serif;min-height:100vh;padding:12px;}
-h1{font-size:1rem;color:#ff6600;letter-spacing:2px;margin-bottom:12px;text-transform:uppercase;}
+.header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+h1{font-size:1rem;color:#ff6600;letter-spacing:2px;text-transform:uppercase;}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#00ff88;box-shadow:0 0 6px #00ff88;animation:syncPulse 2s ease-in-out infinite;}
+@keyframes syncPulse{0%,100%{opacity:1;box-shadow:0 0 6px #00ff88;}50%{opacity:.4;box-shadow:none;}}
 #add-form{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
 #add-form input{background:#0d1530;border:1px solid rgba(255,102,0,0.35);color:#cce5ff;padding:7px 10px;border-radius:4px;font-size:0.8rem;outline:none;}
 #add-form input:focus{border-color:#ff6600;}
@@ -20,13 +23,17 @@ h1{font-size:1rem;color:#ff6600;letter-spacing:2px;margin-bottom:12px;text-trans
 .vbtns a,.vbtns button{display:inline-flex;align-items:center;gap:4px;padding:8px 14px;border-radius:4px;font-size:0.8rem;cursor:pointer;text-decoration:none;border:none;}
 .vplay{background:rgba(0,200,80,0.25);border:1px solid rgba(0,255,100,0.5);color:#00ff66;}
 .vcopy{background:rgba(0,150,255,0.15);border:1px solid rgba(0,150,255,0.4);color:#44aaff;}
+.vedit{background:rgba(255,170,0,0.15);border:1px solid rgba(255,170,0,0.4);color:#ffaa00;}
 .vdel{background:rgba(255,0,0,0.12);border:1px solid rgba(255,60,60,0.4);color:#ff4444;}
 #status{font-size:0.7rem;color:#888;margin-bottom:8px;min-height:16px;}
 .empty{text-align:center;color:#444;font-size:0.8rem;margin-top:30px;}
 </style>
 </head>
 <body>
-<h1>🎬 Videos</h1>
+<div class="header">
+  <h1>🎬 Videos</h1>
+  <span class="sync-dot" id="sync-dot" title="Synchronizováno"></span>
+</div>
 <div id="status"></div>
 <div id="add-form">
   <input id="inp-name" type="text" placeholder="Název videa..." maxlength="80">
@@ -43,6 +50,20 @@ function status(msg, col){
   var el = document.getElementById('status');
   el.textContent = msg;
   el.style.color = col || '#888';
+}
+
+function syncOk(){
+  var dot = document.getElementById('sync-dot');
+  dot.style.background = '#00ff88';
+  dot.style.boxShadow = '0 0 6px #00ff88';
+  dot.title = 'Synchronizováno';
+}
+
+function syncErr(){
+  var dot = document.getElementById('sync-dot');
+  dot.style.background = '#ff4444';
+  dot.style.boxShadow = '0 0 6px #ff4444';
+  dot.title = 'Chyba spojení';
 }
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -65,6 +86,7 @@ function render(){
       '<div class="vurl">' + esc(v.url) + '</div>' +
       '<div class="vbtns">' +
         '<a class="vplay" href="' + esc(v.url) + '" target="_blank" rel="noopener">▶ PŘEHRÁT</a>' +
+        '<button class="vedit" data-key="' + key + '" data-action="edit">✏ UPRAVIT</button>' +
         '<button class="vcopy" data-key="' + key + '" data-action="copy">🔗 ODKAZ</button>' +
         '<button class="vdel" data-key="' + key + '" data-action="del">🗑 SMAZAT</button>' +
       '</div>';
@@ -75,10 +97,27 @@ function render(){
     btn.onclick = function(){
       var key = btn.getAttribute('data-key');
       var action = btn.getAttribute('data-action');
+      if(action === 'edit') editVideo(key);
       if(action === 'copy') copyUrl(key);
       if(action === 'del') delVideo(key);
     };
   });
+}
+
+function editVideo(key){
+  var v = videos[key];
+  var newName = prompt('Nový název videa:', v.name);
+  if(newName === null || newName.trim() === '') return;
+  newName = newName.trim();
+  status('Ukládám...', '#888');
+  fetch(FIREBASE_URL + '/' + key + '/name.json', {
+    method:'PUT',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(newName)
+  }).then(function(r){
+    if(r.ok){ status('Přejmenováno!', '#00ff88'); syncOk(); load(); }
+    else{ status('Chyba přejmenování.', '#ff4444'); syncErr(); }
+  }).catch(function(){ status('Chyba spojení.', '#ff4444'); syncErr(); });
 }
 
 function copyUrl(key){
@@ -90,8 +129,11 @@ function copyUrl(key){
 function delVideo(key){
   if(!confirm('Smazat video "' + videos[key].name + '"?')) return;
   fetch(FIREBASE_URL + '/' + key + '.json', {method:'DELETE'})
-    .then(function(){ status('Smazáno.', '#ff4444'); load(); })
-    .catch(function(){ status('Chyba při mazání.', '#ff4444'); });
+    .then(function(r){
+      if(r.ok){ status('Smazáno.', '#ff4444'); syncOk(); load(); }
+      else{ status('Chyba mazání.', '#ff4444'); syncErr(); }
+    })
+    .catch(function(){ status('Chyba při mazání.', '#ff4444'); syncErr(); });
 }
 
 function load(){
@@ -102,8 +144,9 @@ function load(){
       videos = data || {};
       render();
       status('', '');
+      syncOk();
     })
-    .catch(function(){ status('Chyba načítání.', '#ff4444'); });
+    .catch(function(){ status('Chyba načítání.', '#ff4444'); syncErr(); });
 }
 
 document.getElementById('add-btn').onclick = function(){
@@ -118,12 +161,15 @@ document.getElementById('add-btn').onclick = function(){
     method:'PUT',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify(entry)
-  }).then(function(){
-    document.getElementById('inp-name').value = '';
-    document.getElementById('inp-url').value = '';
-    status('Uloženo!', '#00ff88');
-    load();
-  }).catch(function(){ status('Chyba ukládání.', '#ff4444'); });
+  }).then(function(r){
+    if(r.ok){
+      document.getElementById('inp-name').value = '';
+      document.getElementById('inp-url').value = '';
+      status('Uloženo!', '#00ff88');
+      syncOk();
+      load();
+    } else { status('Chyba ukládání.', '#ff4444'); syncErr(); }
+  }).catch(function(){ status('Chyba ukládání.', '#ff4444'); syncErr(); });
 };
 
 load();
