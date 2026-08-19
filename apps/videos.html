@@ -6,40 +6,44 @@
 <title>Videos</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#0a0e1a;color:#cce5ff;font-family:'Segoe UI',sans-serif;min-height:100vh;padding:12px;}
+body{background:linear-gradient(180deg,#0a1520,#0d1a2a);color:#cce5ff;font-family:'Segoe UI',sans-serif;min-height:100vh;padding:12px;}
 .header{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
-h1{font-size:1rem;color:#ff6600;letter-spacing:2px;text-transform:uppercase;}
+h1{font-size:1rem;color:#00f5ff;letter-spacing:2px;text-transform:uppercase;}
+.film-reel{display:inline-block;font-size:1.2rem;animation:reelSpin 3s linear infinite;}
+@keyframes reelSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 .sync-dot{width:8px;height:8px;border-radius:50%;background:#00ff88;box-shadow:0 0 6px #00ff88;animation:syncPulse 2s ease-in-out infinite;}
 @keyframes syncPulse{0%,100%{opacity:1;box-shadow:0 0 6px #00ff88;}50%{opacity:.4;box-shadow:none;}}
-.counter{font-size:0.65rem;color:rgba(255,102,0,0.5);margin-bottom:10px;letter-spacing:1px;}
+.counter{font-size:0.65rem;color:rgba(0,245,255,0.5);margin-bottom:10px;letter-spacing:1px;}
 #add-form{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
-#add-form input{background:#0d1530;border:1px solid rgba(255,102,0,0.35);color:#cce5ff;padding:7px 10px;border-radius:4px;font-size:0.8rem;outline:none;transition:border-color .3s;}
-#add-form input:focus{border-color:#ff6600;box-shadow:0 0 8px rgba(255,102,0,0.2);}
-#add-btn{background:linear-gradient(135deg,rgba(255,102,0,0.25),rgba(255,60,0,0.15));border:1px solid rgba(255,102,0,0.5);color:#ff6600;padding:8px;border-radius:4px;cursor:pointer;font-size:0.8rem;letter-spacing:1px;transition:all .2s;}
-#add-btn:hover{background:linear-gradient(135deg,rgba(255,102,0,0.4),rgba(255,60,0,0.25));transform:scale(1.01);}
+#add-form input{background:rgba(0,30,60,0.7);border:1px solid rgba(0,245,255,0.25);color:#cce5ff;padding:7px 10px;border-radius:4px;font-size:0.8rem;outline:none;transition:border-color .3s;}
+#add-form input:focus{border-color:#00f5ff;box-shadow:0 0 8px rgba(0,245,255,0.2);}
+#add-btn{background:linear-gradient(135deg,rgba(0,245,255,0.25),rgba(0,200,255,0.15));border:1px solid rgba(0,245,255,0.5);color:#00f5ff;padding:8px;border-radius:4px;cursor:pointer;font-size:0.8rem;letter-spacing:1px;transition:all .2s;}
+#add-btn:hover{background:linear-gradient(135deg,rgba(0,245,255,0.4),rgba(0,200,255,0.25));transform:scale(1.01);}
 #add-btn:active{transform:scale(0.98);}
-.vcard{background:linear-gradient(135deg,#0d1530,#0a1025);border:1px solid rgba(255,102,0,0.15);border-radius:8px;margin-bottom:10px;overflow:hidden;display:flex;gap:10px;padding:0;animation:cardIn .3s ease-out;}
+.vcard{background:linear-gradient(135deg,rgba(0,40,70,0.6),rgba(0,25,50,0.8));border:1px solid rgba(0,245,255,0.2);border-radius:8px;margin-bottom:10px;overflow:hidden;display:flex;gap:10px;padding:0;animation:cardIn .3s ease-out;}
 @keyframes cardIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.vthumb{width:100px;min-height:70px;flex-shrink:0;background:#080c18;position:relative;overflow:hidden;}
+.vthumb{width:100px;min-height:70px;flex-shrink:0;background:rgba(0,20,40,0.8);position:relative;overflow:hidden;}
 .vthumb img{width:100%;height:100%;object-fit:cover;display:block;}
 .vthumb-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:28px;height:28px;background:rgba(255,0,0,0.85);border-radius:50%;display:flex;align-items:center;justify-content:center;pointer-events:none;}
 .vthumb-play::after{content:'';border-left:10px solid #fff;border-top:6px solid transparent;border-bottom:6px solid transparent;margin-left:2px;}
 .vinfo{flex:1;padding:8px 8px 8px 0;display:flex;flex-direction:column;justify-content:center;min-width:0;}
-.vtitle{font-size:0.82rem;color:#ff8833;font-weight:bold;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vtitle{font-size:0.82rem;color:#00ccee;font-weight:bold;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .vbtns{display:flex;gap:4px;flex-wrap:wrap;}
 .vbtns a,.vbtns button{display:inline-flex;align-items:center;gap:3px;padding:5px 8px;border-radius:3px;font-size:0.68rem;cursor:pointer;text-decoration:none;border:none;transition:all .2s;}
 .vbtns a:active,.vbtns button:active{transform:scale(0.95);}
+.mini-reel{display:inline-block;font-size:0.9rem;animation:reelSpin 1.5s linear infinite;margin-left:4px;opacity:0;transition:opacity .3s;}
+.mini-reel.active{opacity:1;}
 .vplay{background:rgba(0,200,80,0.2);border:1px solid rgba(0,255,100,0.4);color:#00ff66;}
 .vedit{background:rgba(255,170,0,0.12);border:1px solid rgba(255,170,0,0.35);color:#ffaa00;}
 .vcopy{background:rgba(0,150,255,0.12);border:1px solid rgba(0,150,255,0.35);color:#44aaff;}
 .vdel{background:rgba(255,0,0,0.1);border:1px solid rgba(255,60,60,0.3);color:#ff4444;}
 #status{font-size:0.7rem;color:#888;margin-bottom:8px;min-height:16px;}
-.empty{text-align:center;color:#444;font-size:0.8rem;margin-top:30px;}
+.empty{text-align:center;color:rgba(0,245,255,0.3);font-size:0.8rem;margin-top:30px;}
 </style>
 </head>
 <body>
 <div class="header">
-  <h1>🎬 Videos</h1>
+  <span class="film-reel">🎞</span><h1>Videos</h1>
   <span class="sync-dot" id="sync-dot" title="Synchronizováno"></span>
 </div>
 <div class="counter" id="counter"></div>
@@ -113,7 +117,8 @@ function render(){
       '<div class="vinfo">' +
         '<div class="vtitle" title="' + esc(v.name) + '">' + esc(v.name) + '</div>' +
         '<div class="vbtns">' +
-          '<a class="vplay" href="' + esc(v.url) + '" target="_blank" rel="noopener">▶</a>' +
+          '<a class="vplay" href="' + esc(v.url) + '" target="_blank" rel="noopener" data-key="' + key + '" data-action="play">▶</a>' +
+          '<span class="mini-reel" id="reel-' + key + '">🎞</span>' +
           '<button class="vedit" data-key="' + key + '" data-action="edit">✏</button>' +
           '<button class="vcopy" data-key="' + key + '" data-action="copy">🔗</button>' +
           '<button class="vdel" data-key="' + key + '" data-action="del">🗑</button>' +
@@ -122,6 +127,13 @@ function render(){
     list.appendChild(card);
   });
 
+  list.querySelectorAll('a.vplay').forEach(function(link){
+    link.onclick = function(){
+      var key = link.getAttribute('data-key');
+      var reel = document.getElementById('reel-' + key);
+      if(reel){ reel.classList.add('active'); setTimeout(function(){ reel.classList.remove('active'); }, 3000); }
+    };
+  });
   list.querySelectorAll('[data-action]').forEach(function(btn){
     btn.onclick = function(){
       var key = btn.getAttribute('data-key');
@@ -152,7 +164,7 @@ function editVideo(key){
 function copyUrl(key){
   var url = videos[key].url;
   if(navigator.clipboard){ navigator.clipboard.writeText(url).then(function(){ status('Zkopírováno!', '#00ff88'); setTimeout(function(){ status(''); }, 2000); }); }
-  else{ status('Zkopíruj ručně: ' + url, '#ff8833'); }
+  else{ status('Zkopíruj ručně: ' + url, '#00ccee'); }
 }
 
 function delVideo(key){
@@ -181,7 +193,7 @@ function load(){
 document.getElementById('add-btn').onclick = function(){
   var name = document.getElementById('inp-name').value.trim();
   var url = document.getElementById('inp-url').value.trim();
-  if(!name || !url){ status('Vyplň název i URL.', '#ff8833'); return; }
+  if(!name || !url){ status('Vyplň název i URL.', '#00ccee'); return; }
   if(!url.startsWith('http')){ status('Neplatná URL.', '#ff4444'); return; }
   var key = 'v' + Date.now();
   var entry = {name:name, url:url, ts:Date.now()};
