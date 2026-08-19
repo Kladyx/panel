@@ -237,7 +237,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.4.4/3.Pro - 2026/27 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.4.4/4.Pro - 2026/27 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -19853,13 +19853,14 @@ h1{font-size:1rem;color:#ff6600;letter-spacing:2px;margin-bottom:12px;text-trans
 #add-form input:focus{border-color:#ff6600;}
 #add-btn{background:rgba(255,102,0,0.2);border:1px solid rgba(255,102,0,0.5);color:#ff6600;padding:7px;border-radius:4px;cursor:pointer;font-size:0.8rem;letter-spacing:1px;}
 #add-btn:hover{background:rgba(255,102,0,0.35);}
-.vcard{background:#0d1530;border:1px solid rgba(255,102,0,0.2);border-radius:6px;margin-bottom:10px;overflow:hidden;}
-.vcard-header{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;gap:6px;}
-.vtitle{font-size:0.85rem;color:#ff8833;font-weight:bold;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.vbtns{display:flex;gap:4px;flex-shrink:0;}
-.vbtns button{background:none;border:none;cursor:pointer;font-size:1rem;padding:2px 5px;border-radius:3px;transition:background 0.2s;}
-.vbtns button:hover{background:rgba(255,255,255,0.08);}
-.vurl{font-size:0.65rem;color:rgba(255,136,51,0.5);padding:0 10px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vcard{background:#0d1530;border:1px solid rgba(255,102,0,0.2);border-radius:6px;margin-bottom:10px;overflow:hidden;padding:10px;}
+.vtitle{font-size:0.9rem;color:#ff8833;font-weight:bold;margin-bottom:6px;word-break:break-word;}
+.vurl{font-size:0.6rem;color:rgba(255,136,51,0.4);margin-bottom:8px;word-break:break-all;}
+.vbtns{display:flex;gap:6px;flex-wrap:wrap;}
+.vbtns a,.vbtns button{display:inline-flex;align-items:center;gap:4px;padding:8px 14px;border-radius:4px;font-size:0.8rem;cursor:pointer;text-decoration:none;border:none;}
+.vplay{background:rgba(0,200,80,0.25);border:1px solid rgba(0,255,100,0.5);color:#00ff66;}
+.vcopy{background:rgba(0,150,255,0.15);border:1px solid rgba(0,150,255,0.4);color:#44aaff;}
+.vdel{background:rgba(255,0,0,0.12);border:1px solid rgba(255,60,60,0.4);color:#ff4444;}
 #status{font-size:0.7rem;color:#888;margin-bottom:8px;min-height:16px;}
 .empty{text-align:center;color:#444;font-size:0.8rem;margin-top:30px;}
 </style>
@@ -19898,15 +19899,13 @@ function render(){
     var card = document.createElement('div');
     card.className = 'vcard';
     card.innerHTML =
-      '<div class="vcard-header">' +
-        '<span class="vtitle">' + esc(v.name) + '</span>' +
-        '<div class="vbtns">' +
-          '<button title="P\u0159ehr\u00E1t" data-key="' + key + '" data-action="play">\u25B6</button>' +
-          '<button title="Kop\u00EDrovat odkaz" data-key="' + key + '" data-action="copy">\uD83D\uDD17</button>' +
-          '<button title="Smazat" data-key="' + key + '" data-action="del">\uD83D\uDDD1</button>' +
-        '</div>' +
-      '</div>' +
-      '<div class="vurl">' + esc(v.url) + '</div>';
+      '<div class="vtitle">' + esc(v.name) + '</div>' +
+      '<div class="vurl">' + esc(v.url) + '</div>' +
+      '<div class="vbtns">' +
+        '<a class="vplay" href="' + esc(v.url) + '" target="_top" rel="noopener">\u25B6 P\u0158EHR\u00C1T</a>' +
+        '<button class="vcopy" data-key="' + key + '" data-action="copy">\uD83D\uDD17 ODKAZ</button>' +
+        '<button class="vdel" data-key="' + key + '" data-action="del">\uD83D\uDDD1 SMAZAT</button>' +
+      '</div>';
     list.appendChild(card);
   });
 
@@ -19914,7 +19913,6 @@ function render(){
     btn.onclick = function(){
       var key = btn.getAttribute('data-key');
       var action = btn.getAttribute('data-action');
-      if(action === 'play') openVideo(key);
       if(action === 'copy') copyUrl(key);
       if(action === 'del') delVideo(key);
     };
@@ -19922,17 +19920,6 @@ function render(){
 }
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-function openVideo(key){
-  var url = videos[key].url;
-  var a = document.createElement('a');
-  a.href = url;
-  a.target = '_top';
-  a.rel = 'noopener';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
 
 function copyUrl(key){
   var url = videos[key].url;
@@ -20814,7 +20801,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='4.4.4/3.Pro';
+  var CURRENT='4.4.4/4.Pro';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
