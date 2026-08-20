@@ -13,7 +13,8 @@ h1{font-size:1rem;color:#00f5ff;letter-spacing:2px;text-transform:uppercase;}
 @keyframes reelSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 .sync-dot{width:8px;height:8px;border-radius:50%;background:#00ff88;box-shadow:0 0 6px #00ff88;animation:syncPulse 2s ease-in-out infinite;}
 @keyframes syncPulse{0%,100%{opacity:1;box-shadow:0 0 6px #00ff88;}50%{opacity:.4;box-shadow:none;}}
-.brand{font-size:0.55rem;color:rgba(0,245,255,0.35);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Segoe UI',sans-serif;}
+.brand{font-size:0.85rem;color:#00f5ff;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;font-family:'Segoe UI',sans-serif;font-weight:700;animation:brandPulse 2.5s ease-in-out infinite;}
+@keyframes brandPulse{0%,100%{text-shadow:0 0 6px rgba(0,245,255,0.4);color:#00f5ff;}50%{text-shadow:0 0 18px rgba(0,245,255,0.9),0 0 30px rgba(0,200,255,0.4);color:#66ffff;}}
 .connected-label{font-size:0.55rem;color:#00ff88;letter-spacing:1px;font-family:'Segoe UI',sans-serif;}
 .counter{font-size:0.65rem;color:rgba(0,245,255,0.5);margin-bottom:10px;letter-spacing:1px;}
 #add-form{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
