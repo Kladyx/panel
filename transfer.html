@@ -405,14 +405,6 @@
   </div>
 
 
-  <div class="box" style="margin-top:20px">
-    <div class="icon">🔐</div>
-    <div class="desc">Panel PIN</div>
-    <input class="gh-input" id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="4-místný PIN..." style="margin-top:12px;letter-spacing:6px;font-size:1.2rem;text-align:center;">
-    <button class="sendbtn" onclick="savePin()" style="margin-top:10px;">💾 Uložit PIN</button>
-    <div id="pin-save-status" style="margin-top:8px;font-size:.75rem;min-height:1em;"></div>
-  </div>
-
   <div class="footer">přes GitHub API + Firebase NextSync</div>
 </div>
 
@@ -1362,38 +1354,6 @@ function loadPendingQueue() {
 }
 loadPendingQueue();
 
-function savePin() {
-  var pin = document.getElementById('pinInput').value.trim();
-  var st = document.getElementById('pin-save-status');
-  if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
-    st.style.color = '#ff4444';
-    st.textContent = '✗ PIN musí mít přesně 4 číslice';
-    return;
-  }
-  st.style.color = '#aaa';
-  st.textContent = 'Ukládám...';
-  // SHA-256 hash PINu
-  var enc = new TextEncoder();
-  crypto.subtle.digest('SHA-256', enc.encode(pin)).then(function(buf) {
-    var hash = Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
-    var url = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/config/pin.json';
-    var xhr = new XMLHttpRequest();
-    xhr.open('PUT', url);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        st.style.color = '#00ff88';
-        st.textContent = '✓ PIN uložen';
-        document.getElementById('pinInput').value = '';
-      } else {
-        st.style.color = '#ff4444';
-        st.textContent = '✗ Chyba: ' + xhr.status;
-      }
-    };
-    xhr.onerror = function() { st.style.color='#ff4444'; st.textContent='✗ Chyba sítě'; };
-    xhr.send(JSON.stringify(hash));
-  });
-}
 </script>
 </body>
 </html>
