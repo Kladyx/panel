@@ -26,6 +26,22 @@
       color: rgba(255,255,255,0.4); text-transform: uppercase;
       animation: hintPulse 2s ease-in-out infinite; pointer-events: none; }
     @keyframes hintPulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+    #pin-screen {
+      position: fixed; inset: 0; z-index: 99998;
+      background: #050810;
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 20px;
+    }
+    #pin-screen.active { display: flex; }
+    .pin-title { font-family: 'Courier New', monospace; font-size: 0.7rem; letter-spacing: 4px; color: #00f5ff; text-transform: uppercase; }
+    .pin-dots { display: flex; gap: 14px; }
+    .pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(0,245,255,0.4); background: transparent; transition: all 0.2s; }
+    .pin-dot.filled { background: #00f5ff; border-color: #00f5ff; box-shadow: 0 0 8px #00f5ff; }
+    .pin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .pin-btn { width: 64px; height: 64px; border-radius: 50%; border: 1px solid rgba(0,245,255,0.3); background: rgba(0,245,255,0.05); color: #00f5ff; font-size: 1.4rem; font-family: 'Courier New', monospace; cursor: pointer; transition: all 0.15s; }
+    .pin-btn:active { background: rgba(0,245,255,0.2); transform: scale(0.93); }
+    .pin-err { color: #ff4444; font-size: 0.6rem; letter-spacing: 2px; font-family: 'Courier New', monospace; min-height: 1em; }
     #panel-gate {
       position: fixed; inset: 0; z-index: 99999;
       background: #050810;
@@ -255,10 +271,34 @@
   </video>
   <div id="intro-hint">Klepni pro vstup</div>
 </div>
+<div id="pin-screen">
+  <div class="pin-title">Zadej PIN</div>
+  <div class="pin-dots">
+    <div class="pin-dot" id="pd0"></div>
+    <div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div>
+    <div class="pin-dot" id="pd3"></div>
+  </div>
+  <div class="pin-grid">
+    <button class="pin-btn" onclick="pinKey('1')">1</button>
+    <button class="pin-btn" onclick="pinKey('2')">2</button>
+    <button class="pin-btn" onclick="pinKey('3')">3</button>
+    <button class="pin-btn" onclick="pinKey('4')">4</button>
+    <button class="pin-btn" onclick="pinKey('5')">5</button>
+    <button class="pin-btn" onclick="pinKey('6')">6</button>
+    <button class="pin-btn" onclick="pinKey('7')">7</button>
+    <button class="pin-btn" onclick="pinKey('8')">8</button>
+    <button class="pin-btn" onclick="pinKey('9')">9</button>
+    <button class="pin-btn" onclick="pinClear()" style="font-size:0.8rem;letter-spacing:1px;">CLR</button>
+    <button class="pin-btn" onclick="pinKey('0')">0</button>
+    <button class="pin-btn" onclick="pinBack()" style="font-size:1rem;">⌫</button>
+  </div>
+  <div class="pin-err" id="pin-err"></div>
+</div>
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.4.5/8.Pro - 2026/27 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v4.4.6/2.Pro - 2026/27 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -281,6 +321,7 @@
       <div id="net-speed" style="font-family:'Courier New',monospace;font-size:0.6rem;color:#00d4ff;letter-spacing:1px;text-shadow:0 0 6px rgba(0,212,255,0.4);">⬇ ···</div>
     </div>
     <button id="signout-btn" onclick="googleSignOut()">⏻ ODHLÁSIT</button>
+    <button id="pin-change-btn" onclick="openPinModal()" style="display:none;font-family:'Courier New',monospace;font-size:0.55rem;letter-spacing:1px;padding:4px 8px;background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.3);color:#00f5ff;border-radius:3px;cursor:pointer;">🔐 PIN</button>
     <div class="tdiv"></div>
     <div id="update-wrap" data-state="ok" title="Verze OK" onclick="if(this.dataset.state==='new'){if(confirm('Nová verze Panelu je dostupná. Obnovit stránku?'))location.reload(true);}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;margin:0 4px;">
       <div id="update-dot" style="width:14px;height:14px;border-radius:50%;background:#00ff88;box-shadow:0 0 10px #00ff88,0 0 20px #00ff88;animation:updatePulse 1.2s infinite;"></div>
@@ -20244,30 +20285,81 @@ function unlockPanel(user) {
   gate.classList.add('hidden'); setTimeout(function(){gate.style.display='none';},400);
   document.body.style.overflow='auto'; document.documentElement.style.overflow='auto';
   var sb=document.getElementById('signout-btn'); if(sb)sb.style.display='inline-block';
+  var pb=document.getElementById('pin-change-btn'); if(pb)pb.style.display='inline-block';
+}
+var _pin = '';
+var _PIN_CORRECT = '8417'; // fallback pokud Firebase nedostupný
+function pinKey(d) {
+  if (_pin.length >= 4) return;
+  _pin += d;
+  updatePinDots();
+  if (_pin.length === 4) setTimeout(checkPin, 150);
+}
+function pinBack() { _pin = _pin.slice(0, -1); updatePinDots(); }
+function pinClear() { _pin = ''; updatePinDots(); document.getElementById('pin-err').textContent = ''; }
+function updatePinDots() {
+  for (var i = 0; i < 4; i++) {
+    var dot = document.getElementById('pd' + i);
+    if (dot) dot.classList.toggle('filled', i < _pin.length);
+  }
+}
+function checkPin() {
+  var entered = _pin;
+  var enc = new TextEncoder();
+  crypto.subtle.digest('SHA-256', enc.encode(entered)).then(function(buf) {
+    var hash = Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+    var url = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/config/pin.json';
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.onload = function() {
+      var storedHash = null;
+      if (xhr.status === 200) { try { storedHash = JSON.parse(xhr.responseText); } catch(e) {} }
+      // Fallback: hash fallback PINu
+      var pinOk = storedHash ? (hash === storedHash) : false;
+      if (!pinOk && !storedHash) {
+        // Firebase ještě nemá hash — porovnej s fallback hashem 8417
+        var fb = 'b7a56873cd771f2c446d369b649430854f1f96ee906fa419c2032b59e28a5843';
+        pinOk = (hash === fb);
+      }
+      if (pinOk) {
+        document.getElementById('pin-screen').classList.remove('active');
+        if (_gateAuth && _gateAuth.currentUser) { unlockPanel(_gateAuth.currentUser); }
+        else { var g=document.getElementById('panel-gate'); if(g){g.style.display='flex';g.classList.remove('hidden');} }
+      } else {
+        document.getElementById('pin-err').textContent = '✗ ŠPATNÝ PIN';
+        _pin = ''; updatePinDots();
+        setTimeout(function(){ document.getElementById('pin-err').textContent=''; }, 1500);
+      }
+    };
+    xhr.onerror = function() {
+      // Offline fallback
+      var fb = 'b7a56873cd771f2c446d369b649430854f1f96ee906fa419c2032b59e28a5843';
+      if (hash === fb) {
+        document.getElementById('pin-screen').classList.remove('active');
+        if (_gateAuth && _gateAuth.currentUser) { unlockPanel(_gateAuth.currentUser); }
+        else { var g=document.getElementById('panel-gate'); if(g){g.style.display='flex';g.classList.remove('hidden');} }
+      } else {
+        document.getElementById('pin-err').textContent = '✗ ŠPATNÝ PIN';
+        _pin = ''; updatePinDots();
+        setTimeout(function(){ document.getElementById('pin-err').textContent=''; }, 1500);
+      }
+    };
+    xhr.send();
+  });
 }
 function closeIntro() {
   var intro = document.getElementById('intro-screen');
   if (!intro) return;
   intro.classList.add('hidden');
-  setTimeout(function() { intro.style.display = 'none'; }, 650);
+  setTimeout(function() {
+    intro.style.display = 'none';
+    document.getElementById('pin-screen').classList.add('active');
+  }, 650);
 }
-// Skrýt gate při startu — zobrazí se až po kliknutí na intro
+// Skrýt gate a pin při startu
 (function() {
   var gate = document.getElementById('panel-gate');
   if (gate) { gate.style.display = 'none'; }
-  var intro = document.getElementById('intro-screen');
-  if (intro) {
-    intro.addEventListener('click', function() {
-      closeIntro();
-      // Pokud je user již přihlášen — přeskočit gate
-      if (_gateAuth && _gateAuth.currentUser) {
-        unlockPanel(_gateAuth.currentUser);
-      } else {
-        var g = document.getElementById('panel-gate');
-        if (g) { g.style.display = 'flex'; g.classList.remove('hidden'); }
-      }
-    }, { once: true });
-  }
 })();
 function lockPanel() {
   try{localStorage.removeItem('kladyx_rp');sessionStorage.removeItem('kladyx_rp');}catch(e){}
@@ -20748,6 +20840,64 @@ window.addEventListener('load', function() {
   window.scrollTo(0, 1);
   setTimeout(function() { window.scrollTo(0, 0); }, 50);
 });
+</script>
+
+<!-- PIN CHANGE MODAL -->
+<div id="pin-change-modal" style="display:none;position:fixed;inset:0;z-index:200000;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
+  <div style="background:#0a1025;border:1px solid rgba(0,245,255,0.3);border-radius:10px;padding:28px 24px;width:280px;text-align:center;">
+    <div style="font-family:'Courier New',monospace;font-size:0.7rem;letter-spacing:3px;color:#00f5ff;margin-bottom:16px;">ZMĚNIT PIN</div>
+    <input id="pin-new-input" type="password" inputmode="numeric" maxlength="4" placeholder="Nový 4-místný PIN" style="width:100%;background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.3);color:#fff;padding:10px;border-radius:4px;font-size:1.2rem;letter-spacing:6px;text-align:center;margin-bottom:12px;">
+    <div id="pin-modal-status" style="font-size:0.65rem;min-height:1.2em;margin-bottom:12px;"></div>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button onclick="savePinFromPanel()" style="font-family:'Courier New',monospace;font-size:0.6rem;padding:8px 16px;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.4);color:#00ff88;border-radius:4px;cursor:pointer;">💾 ULOŽIT</button>
+      <button onclick="closePinModal()" style="font-family:'Courier New',monospace;font-size:0.6rem;padding:8px 16px;background:rgba(255,60,60,0.1);border:1px solid rgba(255,60,60,0.3);color:#ff6666;border-radius:4px;cursor:pointer;">✕ ZRUŠIT</button>
+    </div>
+  </div>
+</div>
+<script>
+function openPinModal() {
+  var m = document.getElementById('pin-change-modal');
+  m.style.display = 'flex';
+  document.getElementById('pin-new-input').value = '';
+  document.getElementById('pin-modal-status').textContent = '';
+}
+function closePinModal() {
+  document.getElementById('pin-change-modal').style.display = 'none';
+}
+function savePinFromPanel() {
+  var pin = document.getElementById('pin-new-input').value.trim();
+  var st = document.getElementById('pin-modal-status');
+  if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
+    st.style.color = '#ff4444'; st.textContent = '✗ PIN musí mít 4 číslice'; return;
+  }
+  if (!_gateAuth || !_gateAuth.currentUser) {
+    st.style.color = '#ff4444'; st.textContent = '✗ Nejsi přihlášen'; return;
+  }
+  st.style.color = '#aaa'; st.textContent = 'Ukládám...';
+  var enc = new TextEncoder();
+  crypto.subtle.digest('SHA-256', enc.encode(pin)).then(function(buf) {
+    var hash = Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+    _gateAuth.currentUser.getIdToken().then(function(token) {
+      var url = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/config/pin.json?auth=' + token;
+      var xhr = new XMLHttpRequest();
+      xhr.open('PUT', url);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          st.style.color = '#00ff88'; st.textContent = '✓ PIN uložen';
+          document.getElementById('pin-new-input').value = '';
+          setTimeout(closePinModal, 1500);
+        } else {
+          st.style.color = '#ff4444'; st.textContent = '✗ Chyba: ' + xhr.status;
+        }
+      };
+      xhr.onerror = function() { st.style.color='#ff4444'; st.textContent='✗ Chyba sítě'; };
+      xhr.send(JSON.stringify(hash));
+    });
+  });
+}
+// Zobrazit PIN tlačítko po přihlášení
+var _origUnlock = window.unlockPanel;
 </script>
 </body>
 </html>
