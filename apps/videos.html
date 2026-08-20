@@ -22,8 +22,8 @@ h1{font-size:1rem;color:#00f5ff;letter-spacing:2px;text-transform:uppercase;}
 #add-btn:active{transform:scale(0.98);}
 .vcard{background:linear-gradient(135deg,#0d1530,#0a1025);border:1px solid rgba(0,245,255,0.15);border-radius:8px;margin-bottom:10px;overflow:hidden;display:flex;flex-direction:column;gap:0;padding:0;animation:cardIn .3s ease-out;}
 .vcard-top{display:flex;gap:10px;}
-.vembed{display:none;width:100%;aspect-ratio:16/9;}
-.vembed iframe{width:100%;height:100%;border:none;display:block;}
+.vembed{display:none;width:100%;position:relative;padding-bottom:56.25%;height:0;}
+.vembed iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:block;}
 .vplay-active{background:rgba(255,60,60,0.25);border:1px solid rgba(255,60,60,0.5);color:#ff6666;}
 @keyframes cardIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 .vthumb{width:100px;min-height:70px;flex-shrink:0;background:#080c18;position:relative;overflow:hidden;}
