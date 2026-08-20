@@ -13,6 +13,8 @@ h1{font-size:1rem;color:#00f5ff;letter-spacing:2px;text-transform:uppercase;}
 @keyframes reelSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 .sync-dot{width:8px;height:8px;border-radius:50%;background:#00ff88;box-shadow:0 0 6px #00ff88;animation:syncPulse 2s ease-in-out infinite;}
 @keyframes syncPulse{0%,100%{opacity:1;box-shadow:0 0 6px #00ff88;}50%{opacity:.4;box-shadow:none;}}
+.brand{font-size:0.55rem;color:rgba(0,245,255,0.35);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Segoe UI',sans-serif;}
+.connected-label{font-size:0.55rem;color:#00ff88;letter-spacing:1px;font-family:'Segoe UI',sans-serif;}
 .counter{font-size:0.65rem;color:rgba(0,245,255,0.5);margin-bottom:10px;letter-spacing:1px;}
 #add-form{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
 #add-form input{background:#0d1530;border:1px solid rgba(0,245,255,0.35);color:#cce5ff;padding:7px 10px;border-radius:4px;font-size:0.8rem;outline:none;transition:border-color .3s;}
@@ -44,9 +46,11 @@ h1{font-size:1rem;color:#00f5ff;letter-spacing:2px;text-transform:uppercase;}
 </style>
 </head>
 <body>
+<div class="brand">Kladyxland multifunkční panel inc.</div>
 <div class="header">
   <span class="film-reel">🎞</span><h1>Videos</h1>
   <span class="sync-dot" id="sync-dot" title="Synchronizováno"></span>
+  <span class="connected-label" id="connected-label">CONNECTED</span>
 </div>
 <div class="counter" id="counter"></div>
 <div id="status"></div>
@@ -72,6 +76,8 @@ function syncOk(){
   dot.style.background = '#00ff88';
   dot.style.boxShadow = '0 0 6px #00ff88';
   dot.title = 'Synchronizováno';
+  var lbl = document.getElementById('connected-label');
+  if(lbl){lbl.style.display='inline';lbl.textContent='CONNECTED';lbl.style.color='#00ff88';}
 }
 
 function syncErr(){
@@ -79,6 +85,8 @@ function syncErr(){
   dot.style.background = '#ff4444';
   dot.style.boxShadow = '0 0 6px #ff4444';
   dot.title = 'Chyba spojení';
+  var lbl = document.getElementById('connected-label');
+  if(lbl){lbl.textContent='ERROR';lbl.style.color='#ff4444';}
 }
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
