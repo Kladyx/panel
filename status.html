@@ -43,7 +43,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v5.2St</div>
+<div class="sub">KLADYXLAND · v5.3St</div>
 
 <div class="section">
   <div class="sec-title">🔥 Firebase (základ všech DB appek)</div>
@@ -57,6 +57,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
     <div style="flex:1"><div class="name">📂 Právě otevřeno</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">aktivní appka v panelu</div></div>
     <div class="st ok" id="s-openapp">…</div>
   </div>
+  <div id="app-history" style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;margin-top:5px;overflow:hidden;min-height:0"></div>
 </div>
 
 <div class="section">
@@ -225,9 +226,32 @@ function checkActiveApp() {
   var d=document.getElementById('d-openapp');
   var s=document.getElementById('s-openapp');
   var i=document.getElementById('i-openapp');
+  var h=document.getElementById('app-history');
   if(!d||!s||!i) return;
-  d.className='dot local'; s.className='st local'; i.className='item local';
-  s.textContent='Status Checker';
+  try {
+    var hist=window.parent.appHistory;
+    if(hist && hist.length>0){
+      d.className='dot local'; s.className='st local'; i.className='item local';
+      s.textContent=hist[0].label;
+      if(h){
+        var rows='';
+        for(var x=1;x<hist.length;x++){
+          rows+='<div style="display:flex;justify-content:space-between;padding:4px 10px;font-size:.65rem;color:rgba(255,255,255,.35);border-top:1px solid rgba(255,255,255,.05);">'
+            +'<span>'+hist[x].label+'</span>'
+            +'<span style="color:rgba(255,255,255,.2)">'+hist[x].time+'</span>'
+            +'</div>';
+        }
+        h.innerHTML=rows;
+      }
+    } else {
+      d.className='dot local'; s.className='st local'; i.className='item local';
+      s.textContent='Status Checker';
+      if(h) h.innerHTML='';
+    }
+  } catch(e){
+    d.className='dot local'; s.className='st local'; i.className='item local';
+    s.textContent='Status Checker';
+  }
 }
 
 // ── no-cors ping (radio, external pages) ──
