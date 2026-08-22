@@ -132,12 +132,29 @@ body{background:radial-gradient(circle at 20% 0%,rgba(52,211,153,0.08),transpare
 .wm-sync.ok{color:#34d399;border-color:rgba(52,211,153,0.3);}
 .wm-sync.err{color:#f87171;border-color:rgba(248,113,113,0.3);}
 .wm-sync.saving{color:#facc15;border-color:rgba(250,204,21,0.3);}
+#wm-login-overlay{position:fixed;inset:0;background:#0a0a1a;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:18px;}
+#wm-login-overlay .wm-logo{font-size:2.5rem;}
+#wm-login-overlay .wm-title{font-size:1.1rem;letter-spacing:3px;color:#34d399;font-family:'Courier New',monospace;}
+#wm-login-overlay .wm-sub{font-size:.7rem;color:rgba(255,255,255,.3);letter-spacing:1px;}
+#wm-login-btn{display:flex;align-items:center;gap:10px;background:#fff;color:#222;border:none;border-radius:8px;padding:12px 22px;font-size:.9rem;font-weight:600;cursor:pointer;margin-top:8px;}
+#wm-login-btn img{width:20px;height:20px;}
+#wm-login-err{font-size:.7rem;color:#f87171;min-height:1.2rem;}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 </head>
 <body>
+<div id="wm-login-overlay">
+  <div class="wm-logo">🇬🇧</div>
+  <div class="wm-title">WORDMASTER</div>
+  <div class="wm-sub">KLADYXLAND · Přihlášení</div>
+  <button id="wm-login-btn" onclick="wmGoogleLogin()">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
+    Přihlásit přes Google
+  </button>
+  <div id="wm-login-err"></div>
+</div>
 <div class="topbar">
   <div class="logo">🇬🇧 WordMaster</div>
   <div class="prog-wrap">
@@ -3354,6 +3371,7 @@ var CATS={
 var _wmDb=null;
 var _wmRef=null;
 var _wmReady=false;
+var _wmDb=null;
 var _wmFbCfg={
   apiKey:"AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",
   authDomain:"kladyxland.firebaseapp.com",
@@ -3363,33 +3381,49 @@ var _wmFbCfg={
   messagingSenderId:"178078059030",
   appId:"1:178078059030:web:8d8a0271b23a7aca2b4337"
 };
-(function(){
-  try{
-    // Použít gate-app z parent Panelu (stejně jako platby)
-    var app=parent.firebase.app('gate-app');
-    _wmDb=app.database();
-  }catch(e){
-    // Fallback: standalone mimo Panel
-    try{
-      if(!firebase.apps.length)firebase.initializeApp(_wmFbCfg);
-      firebase.auth().signInAnonymously().catch(function(){});
-      _wmDb=firebase.database();
-    }catch(e2){console.warn('WM FB:',e2);_wmLocalLoad();return;}
+
+// Firebase init
+try {
+  if(!firebase.apps.length) firebase.initializeApp(_wmFbCfg);
+  _wmDb = firebase.database();
+} catch(e) { console.warn('WM FB init:', e); }
+
+function wmGoogleLogin() {
+  var btn = document.getElementById('wm-login-btn');
+  var err = document.getElementById('wm-login-err');
+  if(btn) btn.disabled = true;
+  if(err) err.textContent = '';
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider).catch(function(e) {
+    if(btn) btn.disabled = false;
+    if(err) err.textContent = 'Chyba: ' + e.message;
+  });
+}
+
+firebase.auth().onAuthStateChanged(function(user) {
+  var overlay = document.getElementById('wm-login-overlay');
+  if(!user) {
+    if(overlay) overlay.style.display = 'flex';
+    return;
   }
-  _wmRef=_wmDb.ref('wordmaster/data');
-  // Real-time listener - reaguje okamžitě na změny
-  var _first=true;
-  var _t=setTimeout(function(){if(_first){_first=false;_wmLocalLoad();}},5000);
-  _wmRef.on('value',function(snap){
-    var d=snap.val()||{};
+  if(overlay) overlay.style.display = 'none';
+  // Načti data z Firebase
+  _wmRef = _wmDb.ref('wordmaster/data');
+  var _first = true;
+  var _t = setTimeout(function(){ if(_first){ _first=false; _wmLocalLoad(); } }, 5000);
+  _wmRef.on('value', function(snap) {
+    var d = snap.val() || {};
     clearTimeout(_t);
-    try{learned=JSON.parse(d.learned||'[]');}catch(e){learned=[];}
-    try{speechStats=JSON.parse(d.speech_stats||'{}');}catch(e){speechStats={};}
-    _wmReady=true;_first=false;
-    buildCats();renderCard();updateProg();
-    _wmSyncDot('ok','☁ Sync ✓');
-  },function(err){console.warn('WM listener:',err);if(_first){_first=false;_wmLocalLoad();}});
-})();
+    try{ learned = JSON.parse(d.learned || '[]'); } catch(e){ learned = []; }
+    try{ speechStats = JSON.parse(d.speech_stats || '{}'); } catch(e){ speechStats = {}; }
+    _wmReady = true; _first = false;
+    buildCats(); renderCard(); updateProg();
+    _wmSyncDot('ok', '☁ Sync ✓');
+  }, function(err) {
+    console.warn('WM listener:', err);
+    if(_first){ _first = false; _wmLocalLoad(); }
+  });
+});
 function _wmLocalLoad(){
   try{var s=localStorage.getItem('wm_learned');if(s)learned=JSON.parse(s);}catch(e){}
   try{var ss=localStorage.getItem('wm_speech_stats');if(ss)speechStats=JSON.parse(ss);}catch(e){}
