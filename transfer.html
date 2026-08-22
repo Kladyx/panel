@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v4.0Kl</title>
+<title>KladyxTransfer v4.1Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v4.0Kl • Firebase + GitHub + PC Historie</div>
+  <div class="version">v4.1Kl • Firebase + GitHub + PC Historie</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -281,6 +281,14 @@
     </div>
 
     <div id="piSentList" style="margin-top:12px;"></div>
+
+    <div class="pc-history-wrap" id="piHistoryWrap">
+      <div class="pc-history-title">🍓 Poslední odeslaná na Pi4</div>
+      <div id="piHistoryList"></div>
+      <div class="pc-history-clear">
+        <button class="pc-history-clear-btn" onclick="clearPiHistory()">Vymazat historii</button>
+      </div>
+    </div>
   </div>
 
   <div class="box" style="margin-top:20px">
@@ -297,6 +305,14 @@
     </div>
 
     <div class="status" id="statusToMobile"></div>
+
+    <div class="pc-history-wrap" id="mobileHistoryWrap">
+      <div class="pc-history-title">📥 Poslední odeslaná na mobil</div>
+      <div id="mobileHistoryList"></div>
+      <div class="pc-history-clear">
+        <button class="pc-history-clear-btn" onclick="clearMobileHistory()">Vymazat historii</button>
+      </div>
+    </div>
 
     <div class="queue-wrap" id="mobileQueueWrap">
       <div class="queue-title">📥 Soubory z PC ke stažení</div>
@@ -395,6 +411,14 @@
 
     <div class="status" id="statusDl"></div>
     <div class="status" id="statusDlAll" style="font-size:.7rem;color:rgba(0,255,100,.6);"></div>
+
+    <div class="pc-history-wrap" id="dlHistoryWrap">
+      <div class="pc-history-title">⬇️ Poslední stažené z GitHubu</div>
+      <div id="dlHistoryList"></div>
+      <div class="pc-history-clear">
+        <button class="pc-history-clear-btn" onclick="clearDlHistory()">Vymazat historii</button>
+      </div>
+    </div>
   </div>
 
   <div class="box" style="margin-top:20px">
@@ -777,6 +801,7 @@ function sendFileToMobile() {
       if (xhr.status >= 200 && xhr.status < 300) {
         status.textContent = '✅ Odesláno! Čeká na stažení mobilem.';
         playDing();
+        addMobileHistoryItem(selectedFileToMobile.name);
       } else {
         status.textContent = '❌ Chyba (' + xhr.status + '): ' + xhr.responseText;
       }
@@ -865,6 +890,7 @@ function addPiSentItem(name) {
   if (hist.length > 20) hist = hist.slice(0, 20);
   store.setItem('pi_sent', JSON.stringify(hist));
   renderPiSent();
+  addPiHistoryItem(name);
 }
 
 function renderPiSent() {
@@ -904,6 +930,107 @@ function deletePiFile(idx, name) {
 }
 
 renderPiSent();
+
+function addPiHistoryItem(filename) {
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('pi_history') || '[]'); } catch(e) {}
+  var now = new Date();
+  var ts = now.getDate() + '.' + (now.getMonth()+1) + '. ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  hist.unshift({ file: filename, ts: ts });
+  if (hist.length > 30) hist = hist.slice(0, 30);
+  store.setItem('pi_history', JSON.stringify(hist));
+  renderPiHistory();
+}
+
+function renderPiHistory() {
+  var el = document.getElementById('piHistoryList');
+  var wrap = document.getElementById('piHistoryWrap');
+  if (!el || !wrap) return;
+  var hist = [];
+  try { hist = JSON.parse(getStorage().getItem('pi_history') || '[]'); } catch(e) {}
+  if (hist.length === 0) { el.innerHTML = '<div class="pc-history-empty">Zatím žádné odeslání</div>'; wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  var html = '';
+  for (var i = 0; i < hist.length; i++) {
+    var h = hist[i];
+    html += '<div class="pc-history-item">';
+    html += '<div class="pc-history-dot" style="background:#00ccff;box-shadow:0 0 6px #00ccff"></div>';
+    html += '<div class="pc-history-name">' + escapeHtml(h.file) + '</div>';
+    html += '<div style="flex-shrink:0;display:flex;gap:8px;align-items:center;">';
+    html += '<span class="pc-history-meta">' + h.ts + '</span>';
+    html += '<span onclick="deletePiHistoryItem(' + i + ')" style="cursor:pointer;font-size:.85rem;color:#ff4444;padding:2px 6px;">✕</span>';
+    html += '</div></div>';
+  }
+  el.innerHTML = html;
+}
+
+function deletePiHistoryItem(idx) {
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('pi_history') || '[]'); } catch(e) {}
+  hist.splice(idx, 1);
+  store.setItem('pi_history', JSON.stringify(hist));
+  renderPiHistory();
+}
+
+function clearPiHistory() {
+  getStorage().removeItem('pi_history');
+  renderPiHistory();
+}
+
+renderPiHistory();
+
+// ─── Mobile Sent History ──────────────────────────────
+function addMobileHistoryItem(filename) {
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('mobile_history') || '[]'); } catch(e) {}
+  var now = new Date();
+  var ts = now.getDate() + '.' + (now.getMonth()+1) + '. ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  hist.unshift({ file: filename, ts: ts });
+  if (hist.length > 30) hist = hist.slice(0, 30);
+  store.setItem('mobile_history', JSON.stringify(hist));
+  renderMobileHistory();
+}
+
+function renderMobileHistory() {
+  var el = document.getElementById('mobileHistoryList');
+  var wrap = document.getElementById('mobileHistoryWrap');
+  if (!el || !wrap) return;
+  var hist = [];
+  try { hist = JSON.parse(getStorage().getItem('mobile_history') || '[]'); } catch(e) {}
+  if (hist.length === 0) { el.innerHTML = '<div class="pc-history-empty">Zatím žádné odeslání</div>'; wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  var html = '';
+  for (var i = 0; i < hist.length; i++) {
+    var h = hist[i];
+    html += '<div class="pc-history-item">';
+    html += '<div class="pc-history-dot" style="background:#aa00ff;box-shadow:0 0 6px #aa00ff"></div>';
+    html += '<div class="pc-history-name">' + escapeHtml(h.file) + '</div>';
+    html += '<div style="flex-shrink:0;display:flex;gap:8px;align-items:center;">';
+    html += '<span class="pc-history-meta">' + h.ts + '</span>';
+    html += '<span onclick="deleteMobileHistoryItem(' + i + ')" style="cursor:pointer;font-size:.85rem;color:#ff4444;padding:2px 6px;">✕</span>';
+    html += '</div></div>';
+  }
+  el.innerHTML = html;
+}
+
+function deleteMobileHistoryItem(idx) {
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('mobile_history') || '[]'); } catch(e) {}
+  hist.splice(idx, 1);
+  store.setItem('mobile_history', JSON.stringify(hist));
+  renderMobileHistory();
+}
+
+function clearMobileHistory() {
+  getStorage().removeItem('mobile_history');
+  renderMobileHistory();
+}
+
+renderMobileHistory();
 
 // ─── GitHub Upload ──────────────────────────────────
 var GH_OWNER = 'kladyx';
@@ -1188,7 +1315,7 @@ function deleteGhHistoryItem(idx) {
 
 renderGhHistory();
 
-// ─── PC Historie (v4.0Kl) ────────────────────────────
+// ─── PC Historie (v4.1Kl) ────────────────────────────
 function addPcHistoryItem(filename) {
   var store = getStorage();
   var hist = [];
@@ -1270,6 +1397,7 @@ function downloadFromGithub() {
       status.className = 'status done';
       playDing();
       addGhHistoryItem('download', repo + '/' + file);
+      addDlHistoryItem(repo + '/' + file);
     } else {
       status.textContent = '❌ Chyba ' + xhr.status;
       status.className = 'status';
@@ -1324,6 +1452,57 @@ function downloadAllFromGithub() {
   }
   dlNext(0);
 }
+
+// ─── GitHub Download History ──────────────────────────
+function addDlHistoryItem(filename) {
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('dl_history') || '[]'); } catch(e) {}
+  var now = new Date();
+  var ts = now.getDate() + '.' + (now.getMonth()+1) + '. ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  hist.unshift({ file: filename, ts: ts });
+  if (hist.length > 30) hist = hist.slice(0, 30);
+  store.setItem('dl_history', JSON.stringify(hist));
+  renderDlHistory();
+}
+
+function renderDlHistory() {
+  var el = document.getElementById('dlHistoryList');
+  var wrap = document.getElementById('dlHistoryWrap');
+  if (!el || !wrap) return;
+  var hist = [];
+  try { hist = JSON.parse(getStorage().getItem('dl_history') || '[]'); } catch(e) {}
+  if (hist.length === 0) { el.innerHTML = '<div class="pc-history-empty">Zatím žádné stažení</div>'; wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  var html = '';
+  for (var i = 0; i < hist.length; i++) {
+    var h = hist[i];
+    html += '<div class="pc-history-item">';
+    html += '<div class="pc-history-dot" style="background:#00ff88;box-shadow:0 0 6px #00ff88"></div>';
+    html += '<div class="pc-history-name">' + escapeHtml(h.file) + '</div>';
+    html += '<div style="flex-shrink:0;display:flex;gap:8px;align-items:center;">';
+    html += '<span class="pc-history-meta">' + h.ts + '</span>';
+    html += '<span onclick="deleteDlHistoryItem(' + i + ')" style="cursor:pointer;font-size:.85rem;color:#ff4444;padding:2px 6px;">✕</span>';
+    html += '</div></div>';
+  }
+  el.innerHTML = html;
+}
+
+function deleteDlHistoryItem(idx) {
+  var store = getStorage();
+  var hist = [];
+  try { hist = JSON.parse(store.getItem('dl_history') || '[]'); } catch(e) {}
+  hist.splice(idx, 1);
+  store.setItem('dl_history', JSON.stringify(hist));
+  renderDlHistory();
+}
+
+function clearDlHistory() {
+  getStorage().removeItem('dl_history');
+  renderDlHistory();
+}
+
+renderDlHistory();
 
 // ─── Načti čekající soubory Mobil→PC po refreshi ────
 function loadPendingQueue() {
