@@ -43,7 +43,23 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v5.3St</div>
+<div class="sub">KLADYXLAND · v5.4St</div>
+
+<div class="section">
+  <div class="sec-title">🌐 Weby</div>
+  <div class="grid">
+    <div class="item checking" id="i-web-kladyxland">
+      <div class="dot checking" id="d-web-kladyxland"></div>
+      <div style="flex:1"><div class="name">🏠 kladyxland.cz</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">hlavní web</div></div>
+      <div class="st checking" id="s-web-kladyxland">…</div>
+    </div>
+    <div class="item checking" id="i-web-panel">
+      <div class="dot checking" id="d-web-panel"></div>
+      <div style="flex:1"><div class="name">🎛 Panel</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">multifunkční panel</div></div>
+      <div class="st checking" id="s-web-panel">…</div>
+    </div>
+  </div>
+</div>
 
 <div class="section">
   <div class="sec-title">🔥 Firebase (základ všech DB appek)</div>
@@ -363,7 +379,7 @@ function checkOBS() {
 }
 
 // ── RUN ALL ──
-var ALL_IDS=['firebase','pocasi','mixcloud','reader','cotoje','kladyxamp','speedtest','transfer','kladyxhome','pimonitor','equalizer','prekladac','italstina','songup','speakup','mictest','scripty','web','repo','kiss98','blanik','krokodyl','rcity','radio1','impuls','orion','radiocas','signal','intense','funkstar','afc','dancecz','p115','pi4','obs'];
+var ALL_IDS=['web-kladyxland','web-panel','firebase','pocasi','mixcloud','reader','cotoje','kladyxamp','speedtest','transfer','kladyxhome','pimonitor','equalizer','prekladac','italstina','songup','speakup','mictest','scripty','web','repo','kiss98','blanik','krokodyl','rcity','radio1','impuls','orion','radiocas','signal','intense','funkstar','afc','dancecz','p115','pi4','obs'];
 
 function runAll() {
   // Vizuální reset — vše do checking
@@ -375,6 +391,10 @@ function runAll() {
   if(btn){ btn.disabled=true; btn.textContent='↻ Kontroluji…'; }
 
   document.getElementById('last-check').textContent='Kontroluji…';
+
+  // Weby
+  checkNoCors('web-kladyxland','https://kladyx.github.io/kladyxland/');
+  checkNoCors('web-panel','https://kladyx.github.io/panel/');
 
   // Firebase DB dostupnost + aktivní apka
   checkFirebase();
