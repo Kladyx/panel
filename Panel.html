@@ -298,7 +298,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.0.0PlPro 2026/8 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.0.1PlPro 2026/8 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -15922,6 +15922,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
     <div class="item checking" id="i-fb-notes"><div class="dot checking" id="d-fb-notes"></div><div class="name">📝 Poznámky</div><div class="st checking" id="s-fb-notes">…</div></div>
     <div class="item checking" id="i-fb-kalendar"><div class="dot checking" id="d-fb-kalendar"></div><div class="name">📅 Kalendář</div><div class="st checking" id="s-fb-kalendar">…</div></div>
     <div class="item checking" id="i-fb-obs"><div class="dot checking" id="d-fb-obs"></div><div class="name">🔴 OBS Status</div><div class="st checking" id="s-fb-obs">…</div></div>
+    <div class="item checking" id="i-fb-videos"><div class="dot checking" id="d-fb-videos"></div><div class="name">🎬 Videos</div><div class="st checking" id="s-fb-videos">…</div></div>
     <div class="item checking" id="i-fb-arch"><div class="dot checking" id="d-fb-arch"></div><div class="name">🏛️ Architektura</div><div class="st checking" id="s-fb-arch">…</div></div>
     <div class="item checking" id="i-fb-zxnext"><div class="dot checking" id="d-fb-zxnext"></div><div class="name">💾 ZXNext</div><div class="st checking" id="s-fb-zxnext">…</div></div>
     <div class="item checking" id="i-fb-wordmaster"><div class="dot checking" id="d-fb-wordmaster"></div><div class="name">🇬🇧 WordMaster</div><div class="st checking" id="s-fb-wordmaster">…</div></div>
@@ -16001,6 +16002,31 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
     <div style="flex:1"><div class="name">🌐 Překladač</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">translate.googleapis.com</div></div>
     <div class="st checking" id="s-prekladac">Checking…</div>
   </div>
+  <div class="item checking" id="i-italstina">
+    <div class="dot checking" id="d-italstina"></div>
+    <div style="flex:1"><div class="name">🇮🇹 ItalMaster</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">kladyx.github.io/panel</div></div>
+    <div class="st checking" id="s-italstina">Checking…</div>
+  </div>
+  <div class="item checking" id="i-songup">
+    <div class="dot checking" id="d-songup"></div>
+    <div style="flex:1"><div class="name">🎵 SongUp</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">kladyx.github.io/panel</div></div>
+    <div class="st checking" id="s-songup">Checking…</div>
+  </div>
+  <div class="item checking" id="i-speakup">
+    <div class="dot checking" id="d-speakup"></div>
+    <div style="flex:1"><div class="name">🎤 SpeakUp</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">kladyx.github.io/panel</div></div>
+    <div class="st checking" id="s-speakup">Checking…</div>
+  </div>
+  <div class="item checking" id="i-mictest">
+    <div class="dot checking" id="d-mictest"></div>
+    <div style="flex:1"><div class="name">🎙️ MicTest</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">kladyx.github.io/panel</div></div>
+    <div class="st checking" id="s-mictest">Checking…</div>
+  </div>
+  <div class="item checking" id="i-scripty">
+    <div class="dot checking" id="d-scripty"></div>
+    <div style="flex:1"><div class="name">⚙️ Scripty</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">kladyx.github.io/panel</div></div>
+    <div class="st checking" id="s-scripty">Checking…</div>
+  </div>
   <div class="item checking" id="i-web">
     <div class="dot checking" id="d-web"></div>
     <div style="flex:1"><div class="name">🏠 Kladyxland Web</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">kladyx.github.io/kladyxland</div></div>
@@ -16060,6 +16086,10 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
     <div class="item local"><div class="dot local"></div><div class="name">🌍 World Time</div><div class="st local">Lokální ✓</div></div>
     <div class="item local"><div class="dot local"></div><div class="name">👤 Moje Apky</div><div class="st local">Lokální ✓</div></div>
     <div class="item local"><div class="dot local"></div><div class="name">🟢 Status</div><div class="st local">Lokální ✓</div></div>
+    <div class="item local"><div class="dot local"></div><div class="name">🎬 Videos</div><div class="st local">Lokální ✓</div></div>
+    <div class="item local"><div class="dot local"></div><div class="name">🏠 Domů</div><div class="st local">Lokální ✓</div></div>
+    <div class="item local"><div class="dot local"></div><div class="name">🔐 Accounts</div><div class="st local">Lokální ✓</div></div>
+    <div class="item local"><div class="dot local"></div><div class="name">🚀 Starter</div><div class="st local">Lokální ✓</div></div>
   </div>
 </div>
 
@@ -16086,7 +16116,7 @@ function setS(id, state, text) {
 }
 
 // ── Firebase DB check → cascade to all FB apps ──
-var FB_APPS = ['odecty','cd','hardware','lp','platby','jidlo','gluco','notes','kalendar','arch','zxnext','wordmaster','password','manualy','zxgames','worldtime','user','scripty','nextsync','kladyxhome','pimonitor','equalizer','multitrack','housetime','residence','speakup','accounts','starter'];
+var FB_APPS = ['odecty','cd','hardware','lp','platby','jidlo','gluco','notes','kalendar','obs','arch','zxnext','wordmaster','password','manualy','zxgames','worldtime','user','scripty','nextsync','kladyxhome','pimonitor','equalizer','multitrack','housetime','residence','speakup','accounts','starter','videos'];
 
 function setFbApps(state) {
   var txt = state==='ok' ? 'Online ✓' : 'Offline ✗';
@@ -16266,6 +16296,11 @@ function runAll() {
   checkNoCors('pimonitor','https://kladyx.github.io/panel/pimonitor.html');
   checkNoCors('equalizer','https://kladyx.github.io/panel/equalizer.html');
   checkNoCors('prekladac','https://translate.googleapis.com/');
+  checkNoCors('italstina','https://kladyx.github.io/panel/italstina.html');
+  checkNoCors('songup','https://kladyx.github.io/panel/songup.html');
+  checkNoCors('speakup','https://kladyx.github.io/panel/speakup.html');
+  checkNoCors('mictest','https://kladyx.github.io/panel/mictest.html');
+  checkNoCors('scripty','https://kladyx.github.io/panel/scripty.html');
   checkNoCors('web','https://kladyx.github.io/kladyxland/');
   checkGitHub();
 
@@ -19805,7 +19840,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v5.0.0PlPro 2026/8 Kladyx</div>
+<div class="ver">v5.0.1PlPro 2026/8 Kladyx</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -20815,7 +20850,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='v5.0.0PlPro 2026/8 Kladyx';
+  var CURRENT='v5.0.1PlPro 2026/8 Kladyx';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
