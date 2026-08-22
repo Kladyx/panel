@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SpeakUp v7.1Kl</title>
+<title>SpeakUp v7.2Kl</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
@@ -405,7 +405,7 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 
 <div class="hdr">
   <h1>SPEAKUP</h1>
-  <span class="ver">v7.1Kl</span>
+  <span class="ver">v7.2Kl</span>
 </div>
 <div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
 
@@ -1958,6 +1958,64 @@ const VOC = [
   {w:'excuse me',cz:'promiňte / s dovolením',ph:'/ɪkˈskjuːz miː/',cat:'Základy'},
   {w:'of course',cz:'samozřejmě',ph:'/əv kɔːrs/',cat:'Základy'},
   {w:'no problem',cz:'žádný problém',ph:'/noʊ ˈprɒbləm/',cat:'Základy'},
+  // Tázací slova
+  {w:'why',cz:'proč',ph:'/waɪ/',cat:'Tázací'},
+  {w:'what',cz:'co / jaký',ph:'/wɒt/',cat:'Tázací'},
+  {w:'where',cz:'kde / kam',ph:'/wɛr/',cat:'Tázací'},
+  {w:'when',cz:'kdy',ph:'/wɛn/',cat:'Tázací'},
+  {w:'who',cz:'kdo',ph:'/huː/',cat:'Tázací'},
+  {w:'how',cz:'jak',ph:'/haʊ/',cat:'Tázací'},
+  {w:'which',cz:'který / která / které',ph:'/wɪtʃ/',cat:'Tázací'},
+  {w:'how much',cz:'kolik (nepočitatelné)',ph:'/haʊ mʌtʃ/',cat:'Tázací'},
+  {w:'how many',cz:'kolik (počitatelné)',ph:'/haʊ ˈmɛni/',cat:'Tázací'},
+  {w:'how long',cz:'jak dlouho',ph:'/haʊ lɒŋ/',cat:'Tázací'},
+  {w:'how often',cz:'jak často',ph:'/haʊ ˈɒfən/',cat:'Tázací'},
+  {w:'how far',cz:'jak daleko',ph:'/haʊ fɑːr/',cat:'Tázací'},
+  {w:'whose',cz:'čí',ph:'/huːz/',cat:'Tázací'},
+  {w:'what time',cz:'v kolik / kdy (čas)',ph:'/wɒt taɪm/',cat:'Tázací'},
+  // Základní slovesa
+  {w:'be',cz:'být',ph:'/biː/',cat:'Základní slovesa'},
+  {w:'have',cz:'mít',ph:'/hæv/',cat:'Základní slovesa'},
+  {w:'do',cz:'dělat',ph:'/duː/',cat:'Základní slovesa'},
+  {w:'go',cz:'jít / jet',ph:'/ɡoʊ/',cat:'Základní slovesa'},
+  {w:'come',cz:'přijít / přijet',ph:'/kʌm/',cat:'Základní slovesa'},
+  {w:'want',cz:'chtít',ph:'/wɒnt/',cat:'Základní slovesa'},
+  {w:'need',cz:'potřebovat',ph:'/niːd/',cat:'Základní slovesa'},
+  {w:'can',cz:'moci / umět',ph:'/kæn/',cat:'Základní slovesa'},
+  {w:'know',cz:'vědět / znát',ph:'/noʊ/',cat:'Základní slovesa'},
+  {w:'think',cz:'myslet / přemýšlet',ph:'/θɪŋk/',cat:'Základní slovesa'},
+  {w:'say',cz:'říct / říci',ph:'/seɪ/',cat:'Základní slovesa'},
+  {w:'see',cz:'vidět',ph:'/siː/',cat:'Základní slovesa'},
+  {w:'get',cz:'dostat / získat',ph:'/ɡɛt/',cat:'Základní slovesa'},
+  {w:'make',cz:'udělat / vyrobit',ph:'/meɪk/',cat:'Základní slovesa'},
+  {w:'give',cz:'dát / dávat',ph:'/ɡɪv/',cat:'Základní slovesa'},
+  {w:'take',cz:'vzít / brát',ph:'/teɪk/',cat:'Základní slovesa'},
+  {w:'use',cz:'použít / používat',ph:'/juːz/',cat:'Základní slovesa'},
+  {w:'find',cz:'najít',ph:'/faɪnd/',cat:'Základní slovesa'},
+  {w:'call',cz:'zavolat / jmenovat se',ph:'/kɔːl/',cat:'Základní slovesa'},
+  {w:'work',cz:'pracovat / fungovat',ph:'/wɜːrk/',cat:'Základní slovesa'},
+  {w:'help',cz:'pomoci / pomáhat',ph:'/hɛlp/',cat:'Základní slovesa'},
+  {w:'try',cz:'zkusit / snažit se',ph:'/traɪ/',cat:'Základní slovesa'},
+  {w:'ask',cz:'zeptat se / požádat',ph:'/æsk/',cat:'Základní slovesa'},
+  {w:'look',cz:'dívat se / vypadat',ph:'/lʊk/',cat:'Základní slovesa'},
+  {w:'seem',cz:'zdát se / vypadat',ph:'/siːm/',cat:'Základní slovesa'},
+  {w:'leave',cz:'odejít / opustit',ph:'/liːv/',cat:'Základní slovesa'},
+  {w:'put',cz:'položit / dát',ph:'/pʊt/',cat:'Základní slovesa'},
+  {w:'buy',cz:'koupit',ph:'/baɪ/',cat:'Základní slovesa'},
+  {w:'pay',cz:'zaplatit',ph:'/peɪ/',cat:'Základní slovesa'},
+  {w:'open',cz:'otevřít',ph:'/ˈoʊpən/',cat:'Základní slovesa'},
+  {w:'close',cz:'zavřít',ph:'/kloʊz/',cat:'Základní slovesa'},
+  {w:'start',cz:'začít / spustit',ph:'/stɑːrt/',cat:'Základní slovesa'},
+  {w:'stop',cz:'zastavit / přestat',ph:'/stɒp/',cat:'Základní slovesa'},
+  {w:'wait',cz:'čekat',ph:'/weɪt/',cat:'Základní slovesa'},
+  {w:'read',cz:'číst',ph:'/riːd/',cat:'Základní slovesa'},
+  {w:'write',cz:'psát',ph:'/raɪt/',cat:'Základní slovesa'},
+  {w:'listen',cz:'poslouchat',ph:'/ˈlɪsən/',cat:'Základní slovesa'},
+  {w:'speak',cz:'mluvit',ph:'/spiːk/',cat:'Základní slovesa'},
+  {w:'tell',cz:'říci / sdělit',ph:'/tɛl/',cat:'Základní slovesa'},
+  {w:'show',cz:'ukázat',ph:'/ʃoʊ/',cat:'Základní slovesa'},
+  {w:'send',cz:'poslat',ph:'/sɛnd/',cat:'Základní slovesa'},
+  {w:'keep',cz:'udržet / nechat si',ph:'/kiːp/',cat:'Základní slovesa'},
   // Čísla
   {w:'one',cz:'jedna',ph:'/wʌn/',cat:'Čísla'},
   {w:'two',cz:'dvě',ph:'/tuː/',cat:'Čísla'},
