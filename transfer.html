@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v4.1Kl</title>
+<title>KladyxTransfer v4.2Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v4.1Kl • Firebase + GitHub + PC Historie</div>
+  <div class="version">v4.2Kl • Firebase + GitHub + PC Historie</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -344,6 +344,7 @@
       <option value="speakup">panel - speakup.html</option>
       <option value="accounts">panel - accounts.html</option>
       <option value="videos">panel - apps/videos.html</option>
+      <option value="status">panel - status.html</option>
       <option value="manifest">panel - manifest.json</option>
     </select>
 
@@ -401,6 +402,7 @@
       <option value="panel/speakup.html">panel - speakup.html</option>
       <option value="panel/accounts.html">panel - accounts.html</option>
       <option value="panel/apps/videos.html">panel - apps/videos.html</option>
+      <option value="panel/status.html">panel - status.html</option>
       <option value="panel/manifest.json">panel - manifest.json</option>
     </select>
 
@@ -1054,6 +1056,7 @@ var GH_TARGETS = {
   speakup: { repo: 'panel', path: 'speakup.html', msg: 'Update panel' },
   accounts: { repo: 'panel', path: 'accounts.html', msg: 'Update panel' },
   videos: { repo: 'panel', path: 'apps/videos.html', msg: 'Update videos' },
+  status: { repo: 'panel', path: 'status.html', msg: 'Update panel' },
   manifest: { repo: 'panel', path: 'manifest.json', msg: 'Update panel' }
 };
 
@@ -1315,7 +1318,7 @@ function deleteGhHistoryItem(idx) {
 
 renderGhHistory();
 
-// ─── PC Historie (v4.1Kl) ────────────────────────────
+// ─── PC Historie (v4.2Kl) ────────────────────────────
 function addPcHistoryItem(filename) {
   var store = getStorage();
   var hist = [];
