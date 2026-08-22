@@ -298,7 +298,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.0.3PlPro 2026/8 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.0.5PlPro 2026/8 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -11779,6 +11779,480 @@ try {
 `;
 
 
+APP_HTML["radio"] = `<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KLADYX RADIO · Rozpoznávání hudby v2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --bg: #050810;
+    --cyan: #00d4ff;
+    --green: #00ff88;
+    --red: #ff4466;
+    --card: #0d1225;
+    --border: rgba(0,212,255,0.15);
+    --muted: #445;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: #fff;
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px 40px;
+    overflow-x: hidden;
+  }
+
+  /* BG efekt */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+    margin-top: 10px;
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: var(--cyan);
+    text-shadow: 0 0 20px rgba(0,212,255,0.5);
+  }
+
+  .logo span { color: #ff6622; }
+
+  .subtitle {
+    font-size: 0.6rem;
+    letter-spacing: 4px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* HLAVNÍ TLAČÍTKO */
+  .listen-btn {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 2px solid var(--cyan);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 10px auto 24px;
+    position: relative;
+    transition: all 0.3s;
+    box-shadow: 0 0 30px rgba(0,212,255,0.15), inset 0 0 30px rgba(0,212,255,0.05);
+  }
+
+  .listen-btn:hover {
+    box-shadow: 0 0 50px rgba(0,212,255,0.3), inset 0 0 30px rgba(0,212,255,0.1);
+    border-color: rgba(0,212,255,0.8);
+  }
+
+  .listen-btn.listening {
+    border-color: var(--red);
+    box-shadow: 0 0 50px rgba(255,68,102,0.4), inset 0 0 30px rgba(255,68,102,0.1);
+    animation: pulse-ring 1.2s ease-in-out infinite;
+  }
+
+  .listen-btn.found {
+    border-color: var(--green);
+    box-shadow: 0 0 50px rgba(0,255,136,0.4), inset 0 0 30px rgba(0,255,136,0.1);
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  /* Vnější kroužky při poslechu */
+  .listen-btn.listening::before,
+  .listen-btn.listening::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255,68,102,0.3);
+    animation: ripple 1.5s ease-out infinite;
+  }
+  .listen-btn.listening::before { width: 200px; height: 200px; animation-delay: 0s; }
+  .listen-btn.listening::after { width: 240px; height: 240px; animation-delay: 0.4s; }
+
+  @keyframes ripple {
+    0% { opacity: 0.6; transform: scale(0.85); }
+    100% { opacity: 0; transform: scale(1.1); }
+  }
+
+  .btn-icon { font-size: 2.8rem; }
+  .btn-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 3px;
+    color: var(--cyan);
+  }
+  .listen-btn.listening .btn-label { color: var(--red); }
+
+  /* STATUS */
+  .status-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 380px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .status-text {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+  }
+
+  .status-text.active { color: var(--cyan); }
+  .status-text.found { color: var(--green); }
+  .status-text.error { color: var(--red); }
+
+  /* VÝSLEDEK */
+  .result-card {
+    background: var(--card);
+    border: 1px solid rgba(0,255,136,0.25);
+    border-radius: 16px;
+    padding: 20px;
+    width: 100%;
+    max-width: 380px;
+    margin-bottom: 20px;
+    display: none;
+    box-shadow: 0 0 30px rgba(0,255,136,0.08);
+  }
+
+  .result-card.show { display: block; }
+
+  .result-label {
+    font-size: 0.55rem;
+    letter-spacing: 3px;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+
+  .result-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .result-artist {
+    font-size: 0.8rem;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+
+  .result-album {
+    font-size: 0.65rem;
+    color: var(--muted);
+  }
+
+  .result-meta {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .meta-badge {
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 0.55rem;
+    letter-spacing: 1px;
+    color: #aaa;
+  }
+
+  /* HISTÓRIA */
+  .history-section {
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .history-title {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--muted);
+  }
+
+  .clear-btn {
+    background: none;
+    border: 1px solid rgba(255,68,102,0.3);
+    color: var(--red);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 0.55rem;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+
+  .history-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .history-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .history-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    min-width: 20px;
+  }
+
+  .history-info { flex: 1; min-width: 0; }
+
+  .history-song {
+    font-size: 0.75rem;
+    color: #ddd;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .history-artist {
+    font-size: 0.6rem;
+    color: var(--cyan);
+    margin-top: 2px;
+  }
+
+  .history-time {
+    font-size: 0.55rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .empty-history {
+    text-align: center;
+    padding: 24px;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+
+  .link-btn {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.6rem;
+    font-family: inherit;
+    letter-spacing: 1px;
+    text-decoration: none;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--cyan);
+    transition: all 0.2s;
+  }
+  .link-btn:hover { background: rgba(0,212,255,0.2); }
+  .link-btn.spotify { background: rgba(30,215,96,0.1); border-color: rgba(30,215,96,0.3); color: #1ed760; }
+  .link-btn.spotify:hover { background: rgba(30,215,96,0.2); }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    width: 100%;
+    max-width: 380px;
+    margin-bottom: 20px;
+    display: none;
+  }
+  .progress-wrap.show { display: block; }
+  .progress-bar {
+    height: 3px;
+    background: rgba(255,68,102,0.2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--red);
+    width: 0%;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 8px rgba(255,68,102,0.6);
+  }
+  .progress-label {
+    font-size: 0.55rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 6px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">KLADYX<span>land</span></div>
+  <div class="subtitle">RADIO · MUSIC RECOGNITION</div>
+</div>
+
+<button class="listen-btn" id="listenBtn" onclick="window.open('https://www.shazam.com','_blank')">
+  <span class="btn-icon" id="btnIcon">🎵</span>
+  <span class="btn-label" id="btnLabel">POSLOUCHAT</span>
+</button>
+
+<div class="status-bar">
+  <div class="status-text">Otevře Shazam · po rozpoznání vlož níže</div>
+</div>
+
+<!-- Pole pro ruční vložení skladby -->
+<div style="width:100%;max-width:380px;margin-bottom:16px;">
+  <input id="inputSong" type="text" placeholder="Název skladby..." style="width:100%;background:#0d1225;border:1px solid rgba(0,212,255,0.3);border-radius:10px 10px 0 0;padding:11px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.8rem;letter-spacing:1px;outline:none;box-sizing:border-box;">
+  <input id="inputArtist" type="text" placeholder="Interpret..." style="width:100%;background:#0d1225;border:1px solid rgba(0,212,255,0.3);border-top:none;border-radius:0 0 10px 10px;padding:11px 14px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.8rem;letter-spacing:1px;outline:none;box-sizing:border-box;">
+  <button onclick="saveToHistory()" style="width:100%;margin-top:8px;padding:11px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.4);border-radius:10px;color:#00d4ff;font-family:'Share Tech Mono',monospace;font-size:0.75rem;letter-spacing:2px;cursor:pointer;">＋ ULOŽIT DO HISTORIE</button>
+</div>
+
+<div class="history-section">
+  <div class="history-header">
+    <div class="history-title">HISTORIE ROZPOZNANÝCH SKLADEB</div>
+    <button class="clear-btn" onclick="clearHistory()">✕ SMAZAT</button>
+  </div>
+  <div class="history-list" id="radioHistoryList">
+    <div class="empty-history">— žádné záznamy —</div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// Shazam API — music recognition (FREE)
+// ═══════════════════════════════════════
+// Historie — ukládáme přes parent.localStorage (iframe sandbox fix)
+function getLS() { try { return window.parent.localStorage; } catch(e) { return localStorage; } }
+var history = [];
+try { history = JSON.parse(getLS().getItem('kladyx_radio_history') || '[]'); } catch(e) {}
+
+renderHistory();
+
+// ─── Uložení do historie ──────────────────────────────
+function saveToHistory() {
+  var song   = document.getElementById('inputSong').value.trim();
+  var artist = document.getElementById('inputArtist').value.trim();
+  if (!song && !artist) return;
+  var entry = {
+    title:  song   || '—',
+    artist: artist || '—',
+    time:   new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
+  };
+  history.unshift(entry);
+  if (history.length > 50) history = history.slice(0, 50);
+  try { getLS().setItem('kladyx_radio_history', JSON.stringify(history)); } catch(e) {}
+  document.getElementById('inputSong').value   = '';
+  document.getElementById('inputArtist').value = '';
+  renderHistory();
+}
+
+// Enter v polích také uloží
+document.getElementById('inputSong').addEventListener('keydown',   function(e){ if(e.key==='Enter') saveToHistory(); });
+document.getElementById('inputArtist').addEventListener('keydown', function(e){ if(e.key==='Enter') saveToHistory(); });
+
+// ─── Kopírování do schránky kliknutím na položku ──────
+function copyItem(title, artist) {
+  var text = title + (artist && artist !== '—' ? ' - ' + artist : '');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function() { showCopyToast(text); });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    showCopyToast(text);
+  }
+}
+
+function showCopyToast(text) {
+  var t = document.getElementById('copyToast');
+  t.textContent = '📋 Zkopírováno: ' + text;
+  t.style.opacity = '1';
+  setTimeout(function(){ t.style.opacity = '0'; }, 2000);
+}
+
+// ─── Vykreslení historie ──────────────────────────────
+function renderHistory() {
+  var list = document.getElementById('radioHistoryList');
+  if (!history.length) {
+    list.innerHTML = '<div class="empty-history">— žádné záznamy —</div>';
+    return;
+  }
+  list.innerHTML = history.map(function(h, i) {
+    return '<div class="history-item" onclick="copyItem(\'' + esc2(h.title) + '\',\'' + esc2(h.artist) + '\')" title="Klikni pro kopírování">'
+      + '<div class="history-num">' + String(i+1).padStart(2,'0') + '</div>'
+      + '<div class="history-info">'
+      +   '<div class="history-song">' + esc(h.title) + '</div>'
+      +   '<div class="history-artist">' + esc(h.artist) + '</div>'
+      + '</div>'
+      + '<div class="history-time">' + h.time + '<br><span style="font-size:0.5rem;color:#00d4ff;">📋</span></div>'
+      + '</div>';
+  }).join('');
+}
+
+function clearHistory() {
+  history = [];
+  try { getLS().removeItem('kladyx_radio_history'); } catch(e) {}
+  renderHistory();
+}
+
+function esc(s)  { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc2(s) { return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+<\/script>
+
+<!-- Toast notifikace -->
+<div id="copyToast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0d1225;border:1px solid rgba(0,212,255,0.4);color:#00d4ff;padding:10px 18px;border-radius:10px;font-size:0.65rem;letter-spacing:1px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999;white-space:nowrap;max-width:90%;text-overflow:ellipsis;overflow:hidden;"></div>
+
+</body>
+</html>
+`;
+
 APP_HTML["zxgames"] = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14806,7 +15280,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v5.0.3PlPro 2026/8 Kladyx</div>
+<div class="ver">v5.0.5PlPro 2026/8 Kladyx</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -14985,7 +15459,11 @@ function openApp(id) {
           var dot = fw && fw.document && fw.document.getElementById('sync-dot');
           if (dot && (dot.textContent.indexOf('Offline') !== -1 || dot.textContent.indexOf('❌') !== -1)) {
             loaded[id] = false;
-            frame.srcdoc = APP_HTML[id];
+            if (APP_HTML[id]) {
+              frame.srcdoc = APP_HTML[id];
+            } else {
+              frame.src = frame.src;
+            }
             loaded[id] = true;
           }
         } catch(e) {}
@@ -15820,7 +16298,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='v5.0.3PlPro 2026/8 Kladyx';
+  var CURRENT='v5.0.5PlPro 2026/8 Kladyx';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
