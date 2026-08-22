@@ -37,12 +37,13 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 .footer{text-align:center;margin-top:16px}
 .btn-r{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);color:#00ff88;padding:8px 22px;border-radius:8px;cursor:pointer;font-family:'Courier New',monospace;font-size:.7rem;letter-spacing:2px;text-transform:uppercase}
 .btn-r:hover{background:rgba(0,255,136,.2)}
+.btn-r:disabled{opacity:.45;cursor:not-allowed}
 .info{font-size:.55rem;color:rgba(255,255,255,.25);margin-top:6px;letter-spacing:1px}
 </style>
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v5.1St</div>
+<div class="sub">KLADYXLAND · v5.2St</div>
 
 <div class="section">
   <div class="sec-title">🔥 Firebase (základ všech DB appek)</div>
@@ -173,7 +174,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </div>
 
 <div class="footer">
-  <button class="btn-r" onclick="runAll()">↻ REFRESH</button>
+  <button class="btn-r" id="btn-refresh" onclick="runAll()">↻ REFRESH</button>
   <div class="info" id="last-check">Spouštím…</div>
 </div>
 
@@ -338,7 +339,17 @@ function checkOBS() {
 }
 
 // ── RUN ALL ──
+var ALL_IDS=['firebase','pocasi','mixcloud','reader','cotoje','kladyxamp','speedtest','transfer','kladyxhome','pimonitor','equalizer','prekladac','italstina','songup','speakup','mictest','scripty','web','repo','kiss98','blanik','krokodyl','rcity','radio1','impuls','orion','radiocas','signal','intense','funkstar','afc','dancecz','p115','pi4','obs'];
+
 function runAll() {
+  // Vizuální reset — vše do checking
+  ALL_IDS.forEach(function(id){ setS(id,'checking','…'); });
+  FB_APPS.forEach(function(id){ setS('fb-'+id,'checking','…'); });
+
+  // Disable tlačítka
+  var btn=document.getElementById('btn-refresh');
+  if(btn){ btn.disabled=true; btn.textContent='↻ Kontroluji…'; }
+
   document.getElementById('last-check').textContent='Kontroluji…';
 
   // Firebase DB dostupnost + aktivní apka
@@ -390,6 +401,8 @@ function runAll() {
   setTimeout(function(){
     var now=new Date();
     document.getElementById('last-check').textContent='Check: '+now.toLocaleTimeString('cs-CZ')+' · Auto: 60s';
+    var btn=document.getElementById('btn-refresh');
+    if(btn){ btn.disabled=false; btn.textContent='↻ REFRESH'; }
   }, 9000);
 }
 
