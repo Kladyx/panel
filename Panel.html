@@ -298,7 +298,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.0.7PlPro 2026/8 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.0.8PlPro 2026/8 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -15285,7 +15285,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v5.0.7PlPro 2026/8 Kladyx</div>
+<div class="ver">v5.0.8PlPro 2026/8 Kladyx</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -15803,11 +15803,39 @@ function updatePinDots() {
     if (dot) dot.classList.toggle('filled', i < _pin.length);
   }
 }
+function _sha256Fallback(str){
+  // Pure JS SHA-256 for HTTP (non-secure) contexts where crypto.subtle is unavailable
+  function rr(n,x){return(x>>>n)|(x<<(32-n));}
+  function ch(x,y,z){return(x&y)^(~x&z);}
+  function maj(x,y,z){return(x&y)^(x&z)^(y&z);}
+  function s0(x){return rr(2,x)^rr(13,x)^rr(22,x);}
+  function s1(x){return rr(6,x)^rr(11,x)^rr(25,x);}
+  function g0(x){return rr(7,x)^rr(18,x)^(x>>>3);}
+  function g1(x){return rr(17,x)^rr(19,x)^(x>>>10);}
+  var K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  var b=[];for(var i=0;i<str.length;i++){var c=str.charCodeAt(i);if(c<128)b.push(c);else if(c<2048){b.push(192|(c>>6));b.push(128|(c&63));}else{b.push(224|(c>>12));b.push(128|((c>>6)&63));b.push(128|(c&63));}}
+  var l=b.length*8;b.push(128);while(b.length%64!==56)b.push(0);
+  b.push(0,0,0,0,(l>>>24)&0xff,(l>>>16)&0xff,(l>>>8)&0xff,l&0xff);
+  var H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  for(var o=0;o<b.length;o+=64){
+    var w=[];for(var j=0;j<16;j++)w[j]=(b[o+j*4]<<24)|(b[o+j*4+1]<<16)|(b[o+j*4+2]<<8)|b[o+j*4+3];
+    for(j=16;j<64;j++)w[j]=(g1(w[j-2])+w[j-7]+g0(w[j-15])+w[j-16])|0;
+    var a=H[0],bb=H[1],cc=H[2],d=H[3],e=H[4],f=H[5],g=H[6],h=H[7];
+    for(j=0;j<64;j++){var t1=(h+s1(e)+ch(e,f,g)+K[j]+w[j])|0;var t2=(s0(a)+maj(a,bb,cc))|0;h=g;g=f;f=e;e=(d+t1)|0;d=cc;cc=bb;bb=a;a=(t1+t2)|0;}
+    H[0]=(H[0]+a)|0;H[1]=(H[1]+bb)|0;H[2]=(H[2]+cc)|0;H[3]=(H[3]+d)|0;H[4]=(H[4]+e)|0;H[5]=(H[5]+f)|0;H[6]=(H[6]+g)|0;H[7]=(H[7]+h)|0;
+  }
+  return H.map(function(v){return('00000000'+((v<0?v+4294967296:v).toString(16))).slice(-8);}).join('');
+}
 function checkPin() {
   var entered = _pin;
-  var enc = new TextEncoder();
-  crypto.subtle.digest('SHA-256', enc.encode(entered)).then(function(buf) {
-    var hash = Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+  function _afterHash(hash) {
     var url = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/config/pin.json';
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url);
@@ -15836,7 +15864,17 @@ function checkPin() {
       setTimeout(function(){ document.getElementById('pin-err').textContent=''; }, 1500);
     };
     xhr.send();
-  });
+  }
+  // Prefer crypto.subtle (HTTPS), fallback to pure JS SHA-256 (HTTP)
+  if (window.crypto && window.crypto.subtle) {
+    var enc = new TextEncoder();
+    crypto.subtle.digest('SHA-256', enc.encode(entered)).then(function(buf) {
+      var hash = Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+      _afterHash(hash);
+    });
+  } else {
+    _afterHash(_sha256Fallback(entered));
+  }
 }
 function closeIntro() {
   var intro = document.getElementById('intro-screen');
@@ -16312,7 +16350,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='v5.0.7PlPro 2026/8 Kladyx';
+  var CURRENT='v5.0.8PlPro 2026/8 Kladyx';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
