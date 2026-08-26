@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v5.3Pi">
-<title>Pi Monitor v5.3Pi</title>
+<meta name="version" content="v5.4Pi">
+<title>Pi Monitor v5.4Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -35,7 +35,10 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .bar-warn{background:linear-gradient(90deg,#ffaa00,#ff6600);}
 .bar-hot{background:linear-gradient(90deg,#ff6600,#ff3c5a);}
 .spark{width:100%;display:block;margin-top:6px;opacity:0.85;}
-.card.temp-warn{border-color:rgba(255,60,90,0.6);box-shadow:0 0 10px rgba(255,60,90,0.25);}
+.card.temp-warn{border-color:rgba(255,60,90,0.6);box-shadow:0 0 10px rgba(255,60,90,0.25);animation:temp-blink 1s ease-in-out infinite;}
+@keyframes temp-blink{0%,100%{opacity:1;}50%{opacity:0.7;}}
+.bar.bar-warm{background:var(--warn);}
+.bar.bar-crit{background:var(--red);animation:temp-blink 1s ease-in-out infinite;}
 .card.temp-warn .val{animation:pulse-red 1.2s infinite;}
 /* UPTIME */
 .uptime{background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.15);border-radius:10px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-around;gap:8px;}
@@ -45,7 +48,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .uptime-val.cons{color:var(--warn);text-shadow:0 0 8px rgba(255,170,0,0.4);}
 .uptime-lbl{font-size:0.45rem;letter-spacing:2px;color:var(--muted);margin-top:2px;}
 /* SERVICES */
-/* ═══ ANIMACE v5.3Pi ══════════════════════════════════ */
+/* ═══ ANIMACE v5.4Pi ══════════════════════════════════ */
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .gear-spin{display:inline-block;animation:spin 1.5s linear infinite;transform-origin:center;font-size:1.2em;color:var(--red);filter:drop-shadow(0 0 6px rgba(255,60,90,0.9));}
 @keyframes scanline{0%{transform:translateX(-200%)}100%{transform:translateX(600%)}}
@@ -114,7 +117,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.3Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.4Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -192,6 +195,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="sec-title">🖥 HARDWARE</div>
   <div class="net-row"><div class="net-lbl">Poslední boot</div><div class="net-val" id="hw-boot">—</div></div>
   <div class="net-row"><div class="net-lbl">CPU frekvence</div><div class="net-val" id="hw-cpumhz">—</div></div>
+  <div class="net-row"><div class="net-lbl">Disk volné</div><div class="net-val" id="hw-diskfree">—</div></div>
   <div class="net-row"><div class="net-lbl">Throttling</div><div class="net-val" id="hw-throttle">—</div></div>
 </div>
 
@@ -413,7 +417,7 @@ function showOffline(fromFirebase){
   document.getElementById('val-uptime').textContent='—';
   var sysEl=document.getElementById('val-sysuptime');
   if(sysEl)sysEl.textContent='—';
-  ['hw-boot','hw-cpumhz','hw-throttle'].forEach(function(id){var el=document.getElementById(id);if(el){el.textContent='—';el.style.color='';}});
+  ['hw-boot','hw-cpumhz','hw-diskfree','hw-throttle'].forEach(function(id){var el=document.getElementById(id);if(el){el.textContent='—';el.style.color='';}});
   // Pi vypnuty - net-rx/tx/proc: pomlcka a odstranit zelenou aktivaci
   ['net-rx','net-tx','net-proc'].forEach(function(id){
     var el=document.getElementById(id);
@@ -470,10 +474,12 @@ function loadStats(){
     tempVal.textContent=temp;
     setBar('bar-temp',parseFloat(temp)/85*100);
     var tempCard=tempVal.closest('.card');
+    var tempBar=document.getElementById('bar-temp');
     if(tempCard){
-      tempCard.className='card'+(parseFloat(temp)>65?' temp-warn':'');
-      if(parseFloat(temp)<=65){tempVal.classList.add('temp-ok-pulse');}
-      else{tempVal.classList.remove('temp-ok-pulse');}
+      var t=parseFloat(temp);
+      if(t>70){tempCard.className='card temp-warn';tempVal.style.color='var(--red)';if(tempBar)tempBar.className='bar bar-crit';}
+      else if(t>60){tempCard.className='card';tempVal.style.color='var(--warn)';if(tempBar)tempBar.className='bar bar-warm';}
+      else{tempCard.className='card';tempVal.style.color='var(--green)';if(tempBar)tempBar.className='bar bar-ok';}
     }
     // Disk
     var disk=Math.round(d.disk_pct||0);
@@ -490,6 +496,14 @@ function loadStats(){
     // CPU frekvence
     var mhzEl=document.getElementById('hw-cpumhz');
     if(mhzEl){mhzEl.textContent=d.cpu_mhz?d.cpu_mhz+' MHz':'—';}
+    // Disk volné (celkem - použito)
+    var dfEl=document.getElementById('hw-diskfree');
+    if(dfEl&&d.disk_pct!==undefined&&d.disk_used_gb!==undefined){
+      var totalGb=d.disk_used_gb/(d.disk_pct/100);
+      var freeGb=(totalGb-d.disk_used_gb).toFixed(1);
+      dfEl.textContent=freeGb+' GB';
+      dfEl.style.color=parseFloat(freeGb)<2?'var(--red)':parseFloat(freeGb)<5?'var(--warn)':'var(--cyan)';
+    }
     // Throttling
     var thrEl=document.getElementById('hw-throttle');
     if(thrEl){
