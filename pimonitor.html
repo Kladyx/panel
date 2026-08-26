@@ -189,6 +189,13 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 </div>
 
 <div class="section">
+  <div class="sec-title">🖥 HARDWARE</div>
+  <div class="net-row"><div class="net-lbl">Poslední boot</div><div class="net-val" id="hw-boot">—</div></div>
+  <div class="net-row"><div class="net-lbl">CPU frekvence</div><div class="net-val" id="hw-cpumhz">—</div></div>
+  <div class="net-row"><div class="net-lbl">Throttling</div><div class="net-val" id="hw-throttle">—</div></div>
+</div>
+
+<div class="section">
   <div class="sec-title">🌐 SÍŤ</div>
   <div class="net-row"><div class="net-lbl">IP adresa</div><div class="net-val" id="net-ip">—</div></div>
   <div class="net-row"><div class="net-lbl">Poslední data</div><div class="net-val" id="net-hb">—</div></div>
@@ -406,6 +413,7 @@ function showOffline(fromFirebase){
   document.getElementById('val-uptime').textContent='—';
   var sysEl=document.getElementById('val-sysuptime');
   if(sysEl)sysEl.textContent='—';
+  ['hw-boot','hw-cpumhz','hw-throttle'].forEach(function(id){var el=document.getElementById(id);if(el){el.textContent='—';el.style.color='';}});
   // Pi vypnuty - net-rx/tx/proc: pomlcka a odstranit zelenou aktivaci
   ['net-rx','net-tx','net-proc'].forEach(function(id){
     var el=document.getElementById(id);
@@ -476,6 +484,19 @@ function loadStats(){
     // Systémový uptime (od bootu) — pokud Pi4 posílá sys_uptime
     var sysEl=document.getElementById('val-sysuptime');
     if(sysEl){sysEl.textContent=d.sys_uptime?fmtUptime(d.sys_uptime):'—';}
+    // Poslední boot — vypočítáno z sys_uptime (žádný extra request)
+    var bootEl=document.getElementById('hw-boot');
+    if(bootEl&&d.sys_uptime){var bootMs=Date.now()-d.sys_uptime*1000;bootEl.textContent=new Date(bootMs).toLocaleString('cs-CZ',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'});}
+    // CPU frekvence
+    var mhzEl=document.getElementById('hw-cpumhz');
+    if(mhzEl){mhzEl.textContent=d.cpu_mhz?d.cpu_mhz+' MHz':'—';}
+    // Throttling
+    var thrEl=document.getElementById('hw-throttle');
+    if(thrEl){
+      if(d.throttled===undefined){thrEl.textContent='—';}
+      else if(d.throttled==='0x0'){thrEl.textContent='OK';thrEl.style.color='var(--green)';}
+      else{thrEl.textContent=d.throttled;thrEl.style.color='var(--red)';}
+    }
     // Spotřeba od začátku provozu (s průměrem CPU% z Historie)
     updateConsumption(d.uptime_sec||0, avgCpuFromHistory);
     // Síť
