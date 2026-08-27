@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v5.11Pi">
-<title>Pi Monitor v5.11Pi</title>
+<meta name="version" content="v5.12Pi">
+<title>Pi Monitor v5.12Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -59,6 +59,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 @keyframes glitch{0%,85%,100%{opacity:1;transform:translateX(0)}86%{opacity:0.7;transform:translateX(-3px);text-shadow:3px 0 8px rgba(255,60,90,0.9)}88%{opacity:1;transform:translateX(2px);text-shadow:-2px 0 8px rgba(0,255,136,0.8)}90%{transform:translateX(0)}}
 @keyframes temp-glow{0%,100%{text-shadow:0 0 6px var(--green)}50%{text-shadow:0 0 22px var(--green),0 0 44px rgba(0,255,136,0.5)}}
 .temp-ok-pulse{animation:temp-glow 2s ease-in-out infinite;}
+@keyframes pulse-blue{0%,100%{opacity:1;text-shadow:0 0 8px rgba(0,212,255,0.7);}50%{opacity:0.5;text-shadow:0 0 2px rgba(0,212,255,0.2);}}
 @keyframes count-glow{0%,100%{text-shadow:0 0 4px var(--warn)}50%{text-shadow:0 0 18px var(--warn),0 0 36px rgba(255,170,0,0.6)}}
 .restart-active{animation:count-glow 1.5s ease-in-out infinite;}
 @keyframes barpulse{0%,100%{opacity:1}50%{opacity:0.3}}
@@ -117,7 +118,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.11Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.12Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -529,13 +530,19 @@ function loadStats(){
         wifiEl.style.color='var(--green)';
         var netsEl=document.getElementById('hw-wifi-nets');
         if(netsEl){
-          netsEl.innerHTML=wifiNets.map(function(n){
+          var sorted=wifiNets.slice().sort(function(a,b){
+            if(a.ssid==='TP-Link')return -1;
+            if(b.ssid==='TP-Link')return 1;
+            return b.dbm-a.dbm;
+          });
+          netsEl.innerHTML=sorted.map(function(n){
             var nb=n.dbm>=-50?'▂▄▆█':n.dbm>=-60?'▂▄▆':n.dbm>=-70?'▂▄':'▂';
-            var active=n.active?'✓ ':'';
-            var col=n.active?'var(--green)':'rgba(255,255,255,0.45)';
-            return '<div style="display:flex;justify-content:space-between;padding:2px 0;font-size:0.58rem;">'+
-              '<span style="color:'+col+';">'+active+n.ssid+'</span>'+
-              '<span style="color:var(--green);">'+nb+' '+n.dbm+' dBm</span>'+
+            var main=n.ssid==='TP-Link';
+            var col=main?'#00d4ff':'rgba(255,255,255,0.45)';
+            var anim=main?'animation:pulse-blue 1.5s infinite;':'';
+            return '<div style="display:flex;justify-content:space-between;padding:2px 0;font-size:0.58rem;'+anim+'">'+
+              '<span style="color:'+col+';'+(main?'font-weight:bold;text-shadow:0 0 8px rgba(0,212,255,0.7);':'')+'">'+n.ssid+'</span>'+
+              '<span style="color:'+col+';">'+nb+' '+n.dbm+' dBm</span>'+
               '</div>';
           }).join('');
         }
