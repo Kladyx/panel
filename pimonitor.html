@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v5.12Pi">
-<title>Pi Monitor v5.12Pi</title>
+<meta name="version" content="v5.13Pi">
+<title>Pi Monitor v5.13Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -118,7 +118,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.12Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.13Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -202,6 +202,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="net-row"><div class="net-lbl">CPU frekvence</div><div class="net-val" id="hw-cpumhz">—</div></div>
   <div class="net-row"><div class="net-lbl">Disk volné</div><div class="net-val" id="hw-diskfree">—</div></div>
   <div class="net-row"><div class="net-lbl">Throttling</div><div class="net-val" id="hw-throttle">—</div></div>
+  <div class="net-row"><div class="net-lbl">Venkovní teplota</div><div class="net-val" id="hw-outdoor-temp">—</div></div>
   <div class="net-row"><div class="net-lbl">WiFi v místnosti</div><div class="net-val" id="hw-wifi">—</div></div>
   <div id="hw-wifi-nets" style="padding:2px 0;"></div>
 </div>
@@ -902,6 +903,34 @@ function checkCloudStatus() {
 }
 checkCloudStatus();
 setInterval(checkCloudStatus, 120000);
+
+// ─── VENKOVNÍ TEPLOTA (OpenWeatherMap) ───────────────────
+function checkOutdoorTemp() {
+  var el = document.getElementById('hw-outdoor-temp');
+  if (!el) return;
+  var KEY = 'cb372882c247779717e8249a690f6be4';
+  var LAT = 49.6285;
+  var LON = 18.1573;
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'https://api.openweathermap.org/data/2.5/weather?lat='+LAT+'&lon='+LON+'&appid='+KEY+'&units=metric&lang=cz');
+  xhr.timeout = 8000;
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      try {
+        var d = JSON.parse(xhr.responseText);
+        var temp = parseFloat(d.main.temp).toFixed(1);
+        var desc = d.weather[0].description;
+        el.textContent = temp + ' °C · ' + desc;
+        el.style.color = 'var(--cyan)';
+      } catch(e) { el.textContent = '—'; }
+    } else { el.textContent = '—'; }
+  };
+  xhr.onerror = function() { el.textContent = 'NEDOSTUPNÉ'; };
+  xhr.ontimeout = function() { el.textContent = 'TIMEOUT'; };
+  xhr.send();
+}
+checkOutdoorTemp();
+setInterval(checkOutdoorTemp, 600000); // každých 10 minut
 
 function clearPrijate() {
   var btn = event.target;
