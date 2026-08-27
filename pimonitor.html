@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v5.15Pi">
-<title>Pi Monitor v5.15Pi</title>
+<meta name="version" content="v5.16Pi">
+<title>Pi Monitor v5.16Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -118,7 +118,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.15Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.16Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -204,6 +204,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="net-row"><div class="net-lbl">Throttling</div><div class="net-val" id="hw-throttle">—</div></div>
   <div class="net-row"><div class="net-lbl">Venkovní teplota</div><div class="net-val" id="hw-outdoor-temp">—</div></div>
   <div class="net-row"><div class="net-lbl">Zařízení v síti</div><div class="net-val" id="hw-arp">—</div></div>
+  <div class="net-row"><div class="net-lbl">SD zapsáno (od bootu)</div><div class="net-val" id="hw-sd">—</div></div>
   <div class="net-row"><div class="net-lbl">WiFi v místnosti</div><div class="net-val" id="hw-wifi">—</div></div>
   <div id="hw-wifi-nets" style="padding:2px 0;"></div>
 </div>
@@ -528,6 +529,16 @@ function loadStats(){
         arpEl.textContent=d.arp_devices+' zařízení';
         arpEl.style.color='var(--cyan)';
       } else {arpEl.textContent='—';arpEl.style.color='';}
+    }
+    // SD karta zapsáno od bootu
+    var sdEl=document.getElementById('hw-sd');
+    if(sdEl){
+      if(d.sd_written_mb!==undefined&&d.sd_written_mb!==null){
+        var mb=d.sd_written_mb;
+        var sdStr=mb>=1024?(mb/1024).toFixed(1)+' GB':mb+' MB';
+        sdEl.textContent=sdStr;
+        sdEl.style.color=mb>5000?'var(--warn)':'var(--cyan)';
+      } else {sdEl.textContent='—';sdEl.style.color='';}
     }
     // WiFi v místnosti
     var wifiEl=document.getElementById('hw-wifi');
