@@ -135,7 +135,7 @@ button{
   <div class="head">
     <div class="gear" id="gear">⚙️</div>
     <div class="title">SCRIPTY</div>
-  <div style="font-size:.38rem;color:#000000;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v3.3</div>
+  <div style="font-size:.38rem;color:#000000;letter-spacing:.15em;margin-top:-6px;margin-bottom:4px;text-align:center;">v3.4</div>
   </div>
   <div style="position:relative;z-index:2;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
     <button onclick="(window.top||window).open('https://console.firebase.google.com/u/1/project/kladyxland/usage','_blank','noopener,noreferrer')" style="display:inline-block;padding:6px 16px;border:1.5px solid rgba(255,165,0,.6);border-radius:8px;background:rgba(255,165,0,.08);color:#ffa500;font-family:'Orbitron',monospace;font-size:.38rem;letter-spacing:.12em;font-weight:700;cursor:pointer;box-shadow:0 0 8px rgba(255,165,0,.2);">
@@ -347,6 +347,20 @@ button{
       {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/tapoDb.json"',d:'Stav DJ Studio P115'},
       {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/tapoDbP100.json"',d:'Stav TV Sharp P100'},
       {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/piStats/services.json"',d:'Stavy sluzeb v piStats'}
+    ]},
+    {s:'WIFI / MONITOR',cmds:[
+      {c:'sudo rfkill unblock wifi && sudo ip link set wlan0 up',d:'Odblokuj WiFi (po restartu)'},
+      {c:'ip link show wlan0',d:'Stav wlan0 interface'},
+      {c:'sudo iwlist wlan0 scan 2>/dev/null | grep -E "ESSID|Signal" | head -20',d:'Skenuj WiFi sítě'},
+      {c:'sudo iwlist wlan0 scan 2>/dev/null | grep -c "ESSID"',d:'Počet viditelných sítí'},
+      {c:'systemctl is-active wifi-unblock.service',d:'Stav wifi-unblock service'},
+      {c:'arp -a | grep -v incomplete | wc -l',d:'Počet zařízení v síti (ARP)'},
+      {c:'arp -a | grep -v incomplete',d:'Seznam zařízení v síti'},
+      {c:'awk \'{print int($7*512/1024/1024) " MB zapsano od bootu"}\' /sys/block/mmcblk0/stat',d:'SD karta - zapsáno od bootu'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/piStats/wifi_nets.json"',d:'WiFi sítě v Firebase'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/piStats/arp_devices.json"',d:'Zařízení v síti v Firebase'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/piStats/sd_written_mb.json"',d:'SD zapsáno v Firebase'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/piStats/wifi_dbm.json"',d:'WiFi dBm v Firebase'}
     ]},
     {s:'TUYA CLOUD',cmds:[
       {c:'cd /home/pi/tuya && python3 -c "import tinytuya;c=tinytuya.Cloud(apiRegion=\'eu\',apiKey=\'xmsau3w4d9ewgw9gjrwr\',apiSecret=\'039a3435e19c43d4853dcb24b8f149f6\');[print(d.get(\'id\'),\'|\',d.get(\'name\')) for d in c.getdevices()]"',d:'Seznam zarizeni + ID'},
