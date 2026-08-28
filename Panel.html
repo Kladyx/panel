@@ -298,7 +298,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.1.0PlPro 2026/8 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.1.1PlPro 2026/8 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -4125,7 +4125,7 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KLADYXLAND – Architektura v2.6.0</title>
+<title>KLADYXLAND – Architektura v2.7.0</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap');
 
@@ -4219,261 +4219,161 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
 <div class="page">
 
   <h1>KLADYXLAND</h1>
-  <div class="subtitle">Architektura systému · v2.6.0</div>
+  <div class="subtitle">Architektura systému · v2.7.0</div>
 
   <!-- STACK -->
   <div class="sh">Tech stack</div>
   <div class="stack">
     <div class="stack-row">
       <div class="stack-box" style="--clr:#00f5ff;">
-        <div class="label">Frontend</div>
-        <div class="val">Jeden index.html · GitHub Pages<br>Vanilla JS · CSS · Firebase SDK 10.12</div>
+        <div class="label">Frontend (Panel)</div>
+        <div class="val">Panel.html · single-file · GitHub Pages<br>Vanilla JS · CSS · Firebase SDK 10.12<br>v5.1.0PlPro · 39 appek embedded + externích</div>
       </div>
       <div class="stack-box" style="--clr:#ff6600;">
-        <div class="label">Hosting</div>
-        <div class="val">GitHub Pages<br>kladyx.github.io</div>
+        <div class="label">Frontend (Web)</div>
+        <div class="val">index.html · GitHub Pages<br>kladyx.github.io · v3.1.6UC</div>
       </div>
     </div>
     <div class="stack-row">
       <div class="stack-box" style="--clr:#fbbf24;">
         <div class="label">Backend / BaaS</div>
-        <div class="val">Firebase (Spark / free tier)<br>Region: europe-west1</div>
+        <div class="val">Firebase (Spark / free tier)<br>Region: europe-west1<br>Limit: 360 MB/den · reset 09:00 středa</div>
       </div>
     </div>
     <div class="stack-row">
       <div class="stack-box" style="--clr:#4ade80;">
         <div class="label">Realtime Database</div>
-        <div class="val">13 uzlů · real-time listeners (onValue)</div>
+        <div class="val">27+ uzlů · real-time listeners + one-time get</div>
       </div>
       <div class="stack-box" style="--clr:#a78bfa;">
         <div class="label">Auth</div>
-        <div class="val">Email/Password<br>1 admin účet</div>
+        <div class="val">Email/Password<br>1 admin účet (Míša)</div>
       </div>
       <div class="stack-box" style="--clr:#f472b6;">
         <div class="label">Storage</div>
-        <div class="val">Galerie upload<br>GIF / MP4 / WebM / img<br>hardware/ · lp/ (s kompresí)</div>
+        <div class="val">Galerie upload<br>GIF / MP4 / WebM / img<br>hardware/ · lp/ · zxnext/</div>
       </div>
     </div>
   </div>
 
-  <!-- FIREBASE NODES -->
-  <div class="sh">Firebase RTDB – 24 uzlů</div>
+  <!-- FIREBASE NODES - WEB -->
+  <div class="sh">Firebase RTDB – Web uzly (24)</div>
   <table class="ntable">
     <thead>
       <tr><th>Uzel</th><th>Účel</th><th>Data</th><th>Read</th><th>Write</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td class="node-name">onair/live</td>
-        <td>Stav vysílání ON AIR</td>
-        <td>boolean</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">onair/stopRequest</td>
-        <td>Stop stream z mobilu → PC</td>
-        <td>boolean</td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">obs_status</td>
-        <td>OBS stav vysílání (streaming, čas)</td>
-        <td>{streaming: bool, updated_at: ts}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">countdown/target</td>
-        <td>Odpočet do dalšího vysílání</td>
-        <td>timestamp (ms)</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">announcements</td>
-        <td>Oznámení na homepage</td>
-        <td>{title, body, type, ts}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">news</td>
-        <td>Novinky / příspěvky</td>
-        <td>{title, body, ts}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">gallery</td>
-        <td>Galerie médií</td>
-        <td>{url, caption, type, ts}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">content</td>
-        <td>Editovatelné texty (intro, HW disclaimer)</td>
-        <td>{intro, hwDisclaimer}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">presence</td>
-        <td>Online návštěvníci (counter)</td>
-        <td>{sessionId: timestamp}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-r">ALL</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">chat</td>
-        <td>Veřejný chat</td>
-        <td>{name, text, ts, admin}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-r">ALL</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">siteOff</td>
-        <td>Kill switch – vypnutí webu</td>
-        <td>boolean</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">grayscale</td>
-        <td>Černobílý režim webu (auto/on/off)</td>
-        <td>null | true | false</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">totalVisitors</td>
-        <td>Celkový počet návštěv (runTransaction)</td>
-        <td>number</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-r">ALL</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">hardwareDb</td>
-        <td>Hardware databáze (Studio Manager)</td>
-        <td>{id_*: {name, brand, cat, photo, ...}}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">lpRecordsDb</td>
-        <td>LP desky databáze</td>
-        <td>{id_*: {artist, title, genre, photo, ...}}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">kal</td>
-        <td>Kalendář – události (sync)</td>
-        <td>{id_*: {title, date, color, ...}}</td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">notes</td>
-        <td>Poznámky s timeoutem</td>
-        <td>{text, expires}</td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">food</td>
-        <td>Food Tracker – jídlo a kalorie</td>
-        <td>{date: {items: [...], kcal}}</td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">gluco</td>
-        <td>Glukóza – měření glukometru</td>
-        <td>{date: {value, time, note}}</td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">platby</td>
-        <td>Platby – přehled výdajů</td>
-        <td>{id_*: {name, amount, date, note}}</td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">weather/city</td>
-        <td>Uložené město pro počasí</td>
-        <td>string (název města)</td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-        <td><span class="tag tag-wa">AUTH</span></td>
-      </tr>
+      <tr><td class="node-name">onair/live</td><td>Stav vysílání ON AIR</td><td>boolean</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">onair/stopRequest</td><td>Stop stream z mobilu → PC</td><td>boolean</td><td><span class="tag tag-wa">AUTH</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">obs_status</td><td>OBS stav vysílání</td><td>{streaming, updated_at}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">countdown/target</td><td>Odpočet do dalšího vysílání</td><td>timestamp (ms)</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">announcements</td><td>Oznámení na homepage</td><td>{title, body, type, ts}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">news</td><td>Novinky / příspěvky</td><td>{title, body, ts}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">gallery</td><td>Galerie médií</td><td>{url, caption, type, ts}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">content</td><td>Editovatelné texty</td><td>{intro, hwDisclaimer}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">presence</td><td>Online návštěvníci</td><td>{sessionId: timestamp}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-r">ALL</span></td></tr>
+      <tr><td class="node-name">chat</td><td>Veřejný chat</td><td>{name, text, ts, admin}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-r">ALL</span></td></tr>
+      <tr><td class="node-name">siteOff</td><td>Kill switch webu</td><td>boolean</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">grayscale</td><td>Černobílý režim webu</td><td>null | true | false</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">totalVisitors</td><td>Celkový počet návštěv</td><td>number</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-r">ALL</span></td></tr>
+      <tr><td class="node-name">hardwareDb</td><td>Hardware databáze</td><td>{id_*: {name, brand, cat, photo}}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">lpRecordsDb</td><td>LP desky databáze</td><td>{id_*: {artist, title, genre, photo}}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">kal</td><td>Kalendář – události</td><td>{id_*: {title, date, color}}</td><td><span class="tag tag-wa">AUTH</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">notes</td><td>Poznámky s timeoutem</td><td>{text, expires}</td><td><span class="tag tag-wa">AUTH</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">food</td><td>Food Tracker</td><td>{date: {items, kcal}}</td><td><span class="tag tag-wa">AUTH</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">gluco</td><td>Glukóza</td><td>{date: {value, time, note}}</td><td><span class="tag tag-wa">AUTH</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">platby</td><td>Platby – přehled výdajů</td><td>{id_*: {name, amount, date}}</td><td><span class="tag tag-wa">AUTH</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">weather/city</td><td>Uložené město pro počasí</td><td>string</td><td><span class="tag tag-wa">AUTH</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">irDb</td><td>IR ovládání TV Sharp (ir-bridge.js)</td><td>{cmd, lastSeen, ts}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-r">ALL</span></td></tr>
+      <tr><td class="node-name">scriptyNote</td><td>Poznámky v appce Scripty</td><td>{1..5: text}</td><td><span class="tag tag-wa">AUTH</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
+      <tr><td class="node-name">control/scripts</td><td>Spouštění skriptů na Pi4</td><td>{state, ts}</td><td><span class="tag tag-wa">AUTH</span></td><td><span class="tag tag-wa">AUTH</span></td></tr>
     </tbody>
   </table>
-  <div class="note">ALL = kdokoliv · AUTH = jen přihlášený admin · Presence a Chat mají write pro všechny (návštěvníci musí zapisovat)</div>
+  <div class="note">ALL = kdokoliv · AUTH = jen přihlášený admin</div>
 
-  <!-- NOVÉ UZLY Pi4 -->
+  <!-- FIREBASE NODES - PI4 -->
   <div class="sh">Firebase RTDB – Pi4 uzly</div>
   <table class="ntable">
     <thead>
       <tr><th>Uzel</th><th>Účel</th><th>Data</th><th>Read</th><th>Write</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td class="node-name">nextsync/status</td>
-        <td>Pi4 heartbeat (kladyx-uploadserver)</td>
-        <td>{ip, port, lastSeen, ts}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-r">ALL</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">nextsync/transfer</td>
-        <td>Transfer souborů mobil → Pi4/PC</td>
-        <td>{safeName: {name, type, data, ts}}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-r">ALL</span></td>
-      </tr>
-      <tr>
-        <td class="node-name">tapoDb</td>
-        <td>Tapo P115 stav (tapo-bridge.js)</td>
-        <td>{on, deviceOn, lastSeen, ts}</td>
-        <td><span class="tag tag-r">ALL</span></td>
-        <td><span class="tag tag-r">ALL</span></td>
-      </tr>
+      <tr><td class="node-name">piStats</td><td>Pi4 monitoring (pi_monitor.py · 60s)</td><td>{cpu_pct, ram_pct, temp_c, disk_pct, disk_used_gb, uptime_sec, ip, ts, services, obs_pc, cpu_mhz, sys_uptime, eth_state, throttled, net_rx_mb, net_tx_mb, proc_count, restarts, swap_mb, load_1, load_5, wifi_nets, arp_devices, sd_written_mb}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-r">ALL</span></td></tr>
+      <tr><td class="node-name">nextsync/status</td><td>PC NextSync heartbeat (nextsync_server.py)</td><td>{ip, port, lastSeen, online, ts}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-r">ALL</span></td></tr>
+      <tr><td class="node-name">nextsync/transfer</td><td>Transfer souborů mobil → Pi4/PC</td><td>{safeName: {name, type, data, ts}}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-r">ALL</span></td></tr>
+      <tr><td class="node-name">tapoDb</td><td>Tapo P115 DJ Studio (tapo-bridge.py · 60s)</td><td>{on, lastSeen, ts}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-r">ALL</span></td></tr>
+      <tr><td class="node-name">tapoDbP100</td><td>Tapo P100 TV Sharp (tapo-bridge.py · 60s)</td><td>{on, lastSeen, ts}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-r">ALL</span></td></tr>
+      <tr><td class="node-name">obs_status</td><td>OBS stream stav (obs-bridge.js · PC)</td><td>{streaming, updated_at, pc_online}</td><td><span class="tag tag-r">ALL</span></td><td><span class="tag tag-r">ALL</span></td></tr>
     </tbody>
   </table>
+  <div class="note">Pi4 uzly — write ALL (Pi4 zapisuje anonymně přes urllib.request · technická nutnost)</div>
 
   <!-- DATA FLOW -->
   <div class="sh">Datový tok – vysílání</div>
   <div class="flow">
-    <div class="flow-box">DDJ-800 / CDJ / Reloop</div>
+    <div class="flow-box">DDJ-800 / CDJ / Reloop RP1000</div>
     <div class="flow-arr">→</div>
     <div class="flow-box">Allen&amp;Heath AR8C</div>
     <div class="flow-arr">→</div>
-    <div class="flow-box">Rode PodMic → Tube-V2 → EQ3B → COMP16 → RodeCaster Duo</div>
+    <div class="flow-box">RØDE PodMic → TubePre V2 → EQ3B → COMP16 → RØDECaster Duo</div>
     <div class="flow-arr">→</div>
     <div class="flow-box">PreSonus Quantum ES4</div>
     <div class="flow-arr">→</div>
-    <div class="flow-box">OBS (48kHz/24bit)</div>
+    <div class="flow-box">OBS (48kHz/24bit · -15 LUFS)</div>
     <div class="flow-arr">→</div>
     <div class="flow-box">Mixcloud LIVE</div>
   </div>
   <div class="flow">
-    <div class="flow-box">obs-bridge.js (Node.js)</div>
+    <div class="flow-box">obs-bridge.js v28 (Node.js · PC)</div>
     <div class="flow-arr">→</div>
-    <div class="flow-box">Firebase: onair/live = true</div>
+    <div class="flow-box">Firebase: obs_status</div>
     <div class="flow-arr">→</div>
-    <div class="flow-box">Web: ON AIR stav</div>
+    <div class="flow-box">Panel: ON AIR stav</div>
   </div>
 
-  <!-- SERVICES -->
-  <div class="sh">Použité služby</div>
+  <!-- SYSTEMD SERVICES -->
+  <div class="sh">Pi4 systemd služby (192.168.0.50)</div>
+  <div class="svc-grid">
+    <div class="svc">
+      <div class="label">kladyx-pimonitor</div>
+      <div class="val">pi_monitor.py · 60s<br>CPU, RAM, temp, disk, WiFi, ARP, SD</div>
+    </div>
+    <div class="svc">
+      <div class="label">kladyx-tapo-py</div>
+      <div class="val">tapo-bridge.py v5 · Python<br>P115 + P100 · python-kasa 0.10.2</div>
+    </div>
+    <div class="svc">
+      <div class="label">kladyx-irbridge</div>
+      <div class="val">ir-bridge.js v2.0Kl<br>IR ovládání TV Sharp</div>
+    </div>
+    <div class="svc">
+      <div class="label">kladyx-tapobridge</div>
+      <div class="val">Tuya Blow TV Sharp<br>IP: 192.168.0.238</div>
+    </div>
+    <div class="svc">
+      <div class="label">kladyx-pitransfer</div>
+      <div class="val">Transfer souborů<br>Pi4 → PC sync</div>
+    </div>
+    <div class="svc">
+      <div class="label">kladyx-prijatelister</div>
+      <div class="val">Příchozí soubory<br>ntfy.sh push notifikace</div>
+    </div>
+    <div class="svc">
+      <div class="label">kladyx-plugbridge</div>
+      <div class="val">Tuya lampa<br>Firebase → Tuya cloud</div>
+    </div>
+    <div class="svc">
+      <div class="label">wifi-unblock</div>
+      <div class="val">Odblokování wlan0 při bootu<br>rfkill unblock wifi · oneshot</div>
+    </div>
+  </div>
+
+  <!-- USED SERVICES -->
+  <div class="sh">Použité cloudové služby</div>
   <div class="svc-grid">
     <div class="svc">
       <div class="label">Firebase RTDB</div>
-      <div class="val">Real-time data<br>9 uzlů · onValue</div>
+      <div class="val">Real-time data · 27+ uzlů<br>Spark free tier · 360 MB/den</div>
     </div>
     <div class="svc">
       <div class="label">Firebase Auth</div>
@@ -4481,40 +4381,45 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
     </div>
     <div class="svc">
       <div class="label">Firebase Storage</div>
-      <div class="val">Galerie média<br>Upload s progress</div>
+      <div class="val">Galerie média<br>Upload s progress barem</div>
     </div>
     <div class="svc">
       <div class="label">GitHub Pages</div>
-      <div class="val">Hosting<br>Statický deploy</div>
+      <div class="val">Hosting · 2 repozitáře<br>panel · kladyxland</div>
     </div>
     <div class="svc">
       <div class="label">Mixcloud</div>
-      <div class="val">Audio streaming<br>Embed player</div>
+      <div class="val">Audio streaming LIVE<br>API: followers, listens</div>
+    </div>
+    <div class="svc">
+      <div class="label">OpenWeatherMap</div>
+      <div class="val">Venkovní teplota Příbor<br>Free tier · refresh 10 min</div>
     </div>
     <div class="svc">
       <div class="label">OBS Studio</div>
-      <div class="val">Broadcast + Python<br>Auto ON AIR toggle</div>
-    </div>
-    <div class="svc">
-      <div class="label">Raspberry Pi 4B</div>
-      <div class="val">Server 24/7 · 192.168.0.23<br>nextsync · tapo · obs · transfer</div>
+      <div class="val">Broadcast · obs-bridge.js v28<br>WebSocket → Firebase</div>
     </div>
     <div class="svc">
       <div class="label">ntfy.sh</div>
       <div class="val">Push notifikace<br>Příchozí soubory → mobil</div>
     </div>
     <div class="svc">
+      <div class="label">Tuya Cloud</div>
+      <div class="val">Lampa + TV Sharp Blow<br>EU region · tinytuya</div>
+    </div>
+    <div class="svc">
       <div class="label">UptimeRobot</div>
       <div class="val">Monitoring dostupnosti<br>HTTP check · 5 min</div>
     </div>
-    <div class="svc">
-      <div class="label">Google Analytics</div>
-      <div class="val">Statistiky návštěvnosti<br>GA4 · G-4R6MTG949M</div>
-    </div>
   </div>
 
+  <!-- SOFTWARE -->
   <div class="sh">Software</div>
   <div class="svc-grid">
+    <div class="svc">
+      <div class="label">RadioDJ</div>
+      <div class="val">Automatické vysílání<br>MariaDB 12.1 · 6526 skladeb</div>
+    </div>
     <div class="svc">
       <div class="label">VirtualDJ</div>
       <div class="val">Infinity Pro<br>Hlavní DJ software</div>
@@ -4522,10 +4427,6 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
     <div class="svc">
       <div class="label">Rekordbox</div>
       <div class="val">Pioneer DJ<br>Track management</div>
-    </div>
-    <div class="svc">
-      <div class="label">RadioDJ</div>
-      <div class="val">Automatické vysílání<br>Playlist scheduling</div>
     </div>
     <div class="svc">
       <div class="label">Studio One 7</div>
@@ -4536,14 +4437,51 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
       <div class="val">MAGIX<br>Produkce</div>
     </div>
     <div class="svc">
-      <div class="label">Sound Forge</div>
-      <div class="val">MAGIX<br>Audio editor</div>
+      <div class="label">Sound Forge 12.6 Pro</div>
+      <div class="val">MAGIX · Audio editor<br>Normalizace sweepers -1 dB</div>
+    </div>
+  </div>
+
+  <!-- HARDWARE -->
+  <div class="sh">Hardware – klíčová zařízení</div>
+  <div class="svc-grid">
+    <div class="svc">
+      <div class="label">Raspberry Pi 4B 1GB</div>
+      <div class="val">Hostname: Djsound<br>IP: 192.168.0.50 · 24/7 server</div>
+    </div>
+    <div class="svc">
+      <div class="label">PC Fujitsu E559</div>
+      <div class="val">Windows 11<br>IP: 192.168.0.23</div>
+    </div>
+    <div class="svc">
+      <div class="label">Router TP-Link AX55 Pro</div>
+      <div class="val">HomeShield IPS/DDoS<br>WiFi: TP-Link (-34 dBm)</div>
+    </div>
+    <div class="svc">
+      <div class="label">Tapo P115 DJ Studio</div>
+      <div class="val">IP: 192.168.0.106<br>Spotřeba + on/off</div>
+    </div>
+    <div class="svc">
+      <div class="label">Tapo P100 TV Sharp</div>
+      <div class="val">IP: 192.168.0.24<br>On/off ovládání</div>
+    </div>
+    <div class="svc">
+      <div class="label">Tuya IR Hub S08</div>
+      <div class="val">IP: 192.168.0.147<br>IR ovládání TV Sharp</div>
+    </div>
+    <div class="svc">
+      <div class="label">PreSonus Quantum ES4</div>
+      <div class="val">Audio interface<br>48kHz / 24bit</div>
+    </div>
+    <div class="svc">
+      <div class="label">RØDECaster Duo</div>
+      <div class="val">Hlasový řetězec<br>Line-In ch1 · Noise Gate APHEX</div>
     </div>
   </div>
 
   <div class="sh">Principy</div>
   <div class="note" style="margin-top:0;">
-    Single-file architektura (Panel.html) · žádný build step · Raspberry Pi 4B server 24/7 (192.168.0.23) · iterativní vývoj s version bumpy · editace přes GitHub web editor · free tier Firebase (Spark) · OBS filter chain: Span → Mvmeter2 → LoudMax64 → YouLean · obs-bridge.js + tapo-bridge.js (Node.js) na Pi4
+    Single-file architektura (Panel.html) · žádný build step · Raspberry Pi 4B server 24/7 (192.168.0.50) · iterativní vývoj s version bumpy · editace přes GitHub web editor · free tier Firebase (Spark) · OBS filter chain: Span → LoudMax64 → YouLean · obs-bridge.js v28 + tapo-bridge.py v5 · Mixed Content řešen přes Firebase HTTPS most · minimalizace Firebase downloadu jako absolutní priorita
   </div>
 
 </div>
@@ -15286,7 +15224,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v5.1.0PlPro 2026/8 Kladyx</div>
+<div class="ver">v5.1.1PlPro 2026/8 Kladyx</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -16351,7 +16289,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='v5.1.0PlPro 2026/8 Kladyx';
+  var CURRENT='v5.1.1PlPro 2026/8 Kladyx';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
