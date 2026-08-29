@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v5.16Pi">
-<title>Pi Monitor v5.16Pi</title>
+<meta name="version" content="v6.0Pi">
+<title>Pi Monitor v6.0Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -60,6 +60,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 @keyframes temp-glow{0%,100%{text-shadow:0 0 6px var(--green)}50%{text-shadow:0 0 22px var(--green),0 0 44px rgba(0,255,136,0.5)}}
 .temp-ok-pulse{animation:temp-glow 2s ease-in-out infinite;}
 @keyframes pulse-blue{0%,100%{opacity:1;text-shadow:0 0 8px rgba(0,212,255,0.7);}50%{opacity:0.5;text-shadow:0 0 2px rgba(0,212,255,0.2);}}
+.panel-opens{color:var(--cyan);animation:pulse-blue 2s ease-in-out infinite;}
 @keyframes count-glow{0%,100%{text-shadow:0 0 4px var(--warn)}50%{text-shadow:0 0 18px var(--warn),0 0 36px rgba(255,170,0,0.6)}}
 .restart-active{animation:count-glow 1.5s ease-in-out infinite;}
 @keyframes barpulse{0%,100%{opacity:1}50%{opacity:0.3}}
@@ -118,7 +119,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.16Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v6.0Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -150,6 +151,11 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="uptime-half">
     <div class="uptime-val cons" id="val-cons">—</div>
     <div class="uptime-lbl">SPOTŘEBA CELKEM (EST)</div>
+  </div>
+  <div class="uptime-sep"></div>
+  <div class="uptime-half">
+    <div class="uptime-val panel-opens" id="val-opens">—</div>
+    <div class="uptime-lbl">OTEVŘENÍ</div>
   </div>
 </div>
 
@@ -241,6 +247,15 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <div class="footer">AUTO-REFRESH 60s · KLADYXLAND 2026</div>
 
 <script>
+// ─── POČÍTADLO OTEVŘENÍ PANELU (localStorage, 0 B Firebase) ──
+(function(){
+  var key='kladyx_panel_opens';
+  var count=(parseInt(localStorage.getItem(key))||0)+1;
+  localStorage.setItem(key,count);
+  var el=document.getElementById('val-opens');
+  if(el) el.textContent=count+'×';
+})();
+// ─────────────────────────────────────────────────────────────
 var FB='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app';
 var _authToken='';
 var _fbDlBytes=0;
