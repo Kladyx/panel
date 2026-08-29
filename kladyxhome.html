@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="2.31Kl">
+<meta name="version" content="2.32Kl">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -385,6 +385,13 @@ h1 {
   </div>
 </div>
 
+<div class="device unknown" id="dev-zxnext">
+  <div class="device-header">
+    <div class="device-name">ZX Next KS3</div>
+    <div class="device-status" id="status-zxnext">...</div>
+  </div>
+</div>
+
 <div class="device-card" id="dev-ir">
   <div class="device-header">
     <div class="device-name">IR Dálkový ovladač (Tuya)</div>
@@ -418,7 +425,7 @@ h1 {
 
 </div>
 
-<div class="footer">KLADYXHOME v2.31Kl - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v2.32Kl - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -516,6 +523,19 @@ try {
   setupDevice('tapoDbP110', 'p110');
   setupDevice('tapoDbP100Sam', 'p100sam');
   setupDevice('tapoDbP100Ma', 'p100ma');
+
+  // ZX Next KS3 – jen ukazatel stavu z tuyaDb
+  db.ref('tuyaDb').on('value', function(snap) {
+    var devEl = document.getElementById('dev-zxnext');
+    var statEl = document.getElementById('status-zxnext');
+    if (!devEl || !statEl) return;
+    var d = snap.val();
+    if (!d) { devEl.className = 'device unknown'; statEl.textContent = 'NEZNÁMÝ'; return; }
+    var age = d.lastSeen ? Date.now() - d.lastSeen : 999999;
+    if (age > 150000) { devEl.className = 'device unknown'; statEl.textContent = 'OFFLINE'; return; }
+    if (d.on === true) { devEl.className = 'device on'; statEl.textContent = 'ZAPNUTO'; }
+    else { devEl.className = 'device off'; statEl.textContent = 'VYPNUTO'; }
+  });
 
   setInterval(function() {
     Object.keys(deviceCache).forEach(function(s) { checkDevice(s); });
