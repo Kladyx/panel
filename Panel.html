@@ -299,7 +299,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.1.3PlPro 2026/8 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.1.4PlPro 2026/8 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -343,6 +343,11 @@
     <button onclick="location.reload(true)" title="Obnovit stránku" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:44px;height:42px;padding:4px 8px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);border-radius:5px;cursor:pointer;font-family:'Courier New',monospace;flex-shrink:0;">
       <div style="font-size:1rem;line-height:1;">🌀</div>
       <div style="font-size:0.55rem;color:#00d4ff;letter-spacing:1px;text-shadow:0 0 6px rgba(0,212,255,0.5);font-weight:bold;">RELOAD</div>
+    </button>
+    <div class="tdiv"></div>
+    <button id="intro-toggle-btn" onclick="toggleIntroVideo()" title="Zapnout/vypnout intro video" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:44px;height:42px;padding:4px 8px;background:rgba(255,102,0,0.08);border:1px solid rgba(255,102,0,0.3);border-radius:5px;cursor:pointer;font-family:'Courier New',monospace;flex-shrink:0;">
+      <div id="intro-toggle-icon" style="font-size:1rem;line-height:1;">🎬</div>
+      <div id="intro-toggle-label" style="font-size:0.55rem;color:#ff6600;letter-spacing:1px;text-shadow:0 0 6px rgba(255,102,0,0.5);font-weight:bold;">INTRO</div>
     </button>
     <div class="tdiv"></div>
     <button class="app-btn" id="btn-home" style="--ac:#00d4ff;--ac-rgb:0,212,255" onclick="goHome()">
@@ -14475,7 +14480,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v5.1.3PlPro 2026/8 Kladyx</div>
+<div class="ver">v5.1.4PlPro 2026/8 Kladyx</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -15115,10 +15120,44 @@ function closeIntro() {
     document.getElementById('pin-screen').classList.add('active');
   }, 650);
 }
+function toggleIntroVideo() {
+  var disabled = localStorage.getItem('kladyx_intro_off') === '1';
+  if (disabled) {
+    localStorage.removeItem('kladyx_intro_off');
+    document.getElementById('intro-toggle-icon').textContent = '🎬';
+    document.getElementById('intro-toggle-label').textContent = 'INTRO';
+    document.getElementById('intro-toggle-btn').style.background = 'rgba(255,102,0,0.08)';
+    document.getElementById('intro-toggle-btn').style.borderColor = 'rgba(255,102,0,0.3)';
+  } else {
+    localStorage.setItem('kladyx_intro_off', '1');
+    document.getElementById('intro-toggle-icon').textContent = '🚫';
+    document.getElementById('intro-toggle-label').textContent = 'INTRO';
+    document.getElementById('intro-toggle-btn').style.background = 'rgba(255,0,0,0.08)';
+    document.getElementById('intro-toggle-btn').style.borderColor = 'rgba(255,0,0,0.3)';
+  }
+}
+// Inicializace tlačítka podle localStorage
+(function() {
+  if (localStorage.getItem('kladyx_intro_off') === '1') {
+    var btn = document.getElementById('intro-toggle-btn');
+    if (btn) {
+      document.getElementById('intro-toggle-icon').textContent = '🚫';
+      btn.style.background = 'rgba(255,0,0,0.08)';
+      btn.style.borderColor = 'rgba(255,0,0,0.3)';
+    }
+  }
+})();
 // Skrýt gate a pin při startu
 (function() {
   var gate = document.getElementById('panel-gate');
   if (gate) { gate.style.display = 'none'; }
+  // Skip intro pokud je vypnuto
+  if (localStorage.getItem('kladyx_intro_off') === '1') {
+    var intro = document.getElementById('intro-screen');
+    if (intro) { intro.style.display = 'none'; }
+    var pin = document.getElementById('pin-screen');
+    if (pin) { pin.classList.add('active'); }
+  }
 })();
 function lockPanel() {
   try{localStorage.removeItem('kladyx_rp');sessionStorage.removeItem('kladyx_rp');}catch(e){}
@@ -15580,7 +15619,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='v5.1.3PlPro 2026/8 Kladyx';
+  var CURRENT='v5.1.4PlPro 2026/8 Kladyx';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
