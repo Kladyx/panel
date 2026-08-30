@@ -342,6 +342,19 @@ button{
       {c:'R1=$(cat /sys/class/net/eth0/statistics/rx_bytes); sleep 60; R2=$(cat /sys/class/net/eth0/statistics/rx_bytes); echo "RX/den odhad: $(((R2-R1)*1440/1048576)) MB"',d:'Provoz Pi4 - meri 60s'},
       {c:'sudo timeout 70 nethogs -t -v 1 -d 60 | tail -25',d:'Provoz podle procesu - 70s'}
     ]},
+    {s:'FIREBASE PŘIŠKRCENO',cmds:[
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/content/intro.json"',d:'introRef — texty'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/content/hwDisclaimer.json"',d:'hwdRef — texty'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/siteTheme.json"',d:'siteThemeRef — téma'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/grayscale.json"',d:'grayscaleRef — černobílý režim'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/themes.json"',d:'themes/*/bgUrl — pozadí témat'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/themes/custom.json"',d:'customBgRef — vlastní pozadí'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/themes/activeBg.json"',d:'themes/activeBg — aktivní pozadí'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/config/videoUrl.json"',d:'config/videoUrl — video URL'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/tapoDb/obsPassword.json"',d:'tapoDb/obsPassword — OBS heslo'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/announcements.json"',d:'annRef — oznámení'},
+      {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/content/hardware.json"',d:'content/hardware — hardware tabulka'}
+    ]},
     {s:'FIREBASE STAVY',cmds:[
       {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/tuyaDb.json"',d:'Stav lampy'},
       {c:'curl -s "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/tapoDb.json"',d:'Stav DJ Studio P115'},
