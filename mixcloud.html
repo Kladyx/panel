@@ -632,16 +632,18 @@
   </style>
 
   <script type="module">
+    // v1.1 — čte status/obs.state (OBS bridge), real-time onValue()
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getDatabase, ref, onValue, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
     const app = initializeApp({
       apiKey: "AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",
       databaseURL: "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",
       projectId: "kladyxland"
     });
     const db = getDatabase(app);
-    get(ref(db, 'onair/live')).then(snap => {
-      const isLive = snap.val() === true;
+    onValue(ref(db, 'status/obs'), snap => {
+      const val = snap.val();
+      const isLive = val && val.state === 'online';
       const btn = document.getElementById('live-btn');
       if (isLive) {
         btn.classList.add('is-live');
@@ -655,7 +657,7 @@
         sv.textContent = isLive ? 'ONLINE' : 'OFFLINE';
         sv.style.color = isLive ? '#00ff88' : '#ff4466';
       }
-    }).catch(() => {});
+    });
   </script>
 
   <script>
