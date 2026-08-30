@@ -551,7 +551,7 @@
         <div class="stat">
           <span class="stat-icon">📡</span>
           <div class="stat-label">Status</div>
-          <div class="stat-value">ONLINE</div>
+          <div class="stat-value" id="status-value" style="color:#ff4466;">OFFLINE</div>
         </div>
       </div>
 
@@ -562,7 +562,7 @@
           Poslouchej hudbu z <span class="hl">KLADYXLAND</span>
         </div>
         <div class="footer-brand">Powered by Mixcloud</div>
-        <div class="footer-brand" style="margin-top:6px;color:#00ff88;font-weight:700;">v14.5</div>
+        <div class="footer-brand" style="margin-top:6px;color:#00ff88;font-weight:700;">v14.7</div>
         <div style="margin-top:10px;font-family:'Rajdhani',sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.25);letter-spacing:0.05em;padding:0 20px;">
           Fender® and PreSonus® are registered trademarks of their respective owners. KLADYXLAND has no commercial affiliation with these brands — their equipment is used for personal broadcasting purposes only.
         </div>
@@ -633,23 +633,29 @@
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+    import { getDatabase, ref, onValue, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
     const app = initializeApp({
       apiKey: "AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",
       databaseURL: "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",
       projectId: "kladyxland"
     });
     const db = getDatabase(app);
-    onValue(ref(db, 'onair/live'), snap => {
+    get(ref(db, 'onair/live')).then(snap => {
+      const isLive = snap.val() === true;
       const btn = document.getElementById('live-btn');
-      if (snap.val() === true) {
+      if (isLive) {
         btn.classList.add('is-live');
         btn.innerHTML = '<span class="live-dot"></span>SLEDUJ LIVE';
       } else {
         btn.classList.remove('is-live');
         btn.innerHTML = '🔴 SLEDOVAT ŽIVĚ';
       }
-    });
+      const sv = document.getElementById('status-value');
+      if (sv) {
+        sv.textContent = isLive ? 'ONLINE' : 'OFFLINE';
+        sv.style.color = isLive ? '#00ff88' : '#ff4466';
+      }
+    }).catch(() => {});
   </script>
 
   <script>
