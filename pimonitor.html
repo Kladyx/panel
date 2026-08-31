@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v6.0Pi">
-<title>Pi Monitor v6.0Pi</title>
+<meta name="version" content="v6.1Pi">
+<title>Pi Monitor v6.1Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -119,7 +119,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v6.0Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v6.1Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -175,7 +175,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="svc-row"><div class="dot dot-wait" id="d-pitransfer"></div><div class="svc-name">kladyx-pitransfer</div><div class="svc-st" id="s-pitransfer">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-pimonitor"></div><div class="svc-name">kladyx-pimonitor</div><div class="svc-st" id="s-pimonitor">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-taporestart"></div><div class="svc-name">kladyx-tapo-restart</div><div class="svc-st" id="s-taporestart">…</div></div>
-  <div class="svc-row"><div class="dot dot-disc" id="d-tuyaplug"></div><div class="svc-name">kladyx-tuya-plug</div><div class="svc-stat disc" id="s-tuyaplug">DISCONNECTED</div></div>
+
 </div>
 
 <div class="section">
@@ -404,7 +404,7 @@ function setDev(id,on,fresh){
 var PC_SVC=['transfer','upload','nextsync','obs','eq'];
 var _pcOnline=false;
 var _svcActive={};
-// Ticker zobrazuje jen tyto sluzby (ostatni - rpi, tuyaplug, transfer, nextsync atd. - do tickeru nepatri)
+// Ticker zobrazuje jen tyto sluzby (ostatni - rpi, transfer, nextsync atd. - do tickeru nepatri)
 var _tickerNames={'tapo':'tapobridge','tapopy':'tapo-py','prijate':'prijatelister','pitransfer':'pitransfer','irbridge':'irbridge','pimonitor':'pimonitor','taporestart':'tapo-restart','obs':'obs-bridge'};
 function updateTicker(){
   var list=Object.keys(_tickerNames).filter(function(k){return !!_svcActive[k];}).map(function(k){return _tickerNames[k];});
@@ -635,7 +635,7 @@ function loadStats(){
     // Services z piStats - POUZE sluzby ktere skutecne bezi na Pi4 jako systemd.
     // transfer/upload/nextsync/obs jsou .bat na PC, Pi4 je nevidi -> resi checkPC()
     if(d.services){
-      ['tapo','prijate','pitransfer','pimonitor','taporestart','tuyaplug'].forEach(function(k){
+      ['tapo','prijate','pitransfer','pimonitor','taporestart'].forEach(function(k){
         if(d.services[k]!==undefined)setSvc(k,d.services[k]===true||d.services[k]==='active');
       });
     }
@@ -672,6 +672,15 @@ function loadStats(){
     setDev('p115',d&&d.on===true,fresh);
   })
   .catch(function(){setSvc('tapopy',false);setDev('p115',false,false);});
+  // Plug Bridge (kladyx-plugbridge) - čte tuyaDb/lastSeen (plug_bridge.py píše každých 30s)
+  fbFetch(fbUrl('/tuyaDb.json'),{signal:AbortSignal.timeout(5000)})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    var ts=d&&d.lastSeen;
+    var fresh=!!(ts&&(Date.now()-ts<150000));
+    setSvc('plugbridge',fresh);
+  })
+  .catch(function(){setSvc('plugbridge',false);});
   // ZARIZENI - Lavova lampa (tapoDbP100Ma, tapo-bridge zapisuje po 60s)
   fbFetch(fbUrl('/tapoDbP100Ma.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
