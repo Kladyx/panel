@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v5.18Pi">
-<title>Pi Monitor v5.18Pi</title>
+<meta name="version" content="v5.19Pi">
+<title>Pi Monitor v5.19Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -651,20 +651,10 @@ function loadStats(){
   .then(function(r){return r.json();})
   .then(function(d){
     setSvc('tuyaplug',d&&d.connected===true);
-    var devEl=document.getElementById('d-dev-zxnext');
-    var statEl=document.getElementById('s-dev-zxnext');
-    if(devEl&&statEl){
-      if(d&&d.on===true){devEl.className='dot dot-ok';statEl.textContent='ZAPNUTO';}
-      else{devEl.className='dot dot-err';statEl.textContent='VYPNUTO';}
-    }
+    var fresh=!!(d&&d.lastSeen&&(Date.now()-d.lastSeen<150000));
+    setDev('zxnext',d&&d.on===true,fresh);
   })
-  .catch(function(){
-    setSvc('tuyaplug',false);
-    var devEl=document.getElementById('d-dev-zxnext');
-    var statEl=document.getElementById('s-dev-zxnext');
-    if(devEl)devEl.className='dot dot-err';
-    if(statEl)statEl.textContent='OFFLINE';
-  });
+  .catch(function(){setSvc('tuyaplug',false);setDev('zxnext',false,false);});
   // Tapo Python bridge (kladyx-tapo-py na Pi4) + stav zasuvky DJ Studio.
   // Cteme cely uzel tapoDb misto jen lastSeen -> jeden fetch pokryje obojí,
   // zadny request navic.
