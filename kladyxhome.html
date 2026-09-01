@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="5.0.2.home">
+<meta name="version" content="5.0.3.home">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -328,7 +328,7 @@ h1 {
 <div class="container">
 <h1>KLADYX HOME</h1>
 <div class="subtitle">SMART HOME CONTROL</div>
-<div class="version-badge">v5.0.2.home</div>
+<div class="version-badge">v5.0.3.home</div>
 
 <div class="device unknown" id="dev-p115">
   <div class="device-header">
@@ -399,10 +399,10 @@ h1 {
   </div>
 </div>
 
-<div class="device-card" id="dev-ir">
+<div class="device unknown" id="dev-ir">
   <div class="device-header">
     <div class="device-name">IR Dálkový ovladač (Tuya)</div>
-    <div class="device-status">TUYA APP</div>
+    <div class="device-status" id="status-ir">...</div>
   </div>
   <div class="buttons">
     <button class="btn btn-on" onclick="window.location.href='tuyaSmart://'">📡 OTEVŘÍT TUYA</button>
@@ -439,7 +439,7 @@ h1 {
 
 </div>
 
-<div class="footer">KLADYXHOME v5.0.2.home - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v5.0.3.home - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -537,6 +537,19 @@ try {
   setupDevice('tapoDbP110', 'p110');
   setupDevice('tapoDbP100Sam', 'p100sam');
   setupDevice('tapoDbP100Ma', 'p100ma');
+
+  // IR ovladač – jen ukazatel stavu ze stejné zásuvky jako p100sam
+  db.ref('tapoDbP100Sam').on('value', function(snap) {
+    var devEl = document.getElementById('dev-ir');
+    var statEl = document.getElementById('status-ir');
+    if (!devEl || !statEl) return;
+    var d = snap.val();
+    if (!d) { devEl.className='device unknown'; statEl.textContent='OFFLINE'; return; }
+    var age = d.lastSeen ? Date.now() - d.lastSeen : 999999;
+    if (age > 150000) { devEl.className='device unknown'; statEl.textContent='OFFLINE'; return; }
+    if (d.on === true) { devEl.className='device on'; statEl.textContent='ZAPNUTO'; }
+    else { devEl.className='device off'; statEl.textContent='VYPNUTO'; }
+  });
 
   // ZX Next KS3 – jen ukazatel stavu z tuyaDb
   db.ref('tuyaDb').on('value', function(snap) {
