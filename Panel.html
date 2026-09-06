@@ -299,7 +299,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.2.1PlPro 2026/9 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.2.2PlPro 2026/9 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -1106,209 +1106,31 @@ APP_HTML["housetime"] = `<!DOCTYPE html>
       fetchNow();
     }
 
-    // 🔥 MAXIMUM RELIABILITY: 6 primárních zdrojů + 8 proxy fallbacků
-    // VŠECHNY KOMBINACE se zkusí paralelně
-    var ENDPOINTS = [
-      { url: 'https://listen.housetime.fm/status-json.xsl', type: 'icecast', priority: 1 },
-      { url: 'https://www.housetime.fm/trackliste', type: 'trackliste', priority: 2 },
-      { url: 'https://housetime.fm/api/current', type: 'api', priority: 3 },
-      { url: 'https://weareone.fm/housetime', type: 'trackliste', priority: 4 },
-    ];
+    // ── FIREBASE BRIDGE: cte z radio/housetime ──
+    var FIREBASE_RADIO_URL = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/radio/housetime.json';
 
-    // 🛡️ FALLBACK PROXY SERVERY — když přímý fetch selže
-    function _cb(u) { return u + (u.indexOf('?') !== -1 ? '&' : '?') + '_t=' + Date.now(); }
-    var PROXY_URLS = [
-      null,
-      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(_cb(u)); },
-      function(u) { return 'https://api.allorigins.win/get?url=' + encodeURIComponent(_cb(u)); },
-      function(u) { return 'https://thingproxy.freeboard.io/fetch/' + _cb(u); },
-      function(u) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(_cb(u)); },
-      function(u) { return 'https://jsonp.afeld.me/?url=' + encodeURIComponent(_cb(u)); },
-      function(u) { return 'https://yacdn.org/serve/' + encodeURIComponent(_cb(u)); },
-    ];
-
-    function fetchWithTimeout(url, ms, opts) {
-      var ctrl = new AbortController();
-      var id = setTimeout(function() { ctrl.abort(); }, ms);
-      return fetch(url, Object.assign({ signal: ctrl.signal }, opts || {}))
-        .finally(function() { clearTimeout(id); });
-    }
-
-    // 💾 CACHE SYSTEM: Uklád čas, aby se vědělo když je stará
-    function loadCache() {
-      try {
-        var cached = localStorage.getItem('housetime-cache');
-        if (cached) {
-          var data = JSON.parse(cached);
-          var age = (Date.now() - data.timestamp) / 1000 / 60; // věk v minutách
-          // Cache je platná max 15 minut (aby byla přesná)
-          if (age < 2 && (data.artist || data.song)) {
-            return data;
-          }
-        }
-      } catch(e) {}
-      return null;
-    }
-
-    function saveCache(artist, song) {
-      try {
-        localStorage.setItem('housetime-cache', JSON.stringify({
-          artist: artist,
-          song: song,
-          timestamp: Date.now()
-        }));
-      } catch(e) {}
-    }
-
-    function fetchNow() {
-      // Přepnout na správnou stanici
-      if (CURRENT_STATION !== 'housetime') {
-        fetchIcecastStation(CURRENT_STATION);
-        return;
-      }
-      fetchAttempts = 0;
+    function fetchNowFromFirebase() {
       var btn = document.getElementById('refreshBtn');
       btn.disabled = true;
       showLoading();
       resetCountdown();
-      try { localStorage.removeItem('housetime-cache'); } catch(e) {}
-      tryAllSourcesParallel();
-    }
 
-    // 🔥 ÚPLNĚ NOVÝ SYSTÉM: Zkus VŠECHNY kombinace paralelně
-    // Jakmile JEDNA funguje → okamžitě zobrazit, ostatní zastavy
-    function tryAllSourcesParallel() {
-      var resolved = false;
-      var totalPromises = 0;
-      var successCount = 0;
-
-      function onSuccess(artist, song, source) {
-        if (resolved) return;
-        resolved = true;
-        console.log('✓ Data z: ' + source);
-        document.getElementById('refreshBtn').disabled = false;
-        showResult(artist, song);
-        addHistory(artist, song);
-        saveCache(artist, song);
-      }
-
-      var allPromises = [];
-
-      // Zkus KAŽDÝ endpoint s KAŽDÝM proxy
-      ENDPOINTS.forEach(function(ep) {
-        PROXY_URLS.forEach(function(proxyFn) {
-          var proxyUrl = proxyFn ? proxyFn(ep.url) : ep.url;
-          var isAllorigins = proxyUrl.indexOf('allorigins') !== -1;
-          var source = ep.type + (proxyFn ? ' (proxy)' : ' (direct)');
-
-          var p = fetchWithTimeout(proxyUrl, 2500, {})
-            .then(function(r) {
-              if (!r.ok) throw new Error('HTTP ' + r.status);
-              return isAllorigins ? r.json() : r.text();
-            })
-            .then(function(data) {
-              var raw = isAllorigins ? data.contents : data;
-              if (!raw || raw.length < 5) throw new Error('empty');
-              var result = parseResponse(raw, ep.type);
-              if (!result || !result.song) throw new Error('no song data');
-              onSuccess(result.artist, result.song, source);
-            })
-            .catch(function(e) {
-              // Ticho — jen log
-              console.log('✗ Selhalo ' + source + ': ' + e.message);
-            });
-
-          allPromises.push(p);
-          totalPromises++;
-        });
-      });
-
-      // Pokud všechny selžou — zkus cache, jinak error
-      Promise.allSettled(allPromises).then(function(results) {
-        if (!resolved) {
-          var cached = loadCache();
-          if (cached && (cached.artist || cached.song)) {
-            // Máme cache — zobrazit ji
-            console.log('⚠ Všechny zdroje selhaly, zobrazuji cache');
-            document.getElementById('refreshBtn').disabled = false;
-            showResult(cached.artist, cached.song);
-            showWarning('⚠ Data z mezipaměti (offline?)');
+      fetch(FIREBASE_RADIO_URL)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          btn.disabled = false;
+          if (data && data.artist && data.song) {
+            showResult(data.artist, data.song);
+            addHistory(data.artist, data.song);
           } else {
-            // Bez cache — error
-            document.getElementById('refreshBtn').disabled = false;
-            showError('❌ Nepodařilo se načíst skladbu.<br>Zkus to znovu.');
-            console.log('✗ Všechny zdroje selhaly, cache prázdná');
+            showError('❌ Skladba není k dispozici.');
           }
-        }
-      });
-    }
-
-    function parseResponse(raw, type) {
-      try {
-        if (type === 'trackliste') {
-          // WeAreOne trackliste: hledame <a href="/releases/...">Artist - Title</a>
-          // Pouze linky vedouci na /releases/ — to jsou skladby, ne navigace
-          var releaseRe = /<a\\s[^>]*href=["'][^"']*\\/releases\\/[^"']*["'][^>]*>([\\s\\S]*?)<\\/a>/gi;
-          var m2;
-          while ((m2 = releaseRe.exec(raw)) !== null) {
-            var txt = m2[1].replace(/<[^>]+>/g, '').trim();
-            if (txt && txt.length > 5 && txt.indexOf(' - ') !== -1) {
-              return splitTitle(txt);
-            }
-          }
-          return null;
-        }
-
-        if (type === 'icecast') {
-          var json = JSON.parse(raw);
-          var sources = json.icestats && json.icestats.source;
-          if (!sources) return null;
-          var arr = Array.isArray(sources) ? sources : [sources];
-          // Preferujeme zdroj s 'housetime' nebo 'tunein-mp3' v listenurl
-          var src = arr[0];
-          for (var i = 0; i < arr.length; i++) {
-            var lu = (arr[i].listenurl || '').toLowerCase();
-            if (lu.indexOf('tunein-mp3') !== -1 || lu.indexOf('housetime') !== -1) {
-              src = arr[i]; break;
-            }
-          }
-          if (!src || !src.title) return null;
-          return splitTitle(src.title);
-        }
-
-        if (type === 'api') {
-          // Fallback JSON API
-          try {
-            var json = JSON.parse(raw);
-            if (json.artist && json.song) {
-              return { artist: json.artist, song: json.song };
-            }
-            if (json.title) {
-              return splitTitle(json.title);
-            }
-          } catch(e) {}
-          return null;
-        }
-
-      } catch(e) { return null; }
-      return null;
-    }
-
-    function splitTitle(title) {
-      var artist = '', song = '';
-      if (title.indexOf(' - ') !== -1) {
-        var parts = title.split(' - ');
-        artist = parts[0].trim();
-        song = parts.slice(1).join(' - ').trim();
-      } else {
-        song = title.trim();
-      }
-      return { artist: artist, song: song };
-    }
-
-    function showLoading() {
-      document.getElementById('nowCard').innerHTML =
-        '<div class="now-loading">⏳ NAČÍTÁM…</div>';
+        })
+        .catch(function(e) {
+          btn.disabled = false;
+          showError('❌ Nepodařilo se načíst z Firebase.');
+          console.log('Firebase fetch error:', e);
+        });
     }
 
     function showResult(artist, song) {
@@ -14483,7 +14305,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v5.2.1PlPro 2026/9 Kladyx</div>
+<div class="ver">v5.2.2PlPro 2026/9 Kladyx</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -15622,7 +15444,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='v5.2.1PlPro 2026/9 Kladyx';
+  var CURRENT='v5.2.2PlPro 2026/9 Kladyx';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
