@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v5.19Pi">
-<title>Pi Monitor v5.19Pi</title>
+<meta name="version" content="v6.5Pi">
+<title>Pi Monitor v6.5Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -118,7 +118,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v5.16Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v6.5Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -169,6 +169,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="svc-row"><div class="dot dot-wait" id="d-pimonitor"></div><div class="svc-name">kladyx-pimonitor</div><div class="svc-st" id="s-pimonitor">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-taporestart"></div><div class="svc-name">kladyx-tapo-restart</div><div class="svc-st" id="s-taporestart">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-tuyaplug"></div><div class="svc-name">kladyx-plugbridge (Tuya)</div><div class="svc-st" id="s-tuyaplug">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-weareone"></div><div class="svc-name">kladyx-weareone (HouseTime)</div><div class="svc-st" id="s-weareone">…</div></div>
 </div>
 
 <div class="section">
@@ -191,6 +192,7 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
   <div class="svc-row"><div class="svc-name">plugbridge</div><div class="svc-st" id="r-pb">—</div></div>
   <div class="svc-row"><div class="svc-name">pitransfer</div><div class="svc-st" id="r-pt">—</div></div>
   <div class="svc-row"><div class="svc-name">prijatelister</div><div class="svc-st" id="r-pl">—</div></div>
+  <div class="svc-row"><div class="svc-name">weareone</div><div class="svc-st" id="r-wo">—</div></div>
 </div>
 
 <div class="section">
@@ -391,7 +393,7 @@ var PC_SVC=['transfer','upload','nextsync','obs','eq'];
 var _pcOnline=false;
 var _svcActive={};
 // Ticker zobrazuje jen tyto sluzby (ostatni - rpi, tuyaplug, transfer, nextsync atd. - do tickeru nepatri)
-var _tickerNames={'tapo':'tapobridge','tapopy':'tapo-py','prijate':'prijatelister','pitransfer':'pitransfer','irbridge':'irbridge','pimonitor':'pimonitor','taporestart':'tapo-restart','obs':'obs-bridge'};
+var _tickerNames={'tapo':'tapobridge','tapopy':'tapo-py','prijate':'prijatelister','pitransfer':'pitransfer','irbridge':'irbridge','pimonitor':'pimonitor','taporestart':'tapo-restart','obs':'obs-bridge','weareone':'weareone'};
 function updateTicker(){
   var list=Object.keys(_tickerNames).filter(function(k){return !!_svcActive[k];}).map(function(k){return _tickerNames[k];});
   var scrEl=document.getElementById('net-scripts-inner');
@@ -634,7 +636,7 @@ function loadStats(){
     // Procesy (pokud Pi posle realna data, prepise ACTIVE ON)
     if(d.proc_count!==undefined){var el=document.getElementById('net-proc');el.textContent=d.proc_count;el.classList.remove('net-active');}
     // Restarty služeb
-    if(d.restarts){var rmap={'tp':'tapo-py','tb':'tapobridge','ir':'irbridge','pm':'pimonitor','pb':'plugbridge','pt':'pitransfer','pl':'prijatelister'};Object.keys(rmap).forEach(function(k){var e=document.getElementById('r-'+k);if(e){var cnt=d.restarts[rmap[k]]!==undefined?d.restarts[rmap[k]]:0;e.textContent=cnt;e.style.color=cnt>0?'#ffaa00':'#00ff88';if(cnt>0){e.classList.add('restart-active');}else{e.classList.remove('restart-active');}}});}
+    if(d.restarts){var rmap={'tp':'tapo-py','tb':'tapobridge','ir':'irbridge','pm':'pimonitor','pb':'plugbridge','pt':'pitransfer','pl':'prijatelister','wo':'weareone'};Object.keys(rmap).forEach(function(k){var e=document.getElementById('r-'+k);if(e){var cnt=d.restarts[rmap[k]]!==undefined?d.restarts[rmap[k]]:0;e.textContent=cnt;e.style.color=cnt>0?'#ffaa00':'#00ff88';if(cnt>0){e.classList.add('restart-active');}else{e.classList.remove('restart-active');}}});}
     // Ticker se aktualizuje automaticky ze _svcActive (setSvc to resi)
     updateTicker();
   })
@@ -655,6 +657,13 @@ function loadStats(){
     setDev('zxnext',d&&d.on===true,fresh);
   })
   .catch(function(){setSvc('tuyaplug',false);setDev('zxnext',false,false);});
+  // WeAreOne Bridge - čte timestamp z radio/housetime
+  fbFetch(fbUrl('/radio/housetime/ts.json'),{signal:AbortSignal.timeout(5000)})
+  .then(function(r){return r.json();})
+  .then(function(ts){
+    setSvc('weareone',ts&&(Date.now()-ts<600000));
+  })
+  .catch(function(){setSvc('weareone',false);});
   // Tapo Python bridge (kladyx-tapo-py na Pi4) + stav zasuvky DJ Studio.
   // Cteme cely uzel tapoDb misto jen lastSeen -> jeden fetch pokryje obojí,
   // zadny request navic.
