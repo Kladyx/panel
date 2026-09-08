@@ -10686,7 +10686,7 @@ var STATIONS = [
   { id:'krokodyl',  name:'Krokodýl',         desc:'Internet radio',    icon:'🐊', url:'https://icecast4.play.cz/krokodyl128.mp3' },
   { id:'rcity',     name:'Radio City',       desc:'Pop & Talk',        icon:'🏙️', url:'https://ice.abradio.cz/cityfm128.mp3' },
   { id:'radio1',    name:'Radio 1',          desc:'Alternative',       icon:'📡', url:'https://icecast6.play.cz/radio1-128.mp3' },
-  { id:'impuls',    name:'Rádio Impuls',     desc:'České hity',        icon:'⚡', url:'https://icecast5.play.cz/impuls128.mp3' },
+  { id:'evropa2',   name:'Evropa 2',          desc:'Největší hity',     icon:'🎶', url:'https://ice.actve.net/fm-evropa2-128' },
   { id:'intense',    name:'Intense Radio',    desc:'Dance & House NL',  icon:'⚡', url:'https://intenseradio.live-streams.nl/live' },
   { id:'funkstar',  name:'Funkstar Radio',   desc:'Funk & Soul CZ',    icon:'🎶', url:'https://funkstar.radioca.st/stream' },
   { id:'gayfm',     name:'Gay FM',           desc:'Dance · DE',        icon:'🏳️‍🌈', url:'https://icepool.silvacast.com/GAYFM.mp3' },
@@ -15485,7 +15485,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='v5.2.14PlPro 2026/9 Kladyx';
+  var CURRENT='v5.2.15PlPro 2026/9 Kladyx';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
