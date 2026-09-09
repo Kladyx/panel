@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v4.3Kl</title>
+<title>KladyxTransfer v4.4Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v4.3Kl • Firebase + GitHub + PC Historie</div>
+  <div class="version">v4.4Kl • Firebase + GitHub + PC Historie</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -327,6 +327,7 @@
 
     <select class="gh-select" id="ghTarget">
       <option value="index">kladyxland - index.html</option>
+      <option value="videos_json">kladyxland - videos.json</option>
       <option value="panel">panel - Panel.html</option>
       <option value="cotoje">panel - cotoje.html</option>
       <option value="equalizer">panel - equalizer.html</option>
@@ -346,7 +347,6 @@
       <option value="videos">panel - apps/videos.html</option>
       <option value="status">panel - status.html</option>
       <option value="wordmaster">panel - wordmaster.html</option>
-      <option value="mixcloud">panel - mixcloud.html</option>
       <option value="manifest">panel - manifest.json</option>
     </select>
 
@@ -387,6 +387,7 @@
 
     <select class="gh-select" id="ghDownTarget">
       <option value="kladyxland/index.html">kladyxland - index.html</option>
+      <option value="kladyxland/videos.json">kladyxland - videos.json</option>
       <option value="panel/Panel.html">panel - Panel.html</option>
       <option value="panel/cotoje.html">panel - cotoje.html</option>
       <option value="panel/equalizer.html">panel - equalizer.html</option>
@@ -406,7 +407,6 @@
       <option value="panel/apps/videos.html">panel - apps/videos.html</option>
       <option value="panel/status.html">panel - status.html</option>
       <option value="panel/wordmaster.html">panel - wordmaster.html</option>
-      <option value="panel/mixcloud.html">panel - mixcloud.html</option>
       <option value="panel/manifest.json">panel - manifest.json</option>
     </select>
 
@@ -1043,6 +1043,7 @@ var GH_OWNER = 'kladyx';
 var selectedGhFile = null;
 var GH_TARGETS = {
   index: { repo: 'kladyxland', path: 'index.html', msg: 'Update index' },
+  videos_json: { repo: 'kladyxland', path: 'videos.json', msg: 'Update videos.json' },
   panel: { repo: 'panel', path: 'Panel.html', msg: 'Update panel' },
   cotoje: { repo: 'panel', path: 'cotoje.html', msg: 'Update panel' },
   equalizer: { repo: 'panel', path: 'equalizer.html', msg: 'Update panel' },
@@ -1062,7 +1063,6 @@ var GH_TARGETS = {
   videos: { repo: 'panel', path: 'apps/videos.html', msg: 'Update videos' },
   status: { repo: 'panel', path: 'status.html', msg: 'Update panel' },
   wordmaster: { repo: 'panel', path: 'wordmaster.html', msg: 'Update panel' },
-  mixcloud: { repo: 'panel', path: 'mixcloud.html', msg: 'Update panel' },
   manifest: { repo: 'panel', path: 'manifest.json', msg: 'Update panel' }
 };
 
