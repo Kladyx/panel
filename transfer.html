@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v4.7Kl</title>
+<title>KladyxTransfer v4.8Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v4.7Kl • Firebase + GitHub + PC Historie + Video rotace</div>
+  <div class="version">v4.8Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -400,6 +400,15 @@
       <div class="progress-bar" id="progressBarVideo"></div>
       <div class="progress-text" id="progressTextVideo">0%</div>
     </div>
+  </div>
+
+  <div class="box" style="margin-top:20px">
+    <div class="icon">🗂️</div>
+    <div class="desc">Správa videí v <b>rotaci</b></div>
+    <div class="desc2">Videa v kladyxland/videa/ · vyžaduje GitHub Token</div>
+    <button class="sendbtn" onclick="loadVideoList()" style="font-size:.9rem;padding:10px 20px;margin-bottom:12px;">🔄 Načíst videa</button>
+    <div class="status" id="statusVideoList"></div>
+    <div id="videoListContainer" style="margin-top:10px;text-align:left;"></div>
   </div>
 
   <div class="box" style="margin-top:20px">
@@ -1478,6 +1487,97 @@ function sendVideoToGithub() {
     btn.disabled = false;
   };
   reader.readAsDataURL(selectedVideoFile);
+}
+
+// ─── Video rotace — správa (v4.8Kl) ──────────────────
+function loadVideoList() {
+  var token = getGhToken();
+  var status = document.getElementById('statusVideoList');
+  var container = document.getElementById('videoListContainer');
+  status.textContent = '📡 Načítám seznam videí...';
+  status.className = 'status';
+  container.innerHTML = '';
+
+  var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/videa';
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', apiUrl);
+  if (token) xhr.setRequestHeader('Authorization', 'token ' + token);
+  xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+  xhr.onload = function() {
+    if (xhr.status !== 200) {
+      status.textContent = '❌ Chyba načtení: ' + xhr.status;
+      return;
+    }
+    var files = [];
+    try { files = JSON.parse(xhr.responseText); } catch(e) {}
+    var videos = files.filter(function(f) { return f.type === 'file' && f.name.toLowerCase().endsWith('.mp4'); });
+    if (videos.length === 0) {
+      status.textContent = '';
+      container.innerHTML = '<div class="pifile-empty">Žádná videa v rotaci</div>';
+      return;
+    }
+    status.textContent = '✅ Načteno: ' + videos.length + ' videí';
+    status.className = 'status done';
+    var html = '';
+    for (var i = 0; i < videos.length; i++) {
+      var v = videos[i];
+      var sizeStr = v.size ? (v.size / 1024).toFixed(0) + ' KB' : '';
+      var safeId = 'vitem_' + i;
+      html += '<div class="queue-item" style="justify-content:space-between;" id="' + safeId + '">';
+      html += '<div class="queue-name" style="font-size:.85rem;">🎬 ' + escapeHtml(v.name);
+      if (sizeStr) html += ' <span style="color:rgba(255,255,255,.4);font-size:.75rem;">(' + sizeStr + ')</span>';
+      html += '</div>';
+      html += '<button onclick="deleteVideoFromGithub(\'' + v.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\',\'' + v.sha + '\',\'' + safeId + '\')" ';
+      html += 'style="background:rgba(255,50,50,.2);border:1px solid #ff4444;color:#ff4444;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.82rem;flex-shrink:0;white-space:nowrap;">🗑 Smazat</button>';
+      html += '</div>';
+    }
+    container.innerHTML = html;
+  };
+  xhr.onerror = function() { status.textContent = '❌ Chyba sítě'; };
+  xhr.send();
+}
+
+function deleteVideoFromGithub(filename, sha, itemId) {
+  var token = getGhToken();
+  if (!token) {
+    alert('⚠️ Nejdřív zadej a ulož GitHub Token v sekci 🐙 GitHub Upload');
+    return;
+  }
+  if (!confirm('Opravdu smazat z rotace?\n\n🎬 ' + filename + '\n\nAkce je nevratná!')) return;
+
+  var status = document.getElementById('statusVideoList');
+  var item = document.getElementById(itemId);
+  if (item) item.style.opacity = '0.4';
+  status.textContent = '🗑 Mažu ' + filename + '...';
+  status.className = 'status';
+
+  var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/videa/' + encodeURIComponent(filename);
+  var xhr = new XMLHttpRequest();
+  xhr.open('DELETE', apiUrl);
+  xhr.setRequestHeader('Authorization', 'token ' + token);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      status.textContent = '✅ Smazáno! GitHub Actions aktualizuje rotaci.';
+      status.className = 'status done';
+      if (item) item.remove();
+      addGhHistoryItem('commit', 'kladyxland/videa/' + filename + ' [DELETE]');
+      playDing();
+    } else {
+      if (item) item.style.opacity = '1';
+      var errMsg = '';
+      try { errMsg = JSON.parse(xhr.responseText).message || ''; } catch(e) {}
+      status.textContent = '❌ Chyba ' + xhr.status + ': ' + errMsg;
+      status.className = 'status';
+    }
+  };
+  xhr.onerror = function() {
+    if (item) item.style.opacity = '1';
+    status.textContent = '❌ Chyba sítě';
+    status.className = 'status';
+  };
+  xhr.send(JSON.stringify({ message: 'Delete video: ' + filename, sha: sha }));
 }
 
 // ─── PC Historie (v4.6Kl) ────────────────────────────
