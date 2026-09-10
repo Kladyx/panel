@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KLADYXLAND — Prolog v1.1Kl</title>
+  <title>KLADYXLAND — Prolog v1.2Kl</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -432,7 +432,7 @@
 
 </div>
 
-<div class="version-tag">v1.1Kl</div>
+<div class="version-tag">v1.2Kl</div>
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -476,7 +476,7 @@
         <div class="dodatek-text">${escHtml(item.text)}</div>
         <div class="dodatek-actions" id="act-${item.key}">
           <button class="btn-action btn-edit-doc" onclick="editDodatek('${item.key}', this)">✏️ Upravit</button>
-          <button class="btn-action btn-del-doc" onclick="smazDodatek('${item.key}')">🗑 Smazat</button>
+          <button class="btn-action btn-del-doc" onclick="smazDodatek('${item.key}', this)">🗑 Smazat</button>
         </div>
       </div>`;
     }).join('');
@@ -489,9 +489,21 @@
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  // Smazat dodatek
-  window.smazDodatek = function(key) {
-    if (!confirm('Smazat tento dodatek?')) return;
+  // Smazat dodatek - inline potvrzení bez confirm()
+  window.smazDodatek = function(key, btn) {
+    if (btn.dataset.confirm !== '1') {
+      btn.dataset.confirm = '1';
+      btn.textContent = '⚠️ Potvrdit';
+      btn.style.background = 'rgba(239,68,68,0.35)';
+      setTimeout(() => {
+        if (btn.dataset.confirm === '1') {
+          btn.dataset.confirm = '';
+          btn.textContent = '🗑 Smazat';
+          btn.style.background = '';
+        }
+      }, 3000);
+      return;
+    }
     remove(ref(db, 'prolog/dodatky/' + key))
       .catch(err => alert('Chyba: ' + err.message));
   };
