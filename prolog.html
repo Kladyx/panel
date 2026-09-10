@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KLADYXLAND — Prolog v1.2Kl</title>
+  <title>KLADYXLAND — Prolog v1.3Kl</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -425,6 +425,8 @@
       <div class="admin-label">✏️ Přidat dodatek</div>
       <textarea id="dodatek-input" placeholder="Napiš dodatek…" maxlength="2000"></textarea>
       <br>
+      <input type="url" id="foto-input" placeholder="URL fotky (volitelné) — https://kladyx.github.io/kladyxland/foto/…" style="width:100%;margin-top:10px;padding:10px 14px;background:rgba(0,0,0,.3);border:1px solid rgba(124,58,237,.25);border-radius:8px;color:#e2e4f0;font-family:'Crimson Pro',Georgia,serif;font-size:16px;outline:none;box-sizing:border-box;">
+      <br>
       <button class="btn-add" id="btn-pridat" onclick="pridatDodatek()">Přidat</button>
       <div class="add-status" id="add-status"></div>
     </div>
@@ -432,7 +434,7 @@
 
 </div>
 
-<div class="version-tag">v1.2Kl</div>
+<div class="version-tag">v1.3Kl</div>
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -471,9 +473,11 @@
     items.sort((a, b) => a.ts - b.ts);
     list.innerHTML = items.map((item, i) => {
       const date = item.ts ? new Date(item.ts).toLocaleDateString('cs-CZ', { day:'numeric', month:'long', year:'numeric' }) : '';
+      const fotoHtml = item.foto ? `<img src="${escHtml(item.foto)}" alt="foto" style="width:100%;max-height:320px;object-fit:cover;border-radius:8px;margin-top:12px;display:block;">` : '';
       return `<div class="dodatek-item" style="animation-delay:${i*0.06}s">
         <div class="dodatek-meta">${i + 1}. dodatek${date ? ' · ' + date : ''}</div>
         <div class="dodatek-text">${escHtml(item.text)}</div>
+        ${fotoHtml}
         <div class="dodatek-actions" id="act-${item.key}">
           <button class="btn-action btn-edit-doc" onclick="editDodatek('${item.key}', this)">✏️ Upravit</button>
           <button class="btn-action btn-del-doc" onclick="smazDodatek('${item.key}', this)">🗑 Smazat</button>
@@ -525,6 +529,16 @@
     ta.style.cssText = 'width:100%;min-height:80px;background:rgba(0,0,0,.3);border:1px solid rgba(6,182,212,.35);border-radius:8px;color:#e2e4f0;font-family:"Crimson Pro",Georgia,serif;font-size:18px;line-height:1.6;padding:10px 14px;resize:vertical;outline:none;margin-top:10px;box-sizing:border-box;';
     ta.value = textEl.textContent;
     item.insertBefore(ta, item.querySelector('.dodatek-actions'));
+
+    // foto URL pole
+    const fotoEl = item.querySelector('img');
+    const taFoto = document.createElement('input');
+    taFoto.type = 'url';
+    taFoto.className = 'edit-foto';
+    taFoto.placeholder = 'URL fotky (volitelné)';
+    taFoto.style.cssText = 'width:100%;margin-top:6px;padding:8px 12px;background:rgba(0,0,0,.3);border:1px solid rgba(6,182,212,.3);border-radius:8px;color:#e2e4f0;font-size:15px;outline:none;box-sizing:border-box;';
+    taFoto.value = fotoEl ? fotoEl.src : '';
+    item.insertBefore(taFoto, item.querySelector('.dodatek-actions'));
     const saveBtn = document.createElement('button');
     saveBtn.className = 'btn-action btn-edit-doc edit-save';
     saveBtn.textContent = '✓ Uložit';
@@ -532,14 +546,22 @@
     saveBtn.onclick = () => {
       const newText = ta.value.trim();
       if (!newText) return;
+      const newFoto = taFoto.value.trim();
       set(ref(db, 'prolog/dodatky/' + key + '/text'), newText)
         .catch(err => alert('Chyba: ' + err.message));
+      if (newFoto) {
+        set(ref(db, 'prolog/dodatky/' + key + '/foto'), newFoto)
+          .catch(err => alert('Chyba foto: ' + err.message));
+      } else {
+        remove(ref(db, 'prolog/dodatky/' + key + '/foto'))
+          .catch(() => {});
+      }
     };
     const cancelBtn = document.createElement('button');
     cancelBtn.className = 'btn-action btn-del-doc edit-cancel';
     cancelBtn.textContent = '✕ Zrušit';
     cancelBtn.style.marginTop = '8px';
-    cancelBtn.onclick = () => { ta.remove(); saveBtn.remove(); cancelBtn.remove(); textEl.style.display = ''; };
+    cancelBtn.onclick = () => { ta.remove(); taFoto.remove(); saveBtn.remove(); cancelBtn.remove(); textEl.style.display = ''; };
     item.insertBefore(saveBtn, item.querySelector('.dodatek-actions'));
     item.insertBefore(cancelBtn, item.querySelector('.dodatek-actions'));
   };
@@ -550,13 +572,18 @@
     const btn    = document.getElementById('btn-pridat');
     const status = document.getElementById('add-status');
     const text   = input.value.trim();
+    const foto   = document.getElementById('foto-input').value.trim();
     if (!text) { status.style.color = '#ef4444'; status.textContent = 'Text nesmí být prázdný.'; return; }
     btn.disabled = true;
     status.style.color = '#c4b5fd';
     status.textContent = 'Ukládám…';
-    push(ref(db, 'prolog/dodatky'), { text, ts: Date.now() })
+    const data = { text, ts: Date.now() };
+    if (foto) data.foto = foto;
+    push(ref(db, 'prolog/dodatky'), data)
       .then(() => {
         input.value = '';
+        const fotoInp = document.getElementById('foto-input');
+        if (fotoInp) fotoInp.value = '';
         status.style.color = '#22c55e';
         status.textContent = '✓ Dodatek uložen.';
         btn.disabled = false;
