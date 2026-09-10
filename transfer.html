@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v4.3Kl</title>
+<title>KladyxTransfer v5.1Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v4.3Kl • Firebase + GitHub + PC Historie</div>
+  <div class="version">v5.1Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -346,7 +346,6 @@
       <option value="videos">panel - apps/videos.html</option>
       <option value="status">panel - status.html</option>
       <option value="wordmaster">panel - wordmaster.html</option>
-      <option value="mixcloud">panel - mixcloud.html</option>
       <option value="manifest">panel - manifest.json</option>
     </select>
 
@@ -381,6 +380,38 @@
   </div>
 
   <div class="box" style="margin-top:20px">
+    <div class="icon">🎬</div>
+    <div class="desc">Nahrát video do <b>rotace</b> na webu</div>
+    <div class="desc2">Max. 5 MB · uloží se do kladyxland/videa/</div>
+
+    <input class="gh-input" id="videoFileName" type="text" placeholder="nazev-videa.mp4" style="margin-bottom:10px;width:100%">
+
+    <label class="pickbtn" for="fileInputVideo">🎬 Vybrat .mp4</label>
+    <input type="file" id="fileInputVideo" accept="video/mp4" onchange="onVideoFileSelected()">
+    <div class="filename" id="fileNameVideo">Žádný soubor nevybrán</div>
+
+    <div>
+      <button class="sendbtn" id="sendBtnVideo" onclick="sendVideoToGithub()" disabled>🚀 Commitnout do rotace</button>
+    </div>
+
+    <div class="status" id="statusVideo"></div>
+
+    <div class="progress-wrap" id="progressWrapVideo">
+      <div class="progress-bar" id="progressBarVideo"></div>
+      <div class="progress-text" id="progressTextVideo">0%</div>
+    </div>
+  </div>
+
+  <div class="box" style="margin-top:20px">
+    <div class="icon">🗂️</div>
+    <div class="desc">Správa videí v <b>rotaci</b></div>
+    <div class="desc2">Videa v kladyxland/video/ a videa/ · vyžaduje GitHub Token</div>
+    <button class="sendbtn" onclick="loadVideoList()" style="font-size:.9rem;padding:10px 20px;margin-bottom:12px;">🔄 Načíst videa</button>
+    <div class="status" id="statusVideoList"></div>
+    <div id="videoListContainer" style="margin-top:10px;text-align:left;"></div>
+  </div>
+
+  <div class="box" style="margin-top:20px">
     <div class="icon">⬇️</div>
     <div class="desc">Stáhnout soubor z <b>GitHubu</b></div>
     <div class="desc2">Přímo do mobilu z repa</div>
@@ -406,7 +437,6 @@
       <option value="panel/apps/videos.html">panel - apps/videos.html</option>
       <option value="panel/status.html">panel - status.html</option>
       <option value="panel/wordmaster.html">panel - wordmaster.html</option>
-      <option value="panel/mixcloud.html">panel - mixcloud.html</option>
       <option value="panel/manifest.json">panel - manifest.json</option>
     </select>
 
@@ -1062,7 +1092,6 @@ var GH_TARGETS = {
   videos: { repo: 'panel', path: 'apps/videos.html', msg: 'Update videos' },
   status: { repo: 'panel', path: 'status.html', msg: 'Update panel' },
   wordmaster: { repo: 'panel', path: 'wordmaster.html', msg: 'Update panel' },
-  mixcloud: { repo: 'panel', path: 'mixcloud.html', msg: 'Update panel' },
   manifest: { repo: 'panel', path: 'manifest.json', msg: 'Update panel' }
 };
 
@@ -1324,7 +1353,251 @@ function deleteGhHistoryItem(idx) {
 
 renderGhHistory();
 
-// ─── PC Historie (v4.3Kl) ────────────────────────────
+// ─── Video Upload do rotace (v4.7Kl) ─────────────────
+var VIDEO_MAX_SIZE = 8 * 1024 * 1024;
+var selectedVideoFile = null;
+
+function onVideoFileSelected() {
+  var input = document.getElementById('fileInputVideo');
+  selectedVideoFile = input.files[0] || null;
+  var nameEl = document.getElementById('fileNameVideo');
+  var btn = document.getElementById('sendBtnVideo');
+  var status = document.getElementById('statusVideo');
+  status.textContent = '';
+  if (selectedVideoFile) {
+    if (selectedVideoFile.size > VIDEO_MAX_SIZE) {
+      nameEl.textContent = 'Příliš velký! Max 5 MB';
+      btn.disabled = true;
+      return;
+    }
+    var sizeMB = (selectedVideoFile.size / 1e6).toFixed(2);
+    nameEl.textContent = selectedVideoFile.name + ' (' + sizeMB + ' MB)';
+    var fnInput = document.getElementById('videoFileName');
+    if (!fnInput.value.trim()) fnInput.value = selectedVideoFile.name;
+    btn.disabled = false;
+  } else {
+    nameEl.textContent = 'Žádný soubor nevybrán';
+    btn.disabled = true;
+  }
+}
+
+function sendVideoToGithub() {
+  if (!selectedVideoFile) return;
+  var token = getGhToken();
+  if (!token) {
+    document.getElementById('statusVideo').textContent = '⚠️ Nejdřív zadej a ulož GitHub Token v sekci výše';
+    return;
+  }
+  var fnInput = document.getElementById('videoFileName');
+  var filename = fnInput.value.trim();
+  if (!filename) {
+    document.getElementById('statusVideo').textContent = '⚠️ Zadej název souboru';
+    return;
+  }
+  if (!filename.toLowerCase().endsWith('.mp4')) filename += '.mp4';
+  var safeName = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
+
+  var btn = document.getElementById('sendBtnVideo');
+  var status = document.getElementById('statusVideo');
+  var pWrap = document.getElementById('progressWrapVideo');
+  var pBar = document.getElementById('progressBarVideo');
+  var pText = document.getElementById('progressTextVideo');
+
+  btn.disabled = true;
+  status.textContent = '📤 Čtu soubor...';
+  pWrap.style.display = 'block';
+  pBar.style.width = '0%';
+  pText.textContent = '0%';
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var base64 = e.target.result.split(',')[1];
+    pBar.style.width = '30%';
+    pText.textContent = '30%';
+    status.textContent = '🔍 Kontroluji existující soubor...';
+
+    var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/videa/' + encodeURIComponent(safeName);
+    var xhrGet = new XMLHttpRequest();
+    xhrGet.open('GET', apiUrl);
+    xhrGet.setRequestHeader('Authorization', 'token ' + token);
+    xhrGet.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+    xhrGet.onload = function() {
+      var sha = null;
+      if (xhrGet.status === 200) {
+        try { sha = JSON.parse(xhrGet.responseText).sha; } catch(ex) {}
+      }
+      pBar.style.width = '50%';
+      pText.textContent = '50%';
+      status.textContent = '📡 Odesílám na GitHub...';
+
+      var payload = { message: 'Add video: ' + safeName, content: base64 };
+      if (sha) payload.sha = sha;
+
+      var xhrPut = new XMLHttpRequest();
+      xhrPut.open('PUT', apiUrl);
+      xhrPut.setRequestHeader('Authorization', 'token ' + token);
+      xhrPut.setRequestHeader('Content-Type', 'application/json');
+      xhrPut.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+
+      xhrPut.upload.onprogress = function(ev) {
+        if (ev.lengthComputable) {
+          var pct = 50 + Math.round((ev.loaded / ev.total) * 50);
+          pBar.style.width = pct + '%';
+          pText.textContent = pct + '%';
+        }
+      };
+
+      xhrPut.onload = function() {
+        if (xhrPut.status === 200 || xhrPut.status === 201) {
+          pBar.style.width = '100%';
+          pText.textContent = '100% ✓';
+          status.textContent = '✅ Video commitnuto! GitHub Actions aktualizuje rotaci.';
+          status.className = 'status done';
+          playDing();
+          addGhHistoryItem('commit', 'kladyxland/videa/' + safeName);
+          setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
+        } else {
+          pWrap.style.display = 'none';
+          var errMsg = '';
+          try { errMsg = JSON.parse(xhrPut.responseText).message || ''; } catch(ex) {}
+          status.textContent = '❌ GitHub chyba ' + xhrPut.status + ': ' + errMsg;
+          status.className = 'status';
+        }
+        btn.disabled = false;
+      };
+      xhrPut.onerror = function() {
+        pWrap.style.display = 'none';
+        status.textContent = '❌ Chyba sítě';
+        status.className = 'status';
+        btn.disabled = false;
+      };
+      xhrPut.send(JSON.stringify(payload));
+    };
+    xhrGet.onerror = function() {
+      pWrap.style.display = 'none';
+      status.textContent = '❌ Chyba sítě při kontrole souboru';
+      status.className = 'status';
+      btn.disabled = false;
+    };
+    xhrGet.send();
+  };
+  reader.onerror = function() {
+    pWrap.style.display = 'none';
+    status.textContent = '❌ Chyba při čtení souboru';
+    btn.disabled = false;
+  };
+  reader.readAsDataURL(selectedVideoFile);
+}
+
+// ─── Video rotace — správa (v4.8Kl) ──────────────────
+function loadVideoList() {
+  var token = getGhToken();
+  var status = document.getElementById('statusVideoList');
+  var container = document.getElementById('videoListContainer');
+  status.textContent = '📡 Načítám seznam videí...';
+  status.className = 'status';
+  container.innerHTML = '';
+
+  var folders = ['videa', 'video'];
+  var allVideos = [];
+  var done = 0;
+
+  folders.forEach(function(folder) {
+    var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/' + folder;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', apiUrl);
+    if (token) xhr.setRequestHeader('Authorization', 'token ' + token);
+    xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var files = [];
+        try { files = JSON.parse(xhr.responseText); } catch(e) {}
+        files.filter(function(f) { return f.type === 'file' && f.name.toLowerCase().endsWith('.mp4'); })
+          .forEach(function(f) { f._folder = folder; allVideos.push(f); });
+      }
+      done++;
+      if (done === folders.length) renderVideoList(allVideos, status, container);
+    };
+    xhr.onerror = function() {
+      done++;
+      if (done === folders.length) renderVideoList(allVideos, status, container);
+    };
+    xhr.send();
+  });
+}
+
+function renderVideoList(videos, status, container) {
+  if (videos.length === 0) {
+    status.textContent = '';
+    container.innerHTML = '<div class="pifile-empty">Žádná videa v rotaci</div>';
+    return;
+  }
+  status.textContent = '✅ Načteno: ' + videos.length + ' videí';
+  status.className = 'status done';
+  var html = '';
+  for (var i = 0; i < videos.length; i++) {
+    var v = videos[i];
+    var sizeStr = v.size ? (v.size / 1024).toFixed(0) + ' KB' : '';
+    var safeId = 'vitem_' + i;
+    html += '<div class="queue-item" style="justify-content:space-between;" id="' + safeId + '">';
+    html += '<div class="queue-name" style="font-size:.85rem;">🎬 ' + escapeHtml(v.name);
+    if (sizeStr) html += ' <span style="color:rgba(255,255,255,.4);font-size:.75rem;">(' + sizeStr + ')</span>';
+    html += '</div>';
+    html += '<button onclick="deleteVideoFromGithub(\'' + v.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\',\'' + v.sha + '\',\'' + safeId + '\',\'' + v._folder + '\')" ';
+    html += 'style="background:rgba(255,50,50,.2);border:1px solid #ff4444;color:#ff4444;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.82rem;flex-shrink:0;white-space:nowrap;">🗑 Smazat</button>';
+    html += '</div>';
+  }
+  container.innerHTML = html;
+}
+
+function deleteVideoFromGithub(filename, sha, itemId, folder) {
+  var token = getGhToken();
+  if (!token) {
+    alert('⚠️ Nejdřív zadej a ulož GitHub Token v sekci 🐙 GitHub Upload');
+    return;
+  }
+  if (filename === 'Kladyxland_bounce.mp4') {
+    alert('⛔ Toto video je intro Panelu a webu — nelze smazat.');
+    return;
+  }
+  if (!confirm('Opravdu smazat z rotace?\n\n🎬 ' + filename + '\n\nAkce je nevratná!')) return;
+
+  var status = document.getElementById('statusVideoList');
+  var item = document.getElementById(itemId);
+  if (item) item.style.opacity = '0.4';
+  status.textContent = '🗑 Mažu ' + filename + '...';
+  status.className = 'status';
+
+  var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/' + folder + '/' + encodeURIComponent(filename);
+  var xhr = new XMLHttpRequest();
+  xhr.open('DELETE', apiUrl);
+  xhr.setRequestHeader('Authorization', 'token ' + token);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      status.textContent = '✅ Smazáno! GitHub Actions aktualizuje rotaci.';
+      status.className = 'status done';
+      if (item) item.remove();
+      addGhHistoryItem('commit', 'kladyxland/videa/' + filename + ' [DELETE]');
+      playDing();
+    } else {
+      if (item) item.style.opacity = '1';
+      var errMsg = '';
+      try { errMsg = JSON.parse(xhr.responseText).message || ''; } catch(e) {}
+      status.textContent = '❌ Chyba ' + xhr.status + ': ' + errMsg;
+      status.className = 'status';
+    }
+  };
+  xhr.onerror = function() {
+    if (item) item.style.opacity = '1';
+    status.textContent = '❌ Chyba sítě';
+    status.className = 'status';
+  };
+  xhr.send(JSON.stringify({ message: 'Delete video: ' + filename, sha: sha }));
+}
+
+// ─── PC Historie (v4.6Kl) ────────────────────────────
 function addPcHistoryItem(filename) {
   var store = getStorage();
   var hist = [];
@@ -1543,5 +1816,10 @@ function loadPendingQueue() {
 loadPendingQueue();
 
 </script>
+  <div class="box" style="margin-top:20px;opacity:.7;font-size:.82rem;line-height:1.6;">
+    <div style="color:#00ff99;">✅ Odkudkoliv: GitHub commity, video upload, správa videí, Firebase</div>
+    <div style="color:#ff6666;margin-top:6px;">❌ Jen na domácí síti: přenos souborů na PC a Pi4 (lokální HTTP)</div>
+  </div>
+
 </body>
 </html>
