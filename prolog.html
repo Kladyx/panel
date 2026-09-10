@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KLADYXLAND — Prolog v1.0Kl</title>
+  <title>KLADYXLAND — Prolog v1.1Kl</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -166,6 +166,38 @@
       border: 1px solid rgba(124,58,237,0.15);
       border-radius: 10px;
       animation: fadeIn .4s ease both;
+    }
+
+    .dodatek-actions {
+      display: none;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn-action {
+      padding: 5px 14px;
+      border-radius: 6px;
+      border: none;
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+
+    .btn-action:hover { opacity: .8; }
+
+    .btn-edit-doc {
+      background: rgba(6,182,212,0.15);
+      color: var(--teal);
+      border: 1px solid rgba(6,182,212,0.3);
+    }
+
+    .btn-del-doc {
+      background: rgba(239,68,68,0.12);
+      color: var(--red);
+      border: 1px solid rgba(239,68,68,0.25);
     }
 
     @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
@@ -400,11 +432,11 @@
 
 </div>
 
-<div class="version-tag">v1.0Kl</div>
+<div class="version-tag">v1.1Kl</div>
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-  import { getDatabase, ref, onValue, push, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+  import { getDatabase, ref, onValue, push, set, remove, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
   import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
   const app = initializeApp({
@@ -442,13 +474,63 @@
       return `<div class="dodatek-item" style="animation-delay:${i*0.06}s">
         <div class="dodatek-meta">${i + 1}. dodatek${date ? ' · ' + date : ''}</div>
         <div class="dodatek-text">${escHtml(item.text)}</div>
+        <div class="dodatek-actions" id="act-${item.key}">
+          <button class="btn-action btn-edit-doc" onclick="editDodatek('${item.key}', this)">✏️ Upravit</button>
+          <button class="btn-action btn-del-doc" onclick="smazDodatek('${item.key}')">🗑 Smazat</button>
+        </div>
       </div>`;
     }).join('');
+    if (isOwner) {
+      document.querySelectorAll('.dodatek-actions').forEach(el => el.style.display = 'flex');
+    }
   });
 
   function escHtml(s) {
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
+
+  // Smazat dodatek
+  window.smazDodatek = function(key) {
+    if (!confirm('Smazat tento dodatek?')) return;
+    remove(ref(db, 'prolog/dodatky/' + key))
+      .catch(err => alert('Chyba: ' + err.message));
+  };
+
+  // Editovat dodatek
+  window.editDodatek = function(key, btn) {
+    const item = btn.closest('.dodatek-item');
+    const textEl = item.querySelector('.dodatek-text');
+    if (item.querySelector('.edit-area')) {
+      item.querySelector('.edit-area').remove();
+      item.querySelector('.edit-save') && item.querySelector('.edit-save').remove();
+      item.querySelector('.edit-cancel') && item.querySelector('.edit-cancel').remove();
+      textEl.style.display = '';
+      return;
+    }
+    textEl.style.display = 'none';
+    const ta = document.createElement('textarea');
+    ta.className = 'edit-area';
+    ta.style.cssText = 'width:100%;min-height:80px;background:rgba(0,0,0,.3);border:1px solid rgba(6,182,212,.35);border-radius:8px;color:#e2e4f0;font-family:"Crimson Pro",Georgia,serif;font-size:18px;line-height:1.6;padding:10px 14px;resize:vertical;outline:none;margin-top:10px;box-sizing:border-box;';
+    ta.value = textEl.textContent;
+    item.insertBefore(ta, item.querySelector('.dodatek-actions'));
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'btn-action btn-edit-doc edit-save';
+    saveBtn.textContent = '✓ Uložit';
+    saveBtn.style.marginTop = '8px';
+    saveBtn.onclick = () => {
+      const newText = ta.value.trim();
+      if (!newText) return;
+      set(ref(db, 'prolog/dodatky/' + key + '/text'), newText)
+        .catch(err => alert('Chyba: ' + err.message));
+    };
+    const cancelBtn = document.createElement('button');
+    cancelBtn.className = 'btn-action btn-del-doc edit-cancel';
+    cancelBtn.textContent = '✕ Zrušit';
+    cancelBtn.style.marginTop = '8px';
+    cancelBtn.onclick = () => { ta.remove(); saveBtn.remove(); cancelBtn.remove(); textEl.style.display = ''; };
+    item.insertBefore(saveBtn, item.querySelector('.dodatek-actions'));
+    item.insertBefore(cancelBtn, item.querySelector('.dodatek-actions'));
+  };
 
   // Přidat dodatek (global scope)
   window.pridatDodatek = function() {
