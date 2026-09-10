@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v4.11Kl</title>
+<title>KladyxTransfer v5.1Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v4.11Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Mixcloud</div>
+  <div class="version">v5.1Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -326,7 +326,6 @@
     <div class="desc2">Přímo z mobilu do repa</div>
 
     <select class="gh-select" id="ghTarget">
-      <option value="mixcloud">kladyxland - mixcloud.html</option>
       <option value="index">kladyxland - index.html</option>
       <option value="panel">panel - Panel.html</option>
       <option value="cotoje">panel - cotoje.html</option>
@@ -418,7 +417,6 @@
     <div class="desc2">Přímo do mobilu z repa</div>
 
     <select class="gh-select" id="ghDownTarget">
-      <option value="kladyxland/mixcloud.html">kladyxland - mixcloud.html</option>
       <option value="kladyxland/index.html">kladyxland - index.html</option>
       <option value="panel/Panel.html">panel - Panel.html</option>
       <option value="panel/cotoje.html">panel - cotoje.html</option>
@@ -1074,7 +1072,6 @@ renderMobileHistory();
 var GH_OWNER = 'kladyx';
 var selectedGhFile = null;
 var GH_TARGETS = {
-  mixcloud: { repo: 'kladyxland', path: 'mixcloud.html', msg: 'Update mixcloud' },
   index: { repo: 'kladyxland', path: 'index.html', msg: 'Update index' },
   panel: { repo: 'panel', path: 'Panel.html', msg: 'Update panel' },
   cotoje: { repo: 'panel', path: 'cotoje.html', msg: 'Update panel' },
@@ -1557,6 +1554,10 @@ function deleteVideoFromGithub(filename, sha, itemId, folder) {
   var token = getGhToken();
   if (!token) {
     alert('⚠️ Nejdřív zadej a ulož GitHub Token v sekci 🐙 GitHub Upload');
+    return;
+  }
+  if (filename === 'Kladyxland_bounce.mp4') {
+    alert('⛔ Toto video je intro Panelu a webu — nelze smazat.');
     return;
   }
   if (!confirm('Opravdu smazat z rotace?\n\n🎬 ' + filename + '\n\nAkce je nevratná!')) return;
