@@ -299,7 +299,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.3.0PlPro 2026/9 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.3.1PlPro 2026/9 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -684,6 +684,7 @@
     <iframe id="frame-speakup" class="app-frame" title="speakup" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allow="microphone *" allowfullscreen></iframe>
     <iframe id="frame-videos" class="app-frame" title="videos" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
     <iframe id="frame-accounts" class="app-frame" title="accounts" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
+    <iframe id="frame-prolog" class="app-frame" title="prolog" sandbox="allow-scripts allow-same-origin" allowfullscreen></iframe>
     <iframe id="frame-residence" class="app-frame" title="residence" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowfullscreen></iframe>
 
   </div>
@@ -12407,7 +12408,7 @@ var DEFAULT=[
   "\uD83E\uDE78 Gluk\u00F3za","\uD83C\uDF99 OBS Status","\uD83C\uDF24 Po\u010Das\u00ED","\uD83D\uDCDD Pozn\u00E1mky","\uD83D\uDCC5 Kalend\u00E1\u0159",
   "\uD83D\uDD79 ZX Next","\uD83D\uDCD6 Manu\u00E1ly","\uD83D\uDCDA \u010Dte\u010Dka","\uD83C\uDDEC\uD83C\uDDE7 WordMaster","\uD83D\uDCFB Multitrack",
   "\uD83D\uDFE2 Status","\uD83C\uDFA4 Radio ID","\uD83C\uDFAE ZX Games","\uD83C\uDF0D World Time","\uD83C\uDF10 P\u0159eklada\u010D",
-  "\uD83D\uDCE1 NextSync","\uD83D\uDCF8 Co to je???","\uD83C\uDFB5 KladyxAmp","\uD83D\uDE80 SpeedTest","\uD83D\uDCE4 Transfer","\uD83C\uDFE0 KladyxHome","\uD83C\uDF53 Pi Monitor","\uD83C\uDF9B\uFE0F Equalizer","\u2699\uFE0F Scripty","\uD83C\uDFE2 Residence","🎤 SpeakUp","🎬 Videos","🔐 Accounts","\uD83D\uDE80 Starter","\uD83C\uDFE0 Dom\u016F","\uD83D\uDC64 Moje Apky"
+  "\uD83D\uDCE1 NextSync","\uD83D\uDCF8 Co to je???","\uD83C\uDFB5 KladyxAmp","\uD83D\uDE80 SpeedTest","\uD83D\uDCE4 Transfer","\uD83C\uDFE0 KladyxHome","\uD83C\uDF53 Pi Monitor","\uD83C\uDF9B\uFE0F Equalizer","\u2699\uFE0F Scripty","\uD83C\uDFE2 Residence","🎤 SpeakUp","🎬 Videos","🔐 Accounts","\uD83D\uDE80 Starter","\uD83C\uDFE0 Dom\u016F","📖 Prolog","\uD83D\uDC64 Moje Apky"
 ];
 
 var APP_IDS={
@@ -12418,7 +12419,7 @@ var APP_IDS={
   "ZX Next":"zxnext","Manu\u00E1ly":"manualy","\u010Dte\u010Dka":"reader","WordMaster":"wordmaster",
   "Multitrack":"multitrack","Status":"status","Radio ID":"radio",
   "ZX Games":"zxgames","World Time":"worldtime","P\u0159eklada\u010D":"prekladac",
-  "NextSync":"nextsync","Scripty":"scripty","Co to je???":"cotoje","KladyxAmp":"kladyxamp","SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer","Residence":"residence","SpeakUp":"speakup","Videos":"videos","Accounts":"accounts","Starter":"starter","Dom\u016F":"home","Moje Apky":"user"
+  "NextSync":"nextsync","Scripty":"scripty","Co to je???":"cotoje","KladyxAmp":"kladyxamp","SpeedTest":"speedtest","Transfer":"transfer","KladyxHome":"kladyxhome","Pi Monitor":"pimonitor","Equalizer":"equalizer","Residence":"residence","SpeakUp":"speakup","Videos":"videos","Accounts":"accounts","Starter":"starter","Dom\u016F":"home","Prolog":"prolog","Moje Apky":"user"
 };
 
 var selectedAddIcon=QUICK_ICONS[0];
@@ -14347,7 +14348,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v5.3.0PlPro 2026/9 Kladyx</div>
+<div class="ver">v5.3.1PlPro 2026/9 Kladyx</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -14437,6 +14438,350 @@ function render(){
 document.getElementById('rDate').value=new Date().toISOString().slice(0,10);
 initFB();
 <\/script>
+</body>
+</html>
+`;
+
+APP_HTML["prolog"] = `<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KLADYXLAND — Pojednání</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:     #07070f;
+      --ink:    #e2e4f0;
+      --muted:  #5a5f7a;
+      --violet: #7c3aed;
+      --teal:   #06b6d4;
+      --green:  #22c55e;
+      --rule:   rgba(124,58,237,0.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.78;
+      font-weight: 300;
+      padding: 0 0 120px;
+    }
+
+    /* ─── Glow vignette ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%,   rgba(124,58,237,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(6,182,212,0.07)  0%, transparent 55%);
+    }
+
+    .page {
+      position: relative; z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* ─── Hero ─── */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Orbitron', monospace;
+      font-size: 10px;
+      letter-spacing: 6px;
+      color: var(--teal);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: .7;
+    }
+
+    h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(38px, 9vw, 72px);
+      font-weight: 900;
+      letter-spacing: 4px;
+      line-height: 1.05;
+      background: linear-gradient(135deg, #c4b5fd 0%, #a5f3fc 55%, #86efac 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      letter-spacing: 4px;
+      color: var(--muted);
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .hero-rule {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--violet), transparent);
+      margin: 48px auto 0;
+    }
+
+    /* ─── Sections ─── */
+    section {
+      padding: 56px 0 0;
+    }
+
+    .sec-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      letter-spacing: 5px;
+      color: var(--violet);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      opacity: .75;
+    }
+
+    h2 {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 30px;
+      font-weight: 600;
+      line-height: 1.2;
+      color: #f0f0ff;
+      margin-bottom: 24px;
+    }
+
+    p { margin-bottom: 22px; }
+    p:last-child { margin-bottom: 0; }
+
+    em {
+      font-style: italic;
+      color: #c4b5fd;
+    }
+
+    strong {
+      font-weight: 600;
+      color: #f0f0ff;
+    }
+
+    .teal { color: var(--teal); font-style: normal; }
+    .green { color: var(--green); font-style: normal; }
+
+    /* ─── Inline list ─── */
+    .app-flow {
+      font-size: 17px;
+      color: var(--muted);
+      margin: 28px 0;
+      padding: 24px 28px;
+      border-left: 2px solid var(--rule);
+      border-left-color: rgba(124,58,237,0.35);
+      line-height: 2;
+      background: rgba(124,58,237,0.04);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .app-flow span {
+      color: var(--ink);
+      font-style: italic;
+    }
+
+    /* ─── Divider ─── */
+    .divider {
+      margin: 64px 0 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--rule) 30%, var(--rule) 70%, transparent 100%);
+    }
+
+    /* ─── Signature ─── */
+    .signature {
+      padding: 80px 0 0;
+      text-align: center;
+    }
+
+    .sig-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 5px;
+      background: linear-gradient(135deg, #c4b5fd, #a5f3fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+
+    .sig-meta {
+      font-size: 14px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+    }
+
+    .sig-place {
+      font-size: 16px;
+      font-style: italic;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    @media (max-width: 640px) {
+      body { font-size: 18px; }
+      .hero { padding: 70px 0 60px; }
+      .app-flow { padding: 18px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">Pojednání o díle</div>
+    <h1>KLADYXLAND</h1>
+    <div class="hero-sub">DJ Kladyx · Příbor · 2026</div>
+    <div class="hero-rule"></div>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <div class="sec-label">Původ</div>
+    <h2>Začalo to jednoduše.</h2>
+    <p>
+      Chtěl jsem mít doma přehled. Vědět co hraje rádio, kdy jsem naposledy naměřil glukózu,
+      jestli zásuvka v DJ studiu svítí nebo ne. Žádná hotová aplikace to neuměla přesně tak,
+      jak jsem potřeboval. Tak jsem si ji napsal sám.
+    </p>
+    <p>
+      Z jednoho HTML souboru vznikl systém, který dnes nazývám <em>KLADYXLAND</em> —
+      osobní digitální svět postavený od základů, jednou rukou, z mobilu, přesně podle
+      mých představ.
+    </p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 2 -->
+  <section>
+    <div class="sec-label">Jádro systému</div>
+    <h2>Panel — čtyřicet aplikací v jednom.</h2>
+    <p>
+      Srdcem celého KLADYXLANDU je <strong>Panel.html</strong> — jeden soubor s více než
+      dvaceti tisíci řádky kódu, který v sobě ukrývá čtyřicet samostatných aplikací.
+      Žádný framework, žádný build systém. Čistý HTML, CSS a JavaScript, napsaný ručně,
+      každý řádek s důvodem.
+    </p>
+    <div class="app-flow">
+      <span>💿 CD a LP databáze</span> · <span>🩸 Glukóza</span> · <span>🎙 OBS Status</span> ·
+      <span>🌤 Počasí</span> · <span>📝 Poznámky</span> · <span>📅 Kalendář</span> ·
+      <span>🔧 Hardware</span> · <span>🎵 KladyxAmp</span> · <span>📡 NextSync</span> ·
+      <span>🟢 Status checker</span> · <span>🎮 ZX Games</span> · a mnoho dalších&hellip;
+    </div>
+    <p>
+      Panel žije na GitHubu a funguje odkudkoliv na světě — z mobilu, z tabletu, z počítače.
+      Každá appka je přizpůsobena přesně mým potřebám. Žádný kompromis, žádné zbytečné funkce.
+    </p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 3 -->
+  <section>
+    <div class="sec-label">Infrastruktura</div>
+    <h2>Mozek domácnosti běží nepřetržitě.</h2>
+    <p>
+      Za panelem stojí <strong>Raspberry Pi 4</strong> s hostname <em class="teal">djsound</em>,
+      který běží 24 hodin denně, 7 dní v týdnu. Na něm šest systémových služeb:
+      monitorování serveru, ovládání Tapo chytrých zásuvek, IR dálkové ovládání televize
+      a rádia, přenos souborů, sledování online rádia.
+    </p>
+    <p>
+      Vše komunikuje přes <strong>Firebase Realtime Database</strong> — databázi v cloudu,
+      která slouží jako most mezi Raspberry Pi, počítačem a panelem.
+      Místo klasického serveru stačí jeden Firebase projekt.
+      Data tečou, zásuvky se zapínají, stav se aktualizuje — v reálném čase,
+      bez nutnosti otevírat porty nebo platit za hosting.
+    </p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 4 -->
+  <section>
+    <div class="sec-label">Smart Home</div>
+    <h2>Dům poslouchá.</h2>
+    <p>
+      Z panelu zapínám a vypínám <em>DJ studio</em>, lávovou lampu, televizi Sharp,
+      rádio Samsung. Přes chytré zásuvky Tapo, IR hub a Tuya protokol.
+      Vše napsáno v Pythonu a Node.js, bez komerčních hub-řešení, bez předplatného,
+      bez cizích cloudů. Jen moje servery, moje kód, moje pravidla.
+    </p>
+    <p>
+      Každé ráno se Pi4 probudí, každý večer usne. Cron joby, systemd služby,
+      automatické restarty — systém se stará sám o sebe.
+    </p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 5 -->
+  <section>
+    <div class="sec-label">Broadcasting</div>
+    <h2>Hudba ven do světa.</h2>
+    <p>
+      KLADYXLAND není jen domácí systém — je to také broadcastingová platforma.
+      Mikrofon RØDE PodMic, předzesilovač TubePre V2, kompresor, ekvalizér,
+      RodeCaster Duo a rozhraní PreSonus Quantum ES4. DJ setup s gramofony Reloop,
+      mixpultem a CDJ800 MK2.
+    </p>
+    <p>
+      OBS Studio zachytává stream a posílá ho do světa. Bridge napsaný v Node.js
+      hlídá stav vysílání a v reálném čase aktualizuje panel i veřejný web —
+      aby posluchači vždy věděli, jestli jsem <em class="green">ONLINE</em>.
+    </p>
+    <p>
+      Mixcloud archivuje všechny sety. Veřejný web na <strong>kladyx.github.io</strong>
+      ukazuje co hraje, chat s posluchači, galerii, historii streamů.
+      Vše propojeno, vše živé.
+    </p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 6 -->
+  <section>
+    <div class="sec-label">Filozofie</div>
+    <h2>Dělat věci sám má smysl.</h2>
+    <p>
+      Každý řádek kódu, který tady existuje, jsem napsal já. Jednou rukou, z mobilu,
+      ve volném čase. Bez kurzu programování, bez týmu, bez investora.
+    </p>
+    <p>
+      KLADYXLAND je důkaz, že člověk nepotřebuje být profesionál, aby postavil
+      něco fungujícího a smysluplného. Potřebuje jen trpělivost, zvědavost
+      a ochotu nespoléhat na to, že někdo jiný vymyslí řešení za něj.
+    </p>
+    <p>
+      Systém roste každý den. Nové appky, nová automatizace, nové nápady.
+      A dokud bude hrát hudba — bude žít i KLADYXLAND.
+    </p>
+  </section>
+
+  <!-- Signature -->
+  <div class="signature">
+    <div class="sig-name">DJ KLADYX</div>
+    <div class="sig-meta">Kladyxland · 2026</div>
+    <div class="sig-place">Příbor, Česká republika</div>
+  </div>
+
+</div>
 </body>
 </html>
 `;
@@ -15486,7 +15831,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='v5.3.0PlPro 2026/9 Kladyx';
+  var CURRENT='v5.3.1PlPro 2026/9 Kladyx';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
