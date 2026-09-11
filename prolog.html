@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KLADYXLAND — Prolog v1.7Kl</title>
+  <title>KLADYXLAND — Prolog v1.8Kl</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -377,9 +377,96 @@
       .hero { padding: 56px 0 36px; }
       .device-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── Sync bar ── */
+    .sync-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 18px;
+      background: rgba(7,7,15,0.88);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(124,58,237,0.15);
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .sync-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      transition: color .4s;
+    }
+    .sync-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: background .4s, box-shadow .4s;
+      flex-shrink: 0;
+    }
+    .sync-status.online { color: #22c55e; }
+    .sync-status.online .sync-dot { background: #22c55e; box-shadow: 0 0 7px #22c55e; }
+    .sync-status.offline { color: #ef4444; }
+    .sync-status.offline .sync-dot { background: #ef4444; }
+    .theme-toggle {
+      background: none;
+      border: 1px solid rgba(124,58,237,0.3);
+      border-radius: 6px;
+      color: var(--muted);
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    .theme-toggle:hover { border-color: #7c3aed; color: var(--ink); }
+
+    body { padding-top: 32px; }
+
+    /* ── Light mode ── */
+    [data-theme="light"] {
+      --bg:   #f0f0fa;
+      --ink:  #1a1a2e;
+      --muted:#6b6b8a;
+      --rule: rgba(124,58,237,0.12);
+    }
+    [data-theme="light"] body::before {
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(124,58,237,0.06) 0%, transparent 60%);
+    }
+    [data-theme="light"] .sync-bar {
+      background: rgba(240,240,250,0.92);
+      border-bottom-color: rgba(124,58,237,0.12);
+    }
+    [data-theme="light"] .hero-intro,
+    [data-theme="light"] .app-list { background: rgba(124,58,237,0.04); color: #6b6b8a; }
+    [data-theme="light"] .chain { background: rgba(6,182,212,0.04); }
+    [data-theme="light"] .device-card { background: rgba(124,58,237,0.05); border-color: rgba(124,58,237,0.12); }
+    [data-theme="light"] .service-item { background: rgba(124,58,237,0.04); border-color: rgba(124,58,237,0.1); }
+    [data-theme="light"] .stat-pill { background: rgba(124,58,237,0.07); }
+    [data-theme="light"] .zaver { background: rgba(124,58,237,0.05); border-color: rgba(124,58,237,0.15); }
+    [data-theme="light"] .dodatek-item { background: rgba(124,58,237,0.04); border-color: rgba(124,58,237,0.12); }
+    [data-theme="light"] .admin-panel { background: rgba(124,58,237,0.04); }
+    [data-theme="light"] textarea,
+    [data-theme="light"] .edit-ta,
+    [data-theme="light"] .edit-foto,
+    [data-theme="light"] .foto-input-main { background: rgba(255,255,255,0.7); color: #1a1a2e; }
   </style>
 </head>
 <body>
+
+<div class="sync-bar">
+  <div class="sync-status" id="syncStatus">
+    <div class="sync-dot"></div>
+    <span id="syncLabel">SYNCHRONIZACE</span>
+  </div>
+  <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">☀ SVĚTLÝ</button>
+</div>
 
 <div class="page">
 
@@ -618,7 +705,7 @@
 
 </div>
 
-<div class="version-tag">v1.7Kl</div>
+<div class="version-tag">v1.8Kl</div>
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -640,6 +727,41 @@
     document.getElementById('admin-panel').style.display = 'block';
     signInAnonymously(auth).catch(() => {});
   }
+
+  // ── Sync status (Firebase connection) ──
+  onValue(ref(db, '.info/connected'), snap => {
+    const online = snap.val() === true;
+    const el = document.getElementById('syncStatus');
+    const lb = document.getElementById('syncLabel');
+    if (el) {
+      el.className = 'sync-status ' + (online ? 'online' : 'offline');
+      lb.textContent = online ? 'SYNCHRONIZACE' : 'OFFLINE';
+    }
+  });
+
+  // ── Theme sync přes Firebase ──
+  let _applyingTheme = false;
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme || 'dark');
+    const btn = document.getElementById('themeBtn');
+    if (btn) btn.textContent = (theme === 'light') ? '🌙 TMAVÝ' : '☀ SVĚTLÝ';
+  }
+
+  onValue(ref(db, 'prolog/settings/theme'), snap => {
+    if (_applyingTheme) return;
+    applyTheme(snap.val() || 'dark');
+  });
+
+  window.toggleTheme = function() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    _applyingTheme = true;
+    applyTheme(next);
+    set(ref(db, 'prolog/settings/theme'), next).finally(() => {
+      setTimeout(() => { _applyingTheme = false; }, 500);
+    });
+  };
 
   function escHtml(s) {
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
