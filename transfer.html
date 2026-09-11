@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v5.5Kl</title>
+<title>KladyxTransfer v5.6Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v5.5Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí</div>
+  <div class="version">v5.6Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto Prolog</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -405,6 +405,15 @@
   </div>
 
   <div class="box" style="margin-top:20px">
+    <div class="icon">🗂️</div>
+    <div class="desc">Správa videí v <b>rotaci</b></div>
+    <div class="desc2">Videa v kladyxland/video/ a videa/ · vyžaduje GitHub Token</div>
+    <button class="sendbtn" onclick="loadVideoList()" style="font-size:.9rem;padding:10px 20px;margin-bottom:12px;">🔄 Načíst videa</button>
+    <div class="status" id="statusVideoList"></div>
+    <div id="videoListContainer" style="margin-top:10px;text-align:left;"></div>
+  </div>
+
+  <div class="box" style="margin-top:20px">
     <div class="icon">📷</div>
     <div class="desc">Nahrát foto do <b>Prologu</b></div>
     <div class="desc2">Max. 5 MB · jpg/png/webp · uloží se do kladyxland/foto/</div>
@@ -434,12 +443,12 @@
   </div>
 
   <div class="box" style="margin-top:20px">
-    <div class="icon">🗂️</div>
-    <div class="desc">Správa videí v <b>rotaci</b></div>
-    <div class="desc2">Videa v kladyxland/video/ a videa/ · vyžaduje GitHub Token</div>
-    <button class="sendbtn" onclick="loadVideoList()" style="font-size:.9rem;padding:10px 20px;margin-bottom:12px;">🔄 Načíst videa</button>
-    <div class="status" id="statusVideoList"></div>
-    <div id="videoListContainer" style="margin-top:10px;text-align:left;"></div>
+    <div class="icon">🖼️</div>
+    <div class="desc">Správa fotek v <b>Prologu</b></div>
+    <div class="desc2">Fotky v kladyxland/foto/ · vyžaduje GitHub Token</div>
+    <button class="sendbtn" onclick="loadFotoList()" style="font-size:.9rem;padding:10px 20px;margin-bottom:12px;">🔄 Načíst fotky</button>
+    <div class="status" id="statusFotoList"></div>
+    <div id="fotoListContainer" style="margin-top:10px;text-align:left;"></div>
   </div>
 
   <div class="box" style="margin-top:20px">
@@ -1524,159 +1533,6 @@ function sendVideoToGithub() {
   reader.readAsDataURL(selectedVideoFile);
 }
 
-// ─── Foto Upload do Prologu ───────────────────────────
-var FOTO_MAX_SIZE = 5 * 1024 * 1024;
-var selectedFotoFile = null;
-
-function onFotoFileSelected() {
-  var input = document.getElementById('fileInputFoto');
-  selectedFotoFile = input.files[0] || null;
-  var nameEl = document.getElementById('fileNameFoto');
-  var btn = document.getElementById('sendBtnFoto');
-  document.getElementById('statusFoto').textContent = '';
-  document.getElementById('fotoUrlBox').style.display = 'none';
-  if (selectedFotoFile) {
-    if (selectedFotoFile.size > FOTO_MAX_SIZE) {
-      nameEl.textContent = 'Příliš velké! Max 5 MB';
-      btn.disabled = true;
-      return;
-    }
-    var fnInput = document.getElementById('fotoFileName');
-    if (!fnInput.value.trim()) {
-      var ext = selectedFotoFile.name.split('.').pop().toLowerCase();
-      fnInput.value = selectedFotoFile.name;
-    }
-    nameEl.textContent = selectedFotoFile.name + ' (' + (selectedFotoFile.size / 1e6).toFixed(2) + ' MB)';
-    btn.disabled = false;
-  } else {
-    nameEl.textContent = 'Žádný soubor nevybrán';
-    btn.disabled = true;
-  }
-}
-
-function sendFotoToGithub() {
-  if (!selectedFotoFile) return;
-  var token = getGhToken();
-  if (!token) {
-    document.getElementById('statusFoto').textContent = '⚠️ Nejdřív zadej a ulož GitHub Token';
-    return;
-  }
-  var fnInput = document.getElementById('fotoFileName');
-  var filename = fnInput.value.trim();
-  if (!filename) {
-    document.getElementById('statusFoto').textContent = '⚠️ Zadej název souboru';
-    return;
-  }
-  var ext = selectedFotoFile.name.split('.').pop().toLowerCase();
-  if (!['jpg','jpeg','png','webp'].includes(ext)) ext = 'jpg';
-  if (!filename.match(/\.(jpg|jpeg|png|webp)$/i)) filename += '.' + ext;
-  var safeName = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
-
-  var btn = document.getElementById('sendBtnFoto');
-  var status = document.getElementById('statusFoto');
-  var pWrap = document.getElementById('progressWrapFoto');
-  var pBar = document.getElementById('progressBarFoto');
-  var pText = document.getElementById('progressTextFoto');
-
-  btn.disabled = true;
-  status.textContent = '📤 Čtu soubor...';
-  pWrap.style.display = 'block';
-  pBar.style.width = '0%';
-  pText.textContent = '0%';
-
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var base64 = e.target.result.split(',')[1];
-    pBar.style.width = '30%'; pText.textContent = '30%';
-    status.textContent = '🔍 Kontroluji existující soubor...';
-
-    var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/foto/' + encodeURIComponent(safeName);
-    var xhrGet = new XMLHttpRequest();
-    xhrGet.open('GET', apiUrl);
-    xhrGet.setRequestHeader('Authorization', 'token ' + token);
-    xhrGet.setRequestHeader('Accept', 'application/vnd.github.v3+json');
-    xhrGet.onload = function() {
-      var sha = null;
-      if (xhrGet.status === 200) {
-        try { sha = JSON.parse(xhrGet.responseText).sha; } catch(ex) {}
-      }
-      pBar.style.width = '50%'; pText.textContent = '50%';
-      status.textContent = '📡 Odesílám na GitHub...';
-
-      var payload = { message: 'Add foto: ' + safeName, content: base64 };
-      if (sha) payload.sha = sha;
-
-      var xhrPut = new XMLHttpRequest();
-      xhrPut.open('PUT', apiUrl);
-      xhrPut.setRequestHeader('Authorization', 'token ' + token);
-      xhrPut.setRequestHeader('Content-Type', 'application/json');
-      xhrPut.setRequestHeader('Accept', 'application/vnd.github.v3+json');
-
-      xhrPut.upload.onprogress = function(ev) {
-        if (ev.lengthComputable) {
-          var pct = 50 + Math.round((ev.loaded / ev.total) * 50);
-          pBar.style.width = pct + '%';
-          pText.textContent = pct + '%';
-        }
-      };
-
-      xhrPut.onload = function() {
-        if (xhrPut.status === 200 || xhrPut.status === 201) {
-          pBar.style.width = '100%'; pText.textContent = '100% ✓';
-          var fotoUrl = 'https://kladyx.github.io/kladyxland/foto/' + safeName;
-          status.textContent = '✅ Foto commitnuto!';
-          status.className = 'status done';
-          document.getElementById('fotoUrlText').textContent = fotoUrl;
-          document.getElementById('fotoUrlBox').style.display = 'block';
-          playDing();
-          addGhHistoryItem('commit', 'kladyxland/foto/' + safeName);
-          setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
-        } else {
-          pWrap.style.display = 'none';
-          var errMsg = '';
-          try { errMsg = JSON.parse(xhrPut.responseText).message || ''; } catch(ex) {}
-          status.textContent = '❌ GitHub chyba ' + xhrPut.status + ': ' + errMsg;
-          status.className = 'status';
-        }
-        btn.disabled = false;
-      };
-      xhrPut.onerror = function() {
-        pWrap.style.display = 'none';
-        status.textContent = '❌ Chyba sítě';
-        status.className = 'status';
-        btn.disabled = false;
-      };
-      xhrPut.send(JSON.stringify(payload));
-    };
-    xhrGet.onerror = function() {
-      pWrap.style.display = 'none';
-      status.textContent = '❌ Chyba sítě';
-      btn.disabled = false;
-    };
-    xhrGet.send();
-  };
-  reader.onerror = function() {
-    pWrap.style.display = 'none';
-    status.textContent = '❌ Chyba čtení souboru';
-    btn.disabled = false;
-  };
-  reader.readAsDataURL(selectedFotoFile);
-}
-
-function copyFotoUrl() {
-  var url = document.getElementById('fotoUrlText').textContent;
-  if (!url) return;
-  navigator.clipboard.writeText(url).then(function() {
-    var el = document.getElementById('fotoUrlText');
-    var orig = el.textContent;
-    el.textContent = '✓ Zkopírováno!';
-    setTimeout(function() { el.textContent = orig; }, 1500);
-  }).catch(function() {
-    var el = document.getElementById('fotoUrlText');
-    el.select && el.select();
-  });
-}
-
 // ─── Video rotace — správa (v4.8Kl) ──────────────────
 function loadVideoList() {
   var token = getGhToken();
@@ -1783,6 +1639,212 @@ function deleteVideoFromGithub(filename, sha, itemId, folder) {
     status.className = 'status';
   };
   xhr.send(JSON.stringify({ message: 'Delete video: ' + filename, sha: sha }));
+}
+
+// ─── Foto Upload do Prologu ──────────────────────────
+var FOTO_MAX_SIZE = 5 * 1024 * 1024;
+var selectedFotoFile = null;
+
+function onFotoFileSelected() {
+  var input = document.getElementById('fileInputFoto');
+  selectedFotoFile = input.files[0] || null;
+  var nameEl = document.getElementById('fileNameFoto');
+  var btn = document.getElementById('sendBtnFoto');
+  document.getElementById('statusFoto').textContent = '';
+  document.getElementById('fotoUrlBox').style.display = 'none';
+  if (selectedFotoFile) {
+    if (selectedFotoFile.size > FOTO_MAX_SIZE) {
+      nameEl.textContent = 'Příliš velké! Max 5 MB';
+      btn.disabled = true;
+      return;
+    }
+    var fnInput = document.getElementById('fotoFileName');
+    if (!fnInput.value.trim()) fnInput.value = selectedFotoFile.name;
+    nameEl.textContent = selectedFotoFile.name + ' (' + (selectedFotoFile.size / 1e6).toFixed(2) + ' MB)';
+    btn.disabled = false;
+  } else {
+    nameEl.textContent = 'Žádný soubor nevybrán';
+    btn.disabled = true;
+  }
+}
+
+function sendFotoToGithub() {
+  if (!selectedFotoFile) return;
+  var token = getGhToken();
+  if (!token) { document.getElementById('statusFoto').textContent = '⚠️ Nejdřív zadej a ulož GitHub Token'; return; }
+  var fnInput = document.getElementById('fotoFileName');
+  var filename = fnInput.value.trim();
+  if (!filename) { document.getElementById('statusFoto').textContent = '⚠️ Zadej název souboru'; return; }
+  var ext = selectedFotoFile.name.split('.').pop().toLowerCase();
+  if (!['jpg','jpeg','png','webp'].includes(ext)) ext = 'jpg';
+  if (!filename.match(/\.(jpg|jpeg|png|webp)$/i)) filename += '.' + ext;
+  var safeName = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
+
+  var btn = document.getElementById('sendBtnFoto');
+  var status = document.getElementById('statusFoto');
+  var pWrap = document.getElementById('progressWrapFoto');
+  var pBar = document.getElementById('progressBarFoto');
+  var pText = document.getElementById('progressTextFoto');
+
+  btn.disabled = true;
+  status.textContent = '📤 Čtu soubor...';
+  pWrap.style.display = 'block';
+  pBar.style.width = '0%'; pText.textContent = '0%';
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var base64 = e.target.result.split(',')[1];
+    pBar.style.width = '30%'; pText.textContent = '30%';
+    status.textContent = '🔍 Kontroluji existující soubor...';
+    var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/foto/' + encodeURIComponent(safeName);
+    var xhrGet = new XMLHttpRequest();
+    xhrGet.open('GET', apiUrl);
+    xhrGet.setRequestHeader('Authorization', 'token ' + token);
+    xhrGet.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+    xhrGet.onload = function() {
+      var sha = null;
+      if (xhrGet.status === 200) { try { sha = JSON.parse(xhrGet.responseText).sha; } catch(ex) {} }
+      pBar.style.width = '50%'; pText.textContent = '50%';
+      status.textContent = '📡 Odesílám na GitHub...';
+      var payload = { message: 'Add foto: ' + safeName, content: base64 };
+      if (sha) payload.sha = sha;
+      var xhrPut = new XMLHttpRequest();
+      xhrPut.open('PUT', apiUrl);
+      xhrPut.setRequestHeader('Authorization', 'token ' + token);
+      xhrPut.setRequestHeader('Content-Type', 'application/json');
+      xhrPut.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+      xhrPut.upload.onprogress = function(ev) {
+        if (ev.lengthComputable) {
+          var pct = 50 + Math.round((ev.loaded / ev.total) * 50);
+          pBar.style.width = pct + '%'; pText.textContent = pct + '%';
+        }
+      };
+      xhrPut.onload = function() {
+        if (xhrPut.status === 200 || xhrPut.status === 201) {
+          pBar.style.width = '100%'; pText.textContent = '100% ✓';
+          var fotoUrl = 'https://kladyx.github.io/kladyxland/foto/' + safeName;
+          status.textContent = '✅ Foto commitnuto!';
+          status.className = 'status done';
+          document.getElementById('fotoUrlText').textContent = fotoUrl;
+          document.getElementById('fotoUrlBox').style.display = 'block';
+          playDing();
+          addGhHistoryItem('commit', 'kladyxland/foto/' + safeName);
+          setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
+        } else {
+          pWrap.style.display = 'none';
+          var errMsg = ''; try { errMsg = JSON.parse(xhrPut.responseText).message || ''; } catch(ex) {}
+          status.textContent = '❌ GitHub chyba ' + xhrPut.status + ': ' + errMsg;
+          status.className = 'status';
+        }
+        btn.disabled = false;
+      };
+      xhrPut.onerror = function() { pWrap.style.display = 'none'; status.textContent = '❌ Chyba sítě'; status.className = 'status'; btn.disabled = false; };
+      xhrPut.send(JSON.stringify(payload));
+    };
+    xhrGet.onerror = function() { pWrap.style.display = 'none'; status.textContent = '❌ Chyba sítě'; btn.disabled = false; };
+    xhrGet.send();
+  };
+  reader.onerror = function() { pWrap.style.display = 'none'; status.textContent = '❌ Chyba čtení souboru'; btn.disabled = false; };
+  reader.readAsDataURL(selectedFotoFile);
+}
+
+function copyFotoUrl() {
+  var url = document.getElementById('fotoUrlText').textContent;
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(function() {
+    var el = document.getElementById('fotoUrlText');
+    var orig = el.textContent;
+    el.textContent = '✓ Zkopírováno!';
+    setTimeout(function() { el.textContent = orig; }, 1500);
+  }).catch(function() {});
+}
+
+// ─── Foto rotace — správa ─────────────────────────────
+function loadFotoList() {
+  var token = getGhToken();
+  var status = document.getElementById('statusFotoList');
+  var container = document.getElementById('fotoListContainer');
+  status.textContent = '📡 Načítám seznam fotek...';
+  status.className = 'status';
+  container.innerHTML = '';
+  var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/foto';
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', apiUrl);
+  if (token) xhr.setRequestHeader('Authorization', 'token ' + token);
+  xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      var files = [];
+      try { files = JSON.parse(xhr.responseText); } catch(e) {}
+      var fotos = files.filter(function(f) { return f.type === 'file'; });
+      renderFotoList(fotos, status, container);
+    } else if (xhr.status === 404) {
+      status.textContent = '';
+      container.innerHTML = '<div class="pifile-empty">Složka foto/ ještě neexistuje (žádné fotky)</div>';
+    } else {
+      status.textContent = '❌ Chyba ' + xhr.status;
+      status.className = 'status';
+    }
+  };
+  xhr.onerror = function() { status.textContent = '❌ Chyba sítě'; status.className = 'status'; };
+  xhr.send();
+}
+
+function renderFotoList(fotos, status, container) {
+  if (fotos.length === 0) {
+    status.textContent = '';
+    container.innerHTML = '<div class="pifile-empty">Žádné fotky v prologu</div>';
+    return;
+  }
+  status.textContent = '✅ Načteno: ' + fotos.length + ' fotek';
+  status.className = 'status done';
+  var html = '';
+  for (var i = 0; i < fotos.length; i++) {
+    var f = fotos[i];
+    var sizeStr = f.size ? (f.size / 1024).toFixed(0) + ' KB' : '';
+    var safeId = 'fitem_' + i;
+    html += '<div class="queue-item" style="justify-content:space-between;" id="' + safeId + '">';
+    html += '<div class="queue-name" style="font-size:.85rem;">🖼️ ' + escapeHtml(f.name);
+    if (sizeStr) html += ' <span style="color:rgba(255,255,255,.4);font-size:.75rem;">(' + sizeStr + ')</span>';
+    html += '</div>';
+    html += '<button onclick="deleteFotoFromGithub(\'' + f.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\',\'' + f.sha + '\',\'' + safeId + '\')" ';
+    html += 'style="background:rgba(255,50,50,.2);border:1px solid #ff4444;color:#ff4444;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.82rem;flex-shrink:0;white-space:nowrap;">🗑 Smazat</button>';
+    html += '</div>';
+  }
+  container.innerHTML = html;
+}
+
+function deleteFotoFromGithub(filename, sha, itemId) {
+  var token = getGhToken();
+  if (!token) { alert('⚠️ Nejdřív zadej a ulož GitHub Token'); return; }
+  if (!confirm('Opravdu smazat foto z GitHubu?\n\n🖼️ ' + filename + '\n\nAkce je nevratná!')) return;
+  var status = document.getElementById('statusFotoList');
+  var item = document.getElementById(itemId);
+  if (item) item.style.opacity = '0.4';
+  status.textContent = '🗑 Mažu ' + filename + '...';
+  status.className = 'status';
+  var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/foto/' + encodeURIComponent(filename);
+  var xhr = new XMLHttpRequest();
+  xhr.open('DELETE', apiUrl);
+  xhr.setRequestHeader('Authorization', 'token ' + token);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      status.textContent = '✅ Foto ' + filename + ' smazáno z GitHubu.';
+      status.className = 'status done';
+      if (item) item.remove();
+      addGhHistoryItem('commit', 'kladyxland/foto/' + filename + ' [DELETE]');
+      playDing();
+    } else {
+      if (item) item.style.opacity = '1';
+      var errMsg = ''; try { errMsg = JSON.parse(xhr.responseText).message || ''; } catch(e) {}
+      status.textContent = '❌ Chyba ' + xhr.status + ': ' + errMsg;
+      status.className = 'status';
+    }
+  };
+  xhr.onerror = function() { if (item) item.style.opacity = '1'; status.textContent = '❌ Chyba sítě'; status.className = 'status'; };
+  xhr.send(JSON.stringify({ message: 'Delete foto: ' + filename, sha: sha }));
 }
 
 // ─── PC Historie (v4.6Kl) ────────────────────────────
