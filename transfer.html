@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v5.6Kl</title>
+<title>KladyxTransfer v5.7Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v5.6Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto Prolog</div>
+  <div class="version">v5.7Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto Prolog</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -1803,21 +1803,47 @@ function renderFotoList(fotos, status, container) {
     var f = fotos[i];
     var sizeStr = f.size ? (f.size / 1024).toFixed(0) + ' KB' : '';
     var safeId = 'fitem_' + i;
-    html += '<div class="queue-item" style="justify-content:space-between;" id="' + safeId + '">';
-    html += '<div class="queue-name" style="font-size:.85rem;">🖼️ ' + escapeHtml(f.name);
+    var thumbUrl = 'https://kladyx.github.io/kladyxland/foto/' + encodeURIComponent(f.name);
+    html += '<div class="queue-item" style="align-items:center;gap:10px;flex-wrap:nowrap;" id="' + safeId + '">';
+    html += '<img src="' + thumbUrl + '" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,.15);flex-shrink:0;" loading="lazy">';
+    html += '<div class="queue-name" style="font-size:.82rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(f.name);
     if (sizeStr) html += ' <span style="color:rgba(255,255,255,.4);font-size:.75rem;">(' + sizeStr + ')</span>';
     html += '</div>';
-    html += '<button onclick="deleteFotoFromGithub(\'' + f.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\',\'' + f.sha + '\',\'' + safeId + '\')" ';
-    html += 'style="background:rgba(255,50,50,.2);border:1px solid #ff4444;color:#ff4444;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.82rem;flex-shrink:0;white-space:nowrap;">🗑 Smazat</button>';
+    html += '<button id="delbtn_' + safeId + '" onclick="confirmDeleteFoto(\'' + f.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\',\'' + f.sha + '\',\'' + safeId + '\')" ';
+    html += 'style="background:rgba(255,50,50,.2);border:1px solid #ff4444;color:#ff4444;padding:5px 11px;border-radius:6px;cursor:pointer;font-size:.85rem;flex-shrink:0;white-space:nowrap;">🗑</button>';
     html += '</div>';
   }
   container.innerHTML = html;
 }
 
+function confirmDeleteFoto(filename, sha, itemId) {
+  var btn = document.getElementById('delbtn_' + itemId);
+  if (!btn) return;
+  if (!btn._pending) {
+    btn._pending = true;
+    btn.textContent = 'Smazat?';
+    btn.style.background = 'rgba(255,50,50,.4)';
+    var noBtn = document.createElement('button');
+    noBtn.textContent = 'Ne';
+    noBtn.style.cssText = 'background:rgba(90,90,90,.3);border:1px solid rgba(255,255,255,.2);color:#aaa;padding:5px 9px;border-radius:6px;cursor:pointer;font-size:.82rem;margin-left:4px;flex-shrink:0;';
+    noBtn.id = 'nobtn_' + itemId;
+    btn.insertAdjacentElement('afterend', noBtn);
+    var reset = function() {
+      btn._pending = false;
+      btn.textContent = '🗑';
+      btn.style.background = 'rgba(255,50,50,.2)';
+      if (document.getElementById('nobtn_' + itemId)) noBtn.remove();
+    };
+    noBtn.onclick = reset;
+    setTimeout(reset, 6000);
+    return;
+  }
+  deleteFotoFromGithub(filename, sha, itemId);
+}
+
 function deleteFotoFromGithub(filename, sha, itemId) {
   var token = getGhToken();
-  if (!token) { alert('⚠️ Nejdřív zadej a ulož GitHub Token'); return; }
-  if (!confirm('Opravdu smazat foto z GitHubu?\n\n🖼️ ' + filename + '\n\nAkce je nevratná!')) return;
+  if (!token) { document.getElementById('statusFotoList').textContent = '⚠️ Nejdřív ulož GitHub Token'; return; }
   var status = document.getElementById('statusFotoList');
   var item = document.getElementById(itemId);
   if (item) item.style.opacity = '0.4';
@@ -1831,7 +1857,7 @@ function deleteFotoFromGithub(filename, sha, itemId) {
   xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
   xhr.onload = function() {
     if (xhr.status === 200) {
-      status.textContent = '✅ Foto ' + filename + ' smazáno z GitHubu.';
+      status.textContent = '✅ ' + filename + ' smazáno z GitHubu.';
       status.className = 'status done';
       if (item) item.remove();
       addGhHistoryItem('commit', 'kladyxland/foto/' + filename + ' [DELETE]');
