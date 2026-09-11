@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v5.8Kl</title>
+<title>KladyxTransfer v5.9Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v5.8Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG Upload</div>
+  <div class="version">v5.9Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG Upload + Auto-téma</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -417,10 +417,20 @@
     <div class="icon">📷</div>
     <div class="desc">Nahrát foto / pozadí</div>
     <div class="desc2">Max. 5 MB · jpg/png/webp</div>
-    <select id="fotoFolder" style="width:100%;margin-bottom:10px;padding:8px;background:#1a1a2e;color:#fff;border:1px solid rgba(0,255,136,.3);border-radius:6px;font-size:.9rem;">
+    <select id="fotoFolder" style="width:100%;margin-bottom:10px;padding:8px;background:#1a1a2e;color:#fff;border:1px solid rgba(0,255,136,.3);border-radius:6px;font-size:.9rem;" onchange="onFotoFolderChange()">
       <option value="foto">📷 Prolog (foto/)</option>
       <option value="bg">🌅 Pozadí webu (bg/)</option>
     </select>
+    <div id="bgThemeWrap" style="display:none;margin-bottom:10px;">
+      <div style="font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:5px;">Přiřadit k tématu webu:</div>
+      <select id="bgThemeSelect" style="width:100%;padding:8px;background:#1a1a2e;color:#fff;border:1px solid rgba(0,200,255,.3);border-radius:6px;font-size:.9rem;">
+        <option value="">— nevybráno —</option>
+        <option value="studio">🎛 Studio</option>
+        <option value="summer">🌞 Summer</option>
+        <option value="relax">🌿 Relax</option>
+        <option value="christmas">🎄 Christmas</option>
+      </select>
+    </div>
 
     <input class="gh-input" id="fotoFileName" type="text" placeholder="nazev-foto.jpg" style="margin-bottom:10px;width:100%">
 
@@ -1676,6 +1686,12 @@ function onFotoFileSelected() {
   }
 }
 
+function onFotoFolderChange() {
+  var folder = document.getElementById('fotoFolder').value;
+  var wrap = document.getElementById('bgThemeWrap');
+  if (wrap) wrap.style.display = (folder === 'bg') ? 'block' : 'none';
+}
+
 function sendFotoToGithub() {
   if (!selectedFotoFile) return;
   var token = getGhToken();
@@ -1738,6 +1754,25 @@ function sendFotoToGithub() {
           document.getElementById('fotoUrlBox').style.display = 'block';
           playDing();
           addGhHistoryItem('commit', 'kladyxland/' + folder + '/' + safeName);
+          // Firebase zápis tématu pro bg/
+          if (folder === 'bg') {
+            var theme = document.getElementById('bgThemeSelect').value;
+            if (theme) {
+              var fbUrl = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/themes/' + encodeURIComponent(theme) + '/bgUrl.json';
+              var xhrFb = new XMLHttpRequest();
+              xhrFb.open('PUT', fbUrl);
+              xhrFb.setRequestHeader('Content-Type', 'application/json');
+              xhrFb.onload = function() {
+                if (xhrFb.status === 200) {
+                  status.textContent = '✅ Commitnuto + téma ' + theme + ' uloženo!';
+                } else {
+                  status.textContent = '✅ Commitnuto (Firebase chyba ' + xhrFb.status + ')';
+                }
+              };
+              xhrFb.onerror = function() { status.textContent = '✅ Commitnuto (Firebase nedostupná)'; };
+              xhrFb.send(JSON.stringify(fotoUrl));
+            }
+          }
           setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
         } else {
           pWrap.style.display = 'none';
