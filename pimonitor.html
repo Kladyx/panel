@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v6.5Pi">
-<title>Pi Monitor v6.5Pi</title>
+<meta name="version" content="v6.6Pi">
+<title>Pi Monitor v6.6Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -113,12 +113,30 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .pistate-box.on-active{border-color:var(--green);background:rgba(0,255,136,0.12);color:var(--green);text-shadow:0 0 8px var(--green);box-shadow:0 0 12px rgba(0,255,136,0.3);animation:pulse-green 1.5s infinite;}
 .pistate-box.off-active{border-color:var(--red);background:rgba(255,60,90,0.12);color:var(--red);text-shadow:0 0 8px var(--red);box-shadow:0 0 12px rgba(255,60,90,0.3);animation:pulse-red 1.5s infinite;}
 .footer{text-align:center;font-size:0.45rem;color:rgba(90,100,136,0.4);letter-spacing:2px;margin-top:6px;}
+/* ── Light mode ── */
+html[data-theme="light"]{
+  --bg:#f0f2fc;
+  --card:rgba(0,0,0,0.04);
+  --text:#1a1a2e;
+  --muted:#6b6b8a;
+}
+html[data-theme="light"] body{background:var(--bg);color:var(--text);}
+html[data-theme="light"] .card{background:rgba(124,58,237,0.05);border-color:rgba(124,58,237,0.15);}
+html[data-theme="light"] .section{background:rgba(124,58,237,0.03);border-color:rgba(124,58,237,0.12);}
+html[data-theme="light"] .uptime{background:rgba(6,182,212,0.05);border-color:rgba(6,182,212,0.2);}
+html[data-theme="light"] .net-row{border-bottom-color:rgba(0,0,0,0.06);}
+html[data-theme="light"] .svc-row{border-bottom-color:rgba(0,0,0,0.05);}
+html[data-theme="light"] .svc-name{color:#2a2a4a;}
+html[data-theme="light"] .bar-wrap{background:rgba(0,0,0,0.08);}
+html[data-theme="light"] .refresh-btn{background:rgba(255,60,90,0.06);color:var(--red);}
+html[data-theme="light"] .restart-btn{background:rgba(255,170,0,0.06);}
+html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 </style>
 </head>
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v6.5Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v6.6Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -851,6 +869,21 @@ document.getElementById('btn-shutdown').onclick=function(){
           startPolling();
         }).catch(function(){startPolling();});
       }catch(e){startPolling();}
+      // ── Theme sync z prologu ──────────────────────────
+      try {
+        var s3=document.createElement('script');
+        s3.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js';
+        s3.onload=function(){
+          try {
+            var db=app.database();
+            db.ref('prolog/settings/theme').on('value',function(snap){
+              var t=snap.val()||'dark';
+              document.documentElement.setAttribute('data-theme',t);
+            });
+          } catch(e){}
+        };
+        document.head.appendChild(s3);
+      } catch(e){}
     };
     s2.onerror=function(){startPolling();};
     document.head.appendChild(s2);
