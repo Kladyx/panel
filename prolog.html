@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KLADYXLAND — Prolog v1.6Kl</title>
+  <title>KLADYXLAND — Prolog v1.7Kl</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,10 +48,7 @@
     }
 
     /* ── Hero ── */
-    .hero {
-      padding: 80px 0 60px;
-      text-align: center;
-    }
+    .hero { padding: 80px 0 48px; text-align: center; }
 
     .hero-eyebrow {
       font-family: 'Orbitron', monospace;
@@ -85,10 +82,23 @@
       text-transform: uppercase;
     }
 
+    .hero-intro {
+      margin-top: 36px;
+      font-size: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-style: italic;
+      text-align: left;
+      padding: 20px 24px;
+      border-left: 2px solid rgba(124,58,237,0.3);
+      background: rgba(124,58,237,0.04);
+      border-radius: 0 8px 8px 0;
+    }
+
     .hero-rule {
       width: 60px; height: 1px;
       background: linear-gradient(90deg, transparent, var(--violet), transparent);
-      margin: 40px auto 0;
+      margin: 36px auto 0;
     }
 
     /* ── Sections ── */
@@ -117,9 +127,22 @@
     p:last-child { margin-bottom: 0; }
     em { font-style: italic; color: #c4b5fd; }
     strong { font-weight: 600; color: #f0f0ff; }
-    .teal  { color: var(--teal);  font-style: normal; }
+    .teal  { color: var(--teal); font-style: normal; }
     .green-c { color: var(--green); font-style: normal; }
     .amber { color: var(--amber); font-style: normal; }
+
+    /* ── App flow ── */
+    .app-list {
+      margin: 24px 0;
+      padding: 20px 24px;
+      border-left: 2px solid rgba(124,58,237,0.35);
+      background: rgba(124,58,237,0.04);
+      border-radius: 0 8px 8px 0;
+      font-size: 17px;
+      line-height: 2.1;
+      color: var(--muted);
+    }
+    .app-list span { color: var(--ink); }
 
     /* ── Chain ── */
     .chain {
@@ -128,59 +151,36 @@
       border-left: 2px solid rgba(6,182,212,0.35);
       background: rgba(6,182,212,0.04);
       border-radius: 0 8px 8px 0;
-      font-family: 'Crimson Pro', Georgia, serif;
       font-size: 17px;
-      line-height: 2.1;
-      color: var(--ink);
+      line-height: 2.2;
     }
-
-    .chain-arrow {
-      color: var(--muted);
-      margin: 0 4px;
-    }
-
+    .chain-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .chain-arrow { color: var(--muted); flex-shrink: 0; }
     .chain-label {
       font-family: 'Orbitron', monospace;
-      font-size: 9px;
-      letter-spacing: 2px;
+      font-size: 8px;
+      letter-spacing: 1.5px;
       color: var(--teal);
-      opacity: .7;
-      margin-left: 6px;
+      opacity: .8;
     }
 
-    /* ── Device grid ── */
-    .device-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    /* ── Stat pills ── */
+    .stat-row {
+      display: flex;
       gap: 10px;
       margin: 24px 0;
+      flex-wrap: wrap;
     }
-
-    .device-card {
-      padding: 14px 16px;
-      background: rgba(124,58,237,0.06);
-      border: 1px solid rgba(124,58,237,0.15);
-      border-radius: 10px;
-    }
-
-    .device-icon {
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
-
-    .device-name {
+    .stat-pill {
+      padding: 7px 16px;
+      background: rgba(124,58,237,0.08);
+      border: 1px solid rgba(124,58,237,0.2);
+      border-radius: 20px;
       font-family: 'Orbitron', monospace;
       font-size: 9px;
       letter-spacing: 2px;
-      color: var(--teal);
+      color: #c4b5fd;
       text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-
-    .device-desc {
-      font-size: 15px;
-      color: var(--muted);
-      line-height: 1.4;
     }
 
     /* ── Service list ── */
@@ -190,7 +190,6 @@
       flex-direction: column;
       gap: 8px;
     }
-
     .service-item {
       display: flex;
       align-items: baseline;
@@ -201,7 +200,6 @@
       border: 1px solid rgba(124,58,237,0.1);
       font-size: 16px;
     }
-
     .service-name {
       font-family: 'Orbitron', monospace;
       font-size: 8px;
@@ -210,46 +208,49 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
-
     .service-desc { color: var(--muted); line-height: 1.4; }
 
-    /* ── App flow ── */
-    .app-flow {
-      font-size: 17px;
-      color: var(--muted);
+    /* ── Device grid ── */
+    .device-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
       margin: 24px 0;
-      padding: 20px 24px;
-      border-left: 2px solid rgba(124,58,237,0.35);
-      line-height: 2;
-      background: rgba(124,58,237,0.04);
-      border-radius: 0 8px 8px 0;
     }
-    .app-flow span { color: var(--ink); font-style: italic; }
+    .device-card {
+      padding: 14px 16px;
+      background: rgba(124,58,237,0.06);
+      border: 1px solid rgba(124,58,237,0.15);
+      border-radius: 10px;
+    }
+    .device-icon { font-size: 20px; margin-bottom: 4px; }
+    .device-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--teal);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .device-desc { font-size: 15px; color: var(--muted); line-height: 1.4; }
+
+    /* ── Quote / závěr ── */
+    .zaver {
+      margin: 24px 0 0;
+      padding: 24px 28px;
+      background: rgba(124,58,237,0.06);
+      border: 1px solid rgba(124,58,237,0.2);
+      border-radius: 12px;
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--muted);
+    }
+    .zaver strong { color: #c4b5fd; }
 
     .divider {
       margin: 56px 0 0;
       height: 1px;
       background: linear-gradient(90deg, transparent 0%, var(--rule) 30%, var(--rule) 70%, transparent 100%);
-    }
-
-    /* ── Stat bar ── */
-    .stat-row {
-      display: flex;
-      gap: 16px;
-      margin: 24px 0;
-      flex-wrap: wrap;
-    }
-
-    .stat-pill {
-      padding: 8px 18px;
-      background: rgba(124,58,237,0.08);
-      border: 1px solid rgba(124,58,237,0.2);
-      border-radius: 20px;
-      font-family: 'Orbitron', monospace;
-      font-size: 9px;
-      letter-spacing: 2px;
-      color: #c4b5fd;
-      text-transform: uppercase;
     }
 
     /* ── Dodatky ── */
@@ -266,13 +267,7 @@
       align-items: center;
       gap: 12px;
     }
-
-    .dodatky-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--rule);
-    }
+    .dodatky-title::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
 
     .dodatek-item {
       margin-bottom: 24px;
@@ -282,7 +277,6 @@
       border-radius: 10px;
       animation: fadeIn .4s ease both;
     }
-
     @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 
     .dodatek-meta {
@@ -293,29 +287,10 @@
       text-transform: uppercase;
       margin-bottom: 10px;
     }
+    .dodatek-text { font-size: 18px; line-height: 1.7; color: var(--ink); white-space: pre-wrap; }
+    .dodatek-foto { width: 100%; max-height: 320px; object-fit: cover; border-radius: 8px; margin-top: 12px; display: block; }
 
-    .dodatek-text {
-      font-size: 18px;
-      line-height: 1.7;
-      color: var(--ink);
-      white-space: pre-wrap;
-    }
-
-    .dodatek-foto {
-      width: 100%;
-      max-height: 320px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-top: 12px;
-      display: block;
-    }
-
-    .dodatek-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 14px;
-      flex-wrap: wrap;
-    }
+    .dodatek-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
 
     .btn-action {
       font-family: 'Orbitron', monospace;
@@ -329,184 +304,77 @@
       transition: opacity .2s;
     }
     .btn-action:hover { opacity: .75; }
-
-    .btn-edit-doc {
-      background: rgba(6,182,212,0.12);
-      border: 1px solid rgba(6,182,212,0.35);
-      color: var(--teal);
-    }
-
-    .btn-del-doc {
-      background: rgba(239,68,68,0.1);
-      border: 1px solid rgba(239,68,68,0.3);
-      color: var(--red);
-    }
-
-    .btn-save-doc {
-      background: rgba(34,197,94,0.12);
-      border: 1px solid rgba(34,197,94,0.35);
-      color: var(--green);
-    }
-
-    .btn-cancel-doc {
-      background: rgba(90,95,122,0.15);
-      border: 1px solid rgba(90,95,122,0.3);
-      color: var(--muted);
-    }
+    .btn-edit-doc  { background: rgba(6,182,212,0.12); border: 1px solid rgba(6,182,212,0.35); color: var(--teal); }
+    .btn-del-doc   { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+    .btn-save-doc  { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.35); color: var(--green); }
+    .btn-cancel-doc{ background: rgba(90,95,122,0.15); border: 1px solid rgba(90,95,122,0.3); color: var(--muted); }
 
     .edit-ta {
-      width: 100%;
-      min-height: 80px;
+      width: 100%; min-height: 80px;
       background: rgba(0,0,0,.3);
       border: 1px solid rgba(124,58,237,.35);
       border-radius: 8px;
       color: var(--ink);
       font-family: 'Crimson Pro', Georgia, serif;
-      font-size: 18px;
-      line-height: 1.6;
-      padding: 10px 14px;
-      resize: vertical;
-      outline: none;
-      margin-top: 8px;
-      box-sizing: border-box;
+      font-size: 18px; line-height: 1.6;
+      padding: 10px 14px; resize: vertical; outline: none;
+      margin-top: 8px; box-sizing: border-box;
     }
-
     .edit-foto {
-      width: 100%;
-      margin-top: 6px;
-      padding: 8px 12px;
-      background: rgba(0,0,0,.3);
-      border: 1px solid rgba(6,182,212,.3);
-      border-radius: 8px;
-      color: var(--ink);
-      font-size: 15px;
-      outline: none;
-      box-sizing: border-box;
+      width: 100%; margin-top: 6px; padding: 8px 12px;
+      background: rgba(0,0,0,.3); border: 1px solid rgba(6,182,212,.3);
+      border-radius: 8px; color: var(--ink); font-size: 15px; outline: none; box-sizing: border-box;
     }
+    .no-dodatky { color: var(--muted); font-style: italic; font-size: 17px; text-align: center; padding: 24px 0; }
 
-    .no-dodatky {
-      color: var(--muted);
-      font-style: italic;
-      font-size: 17px;
-      text-align: center;
-      padding: 24px 0;
-    }
-
-    /* ── Admin panel ── */
+    /* ── Admin ── */
     .admin-panel {
-      display: none;
-      margin-top: 36px;
-      padding: 24px;
-      background: rgba(124,58,237,0.06);
-      border: 1px solid rgba(124,58,237,0.2);
-      border-radius: 12px;
+      display: none; margin-top: 36px; padding: 24px;
+      background: rgba(124,58,237,0.06); border: 1px solid rgba(124,58,237,0.2); border-radius: 12px;
     }
-
-    .admin-label {
-      font-family: 'Orbitron', monospace;
-      font-size: 10px;
-      letter-spacing: 4px;
-      color: var(--violet);
-      text-transform: uppercase;
-      margin-bottom: 16px;
-    }
-
+    .admin-label { font-family: 'Orbitron', monospace; font-size: 10px; letter-spacing: 4px; color: var(--violet); text-transform: uppercase; margin-bottom: 16px; }
     textarea {
-      width: 100%;
-      min-height: 100px;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(124,58,237,0.25);
-      border-radius: 8px;
-      color: var(--ink);
-      font-family: 'Crimson Pro', Georgia, serif;
-      font-size: 18px;
-      line-height: 1.6;
-      padding: 12px 16px;
-      resize: vertical;
-      outline: none;
-      transition: border-color .2s;
+      width: 100%; min-height: 100px;
+      background: rgba(0,0,0,0.3); border: 1px solid rgba(124,58,237,0.25); border-radius: 8px;
+      color: var(--ink); font-family: 'Crimson Pro', Georgia, serif; font-size: 18px; line-height: 1.6;
+      padding: 12px 16px; resize: vertical; outline: none; transition: border-color .2s;
     }
-
     textarea:focus { border-color: rgba(124,58,237,0.6); }
-
     .foto-input-main {
-      width: 100%;
-      margin-top: 10px;
-      padding: 10px 14px;
-      background: rgba(0,0,0,.3);
-      border: 1px solid rgba(124,58,237,.25);
-      border-radius: 8px;
-      color: var(--ink);
-      font-family: 'Crimson Pro', Georgia, serif;
-      font-size: 16px;
-      outline: none;
-      box-sizing: border-box;
+      width: 100%; margin-top: 10px; padding: 10px 14px;
+      background: rgba(0,0,0,.3); border: 1px solid rgba(124,58,237,.25); border-radius: 8px;
+      color: var(--ink); font-family: 'Crimson Pro', Georgia, serif; font-size: 16px; outline: none; box-sizing: border-box;
     }
-
     .btn-add {
-      margin-top: 12px;
-      padding: 10px 28px;
-      background: linear-gradient(135deg, var(--violet), #5b21b6);
-      color: #fff;
-      font-family: 'Orbitron', monospace;
-      font-size: 10px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: opacity .2s;
+      margin-top: 12px; padding: 10px 28px;
+      background: linear-gradient(135deg, var(--violet), #5b21b6); color: #fff;
+      font-family: 'Orbitron', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+      border: none; border-radius: 8px; cursor: pointer; transition: opacity .2s;
     }
-
     .btn-add:hover { opacity: .85; }
     .btn-add:disabled { opacity: .4; cursor: default; }
-
-    .add-status {
-      margin-top: 10px;
-      font-size: 14px;
-      font-family: 'Orbitron', monospace;
-      letter-spacing: 2px;
-      min-height: 20px;
-    }
+    .add-status { margin-top: 10px; font-size: 14px; font-family: 'Orbitron', monospace; letter-spacing: 2px; min-height: 20px; }
 
     /* ── Signature ── */
-    .signature {
-      padding: 72px 0 0;
-      text-align: center;
-    }
-
+    .signature { padding: 64px 0 0; text-align: center; }
     .sig-name {
-      font-family: 'Orbitron', monospace;
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: 5px;
+      font-family: 'Orbitron', monospace; font-size: 18px; font-weight: 900; letter-spacing: 5px;
       background: linear-gradient(135deg, #c4b5fd, #a5f3fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
       margin-bottom: 8px;
     }
-
-    .sig-meta {
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: 3px;
-      font-family: 'Orbitron', monospace;
-    }
+    .sig-sub { font-size: 15px; color: var(--muted); font-style: italic; margin-bottom: 4px; }
+    .sig-meta { font-size: 12px; color: var(--muted); letter-spacing: 3px; font-family: 'Orbitron', monospace; }
 
     .version-tag {
-      position: fixed;
-      bottom: 10px; right: 14px;
-      font-family: 'Orbitron', monospace;
-      font-size: 9px;
-      letter-spacing: 3px;
-      color: rgba(34,197,94,0.6);
-      z-index: 99;
+      position: fixed; bottom: 10px; right: 14px;
+      font-family: 'Orbitron', monospace; font-size: 9px; letter-spacing: 3px;
+      color: rgba(34,197,94,0.6); z-index: 99;
     }
 
     @media (max-width: 600px) {
       body { font-size: 18px; }
-      .hero { padding: 56px 0 44px; }
+      .hero { padding: 56px 0 36px; }
       .device-grid { grid-template-columns: 1fr; }
     }
   </style>
@@ -520,6 +388,9 @@
     <div class="hero-eyebrow">Pojednání o díle</div>
     <h1>KLADYXLAND</h1>
     <div class="hero-sub">DJ Kladyx · Příbor · 2026</div>
+    <div class="hero-intro">
+      KLADYXLAND je osobní digitální ekosystém, který propojuje webový panel, domácí automatizaci, streamování, audio techniku, Raspberry Pi, počítačové služby, cloudová data a retro computing. Není to hotová služba ani běžná aplikace — je to dlouhodobě budované autorské dílo, vytvořené prakticky podle každodenních potřeb.
+    </div>
     <div class="hero-rule"></div>
   </div>
 
@@ -527,31 +398,33 @@
   <section>
     <div class="sec-label">Původ</div>
     <h2>Začalo to jednoduše.</h2>
-    <p>Chtěl jsem mít doma přehled. Vědět co hraje rádio, kdy jsem naposledy naměřil glukózu, jestli zásuvka v DJ studiu svítí nebo ne. Žádná hotová aplikace to neuměla přesně tak, jak jsem potřeboval. Tak jsem si ji napsal sám.</p>
-    <p>Z jednoho HTML souboru vznikl systém, který dnes nazývám <em>KLADYXLAND</em> — osobní digitální svět postavený od základů, jednou rukou, z mobilu, přesně podle mých představ.</p>
+    <p>Chtěl jsem mít doma přehled. Vědět, co hraje rádio. Zjistit, kdy jsem naposledy naměřil glukózu. Ověřit, zda je zapnutá zásuvka v DJ studiu. Vidět stav Raspberry Pi, OBS streamu, přenosu souborů a dalších částí domácí technologie na jednom místě.</p>
+    <p>Žádná hotová aplikace neuměla přesně to, co jsem potřeboval. Existovaly aplikace pro chytrou domácnost, jiné pro streamování, další pro poznámky nebo monitoring. Každá řešila jen jeden izolovaný problém. Já jsem potřeboval vlastní centrum, které tyto části spojí.</p>
+    <p>Tak jsem si jej začal psát sám. Z jednoho HTML souboru postupně vznikl systém, který dnes nazývám <em>KLADYXLAND</em> — osobní digitální svět vytvořený od základů, jednou rukou, často z mobilu, ve volném čase a přesně podle vlastních představ.</p>
   </section>
 
   <div class="divider"></div>
 
-  <!-- Panel -->
+  <!-- Jádro systému -->
   <section>
     <div class="sec-label">Jádro systému</div>
-    <h2>Panel — čtyřicet aplikací, jeden soubor.</h2>
-    <p>Srdcem KLADYXLANDU je <strong>Panel.html</strong> — přes dvacet tisíc řádků kódu, čtyřicet samostatných aplikací v jednom souboru. Žádný framework, žádný build systém. Čistý HTML, CSS a JavaScript.</p>
-    <div class="app-flow">
-      <span>💿 CD &amp; LP databáze</span> · <span>🩸 Glukóza</span> · <span>🎙 OBS Status</span> ·
+    <h2>Srdcem KLADYXLANDU je soubor Panel.html.</h2>
+    <p>V něm funguje přes čtyřicet samostatných aplikací. Nejde o oddělené programy instalované z obchodu, ale o vlastní nástroje vložené do jednoho přehledného panelu. Každá aplikace má konkrétní úkol: zobrazit informace, uložit data, ovládat zařízení, propojit službu nebo zjednodušit opakovanou činnost.</p>
+    <p>Panel obsahuje více než dvacet tisíc řádků kódu. Je napsaný bez frameworku, bez bundleru a bez build systému — pouze v čistém HTML, CSS a vanilla JavaScriptu.</p>
+    <div class="app-list">
+      <span>💿 CD &amp; LP databáze</span> · <span>🩸 Záznam glukózy</span> · <span>🎙 Stav OBS a vysílání</span> ·
       <span>🌤 Počasí</span> · <span>📝 Poznámky</span> · <span>📅 Kalendář</span> ·
-      <span>🔧 Hardware</span> · <span>🎵 KladyxAmp</span> · <span>📡 NextSync</span> ·
+      <span>🔧 Hardware a technická evidence</span> · <span>🎵 KladyxAmp</span> · <span>📡 NextSync</span> ·
       <span>🏠 KladyxHome</span> · <span>🍓 Pi Monitor</span> · <span>🎮 ZX Games</span> ·
-      <span>🕹 ZX Next</span> · <span>🎛️ Equalizer</span> · <span>🇬🇧 WordMaster</span> ·
-      <span>🎤 SpeakUp</span> · <span>📤 Transfer</span> · <span>🌍 World Time</span> ·
-      <span>☁️ Mixcloud</span> · <span>🎤 Radio ID</span> · a dalších 20 appek&hellip;
+      <span>🕹 ZX Spectrum Next</span> · <span>🎛️ Equalizer</span> · <span>🇬🇧 WordMaster</span> ·
+      <span>🎤 SpeakUp</span> · <span>📤 Transfer</span> · <span>🌍 Světový čas</span> ·
+      <span>☁️ Mixcloud</span> · <span>🎤 Radio ID</span> · a další vlastní aplikace&hellip;
     </div>
-    <p>Panel žije na GitHubu Pages a funguje odkudkoliv — z mobilu, tabletu i počítače. Je dostupný i lokálně přes NextSync server na PC, bez internetu.</p>
+    <p>Panel je dostupný na GitHub Pages, takže funguje z mobilu, tabletu i počítače. Zároveň jej lze otevřít lokálně přes NextSync server na PC — tedy i bez připojení k internetu.</p>
     <div class="stat-row">
-      <div class="stat-pill">40 appek</div>
-      <div class="stat-pill">2 GitHub repos</div>
-      <div class="stat-pill">Firebase RTDB</div>
+      <div class="stat-pill">40 vlastních aplikací</div>
+      <div class="stat-pill">2 GitHub repozitáře</div>
+      <div class="stat-pill">Firebase Realtime DB</div>
       <div class="stat-pill">Europe West 1</div>
     </div>
   </section>
@@ -562,8 +435,8 @@
   <section>
     <div class="sec-label">Infrastruktura</div>
     <h2>Mozky systému nikdy nespí.</h2>
-    <p><strong>Raspberry Pi 4B</strong> (hostname <em class="teal">djsound</em>, IP <em class="teal">192.168.0.50</em>) běží 24/7 a pohání celé IoT jádro systému. Na něm běží osm systemd služeb:</p>
-
+    <p>Základ domácí části KLADYXLANDU tvoří <strong>Raspberry Pi 4B</strong> s hostname <em class="teal">djsound</em>. Běží nepřetržitě jako centrum automatizace, monitoringu, přenosu souborů a propojení chytrých zařízení. Jeho lokální IP adresa je <em class="teal">192.168.0.50</em>.</p>
+    <p>Na Raspberry Pi fungují vlastní služby spravované přes systemd:</p>
     <div class="service-list">
       <div class="service-item">
         <div class="service-name">tapo-py</div>
@@ -591,19 +464,16 @@
       </div>
       <div class="service-item">
         <div class="service-name">prijatelister</div>
-        <div class="service-desc">Výpis přijatých souborů v /home/pi/nextsync/prijate/</div>
+        <div class="service-desc">Výpis přijatých souborů v přenosové složce</div>
       </div>
       <div class="service-item">
         <div class="service-name">uploadserver</div>
         <div class="service-desc">Upload server — příjem souborů, port 8765</div>
       </div>
     </div>
-
-    <p>Pi4 se každý den v <em class="amber">22:20 automaticky vypne</em>. Cron restartuje Tapo bridge v 6:05 ráno a každé 4 hodiny. Napájení Pi4 hlídá zásuvka Tapo P110 na IP 192.168.0.207.</p>
-
-    <p><strong>PC Fujitsu E559</strong> (IP <em class="teal">192.168.0.23</em>) zajišťuje tři Windows služby: OBS Bridge, NextSync Server a Transfer Watcher. Startují automaticky po přihlášení do Windows.</p>
-
-    <p>Vše komunikuje přes <strong>Firebase Realtime Database</strong> — cloud, který slouží jako HTTPS most mezi lokální sítí a GitHub Pages panelem. Limit: 360 MB stažených dat denně, reset v 09:00.</p>
+    <p>Raspberry Pi se automaticky vypíná každý den ve <em class="amber">22:20</em>. Tapo bridge se plánovaně restartuje v 6:05 ráno a každé čtyři hodiny. Fyzické napájení hlídá chytrá zásuvka Tapo P110 na adrese 192.168.0.207.</p>
+    <p>Druhou částí infrastruktury je <strong>PC Fujitsu E559</strong> (<em class="teal">192.168.0.23</em>) se třemi Windows službami: OBS Bridge, NextSync Server a Transfer Watcher. Startují automaticky po přihlášení do Windows.</p>
+    <p>Vše komunikuje přes <strong>Firebase Realtime Database</strong> — bezpečný HTTPS most mezi lokální sítí, panelem a dalšími zařízeními. Denní limit: 360 MB stažených dat, reset v 09:00.</p>
   </section>
 
   <div class="divider"></div>
@@ -612,8 +482,7 @@
   <section>
     <div class="sec-label">Smart Home</div>
     <h2>Dům poslouchá.</h2>
-    <p>Z panelu <em>KladyxHome</em> ovládám celý byt. Každé zařízení má pevnou IP adresu z DHCP rezervace routeru TP-Link Archer AX55 Pro — aby se nikdy nic nepohlo.</p>
-
+    <p>Panel <em>KladyxHome</em> propojuje domácí zařízení do vlastního řídicího rozhraní. Každé zařízení používá pevnou DHCP rezervaci v routeru TP-Link Archer AX55 Pro, aby se jeho adresa neměnila a automatizace měla stabilní základ.</p>
     <div class="device-grid">
       <div class="device-card">
         <div class="device-icon">🔌</div>
@@ -628,7 +497,7 @@
       <div class="device-card">
         <div class="device-icon">📻</div>
         <div class="device-name">Tapo P100</div>
-        <div class="device-desc">Samsung Radio · IP .63 · na objednávce</div>
+        <div class="device-desc">Samsung Radio · IP .63</div>
       </div>
       <div class="device-card">
         <div class="device-icon">🍓</div>
@@ -646,8 +515,7 @@
         <div class="device-desc">TV Sharp · IP .238 · IR přes Tuya protokol</div>
       </div>
     </div>
-
-    <p>Žádné komerční hub-řešení, žádné předplatné. Jen Python, Node.js, vlastní skripty a Firebase jako komunikační most. Vše postaveno na vlastní infrastruktuře.</p>
+    <p>Tento systém nestojí na placeném centrálním hubu ani na předplatném. Je postavený na kombinaci Pythonu, Node.js, vlastních bridge skriptů, lokální sítě a Firebase jako komunikační vrstvy. Technika slouží ke zjednodušení skutečného života.</p>
   </section>
 
   <div class="divider"></div>
@@ -656,56 +524,47 @@
   <section>
     <div class="sec-label">Broadcasting</div>
     <h2>Zvuk od mikrofonu do světa.</h2>
-    <p>Broadcast řetězec je přesně navržený pro maximální kvalitu hlasu při streamu. Každý přístroj v řetězci má svůj důvod a nastavení.</p>
-
+    <p>Broadcast část KLADYXLANDU spojuje hlas, hudbu, technickou kontrolu a online vysílání. Zvukový řetězec je sestavený tak, aby hlas při streamu zněl čitelně, vyrovnaně a stabilně.</p>
     <div class="chain">
-      <strong>RØDE PodMic</strong> <span class="chain-label">XLR</span><br>
-      <span class="chain-arrow">→</span> <strong>Art TubePre V2</strong> <span class="chain-label">předzesilovač · GAIN vysoký</span><br>
-      <span class="chain-arrow">→</span> <strong>DBX EQ3B</strong> <span class="chain-label">ekvalizér · 80Hz HPF · MID +2dB · HIGH +1dB</span><br>
-      <span class="chain-arrow">→</span> <strong>DBX COMP16</strong> <span class="chain-label">kompresor · GR 3–6 dB při řeči</span><br>
-      <span class="chain-arrow">→</span> <strong>RØDECaster Duo</strong> <span class="chain-label">Line-In · Level 20dB · Processing off</span><br>
-      <span class="chain-arrow">→</span> <strong>PreSonus Quantum ES4</strong> <span class="chain-label">zvuková karta USB-C</span><br>
-      <span class="chain-arrow">→</span> <strong>OBS Studio</strong> <span class="chain-label">LoudMax · SPAN · Youlean · cíl −15 LUFS</span><br>
-      <span class="chain-arrow">→</span> <strong>Mixcloud Live</strong> <span class="chain-label">stream do světa</span>
+      <div class="chain-row"><strong>RØDE PodMic</strong> <span class="chain-label">XLR · dynamický mikrofon</span></div>
+      <div class="chain-row"><span class="chain-arrow">→</span> <strong>ART TubePre V2</strong> <span class="chain-label">předzesilovač · GAIN vysoký</span></div>
+      <div class="chain-row"><span class="chain-arrow">→</span> <strong>DBX EQ3B</strong> <span class="chain-label">ekvalizér · 80 Hz HPF · MID +2 dB · HIGH +1 dB</span></div>
+      <div class="chain-row"><span class="chain-arrow">→</span> <strong>DBX COMP16</strong> <span class="chain-label">kompresor · GR 3–6 dB při řeči</span></div>
+      <div class="chain-row"><span class="chain-arrow">→</span> <strong>RØDECaster Duo</strong> <span class="chain-label">Line-In · Level 20 dB · Processing off</span></div>
+      <div class="chain-row"><span class="chain-arrow">→</span> <strong>PreSonus Quantum ES4</strong> <span class="chain-label">zvuková karta · USB-C</span></div>
+      <div class="chain-row"><span class="chain-arrow">→</span> <strong>OBS Studio</strong> <span class="chain-label">LoudMax −2/−1 dB · SPAN · Youlean · cíl −15 LUFS</span></div>
+      <div class="chain-row"><span class="chain-arrow">→</span> <strong>Mixcloud Live</strong> <span class="chain-label">stream do světa</span></div>
     </div>
-
-    <p>OBS Bridge — Node.js skript running na PC — sleduje stav streamu a v reálném čase aktualizuje Firebase. Panel i veřejný web ihned zobrazí <em class="green-c">ON AIR</em>. Stream lze spustit i zastavit přímo z panelu nebo webu.</p>
-
-    <p>Software monitoring: <strong>mvMeter2</strong> PPM IIa BBC, <strong>SPAN</strong>, <strong>LoudMax</strong> (threshold −2.0 dB, output −1.0 dB), <strong>Youlean Loudness Meter Pro</strong>. Sluchátka Pioneer HDJ-X5 a Rode NTH-100 přes PreSonus HP4.</p>
+    <p>Node.js služba OBS Bridge sleduje stav streamu na PC a v reálném čase jej zapisuje do Firebase. Panel i veřejný web tak mohou okamžitě zobrazit stav <em class="green-c">ON AIR</em>. Stream lze sledovat, spustit nebo zastavit z vlastního ovládacího rozhraní.</p>
+    <p>Monitoring: <strong>mvMeter2</strong> PPM IIa BBC, <strong>SPAN</strong>, <strong>LoudMax</strong>, <strong>Youlean Loudness Meter Pro</strong>. Poslech: sluchátka Pioneer HDJ-X5 a RØDE NTH-100 přes PreSonus HP4. Každý set se archivuje na Mixcloudu.</p>
   </section>
 
   <div class="divider"></div>
 
-  <!-- DJ Setup -->
+  <!-- DJ Studio -->
   <section>
-    <div class="sec-label">DJ Setup</div>
+    <div class="sec-label">DJ Studio</div>
     <h2>Studio pro mixování.</h2>
-    <p>Centrum DJ studia tvoří mixér <strong>Allen &amp; Heath AR8c</strong> se čtyřmi stereo vstupy. Každý zdroj má své místo v signálovém toku.</p>
-
+    <p>DJ část KLADYXLANDU je navržena jako propojený signálový systém, kde má každý zdroj pevně dané místo. Základem je mixér <strong>Allen &amp; Heath AR8c</strong> se čtyřmi stereo vstupy.</p>
     <div class="chain">
-      <strong>Reloop RP 1000</strong> <span class="chain-label">gramofon</span>
-      <span class="chain-arrow"> → </span> <strong>Mix 300s</strong> <span class="chain-label">phono pre</span>
-      <span class="chain-arrow"> → </span> AR8c kanál 1/2<br>
-      <strong>DDJ 800</strong> <span class="chain-label">Pioneer DJ controller · XLR</span>
-      <span class="chain-arrow"> → </span> AR8c kanál 3/4<br>
-      <strong>CDJ 800 MK2</strong> <span class="chain-label">CD přehrávač</span>
-      <span class="chain-arrow"> → </span> AR8c kanál 5/6<br>
-      AR8c Main Out <span class="chain-arrow"> → </span> <strong>PreSonus Quantum ES4</strong> vstup 3/4
+      <div class="chain-row"><strong>Reloop RP 1000</strong> <span class="chain-label">gramofon</span> <span class="chain-arrow">→</span> <strong>Mix 300s</strong> <span class="chain-label">phono pre</span> <span class="chain-arrow">→</span> AR8c kanál 1/2</div>
+      <div class="chain-row"><strong>Pioneer DJ DDJ-800</strong> <span class="chain-label">XLR výstup</span> <span class="chain-arrow">→</span> AR8c kanál 3/4</div>
+      <div class="chain-row"><strong>Pioneer CDJ-800 MK2</strong> <span class="chain-arrow">→</span> AR8c kanál 5/6</div>
+      <div class="chain-row">AR8c Main Out <span class="chain-arrow">→</span> <strong>PreSonus Quantum ES4</strong> <span class="chain-label">vstup 3/4</span></div>
     </div>
-
-    <p>Monitorování zajišťuje <strong>PreSonus Monitor Station V2</strong> — přepíná mezi reproduktory Sub 8 BT + Eris 4.5 BT (Main) a American Audio + Fun Generation RTA 31 (Cue). VU meter <strong>Nobsound L3-3</strong> sleduje úrovně signálu ze sluchátkového zesilovače a mikrofon řetězce.</p>
-
-    <p>Mixcloud archivuje všechny sety. Každý stream přežije v historii — nic se neztrácí.</p>
+    <p>Monitorování obstarává <strong>PreSonus Monitor Station V2</strong> — přepíná mezi Main poslechem (Sub 8 BT + Eris 4.5 BT) a Cue poslechem (American Audio + Fun Generation RTA 31). VU meter <strong>Nobsound L3-3</strong> sleduje úrovně signálu ze sluchátkového zesilovače a mikrofonního řetězce.</p>
+    <p>DJ studio není izolované. Je součástí panelu, monitoringu, streamovacího workflow, domácí automatizace i archivu na Mixcloudu.</p>
   </section>
 
   <div class="divider"></div>
 
-  <!-- ZX Spectrum Next -->
+  <!-- Retro Computing -->
   <section>
     <div class="sec-label">Retro Computing</div>
     <h2>ZX Spectrum Next — retro v síti.</h2>
-    <p><strong>ZX Spectrum Next</strong> je součástí KLADYXLANDU. Retro počítač žije v lokální síti na IP <em class="teal">192.168.0.124</em> — vedle Raspberry Pi a PC. Je to záměrný kontrast: nejmodernější Firebase cloud, a vedle toho osmibitový stroj z osmdesátých let.</p>
-    <p>Panel obsahuje dedikovanou appku <em>ZX Next</em> s deníkem vývoje — záznamy, co se na Nextu programuje, zkoušelo, testovalo. NextSync server na PC umí soubory přenášet přímo do Nextu a zpět. KLADYXLAND propojuje retro se současností.</p>
+    <p>KLADYXLAND propojuje současné technologie s osmibitovou historií. ZX Spectrum Next je součástí domácí lokální sítě na adrese <em class="teal">192.168.0.124</em>, vedle Raspberry Pi, PC, chytrých zařízení a cloudových služeb.</p>
+    <p>Tento kontrast je záměrný: moderní cloudová databáze Firebase, webové rozhraní na GitHub Pages, Python a Node.js služby na jedné straně — a osmibitový počítač s duchem původního ZX Spectra na straně druhé.</p>
+    <p>Panel obsahuje vlastní aplikaci pro ZX Next, včetně deníku vývoje. Slouží pro záznam toho, co se na stroji programuje, testuje a zkouší. NextSync Server na PC umožňuje přenášet soubory mezi počítačem, panelem a ZX Spectrum Next. Retro zde není pouze nostalgie — je to aktivní součást technického prostředí.</p>
   </section>
 
   <div class="divider"></div>
@@ -714,15 +573,30 @@
   <section>
     <div class="sec-label">Filozofie</div>
     <h2>Dělat věci sám má smysl.</h2>
-    <p>Každý řádek kódu, který tady existuje, jsem napsal já. Jednou rukou, z mobilu, ve volném čase. Bez kurzu programování, bez týmu, bez investora.</p>
-    <p>KLADYXLAND je důkaz, že člověk nepotřebuje být profesionál, aby postavil něco fungujícího a smysluplného. Potřebuje jen trpělivost, zvědavost a ochotu nespoléhat na to, že někdo jiný vymyslí řešení za něj.</p>
-    <p>Systém roste každý den. Nové appky, nová automatizace, nové nápady. A dokud bude hrát hudba — bude žít i KLADYXLAND.</p>
+    <p>Každá aplikace, skript, konfigurace, automatizace a technické propojení v KLADYXLANDU vzniká z konkrétní potřeby. Nečekám, až někdo vytvoří přesně to, co potřebuji. Když mi chybí funkce, snažím se ji navrhnout. Když zařízení neumějí spolu komunikovat, hledám způsob, jak mezi nimi vytvořit vlastní most.</p>
+    <p>Každý řádek kódu, který tvoří vlastní logiku systému, jsem napsal já — jednou rukou, často z mobilu, bez formálního kurzu programování, bez vývojového týmu a bez investora. Používám běžně dostupné technologie, dokumentaci, open-source nástroje a AI pomoc, ale koncepce, rozhodování, integrace, testování a provoz systému zůstávají mým vlastním dílem.</p>
+    <p>KLADYXLAND dokazuje, že technický projekt nemusí vznikat ve firmě, v týmu nebo ve velkém vývojovém studiu. Může vznikat doma, postupně, z potřeby, zvědavosti, trpělivosti a ochoty učit se.</p>
+    <p><em>Invalidita není definicí tohoto díla. Je součástí reality, ve které vzniká. O to větší význam má pro mě technologie, která podporuje samostatnost, přehlednost, bezpečné ovládání a možnost tvořit vlastním tempem.</em></p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Závěr -->
+  <section>
+    <div class="sec-label">Závěr</div>
+    <h2>Živý systém nemá konec.</h2>
+    <div class="zaver">
+      <p>KLADYXLAND není hotový produkt a nemá být uzavřený. Je to živý systém, který se mění s každým novým nápadem, zařízením, skriptem, vysíláním nebo praktickým problémem, který vyřeší.</p>
+      <p>Jeho síla není v množství použitých technologií, ale v jejich propojení a účelu. <strong>GitHub Pages</strong> hostuje web. <strong>Firebase</strong> propojuje data. <strong>Raspberry Pi a PC</strong> vykonávají reálné úlohy. <strong>OBS</strong> přenáší vysílání. <strong>Audio technika</strong> vytváří zvuk. <strong>Panel</strong> vše spojuje do jednoho místa.</p>
+      <p>A dokud bude hrát hudba, poběží technika a vznikat nové nápady, bude žít i KLADYXLAND.</p>
+    </div>
   </section>
 
   <!-- Signature -->
   <div class="signature">
     <div class="sig-name">DJ KLADYX</div>
-    <div class="sig-meta">Příbor · 2026</div>
+    <div class="sig-sub">Michal Kovalčík</div>
+    <div class="sig-meta">Osobní digitální, streamovací, hudební a automatizační ekosystém · Příbor · 2026</div>
   </div>
 
   <!-- Dodatky -->
@@ -744,7 +618,7 @@
 
 </div>
 
-<div class="version-tag">v1.6Kl</div>
+<div class="version-tag">v1.7Kl</div>
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -867,51 +741,40 @@
     const item      = actDiv.closest('.dodatek-item');
     const textEl    = item.querySelector('.dodatek-text');
     const fotoImgEl = item.querySelector('.dodatek-foto');
-
     textEl.style.display = 'none';
-
     const ta = document.createElement('textarea');
     ta.className = 'edit-ta';
     ta.value = textEl.textContent;
     item.insertBefore(ta, actDiv);
-
     const taFoto = document.createElement('input');
     taFoto.type = 'url';
     taFoto.className = 'edit-foto';
     taFoto.placeholder = 'URL fotky (volitelné)';
     taFoto.value = fotoImgEl ? fotoImgEl.src : '';
     item.insertBefore(taFoto, actDiv);
-
     const saveBtn   = document.createElement('button');
     saveBtn.className = 'btn-action btn-save-doc';
     saveBtn.textContent = '✓ Uložit';
     const cancelBtn = document.createElement('button');
     cancelBtn.className = 'btn-action btn-cancel-doc';
     cancelBtn.textContent = '✕ Zrušit';
-
     actDiv.style.display = 'none';
     item.appendChild(saveBtn);
     item.appendChild(cancelBtn);
-
     saveBtn.onclick = () => {
       const newText = ta.value.trim();
       if (!newText) return;
       const newFoto = taFoto.value.trim();
-      set(ref(db, 'prolog/dodatky/' + key + '/text'), newText)
-        .catch(err => alert('Chyba: ' + err.message));
+      set(ref(db, 'prolog/dodatky/' + key + '/text'), newText).catch(err => alert('Chyba: ' + err.message));
       if (newFoto) {
-        set(ref(db, 'prolog/dodatky/' + key + '/foto'), newFoto)
-          .catch(err => alert('Chyba foto: ' + err.message));
+        set(ref(db, 'prolog/dodatky/' + key + '/foto'), newFoto).catch(err => alert('Chyba foto: ' + err.message));
       } else {
         remove(ref(db, 'prolog/dodatky/' + key + '/foto')).catch(() => {});
       }
     };
-
     cancelBtn.onclick = () => {
-      ta.remove(); taFoto.remove();
-      saveBtn.remove(); cancelBtn.remove();
-      actDiv.style.display = '';
-      textEl.style.display = '';
+      ta.remove(); taFoto.remove(); saveBtn.remove(); cancelBtn.remove();
+      actDiv.style.display = ''; textEl.style.display = '';
     };
   };
 
@@ -941,8 +804,7 @@
     btn.textContent = '⏳';
     btn.disabled = true;
     deleteGitFoto(foto, () => {
-      remove(ref(db, 'prolog/dodatky/' + key))
-        .catch(err => alert('Chyba: ' + err.message));
+      remove(ref(db, 'prolog/dodatky/' + key)).catch(err => alert('Chyba: ' + err.message));
     });
   };
 </script>
