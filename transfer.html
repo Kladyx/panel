@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v5.7Kl</title>
+<title>KladyxTransfer v5.8Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v5.7Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto Prolog</div>
+  <div class="version">v5.8Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG Upload</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -415,8 +415,12 @@
 
   <div class="box" style="margin-top:20px">
     <div class="icon">📷</div>
-    <div class="desc">Nahrát foto do <b>Prologu</b></div>
-    <div class="desc2">Max. 5 MB · jpg/png/webp · uloží se do kladyxland/foto/</div>
+    <div class="desc">Nahrát foto / pozadí</div>
+    <div class="desc2">Max. 5 MB · jpg/png/webp</div>
+    <select id="fotoFolder" style="width:100%;margin-bottom:10px;padding:8px;background:#1a1a2e;color:#fff;border:1px solid rgba(0,255,136,.3);border-radius:6px;font-size:.9rem;">
+      <option value="foto">📷 Prolog (foto/)</option>
+      <option value="bg">🌅 Pozadí webu (bg/)</option>
+    </select>
 
     <input class="gh-input" id="fotoFileName" type="text" placeholder="nazev-foto.jpg" style="margin-bottom:10px;width:100%">
 
@@ -444,8 +448,12 @@
 
   <div class="box" style="margin-top:20px">
     <div class="icon">🖼️</div>
-    <div class="desc">Správa fotek v <b>Prologu</b></div>
-    <div class="desc2">Fotky v kladyxland/foto/ · vyžaduje GitHub Token</div>
+    <div class="desc">Správa fotek / pozadí</div>
+    <div class="desc2">kladyxland/foto/ nebo bg/ · vyžaduje GitHub Token</div>
+    <select id="fotoFolderList" style="width:100%;margin-bottom:10px;padding:8px;background:#1a1a2e;color:#fff;border:1px solid rgba(0,255,136,.3);border-radius:6px;font-size:.9rem;">
+      <option value="foto">📷 Prolog (foto/)</option>
+      <option value="bg">🌅 Pozadí webu (bg/)</option>
+    </select>
     <button class="sendbtn" onclick="loadFotoList()" style="font-size:.9rem;padding:10px 20px;margin-bottom:12px;">🔄 Načíst fotky</button>
     <div class="status" id="statusFotoList"></div>
     <div id="fotoListContainer" style="margin-top:10px;text-align:left;"></div>
@@ -1672,6 +1680,7 @@ function sendFotoToGithub() {
   if (!selectedFotoFile) return;
   var token = getGhToken();
   if (!token) { document.getElementById('statusFoto').textContent = '⚠️ Nejdřív zadej a ulož GitHub Token'; return; }
+  var folder = document.getElementById('fotoFolder').value || 'foto';
   var fnInput = document.getElementById('fotoFileName');
   var filename = fnInput.value.trim();
   if (!filename) { document.getElementById('statusFoto').textContent = '⚠️ Zadej název souboru'; return; }
@@ -1696,7 +1705,7 @@ function sendFotoToGithub() {
     var base64 = e.target.result.split(',')[1];
     pBar.style.width = '30%'; pText.textContent = '30%';
     status.textContent = '🔍 Kontroluji existující soubor...';
-    var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/foto/' + encodeURIComponent(safeName);
+    var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/' + folder + '/' + encodeURIComponent(safeName);
     var xhrGet = new XMLHttpRequest();
     xhrGet.open('GET', apiUrl);
     xhrGet.setRequestHeader('Authorization', 'token ' + token);
@@ -1722,13 +1731,13 @@ function sendFotoToGithub() {
       xhrPut.onload = function() {
         if (xhrPut.status === 200 || xhrPut.status === 201) {
           pBar.style.width = '100%'; pText.textContent = '100% ✓';
-          var fotoUrl = 'https://kladyx.github.io/kladyxland/foto/' + safeName;
+          var fotoUrl = 'https://kladyx.github.io/kladyxland/' + folder + '/' + safeName;
           status.textContent = '✅ Foto commitnuto!';
           status.className = 'status done';
           document.getElementById('fotoUrlText').textContent = fotoUrl;
           document.getElementById('fotoUrlBox').style.display = 'block';
           playDing();
-          addGhHistoryItem('commit', 'kladyxland/foto/' + safeName);
+          addGhHistoryItem('commit', 'kladyxland/' + folder + '/' + safeName);
           setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
         } else {
           pWrap.style.display = 'none';
@@ -1762,12 +1771,13 @@ function copyFotoUrl() {
 // ─── Foto rotace — správa ─────────────────────────────
 function loadFotoList() {
   var token = getGhToken();
+  var folder = document.getElementById('fotoFolderList').value || 'foto';
   var status = document.getElementById('statusFotoList');
   var container = document.getElementById('fotoListContainer');
   status.textContent = '📡 Načítám seznam fotek...';
   status.className = 'status';
   container.innerHTML = '';
-  var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/foto';
+  var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/' + folder;
   var xhr = new XMLHttpRequest();
   xhr.open('GET', apiUrl);
   if (token) xhr.setRequestHeader('Authorization', 'token ' + token);
@@ -1777,10 +1787,10 @@ function loadFotoList() {
       var files = [];
       try { files = JSON.parse(xhr.responseText); } catch(e) {}
       var fotos = files.filter(function(f) { return f.type === 'file'; });
-      renderFotoList(fotos, status, container);
+      renderFotoList(fotos, status, container, folder);
     } else if (xhr.status === 404) {
       status.textContent = '';
-      container.innerHTML = '<div class="pifile-empty">Složka foto/ ještě neexistuje (žádné fotky)</div>';
+      container.innerHTML = '<div class="pifile-empty">Složka ' + folder + '/ ještě neexistuje (žádné soubory)</div>';
     } else {
       status.textContent = '❌ Chyba ' + xhr.status;
       status.className = 'status';
@@ -1790,33 +1800,35 @@ function loadFotoList() {
   xhr.send();
 }
 
-function renderFotoList(fotos, status, container) {
+function renderFotoList(fotos, status, container, folder) {
+  folder = folder || 'foto';
   if (fotos.length === 0) {
     status.textContent = '';
-    container.innerHTML = '<div class="pifile-empty">Žádné fotky v prologu</div>';
+    container.innerHTML = '<div class="pifile-empty">Žádné soubory ve složce ' + folder + '/</div>';
     return;
   }
-  status.textContent = '✅ Načteno: ' + fotos.length + ' fotek';
+  status.textContent = '✅ Načteno: ' + fotos.length + ' souborů';
   status.className = 'status done';
   var html = '';
   for (var i = 0; i < fotos.length; i++) {
     var f = fotos[i];
     var sizeStr = f.size ? (f.size / 1024).toFixed(0) + ' KB' : '';
     var safeId = 'fitem_' + i;
-    var thumbUrl = 'https://kladyx.github.io/kladyxland/foto/' + encodeURIComponent(f.name);
+    var thumbUrl = 'https://kladyx.github.io/kladyxland/' + folder + '/' + encodeURIComponent(f.name);
     html += '<div class="queue-item" style="align-items:center;gap:10px;flex-wrap:nowrap;" id="' + safeId + '">';
     html += '<img src="' + thumbUrl + '" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,.15);flex-shrink:0;" loading="lazy">';
     html += '<div class="queue-name" style="font-size:.82rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(f.name);
     if (sizeStr) html += ' <span style="color:rgba(255,255,255,.4);font-size:.75rem;">(' + sizeStr + ')</span>';
     html += '</div>';
-    html += '<button id="delbtn_' + safeId + '" onclick="confirmDeleteFoto(\'' + f.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\',\'' + f.sha + '\',\'' + safeId + '\')" ';
+    html += '<button id="delbtn_' + safeId + '" onclick="confirmDeleteFoto(\'' + f.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\',\'' + f.sha + '\',\'' + safeId + '\',\'' + folder + '\')" ';
     html += 'style="background:rgba(255,50,50,.2);border:1px solid #ff4444;color:#ff4444;padding:5px 11px;border-radius:6px;cursor:pointer;font-size:.85rem;flex-shrink:0;white-space:nowrap;">🗑</button>';
     html += '</div>';
   }
   container.innerHTML = html;
 }
 
-function confirmDeleteFoto(filename, sha, itemId) {
+function confirmDeleteFoto(filename, sha, itemId, folder) {
+  folder = folder || 'foto';
   var btn = document.getElementById('delbtn_' + itemId);
   if (!btn) return;
   if (!btn._pending) {
@@ -1838,10 +1850,11 @@ function confirmDeleteFoto(filename, sha, itemId) {
     setTimeout(reset, 6000);
     return;
   }
-  deleteFotoFromGithub(filename, sha, itemId);
+  deleteFotoFromGithub(filename, sha, itemId, folder);
 }
 
-function deleteFotoFromGithub(filename, sha, itemId) {
+function deleteFotoFromGithub(filename, sha, itemId, folder) {
+  folder = folder || 'foto';
   var token = getGhToken();
   if (!token) { document.getElementById('statusFotoList').textContent = '⚠️ Nejdřív ulož GitHub Token'; return; }
   var status = document.getElementById('statusFotoList');
@@ -1849,7 +1862,7 @@ function deleteFotoFromGithub(filename, sha, itemId) {
   if (item) item.style.opacity = '0.4';
   status.textContent = '🗑 Mažu ' + filename + '...';
   status.className = 'status';
-  var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/foto/' + encodeURIComponent(filename);
+  var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/' + folder + '/' + encodeURIComponent(filename);
   var xhr = new XMLHttpRequest();
   xhr.open('DELETE', apiUrl);
   xhr.setRequestHeader('Authorization', 'token ' + token);
@@ -1860,7 +1873,7 @@ function deleteFotoFromGithub(filename, sha, itemId) {
       status.textContent = '✅ ' + filename + ' smazáno z GitHubu.';
       status.className = 'status done';
       if (item) item.remove();
-      addGhHistoryItem('commit', 'kladyxland/foto/' + filename + ' [DELETE]');
+      addGhHistoryItem('commit', 'kladyxland/' + folder + '/' + filename + ' [DELETE]');
       playDing();
     } else {
       if (item) item.style.opacity = '1';
