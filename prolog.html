@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KLADYXLAND — Prolog v1.4Kl</title>
+  <title>KLADYXLAND — Prolog v1.5Kl</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -499,7 +499,7 @@
 
 </div>
 
-<div class="version-tag">v1.4Kl</div>
+<div class="version-tag">v1.5Kl</div>
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -677,10 +677,34 @@
     };
   };
 
-  // ── Smazat dodatek (+ foto z GitHubu) ──
+  // ── Smazat dodatek (+ foto z GitHubu) — inline potvrzení bez confirm() ──
   window.smazDodatek = function(key, btn) {
-    if (!confirm('Smazat tento dodatek?')) return;
-    const foto = btn ? (btn.dataset.foto || '') : '';
+    if (!btn) return;
+    if (!btn._confirmPending) {
+      // 1. klik — ukáže potvrzení
+      btn._confirmPending = true;
+      const origText = btn.textContent;
+      btn.textContent = '⚠ Potvrdit?';
+      btn.style.background = 'rgba(239,68,68,0.3)';
+      const noBtn = document.createElement('button');
+      noBtn.className = 'btn-action btn-cancel-doc';
+      noBtn.textContent = '✕ Ne';
+      noBtn.style.marginLeft = '6px';
+      btn.insertAdjacentElement('afterend', noBtn);
+      const reset = () => {
+        btn._confirmPending = false;
+        btn.textContent = origText;
+        btn.style.background = '';
+        noBtn.remove();
+      };
+      noBtn.onclick = reset;
+      setTimeout(reset, 6000); // auto-reset po 6 s
+      return;
+    }
+    // 2. klik — potvrzeno, maže
+    const foto = btn.dataset.foto || '';
+    btn.textContent = '⏳';
+    btn.disabled = true;
     deleteGitFoto(foto, () => {
       remove(ref(db, 'prolog/dodatky/' + key))
         .catch(err => alert('Chyba: ' + err.message));
