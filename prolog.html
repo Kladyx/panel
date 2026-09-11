@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KLADYXLAND — Prolog v1.5Kl</title>
+  <title>KLADYXLAND — Prolog v1.6Kl</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -16,6 +16,7 @@
       --teal:   #06b6d4;
       --green:  #22c55e;
       --red:    #ef4444;
+      --amber:  #f59e0b;
       --rule:   rgba(124,58,237,0.18);
     }
 
@@ -116,9 +117,103 @@
     p:last-child { margin-bottom: 0; }
     em { font-style: italic; color: #c4b5fd; }
     strong { font-weight: 600; color: #f0f0ff; }
-    .teal { color: var(--teal); font-style: normal; }
+    .teal  { color: var(--teal);  font-style: normal; }
     .green-c { color: var(--green); font-style: normal; }
+    .amber { color: var(--amber); font-style: normal; }
 
+    /* ── Chain ── */
+    .chain {
+      margin: 24px 0;
+      padding: 20px 24px;
+      border-left: 2px solid rgba(6,182,212,0.35);
+      background: rgba(6,182,212,0.04);
+      border-radius: 0 8px 8px 0;
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 17px;
+      line-height: 2.1;
+      color: var(--ink);
+    }
+
+    .chain-arrow {
+      color: var(--muted);
+      margin: 0 4px;
+    }
+
+    .chain-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--teal);
+      opacity: .7;
+      margin-left: 6px;
+    }
+
+    /* ── Device grid ── */
+    .device-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 24px 0;
+    }
+
+    .device-card {
+      padding: 14px 16px;
+      background: rgba(124,58,237,0.06);
+      border: 1px solid rgba(124,58,237,0.15);
+      border-radius: 10px;
+    }
+
+    .device-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    .device-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--teal);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .device-desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* ── Service list ── */
+    .service-list {
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .service-item {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 10px 16px;
+      background: rgba(0,0,0,.2);
+      border-radius: 8px;
+      border: 1px solid rgba(124,58,237,0.1);
+      font-size: 16px;
+    }
+
+    .service-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 8px;
+      letter-spacing: 1.5px;
+      color: var(--green);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .service-desc { color: var(--muted); line-height: 1.4; }
+
+    /* ── App flow ── */
     .app-flow {
       font-size: 17px;
       color: var(--muted);
@@ -135,6 +230,26 @@
       margin: 56px 0 0;
       height: 1px;
       background: linear-gradient(90deg, transparent 0%, var(--rule) 30%, var(--rule) 70%, transparent 100%);
+    }
+
+    /* ── Stat bar ── */
+    .stat-row {
+      display: flex;
+      gap: 16px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      padding: 8px 18px;
+      background: rgba(124,58,237,0.08);
+      border: 1px solid rgba(124,58,237,0.2);
+      border-radius: 20px;
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: #c4b5fd;
+      text-transform: uppercase;
     }
 
     /* ── Dodatky ── */
@@ -392,6 +507,7 @@
     @media (max-width: 600px) {
       body { font-size: 18px; }
       .hero { padding: 56px 0 44px; }
+      .device-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -420,15 +536,24 @@
   <!-- Panel -->
   <section>
     <div class="sec-label">Jádro systému</div>
-    <h2>Panel — čtyřicet aplikací v jednom.</h2>
-    <p>Srdcem celého KLADYXLANDU je <strong>Panel.html</strong> — jeden soubor s více než dvaceti tisíci řádky kódu, který v sobě ukrývá čtyřicet samostatných aplikací. Žádný framework, žádný build systém. Čistý HTML, CSS a JavaScript, napsaný ručně, každý řádek s důvodem.</p>
+    <h2>Panel — čtyřicet aplikací, jeden soubor.</h2>
+    <p>Srdcem KLADYXLANDU je <strong>Panel.html</strong> — přes dvacet tisíc řádků kódu, čtyřicet samostatných aplikací v jednom souboru. Žádný framework, žádný build systém. Čistý HTML, CSS a JavaScript.</p>
     <div class="app-flow">
-      <span>💿 CD a LP databáze</span> · <span>🩸 Glukóza</span> · <span>🎙 OBS Status</span> ·
+      <span>💿 CD &amp; LP databáze</span> · <span>🩸 Glukóza</span> · <span>🎙 OBS Status</span> ·
       <span>🌤 Počasí</span> · <span>📝 Poznámky</span> · <span>📅 Kalendář</span> ·
       <span>🔧 Hardware</span> · <span>🎵 KladyxAmp</span> · <span>📡 NextSync</span> ·
-      <span>🟢 Status checker</span> · <span>🎮 ZX Games</span> · a mnoho dalších&hellip;
+      <span>🏠 KladyxHome</span> · <span>🍓 Pi Monitor</span> · <span>🎮 ZX Games</span> ·
+      <span>🕹 ZX Next</span> · <span>🎛️ Equalizer</span> · <span>🇬🇧 WordMaster</span> ·
+      <span>🎤 SpeakUp</span> · <span>📤 Transfer</span> · <span>🌍 World Time</span> ·
+      <span>☁️ Mixcloud</span> · <span>🎤 Radio ID</span> · a dalších 20 appek&hellip;
     </div>
-    <p>Panel žije na GitHubu a funguje odkudkoliv na světě — z mobilu, z tabletu, z počítače. Každá appka je přizpůsobena přesně mým potřebám. Žádný kompromis, žádné zbytečné funkce.</p>
+    <p>Panel žije na GitHubu Pages a funguje odkudkoliv — z mobilu, tabletu i počítače. Je dostupný i lokálně přes NextSync server na PC, bez internetu.</p>
+    <div class="stat-row">
+      <div class="stat-pill">40 appek</div>
+      <div class="stat-pill">2 GitHub repos</div>
+      <div class="stat-pill">Firebase RTDB</div>
+      <div class="stat-pill">Europe West 1</div>
+    </div>
   </section>
 
   <div class="divider"></div>
@@ -436,9 +561,49 @@
   <!-- Infrastruktura -->
   <section>
     <div class="sec-label">Infrastruktura</div>
-    <h2>Mozek domácnosti běží nepřetržitě.</h2>
-    <p>Za panelem stojí <strong>Raspberry Pi 4</strong> s hostname <em class="teal">djsound</em>, který běží 24 hodin denně, 7 dní v týdnu. Na něm šest systémových služeb: monitorování serveru, ovládání Tapo chytrých zásuvek, IR dálkové ovládání televize a rádia, přenos souborů, sledování online rádia.</p>
-    <p>Vše komunikuje přes <strong>Firebase Realtime Database</strong> — databázi v cloudu, která slouží jako most mezi Raspberry Pi, počítačem a panelem. Místo klasického serveru stačí jeden Firebase projekt. Data tečou, zásuvky se zapínají, stav se aktualizuje — v reálném čase, bez nutnosti otevírat porty nebo platit za hosting.</p>
+    <h2>Mozky systému nikdy nespí.</h2>
+    <p><strong>Raspberry Pi 4B</strong> (hostname <em class="teal">djsound</em>, IP <em class="teal">192.168.0.50</em>) běží 24/7 a pohání celé IoT jádro systému. Na něm běží osm systemd služeb:</p>
+
+    <div class="service-list">
+      <div class="service-item">
+        <div class="service-name">tapo-py</div>
+        <div class="service-desc">Tapo P115/P100 bridge — python-kasa, polling 60 s, restart každé 4 h</div>
+      </div>
+      <div class="service-item">
+        <div class="service-name">irbridge</div>
+        <div class="service-desc">IR bridge — Samsung Radio + TV Sharp přes hub S08</div>
+      </div>
+      <div class="service-item">
+        <div class="service-name">tapobridge</div>
+        <div class="service-desc">Tuya IR bridge — ovládání zařízení přes Tuya protokol</div>
+      </div>
+      <div class="service-item">
+        <div class="service-name">plugbridge</div>
+        <div class="service-desc">Tuya plug bridge — chytré zásuvky přes Tuya cloud</div>
+      </div>
+      <div class="service-item">
+        <div class="service-name">pimonitor</div>
+        <div class="service-desc">Monitoring Pi4 — CPU, teplota, RAM → Firebase každou minutu</div>
+      </div>
+      <div class="service-item">
+        <div class="service-name">pitransfer</div>
+        <div class="service-desc">Transfer souborů mezi PC a Pi4 přes Firebase</div>
+      </div>
+      <div class="service-item">
+        <div class="service-name">prijatelister</div>
+        <div class="service-desc">Výpis přijatých souborů v /home/pi/nextsync/prijate/</div>
+      </div>
+      <div class="service-item">
+        <div class="service-name">uploadserver</div>
+        <div class="service-desc">Upload server — příjem souborů, port 8765</div>
+      </div>
+    </div>
+
+    <p>Pi4 se každý den v <em class="amber">22:20 automaticky vypne</em>. Cron restartuje Tapo bridge v 6:05 ráno a každé 4 hodiny. Napájení Pi4 hlídá zásuvka Tapo P110 na IP 192.168.0.207.</p>
+
+    <p><strong>PC Fujitsu E559</strong> (IP <em class="teal">192.168.0.23</em>) zajišťuje tři Windows služby: OBS Bridge, NextSync Server a Transfer Watcher. Startují automaticky po přihlášení do Windows.</p>
+
+    <p>Vše komunikuje přes <strong>Firebase Realtime Database</strong> — cloud, který slouží jako HTTPS most mezi lokální sítí a GitHub Pages panelem. Limit: 360 MB stažených dat denně, reset v 09:00.</p>
   </section>
 
   <div class="divider"></div>
@@ -447,8 +612,42 @@
   <section>
     <div class="sec-label">Smart Home</div>
     <h2>Dům poslouchá.</h2>
-    <p>Z panelu zapínám a vypínám <em>DJ studio</em>, lávovou lampu, televizi Sharp, rádio Samsung. Přes chytré zásuvky Tapo, IR hub a Tuya protokol. Vše napsáno v Pythonu a Node.js, bez komerčních hub-řešení, bez předplatného, bez cizích cloudů. Jen moje servery, moje kód, moje pravidla.</p>
-    <p>Každé ráno se Pi4 probudí, každý večer usne. Cron joby, systemd služby, automatické restarty — systém se stará sám o sebe.</p>
+    <p>Z panelu <em>KladyxHome</em> ovládám celý byt. Každé zařízení má pevnou IP adresu z DHCP rezervace routeru TP-Link Archer AX55 Pro — aby se nikdy nic nepohlo.</p>
+
+    <div class="device-grid">
+      <div class="device-card">
+        <div class="device-icon">🔌</div>
+        <div class="device-name">Tapo P115</div>
+        <div class="device-desc">DJ Studio · IP .106 · měří spotřebu v reálném čase</div>
+      </div>
+      <div class="device-card">
+        <div class="device-icon">📺</div>
+        <div class="device-name">Tapo P100</div>
+        <div class="device-desc">TV Sharp · IP .24 · zapnutí/vypnutí televize</div>
+      </div>
+      <div class="device-card">
+        <div class="device-icon">📻</div>
+        <div class="device-name">Tapo P100</div>
+        <div class="device-desc">Samsung Radio · IP .63 · na objednávce</div>
+      </div>
+      <div class="device-card">
+        <div class="device-icon">🍓</div>
+        <div class="device-name">Tapo P110</div>
+        <div class="device-desc">Napájení Pi4 · IP .207 · fyzický kill-switch</div>
+      </div>
+      <div class="device-card">
+        <div class="device-icon">📡</div>
+        <div class="device-name">IR Hub S08</div>
+        <div class="device-desc">IP .147 · Samsung Radio + TV Sharp infračerveně</div>
+      </div>
+      <div class="device-card">
+        <div class="device-icon">🌡️</div>
+        <div class="device-name">Tuya Blow</div>
+        <div class="device-desc">TV Sharp · IP .238 · IR přes Tuya protokol</div>
+      </div>
+    </div>
+
+    <p>Žádné komerční hub-řešení, žádné předplatné. Jen Python, Node.js, vlastní skripty a Firebase jako komunikační most. Vše postaveno na vlastní infrastruktuře.</p>
   </section>
 
   <div class="divider"></div>
@@ -456,10 +655,57 @@
   <!-- Broadcasting -->
   <section>
     <div class="sec-label">Broadcasting</div>
-    <h2>Hudba ven do světa.</h2>
-    <p>KLADYXLAND není jen domácí systém — je to také broadcastingová platforma. Mikrofon RØDE PodMic, předzesilovač TubePre V2, kompresor, ekvalizér, RodeCaster Duo a rozhraní PreSonus Quantum ES4. DJ setup s gramofony Reloop, mixpultem a CDJ800 MK2.</p>
-    <p>OBS Studio zachytává stream a posílá ho do světa. Bridge napsaný v Node.js hlídá stav vysílání a v reálném čase aktualizuje panel i veřejný web — aby posluchači vždy věděli, jestli jsem <em class="green-c">ONLINE</em>.</p>
-    <p>Mixcloud archivuje všechny sety. Veřejný web na <strong>kladyx.github.io</strong> ukazuje co hraje, chat s posluchači, galerii, historii streamů. Vše propojeno, vše živé.</p>
+    <h2>Zvuk od mikrofonu do světa.</h2>
+    <p>Broadcast řetězec je přesně navržený pro maximální kvalitu hlasu při streamu. Každý přístroj v řetězci má svůj důvod a nastavení.</p>
+
+    <div class="chain">
+      <strong>RØDE PodMic</strong> <span class="chain-label">XLR</span><br>
+      <span class="chain-arrow">→</span> <strong>Art TubePre V2</strong> <span class="chain-label">předzesilovač · GAIN vysoký</span><br>
+      <span class="chain-arrow">→</span> <strong>DBX EQ3B</strong> <span class="chain-label">ekvalizér · 80Hz HPF · MID +2dB · HIGH +1dB</span><br>
+      <span class="chain-arrow">→</span> <strong>DBX COMP16</strong> <span class="chain-label">kompresor · GR 3–6 dB při řeči</span><br>
+      <span class="chain-arrow">→</span> <strong>RØDECaster Duo</strong> <span class="chain-label">Line-In · Level 20dB · Processing off</span><br>
+      <span class="chain-arrow">→</span> <strong>PreSonus Quantum ES4</strong> <span class="chain-label">zvuková karta USB-C</span><br>
+      <span class="chain-arrow">→</span> <strong>OBS Studio</strong> <span class="chain-label">LoudMax · SPAN · Youlean · cíl −15 LUFS</span><br>
+      <span class="chain-arrow">→</span> <strong>Mixcloud Live</strong> <span class="chain-label">stream do světa</span>
+    </div>
+
+    <p>OBS Bridge — Node.js skript running na PC — sleduje stav streamu a v reálném čase aktualizuje Firebase. Panel i veřejný web ihned zobrazí <em class="green-c">ON AIR</em>. Stream lze spustit i zastavit přímo z panelu nebo webu.</p>
+
+    <p>Software monitoring: <strong>mvMeter2</strong> PPM IIa BBC, <strong>SPAN</strong>, <strong>LoudMax</strong> (threshold −2.0 dB, output −1.0 dB), <strong>Youlean Loudness Meter Pro</strong>. Sluchátka Pioneer HDJ-X5 a Rode NTH-100 přes PreSonus HP4.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- DJ Setup -->
+  <section>
+    <div class="sec-label">DJ Setup</div>
+    <h2>Studio pro mixování.</h2>
+    <p>Centrum DJ studia tvoří mixér <strong>Allen &amp; Heath AR8c</strong> se čtyřmi stereo vstupy. Každý zdroj má své místo v signálovém toku.</p>
+
+    <div class="chain">
+      <strong>Reloop RP 1000</strong> <span class="chain-label">gramofon</span>
+      <span class="chain-arrow"> → </span> <strong>Mix 300s</strong> <span class="chain-label">phono pre</span>
+      <span class="chain-arrow"> → </span> AR8c kanál 1/2<br>
+      <strong>DDJ 800</strong> <span class="chain-label">Pioneer DJ controller · XLR</span>
+      <span class="chain-arrow"> → </span> AR8c kanál 3/4<br>
+      <strong>CDJ 800 MK2</strong> <span class="chain-label">CD přehrávač</span>
+      <span class="chain-arrow"> → </span> AR8c kanál 5/6<br>
+      AR8c Main Out <span class="chain-arrow"> → </span> <strong>PreSonus Quantum ES4</strong> vstup 3/4
+    </div>
+
+    <p>Monitorování zajišťuje <strong>PreSonus Monitor Station V2</strong> — přepíná mezi reproduktory Sub 8 BT + Eris 4.5 BT (Main) a American Audio + Fun Generation RTA 31 (Cue). VU meter <strong>Nobsound L3-3</strong> sleduje úrovně signálu ze sluchátkového zesilovače a mikrofon řetězce.</p>
+
+    <p>Mixcloud archivuje všechny sety. Každý stream přežije v historii — nic se neztrácí.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ZX Spectrum Next -->
+  <section>
+    <div class="sec-label">Retro Computing</div>
+    <h2>ZX Spectrum Next — retro v síti.</h2>
+    <p><strong>ZX Spectrum Next</strong> je součástí KLADYXLANDU. Retro počítač žije v lokální síti na IP <em class="teal">192.168.0.124</em> — vedle Raspberry Pi a PC. Je to záměrný kontrast: nejmodernější Firebase cloud, a vedle toho osmibitový stroj z osmdesátých let.</p>
+    <p>Panel obsahuje dedikovanou appku <em>ZX Next</em> s deníkem vývoje — záznamy, co se na Nextu programuje, zkoušelo, testovalo. NextSync server na PC umí soubory přenášet přímo do Nextu a zpět. KLADYXLAND propojuje retro se současností.</p>
   </section>
 
   <div class="divider"></div>
@@ -485,7 +731,6 @@
     <div class="dodatky-title">📌 Dodatky</div>
     <div id="dodatky-list"><div class="no-dodatky">Načítám…</div></div>
 
-    <!-- Admin panel (jen owner) -->
     <div class="admin-panel" id="admin-panel">
       <div class="admin-label">✏️ Přidat dodatek</div>
       <textarea id="dodatek-input" placeholder="Napiš dodatek…" maxlength="2000"></textarea>
@@ -499,7 +744,7 @@
 
 </div>
 
-<div class="version-tag">v1.5Kl</div>
+<div class="version-tag">v1.6Kl</div>
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -526,7 +771,6 @@
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  // ── Smazání fotky z GitHubu (tiché – Firebase remove proběhne vždy) ──
   function deleteGitFoto(fotoUrl, callback) {
     const PREFIX = 'https://kladyx.github.io/kladyxland/foto/';
     if (!fotoUrl || !fotoUrl.startsWith(PREFIX)) { callback(); return; }
@@ -536,10 +780,7 @@
     const apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/foto/'
                    + encodeURIComponent(filename);
     fetch(apiUrl, {
-      headers: {
-        'Authorization': 'token ' + token,
-        'Accept': 'application/vnd.github.v3+json'
-      }
+      headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
     })
     .then(r => r.ok ? r.json() : null)
     .then(data => {
@@ -558,7 +799,6 @@
     .catch(() => callback());
   }
 
-  // ── Načíst a vykreslit dodatky ──
   onValue(ref(db, 'prolog/dodatky'), snap => {
     const list = document.getElementById('dodatky-list');
     if (!snap.exists()) {
@@ -593,7 +833,6 @@
     }).join('');
   });
 
-  // ── Přidat dodatek ──
   window.pridatDodatek = function() {
     const input  = document.getElementById('dodatek-input');
     const btn    = document.getElementById('btn-pridat');
@@ -622,13 +861,12 @@
       });
   };
 
-  // ── Editace dodatku ──
   window.editDodatek = function(key, btn) {
     const actDiv = document.getElementById('act-' + key);
     if (!actDiv) return;
-    const item     = actDiv.closest('.dodatek-item');
-    const textEl   = item.querySelector('.dodatek-text');
-    const fotoImgEl= item.querySelector('.dodatek-foto');
+    const item      = actDiv.closest('.dodatek-item');
+    const textEl    = item.querySelector('.dodatek-text');
+    const fotoImgEl = item.querySelector('.dodatek-foto');
 
     textEl.style.display = 'none';
 
@@ -677,11 +915,9 @@
     };
   };
 
-  // ── Smazat dodatek (+ foto z GitHubu) — inline potvrzení bez confirm() ──
   window.smazDodatek = function(key, btn) {
     if (!btn) return;
     if (!btn._confirmPending) {
-      // 1. klik — ukáže potvrzení
       btn._confirmPending = true;
       const origText = btn.textContent;
       btn.textContent = '⚠ Potvrdit?';
@@ -698,10 +934,9 @@
         noBtn.remove();
       };
       noBtn.onclick = reset;
-      setTimeout(reset, 6000); // auto-reset po 6 s
+      setTimeout(reset, 6000);
       return;
     }
-    // 2. klik — potvrzeno, maže
     const foto = btn.dataset.foto || '';
     btn.textContent = '⏳';
     btn.disabled = true;
