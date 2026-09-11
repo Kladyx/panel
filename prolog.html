@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KLADYXLAND — Prolog v1.3Kl</title>
+  <title>KLADYXLAND — Prolog v1.4Kl</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -168,38 +168,6 @@
       animation: fadeIn .4s ease both;
     }
 
-    .dodatek-actions {
-      display: none;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .btn-action {
-      padding: 5px 14px;
-      border-radius: 6px;
-      border: none;
-      font-family: 'Orbitron', monospace;
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: opacity .2s;
-    }
-
-    .btn-action:hover { opacity: .8; }
-
-    .btn-edit-doc {
-      background: rgba(6,182,212,0.15);
-      color: var(--teal);
-      border: 1px solid rgba(6,182,212,0.3);
-    }
-
-    .btn-del-doc {
-      background: rgba(239,68,68,0.12);
-      color: var(--red);
-      border: 1px solid rgba(239,68,68,0.25);
-    }
-
     @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 
     .dodatek-meta {
@@ -216,6 +184,89 @@
       line-height: 1.7;
       color: var(--ink);
       white-space: pre-wrap;
+    }
+
+    .dodatek-foto {
+      width: 100%;
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-top: 12px;
+      display: block;
+    }
+
+    .dodatek-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .btn-action:hover { opacity: .75; }
+
+    .btn-edit-doc {
+      background: rgba(6,182,212,0.12);
+      border: 1px solid rgba(6,182,212,0.35);
+      color: var(--teal);
+    }
+
+    .btn-del-doc {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: var(--red);
+    }
+
+    .btn-save-doc {
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.35);
+      color: var(--green);
+    }
+
+    .btn-cancel-doc {
+      background: rgba(90,95,122,0.15);
+      border: 1px solid rgba(90,95,122,0.3);
+      color: var(--muted);
+    }
+
+    .edit-ta {
+      width: 100%;
+      min-height: 80px;
+      background: rgba(0,0,0,.3);
+      border: 1px solid rgba(124,58,237,.35);
+      border-radius: 8px;
+      color: var(--ink);
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.6;
+      padding: 10px 14px;
+      resize: vertical;
+      outline: none;
+      margin-top: 8px;
+      box-sizing: border-box;
+    }
+
+    .edit-foto {
+      width: 100%;
+      margin-top: 6px;
+      padding: 8px 12px;
+      background: rgba(0,0,0,.3);
+      border: 1px solid rgba(6,182,212,.3);
+      border-radius: 8px;
+      color: var(--ink);
+      font-size: 15px;
+      outline: none;
+      box-sizing: border-box;
     }
 
     .no-dodatky {
@@ -262,6 +313,20 @@
     }
 
     textarea:focus { border-color: rgba(124,58,237,0.6); }
+
+    .foto-input-main {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: rgba(0,0,0,.3);
+      border: 1px solid rgba(124,58,237,.25);
+      border-radius: 8px;
+      color: var(--ink);
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 16px;
+      outline: none;
+      box-sizing: border-box;
+    }
 
     .btn-add {
       margin-top: 12px;
@@ -424,8 +489,8 @@
     <div class="admin-panel" id="admin-panel">
       <div class="admin-label">✏️ Přidat dodatek</div>
       <textarea id="dodatek-input" placeholder="Napiš dodatek…" maxlength="2000"></textarea>
-      <br>
-      <input type="url" id="foto-input" placeholder="URL fotky (volitelné) — https://kladyx.github.io/kladyxland/foto/…" style="width:100%;margin-top:10px;padding:10px 14px;background:rgba(0,0,0,.3);border:1px solid rgba(124,58,237,.25);border-radius:8px;color:#e2e4f0;font-family:'Crimson Pro',Georgia,serif;font-size:16px;outline:none;box-sizing:border-box;">
+      <input type="url" class="foto-input-main" id="foto-input"
+        placeholder="URL fotky (volitelné) — https://kladyx.github.io/kladyxland/foto/…">
       <br>
       <button class="btn-add" id="btn-pridat" onclick="pridatDodatek()">Přidat</button>
       <div class="add-status" id="add-status"></div>
@@ -434,11 +499,11 @@
 
 </div>
 
-<div class="version-tag">v1.3Kl</div>
+<div class="version-tag">v1.4Kl</div>
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-  import { getDatabase, ref, onValue, push, set, remove, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+  import { getDatabase, ref, onValue, push, set, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
   import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
   const app = initializeApp({
@@ -448,17 +513,52 @@
     projectId: "kladyxland"
   });
 
-  const db  = getDatabase(app);
+  const db   = getDatabase(app);
   const auth = getAuth(app);
 
-  // Owner check
   const isOwner = !!localStorage.getItem('kladyx_rp');
   if (isOwner) {
     document.getElementById('admin-panel').style.display = 'block';
     signInAnonymously(auth).catch(() => {});
   }
 
-  // Načíst dodatky
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── Smazání fotky z GitHubu (tiché – Firebase remove proběhne vždy) ──
+  function deleteGitFoto(fotoUrl, callback) {
+    const PREFIX = 'https://kladyx.github.io/kladyxland/foto/';
+    if (!fotoUrl || !fotoUrl.startsWith(PREFIX)) { callback(); return; }
+    const token = localStorage.getItem('gh_pat') || '';
+    if (!token) { callback(); return; }
+    const filename = fotoUrl.slice(PREFIX.length);
+    const apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/foto/'
+                   + encodeURIComponent(filename);
+    fetch(apiUrl, {
+      headers: {
+        'Authorization': 'token ' + token,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    })
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (!data || !data.sha) { callback(); return; }
+      return fetch(apiUrl, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': 'token ' + token,
+          'Content-Type': 'application/json',
+          'Accept': 'application/vnd.github.v3+json'
+        },
+        body: JSON.stringify({ message: 'Delete foto: ' + filename, sha: data.sha })
+      });
+    })
+    .then(() => callback())
+    .catch(() => callback());
+  }
+
+  // ── Načíst a vykreslit dodatky ──
   onValue(ref(db, 'prolog/dodatky'), snap => {
     const list = document.getElementById('dodatky-list');
     if (!snap.exists()) {
@@ -468,105 +568,32 @@
     const items = [];
     snap.forEach(child => {
       const d = child.val();
-      items.push({ key: child.key, text: d.text || '', ts: d.ts || 0 });
+      items.push({ key: child.key, text: d.text || '', ts: d.ts || 0, foto: d.foto || null });
     });
     items.sort((a, b) => a.ts - b.ts);
     list.innerHTML = items.map((item, i) => {
-      const date = item.ts ? new Date(item.ts).toLocaleDateString('cs-CZ', { day:'numeric', month:'long', year:'numeric' }) : '';
-      const fotoHtml = item.foto ? `<img src="${escHtml(item.foto)}" alt="foto" style="width:100%;max-height:320px;object-fit:cover;border-radius:8px;margin-top:12px;display:block;">` : '';
+      const date = item.ts
+        ? new Date(item.ts).toLocaleDateString('cs-CZ', { day:'numeric', month:'long', year:'numeric' })
+        : '';
+      const fotoHtml = item.foto
+        ? `<img class="dodatek-foto" src="${escHtml(item.foto)}" alt="foto">`
+        : '';
+      const actions = isOwner
+        ? `<div class="dodatek-actions" id="act-${item.key}">
+             <button class="btn-action btn-edit-doc" onclick="editDodatek('${item.key}', this)">✏️ Upravit</button>
+             <button class="btn-action btn-del-doc" data-foto="${escHtml(item.foto || '')}" onclick="smazDodatek('${item.key}', this)">🗑 Smazat</button>
+           </div>`
+        : '';
       return `<div class="dodatek-item" style="animation-delay:${i*0.06}s">
         <div class="dodatek-meta">${i + 1}. dodatek${date ? ' · ' + date : ''}</div>
         <div class="dodatek-text">${escHtml(item.text)}</div>
         ${fotoHtml}
-        <div class="dodatek-actions" id="act-${item.key}">
-          <button class="btn-action btn-edit-doc" onclick="editDodatek('${item.key}', this)">✏️ Upravit</button>
-          <button class="btn-action btn-del-doc" onclick="smazDodatek('${item.key}', this)">🗑 Smazat</button>
-        </div>
+        ${actions}
       </div>`;
     }).join('');
-    if (isOwner) {
-      document.querySelectorAll('.dodatek-actions').forEach(el => el.style.display = 'flex');
-    }
   });
 
-  function escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  // Smazat dodatek - inline potvrzení bez confirm()
-  window.smazDodatek = function(key, btn) {
-    if (btn.dataset.confirm !== '1') {
-      btn.dataset.confirm = '1';
-      btn.textContent = '⚠️ Potvrdit';
-      btn.style.background = 'rgba(239,68,68,0.35)';
-      setTimeout(() => {
-        if (btn.dataset.confirm === '1') {
-          btn.dataset.confirm = '';
-          btn.textContent = '🗑 Smazat';
-          btn.style.background = '';
-        }
-      }, 3000);
-      return;
-    }
-    remove(ref(db, 'prolog/dodatky/' + key))
-      .catch(err => alert('Chyba: ' + err.message));
-  };
-
-  // Editovat dodatek
-  window.editDodatek = function(key, btn) {
-    const item = btn.closest('.dodatek-item');
-    const textEl = item.querySelector('.dodatek-text');
-    if (item.querySelector('.edit-area')) {
-      item.querySelector('.edit-area').remove();
-      item.querySelector('.edit-save') && item.querySelector('.edit-save').remove();
-      item.querySelector('.edit-cancel') && item.querySelector('.edit-cancel').remove();
-      textEl.style.display = '';
-      return;
-    }
-    textEl.style.display = 'none';
-    const ta = document.createElement('textarea');
-    ta.className = 'edit-area';
-    ta.style.cssText = 'width:100%;min-height:80px;background:rgba(0,0,0,.3);border:1px solid rgba(6,182,212,.35);border-radius:8px;color:#e2e4f0;font-family:"Crimson Pro",Georgia,serif;font-size:18px;line-height:1.6;padding:10px 14px;resize:vertical;outline:none;margin-top:10px;box-sizing:border-box;';
-    ta.value = textEl.textContent;
-    item.insertBefore(ta, item.querySelector('.dodatek-actions'));
-
-    // foto URL pole
-    const fotoEl = item.querySelector('img');
-    const taFoto = document.createElement('input');
-    taFoto.type = 'url';
-    taFoto.className = 'edit-foto';
-    taFoto.placeholder = 'URL fotky (volitelné)';
-    taFoto.style.cssText = 'width:100%;margin-top:6px;padding:8px 12px;background:rgba(0,0,0,.3);border:1px solid rgba(6,182,212,.3);border-radius:8px;color:#e2e4f0;font-size:15px;outline:none;box-sizing:border-box;';
-    taFoto.value = fotoEl ? fotoEl.src : '';
-    item.insertBefore(taFoto, item.querySelector('.dodatek-actions'));
-    const saveBtn = document.createElement('button');
-    saveBtn.className = 'btn-action btn-edit-doc edit-save';
-    saveBtn.textContent = '✓ Uložit';
-    saveBtn.style.marginTop = '8px';
-    saveBtn.onclick = () => {
-      const newText = ta.value.trim();
-      if (!newText) return;
-      const newFoto = taFoto.value.trim();
-      set(ref(db, 'prolog/dodatky/' + key + '/text'), newText)
-        .catch(err => alert('Chyba: ' + err.message));
-      if (newFoto) {
-        set(ref(db, 'prolog/dodatky/' + key + '/foto'), newFoto)
-          .catch(err => alert('Chyba foto: ' + err.message));
-      } else {
-        remove(ref(db, 'prolog/dodatky/' + key + '/foto'))
-          .catch(() => {});
-      }
-    };
-    const cancelBtn = document.createElement('button');
-    cancelBtn.className = 'btn-action btn-del-doc edit-cancel';
-    cancelBtn.textContent = '✕ Zrušit';
-    cancelBtn.style.marginTop = '8px';
-    cancelBtn.onclick = () => { ta.remove(); taFoto.remove(); saveBtn.remove(); cancelBtn.remove(); textEl.style.display = ''; };
-    item.insertBefore(saveBtn, item.querySelector('.dodatek-actions'));
-    item.insertBefore(cancelBtn, item.querySelector('.dodatek-actions'));
-  };
-
-  // Přidat dodatek (global scope)
+  // ── Přidat dodatek ──
   window.pridatDodatek = function() {
     const input  = document.getElementById('dodatek-input');
     const btn    = document.getElementById('btn-pridat');
@@ -582,8 +609,7 @@
     push(ref(db, 'prolog/dodatky'), data)
       .then(() => {
         input.value = '';
-        const fotoInp = document.getElementById('foto-input');
-        if (fotoInp) fotoInp.value = '';
+        document.getElementById('foto-input').value = '';
         status.style.color = '#22c55e';
         status.textContent = '✓ Dodatek uložen.';
         btn.disabled = false;
@@ -594,6 +620,71 @@
         status.textContent = 'Chyba: ' + err.message;
         btn.disabled = false;
       });
+  };
+
+  // ── Editace dodatku ──
+  window.editDodatek = function(key, btn) {
+    const actDiv = document.getElementById('act-' + key);
+    if (!actDiv) return;
+    const item     = actDiv.closest('.dodatek-item');
+    const textEl   = item.querySelector('.dodatek-text');
+    const fotoImgEl= item.querySelector('.dodatek-foto');
+
+    textEl.style.display = 'none';
+
+    const ta = document.createElement('textarea');
+    ta.className = 'edit-ta';
+    ta.value = textEl.textContent;
+    item.insertBefore(ta, actDiv);
+
+    const taFoto = document.createElement('input');
+    taFoto.type = 'url';
+    taFoto.className = 'edit-foto';
+    taFoto.placeholder = 'URL fotky (volitelné)';
+    taFoto.value = fotoImgEl ? fotoImgEl.src : '';
+    item.insertBefore(taFoto, actDiv);
+
+    const saveBtn   = document.createElement('button');
+    saveBtn.className = 'btn-action btn-save-doc';
+    saveBtn.textContent = '✓ Uložit';
+    const cancelBtn = document.createElement('button');
+    cancelBtn.className = 'btn-action btn-cancel-doc';
+    cancelBtn.textContent = '✕ Zrušit';
+
+    actDiv.style.display = 'none';
+    item.appendChild(saveBtn);
+    item.appendChild(cancelBtn);
+
+    saveBtn.onclick = () => {
+      const newText = ta.value.trim();
+      if (!newText) return;
+      const newFoto = taFoto.value.trim();
+      set(ref(db, 'prolog/dodatky/' + key + '/text'), newText)
+        .catch(err => alert('Chyba: ' + err.message));
+      if (newFoto) {
+        set(ref(db, 'prolog/dodatky/' + key + '/foto'), newFoto)
+          .catch(err => alert('Chyba foto: ' + err.message));
+      } else {
+        remove(ref(db, 'prolog/dodatky/' + key + '/foto')).catch(() => {});
+      }
+    };
+
+    cancelBtn.onclick = () => {
+      ta.remove(); taFoto.remove();
+      saveBtn.remove(); cancelBtn.remove();
+      actDiv.style.display = '';
+      textEl.style.display = '';
+    };
+  };
+
+  // ── Smazat dodatek (+ foto z GitHubu) ──
+  window.smazDodatek = function(key, btn) {
+    if (!confirm('Smazat tento dodatek?')) return;
+    const foto = btn ? (btn.dataset.foto || '') : '';
+    deleteGitFoto(foto, () => {
+      remove(ref(db, 'prolog/dodatky/' + key))
+        .catch(err => alert('Chyba: ' + err.message));
+    });
   };
 </script>
 
