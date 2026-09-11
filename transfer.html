@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v5.9Kl</title>
+<title>KladyxTransfer v5.10Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v5.9Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG Upload + Auto-téma</div>
+  <div class="version">v5.10Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG Upload + Auto-téma</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -1758,19 +1758,30 @@ function sendFotoToGithub() {
           if (folder === 'bg') {
             var theme = document.getElementById('bgThemeSelect').value;
             if (theme) {
-              var fbUrl = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/themes/' + encodeURIComponent(theme) + '/bgUrl.json';
-              var xhrFb = new XMLHttpRequest();
-              xhrFb.open('PUT', fbUrl);
-              xhrFb.setRequestHeader('Content-Type', 'application/json');
-              xhrFb.onload = function() {
-                if (xhrFb.status === 200) {
-                  status.textContent = '✅ Commitnuto + téma ' + theme + ' uloženo!';
-                } else {
-                  status.textContent = '✅ Commitnuto (Firebase chyba ' + xhrFb.status + ')';
-                }
+              var fbApiKey = 'AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8';
+              var xhrAuth = new XMLHttpRequest();
+              xhrAuth.open('POST', 'https://identitytoolkit.googleapis.com/v1/accounts:signInAnonymously?key=' + fbApiKey);
+              xhrAuth.setRequestHeader('Content-Type', 'application/json');
+              xhrAuth.onload = function() {
+                var idToken = '';
+                try { idToken = JSON.parse(xhrAuth.responseText).idToken || ''; } catch(ex) {}
+                var fbUrl = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/themes/' + encodeURIComponent(theme) + '/bgUrl.json'
+                  + (idToken ? '?auth=' + idToken : '');
+                var xhrFb = new XMLHttpRequest();
+                xhrFb.open('PUT', fbUrl);
+                xhrFb.setRequestHeader('Content-Type', 'application/json');
+                xhrFb.onload = function() {
+                  if (xhrFb.status === 200) {
+                    status.textContent = '✅ Commitnuto + téma ' + theme + ' uloženo!';
+                  } else {
+                    status.textContent = '✅ Commitnuto (Firebase chyba ' + xhrFb.status + ')';
+                  }
+                };
+                xhrFb.onerror = function() { status.textContent = '✅ Commitnuto (Firebase nedostupná)'; };
+                xhrFb.send(JSON.stringify(fotoUrl));
               };
-              xhrFb.onerror = function() { status.textContent = '✅ Commitnuto (Firebase nedostupná)'; };
-              xhrFb.send(JSON.stringify(fotoUrl));
+              xhrAuth.onerror = function() { status.textContent = '✅ Commitnuto (auth chyba)'; };
+              xhrAuth.send('{}');
             }
           }
           setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
