@@ -1781,7 +1781,7 @@ function sendFotoToGithub() {
                 xhrFb.send(JSON.stringify(fotoUrl));
               };
               xhrAuth.onerror = function() { status.textContent = '✅ Commitnuto (auth chyba)'; };
-              xhrAuth.send('{}');
+              xhrAuth.send(JSON.stringify({returnSecureToken: true}));
             }
           }
           setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
