@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v6.2.1Kl</title>
+<title>KladyxTransfer v6.2.2Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v6.2.1Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma</div>
+  <div class="version">v6.2.2Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma + Caption</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -432,6 +432,10 @@
         <option value="relax">🌿 Relax</option>
         <option value="christmas">🎄 Christmas</option>
       </select>
+    </div>
+    <div id="galleryCaptionWrap" style="display:none;margin-bottom:10px;">
+      <div style="font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:5px;">Popisek fotky (volitelný):</div>
+      <input id="galleryCaption" type="text" placeholder="Např. DJ studio 2026" class="gh-input" style="width:100%;margin-bottom:0;">
     </div>
 
     <input class="gh-input" id="fotoFileName" type="text" placeholder="nazev-foto.jpg" style="margin-bottom:10px;width:100%">
@@ -1706,7 +1710,9 @@ function onFotoFileSelected() {
 function onFotoFolderChange() {
   var folder = document.getElementById('fotoFolder').value;
   var wrap = document.getElementById('bgThemeWrap');
+  var captionWrap = document.getElementById('galleryCaptionWrap');
   if (wrap) wrap.style.display = (folder === 'bg') ? 'block' : 'none';
+  if (captionWrap) captionWrap.style.display = (folder === 'gallery') ? 'block' : 'none';
 }
 
 function sendFotoToGithub() {
@@ -1720,6 +1726,15 @@ function sendFotoToGithub() {
   var ext = selectedFotoFile.name.split('.').pop().toLowerCase();
   if (!['jpg','jpeg','png','webp'].includes(ext)) ext = 'jpg';
   if (!filename.match(/\.(jpg|jpeg|png|webp)$/i)) filename += '.' + ext;
+  // Pro gallery přidáme popisek do názvu souboru
+  if (folder === 'gallery') {
+    var caption = (document.getElementById('galleryCaption') || {}).value || '';
+    caption = caption.trim().replace(/[^a-zA-Z0-9áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ ]/g, '').trim().replace(/\s+/g, '_');
+    if (caption) {
+      var baseName = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '');
+      filename = caption + '_' + baseName + '.' + ext;
+    }
+  }
   var safeName = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
 
   var btn = document.getElementById('sendBtnFoto');
