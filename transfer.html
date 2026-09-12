@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v6.1.0Kl</title>
+<title>KladyxTransfer v6.2.0Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v6.1.0Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW Upload + Auto-téma</div>
+  <div class="version">v6.2.0Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW Upload + Auto-téma</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -1664,10 +1664,12 @@ function deleteVideoFromGithub(filename, sha, itemId, folder) {
 // ─── Foto Upload do Prologu ──────────────────────────
 var FOTO_MAX_SIZE = 5 * 1024 * 1024;
 var selectedFotoFile = null;
+var selectedFotoBase64 = null;
 
 function onFotoFileSelected() {
   var input = document.getElementById('fileInputFoto');
   selectedFotoFile = input.files[0] || null;
+  selectedFotoBase64 = null;
   var nameEl = document.getElementById('fileNameFoto');
   var btn = document.getElementById('sendBtnFoto');
   document.getElementById('statusFoto').textContent = '';
@@ -1681,7 +1683,18 @@ function onFotoFileSelected() {
     var fnInput = document.getElementById('fotoFileName');
     if (!fnInput.value.trim()) fnInput.value = selectedFotoFile.name;
     nameEl.textContent = selectedFotoFile.name + ' (' + (selectedFotoFile.size / 1e6).toFixed(2) + ' MB)';
-    btn.disabled = false;
+    btn.disabled = true;
+    // Okamžitě přečíst soubor (Android uvolní file handle po čase)
+    var preReader = new FileReader();
+    preReader.onload = function(e) {
+      selectedFotoBase64 = e.target.result.split(',')[1];
+      btn.disabled = false;
+    };
+    preReader.onerror = function() {
+      nameEl.textContent = '❌ Nelze přečíst soubor';
+      btn.disabled = true;
+    };
+    preReader.readAsDataURL(selectedFotoFile);
   } else {
     nameEl.textContent = 'Žádný soubor nevybrán';
     btn.disabled = true;
@@ -1695,7 +1708,7 @@ function onFotoFolderChange() {
 }
 
 function sendFotoToGithub() {
-  if (!selectedFotoFile) return;
+  if (!selectedFotoFile || !selectedFotoBase64) { document.getElementById('statusFoto').textContent = '⚠️ Vyber soubor znovu'; return; }
   var token = getGhToken();
   if (!token) { document.getElementById('statusFoto').textContent = '⚠️ Nejdřív zadej a ulož GitHub Token'; return; }
   var folder = document.getElementById('fotoFolder').value || 'foto';
@@ -1714,15 +1727,10 @@ function sendFotoToGithub() {
   var pText = document.getElementById('progressTextFoto');
 
   btn.disabled = true;
-  status.textContent = '📤 Čtu soubor...';
+  var base64 = selectedFotoBase64;
   pWrap.style.display = 'block';
-  pBar.style.width = '0%'; pText.textContent = '0%';
-
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var base64 = e.target.result.split(',')[1];
-    pBar.style.width = '30%'; pText.textContent = '30%';
-    status.textContent = '🔍 Kontroluji existující soubor...';
+  pBar.style.width = '30%'; pText.textContent = '30%';
+  status.textContent = '🔍 Kontroluji existující soubor...';
     var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/contents/' + folder + '/' + encodeURIComponent(safeName);
     var xhrGet = new XMLHttpRequest();
     xhrGet.open('GET', apiUrl);
@@ -1806,9 +1814,6 @@ function sendFotoToGithub() {
     };
     xhrGet.onerror = function() { pWrap.style.display = 'none'; status.textContent = '❌ Chyba sítě'; btn.disabled = false; };
     xhrGet.send();
-  };
-  reader.onerror = function() { pWrap.style.display = 'none'; status.textContent = '❌ Chyba čtení souboru'; btn.disabled = false; };
-  reader.readAsDataURL(selectedFotoFile);
 }
 
 function copyFotoUrl() {
