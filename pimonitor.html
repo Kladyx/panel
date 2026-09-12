@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v6.6Pi">
-<title>Pi Monitor v6.6Pi</title>
+<meta name="version" content="v6.7Pi">
+<title>Pi Monitor v6.7Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -136,7 +136,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v6.6Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v6.7Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -249,6 +249,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
   <div class="net-row"><div class="net-lbl">Web KladyxLand project.</div><div class="net-val" id="cloud-web"><span class="dot dot-wait"></span> ...</div></div>
   <div class="net-row"><div class="net-lbl">Multifunkční Panel project.</div><div class="net-val" id="cloud-panel"><span class="dot dot-wait"></span> ...</div></div>
   <div class="net-row"><div class="net-lbl">Transfer app</div><div class="net-val" id="cloud-transfer"><span class="dot dot-wait"></span> ...</div></div>
+  <div class="net-row"><div class="net-lbl">KladyxTransfer</div><div class="net-val" id="cloud-kladyxtransfer"><span class="dot dot-wait"></span> ...</div></div>
   <div class="net-row"><div class="net-lbl">OBS Stream</div><div class="net-val" id="cloud-obs"><span class="dot dot-wait"></span> ...</div></div>
   <div class="net-row"><div class="net-lbl">Mixcloud followers</div><div class="net-val" id="cloud-mixcloud-followers">—</div></div>
   <div style="text-align:right;margin-top:6px;"><button onclick="clearPrijate()" style="background:rgba(255,50,50,.15);border:1px solid rgba(255,50,50,.4);color:#ff4444;padding:4px 12px;border-radius:6px;font-size:.7rem;cursor:pointer;">🗑 Smazat přijaté</button></div>
@@ -972,6 +973,14 @@ function checkCloudStatus() {
     trEl.innerHTML='<span class="dot dot-ok"></span> <span style="color:#00ff88;font-weight:700;">ONLINE</span>';
   }).catch(function(){
     trEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">OFFLINE</span>';
+  });
+
+  // KladyxTransfer - přímý fetch na GitHub Pages (panel repo)
+  var ktEl=document.getElementById('cloud-kladyxtransfer');
+  fetch('https://kladyx.github.io/panel/transfer.html',{mode:'no-cors',cache:'no-store'}).then(function(){
+    ktEl.innerHTML='<span class="dot dot-ok"></span> <span style="color:#00ff88;font-weight:700;">ONLINE</span>';
+  }).catch(function(){
+    ktEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">OFFLINE</span>';
   });
 }
 checkCloudStatus();
