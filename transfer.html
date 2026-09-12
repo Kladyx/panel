@@ -1763,6 +1763,11 @@ function sendFotoToGithub() {
               xhrAuth.open('POST', 'https://identitytoolkit.googleapis.com/v1/accounts:signInAnonymously?key=' + fbApiKey);
               xhrAuth.setRequestHeader('Content-Type', 'application/json');
               xhrAuth.onload = function() {
+                if (xhrAuth.status !== 200) {
+                  var errDetail = ''; try { errDetail = JSON.parse(xhrAuth.responseText).error.message || ''; } catch(ex) { errDetail = xhrAuth.status; }
+                  status.textContent = '✅ Commitnuto (auth: ' + errDetail + ')';
+                  return;
+                }
                 var idToken = '';
                 try { idToken = JSON.parse(xhrAuth.responseText).idToken || ''; } catch(ex) {}
                 var fbUrl = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/themes/' + encodeURIComponent(theme) + '/bgUrl.json'
@@ -1780,7 +1785,7 @@ function sendFotoToGithub() {
                 xhrFb.onerror = function() { status.textContent = '✅ Commitnuto (Firebase nedostupná)'; };
                 xhrFb.send(JSON.stringify(fotoUrl));
               };
-              xhrAuth.onerror = function() { status.textContent = '✅ Commitnuto (auth chyba)'; };
+              xhrAuth.onerror = function() { status.textContent = '✅ Commitnuto (auth síť: ' + (xhrAuth.status || 'blocked') + ')'; };
               xhrAuth.send(JSON.stringify({returnSecureToken: true}));
             }
           }
