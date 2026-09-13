@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v6.2.3Kl</title>
+<title>KladyxTransfer v6.2.4Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v6.2.3Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma + Caption</div>
+  <div class="version">v6.2.4Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma + Caption</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -384,7 +384,7 @@
   <div class="box" style="margin-top:20px">
     <div class="icon">🎬</div>
     <div class="desc">Nahrát video do <b>rotace</b> na webu</div>
-    <div class="desc2">Max. 5 MB · uloží se do kladyxland/videa/</div>
+    <div class="desc2">Max. 10 MB · uloží se do kladyxland/videa/</div>
 
     <input class="gh-input" id="videoFileName" type="text" placeholder="nazev-videa.mp4" style="margin-bottom:10px;width:100%">
 
@@ -1424,7 +1424,7 @@ function deleteGhHistoryItem(idx) {
 renderGhHistory();
 
 // ─── Video Upload do rotace (v4.7Kl) ─────────────────
-var VIDEO_MAX_SIZE = 8 * 1024 * 1024;
+var VIDEO_MAX_SIZE = 10 * 1024 * 1024;
 var selectedVideoFile = null;
 
 function onVideoFileSelected() {
@@ -1436,7 +1436,7 @@ function onVideoFileSelected() {
   status.textContent = '';
   if (selectedVideoFile) {
     if (selectedVideoFile.size > VIDEO_MAX_SIZE) {
-      nameEl.textContent = 'Příliš velký! Max 5 MB';
+      nameEl.textContent = 'Příliš velký! Max 10 MB';
       btn.disabled = true;
       return;
     }
