@@ -1926,14 +1926,28 @@ function renderFotoList(fotos, status, container, folder) {
     var thumbUrl = 'https://kladyx.github.io/kladyxland/' + folder + '/' + encodeURIComponent(f.name);
     html += '<div class="queue-item" style="align-items:center;gap:10px;flex-wrap:nowrap;" id="' + safeId + '">';
     html += '<img src="' + thumbUrl + '" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,.15);flex-shrink:0;" loading="lazy">';
-    html += '<div class="queue-name" style="font-size:.82rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(f.name);
+    html += '<div class="queue-name" style="font-size:.82rem;flex:1;min-width:0;">' + escapeHtml(f.name);
     if (sizeStr) html += ' <span style="color:rgba(255,255,255,.4);font-size:.75rem;">(' + sizeStr + ')</span>';
+    html += '<div id="fdate_' + i + '" style="font-size:.65rem;color:rgba(255,255,255,.35);margin-top:2px;"></div>';
     html += '</div>';
     html += '<button id="delbtn_' + safeId + '" onclick="confirmDeleteFoto(\'' + f.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\',\'' + f.sha + '\',\'' + safeId + '\',\'' + folder + '\')" ';
     html += 'style="background:rgba(255,50,50,.2);border:1px solid #ff4444;color:#ff4444;padding:5px 11px;border-radius:6px;cursor:pointer;font-size:.85rem;flex-shrink:0;white-space:nowrap;">🗑</button>';
     html += '</div>';
   }
   container.innerHTML = html;
+  var token = getGhToken();
+  fotos.forEach(function(f, i) {
+    var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/commits?path=' + folder + '/' + encodeURIComponent(f.name) + '&per_page=1';
+    var headers = { 'Accept': 'application/vnd.github.v3+json' };
+    if (token) headers['Authorization'] = 'token ' + token;
+    fetch(apiUrl, { headers: headers }).then(function(r) { return r.json(); }).then(function(data) {
+      var el = document.getElementById('fdate_' + i);
+      if (el && Array.isArray(data) && data.length > 0 && data[0].commit) {
+        var d = new Date(data[0].commit.committer.date);
+        el.textContent = '📅 ' + d.toLocaleDateString('cs-CZ') + ' ' + d.toLocaleTimeString('cs-CZ', {hour:'2-digit',minute:'2-digit'});
+      }
+    }).catch(function() {});
+  });
 }
 
 function confirmDeleteFoto(filename, sha, itemId, folder) {
