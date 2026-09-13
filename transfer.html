@@ -1682,7 +1682,7 @@ function onFotoFileSelected() {
   document.getElementById('fotoUrlBox').style.display = 'none';
   if (selectedFotoFile) {
     if (selectedFotoFile.size > FOTO_MAX_SIZE) {
-      nameEl.textContent = 'Příliš velké! Max 5 MB';
+      nameEl.textContent = 'Příliš velké! Max 10 MB';
       btn.disabled = true;
       return;
     }
@@ -1730,12 +1730,14 @@ function sendFotoToGithub() {
   if (folder === 'gallery') {
     var caption = (document.getElementById('galleryCaption') || {}).value || '';
     caption = caption.trim().replace(/[^a-zA-Z0-9áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ ]/g, '').trim().replace(/\s+/g, '_');
+    var baseName = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '');
     if (caption) {
-      var baseName = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '');
       filename = caption + '__' + baseName + '.' + ext;
+    } else {
+      filename = 'foto__' + Date.now() + '.' + ext;
     }
   }
-  var safeName = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
+  var safeName = filename.replace(/[^a-zA-Z0-9áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ._-]/g, '_');
 
   var btn = document.getElementById('sendBtnFoto');
   var status = document.getElementById('statusFoto');
