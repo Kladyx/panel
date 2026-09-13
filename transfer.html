@@ -1612,12 +1612,26 @@ function renderVideoList(videos, status, container) {
     html += '<div class="queue-item" style="justify-content:space-between;" id="' + safeId + '">';
     html += '<div class="queue-name" style="font-size:.85rem;">🎬 ' + escapeHtml(v.name);
     if (sizeStr) html += ' <span style="color:rgba(255,255,255,.4);font-size:.75rem;">(' + sizeStr + ')</span>';
+    html += '<div id="vdate_' + i + '" style="font-size:.65rem;color:rgba(255,255,255,.35);margin-top:2px;"></div>';
     html += '</div>';
     html += '<button onclick="deleteVideoFromGithub(\'' + v.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\',\'' + v.sha + '\',\'' + safeId + '\',\'' + v._folder + '\')" ';
     html += 'style="background:rgba(255,50,50,.2);border:1px solid #ff4444;color:#ff4444;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.82rem;flex-shrink:0;white-space:nowrap;">🗑 Smazat</button>';
     html += '</div>';
   }
   container.innerHTML = html;
+  var token = getGhToken();
+  videos.forEach(function(v, i) {
+    var apiUrl = 'https://api.github.com/repos/kladyx/kladyxland/commits?path=' + v._folder + '/' + encodeURIComponent(v.name) + '&per_page=1';
+    var headers = { 'Accept': 'application/vnd.github.v3+json' };
+    if (token) headers['Authorization'] = 'token ' + token;
+    fetch(apiUrl, { headers: headers }).then(function(r) { return r.json(); }).then(function(data) {
+      var el = document.getElementById('vdate_' + i);
+      if (el && Array.isArray(data) && data.length > 0 && data[0].commit) {
+        var d = new Date(data[0].commit.committer.date);
+        el.textContent = '📅 ' + d.toLocaleDateString('cs-CZ') + ' ' + d.toLocaleTimeString('cs-CZ', {hour:'2-digit',minute:'2-digit'});
+      }
+    }).catch(function() {});
+  });
 }
 
 function deleteVideoFromGithub(filename, sha, itemId, folder) {
