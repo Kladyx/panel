@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v6.2.5Kl</title>
+<title>KladyxTransfer v6.2.6Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v6.2.5Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma + Caption</div>
+  <div class="version">v6.2.6Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma + Caption + Přejmenování popisků</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -1936,6 +1936,10 @@ function renderFotoList(fotos, status, container, folder) {
     if (sizeStr) html += ' <span style="color:rgba(255,255,255,.4);font-size:.75rem;">(' + sizeStr + ')</span>';
     html += '<div id="fdate_' + i + '" style="font-size:.65rem;color:rgba(255,255,255,.35);margin-top:2px;"></div>';
     html += '</div>';
+    if (folder === 'gallery') {
+      html += '<button id="editbtn_' + safeId + '" onclick="startEditCaption(\'' + safeId + '\',\'' + f.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\',\'' + f.sha + '\')" ';
+      html += 'style="background:rgba(0,200,255,.15);border:1px solid #00ccff;color:#00ccff;padding:5px 9px;border-radius:6px;cursor:pointer;font-size:.85rem;flex-shrink:0;white-space:nowrap;margin-right:4px;">✏️</button>';
+    }
     html += '<button id="delbtn_' + safeId + '" onclick="confirmDeleteFoto(\'' + f.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\',\'' + f.sha + '\',\'' + safeId + '\',\'' + folder + '\')" ';
     html += 'style="background:rgba(255,50,50,.2);border:1px solid #ff4444;color:#ff4444;padding:5px 11px;border-radius:6px;cursor:pointer;font-size:.85rem;flex-shrink:0;white-space:nowrap;">🗑</button>';
     html += '</div>';
@@ -2015,6 +2019,271 @@ function deleteFotoFromGithub(filename, sha, itemId, folder) {
   xhr.send(JSON.stringify({ message: 'Delete foto: ' + filename, sha: sha }));
 }
 
+// ─── Přejmenování popisku fotky v gallery/ (v6.2.6Kl) ─
+// Popisek = část názvu před "__". Změna popisku = přejmenování souboru přes GitHub API
+// (GET obsah+SHA → PUT nový název → DELETE starý název) + PATCH záznamu v Firebase /gallery
+function parseCaption(filename) {
+  var m = filename.match(/^(.+?)__(.+)$/);
+  if (!m) return { caption: '', base: filename };
+  var cap = m[1].replace(/_/g, ' ');
+  if (cap === 'foto') cap = '';
+  return { caption: cap, base: m[2] };
+}
+
+function startEditCaption(safeId, filename, sha) {
+  var editBtn = document.getElementById('editbtn_' + safeId);
+  if (!editBtn || editBtn._editing) return;
+  var item = document.getElementById(safeId);
+  if (!item) return;
+  editBtn._editing = true;
+  editBtn.style.display = 'none';
+  var delBtn = document.getElementById('delbtn_' + safeId);
+  if (delBtn) delBtn.style.display = 'none';
+
+  var parsed = parseCaption(filename);
+  var editWrap = document.createElement('div');
+  editWrap.id = 'editwrap_' + safeId;
+  editWrap.style.cssText = 'display:flex;gap:4px;align-items:center;flex-shrink:0;flex-wrap:wrap;';
+
+  var input = document.createElement('input');
+  input.type = 'text';
+  input.value = parsed.caption;
+  input.placeholder = 'Popisek';
+  input.style.cssText = 'padding:5px 8px;border-radius:6px;border:1px solid #00ccff;background:rgba(0,0,0,.4);color:#fff;font-size:.82rem;font-family:inherit;width:130px;';
+
+  var saveBtn = document.createElement('button');
+  saveBtn.textContent = '✓';
+  saveBtn.title = 'Uložit';
+  saveBtn.style.cssText = 'background:rgba(0,255,136,.2);border:1px solid #00ff88;color:#00ff88;padding:5px 9px;border-radius:6px;cursor:pointer;font-size:.85rem;flex-shrink:0;';
+
+  var cancelBtn = document.createElement('button');
+  cancelBtn.textContent = '✕';
+  cancelBtn.title = 'Zrušit';
+  cancelBtn.style.cssText = 'background:rgba(90,90,90,.3);border:1px solid rgba(255,255,255,.2);color:#aaa;padding:5px 9px;border-radius:6px;cursor:pointer;font-size:.85rem;flex-shrink:0;';
+
+  var resetUI = function() {
+    if (document.getElementById('editwrap_' + safeId)) editWrap.remove();
+    editBtn._editing = false;
+    editBtn.style.display = '';
+    if (delBtn) delBtn.style.display = '';
+  };
+  cancelBtn.onclick = resetUI;
+  saveBtn.onclick = function() {
+    var newCap = input.value.trim();
+    saveBtn.disabled = true;
+    cancelBtn.disabled = true;
+    input.disabled = true;
+    renameGalleryFoto(filename, sha, newCap, safeId, resetUI);
+  };
+  input.addEventListener('keydown', function(ev) {
+    if (ev.key === 'Enter') saveBtn.onclick();
+    else if (ev.key === 'Escape') resetUI();
+  });
+
+  editWrap.appendChild(input);
+  editWrap.appendChild(saveBtn);
+  editWrap.appendChild(cancelBtn);
+  item.appendChild(editWrap);
+  setTimeout(function() { input.focus(); input.select(); }, 30);
+  setTimeout(function() { if (editBtn._editing) resetUI(); }, 30000);
+}
+
+function renameGalleryFoto(oldName, sha, newCaption, safeId, resetUI) {
+  var token = getGhToken();
+  var status = document.getElementById('statusFotoList');
+  if (!token) {
+    status.textContent = '⚠️ Nejdřív ulož GitHub Token';
+    status.className = 'status';
+    resetUI();
+    return;
+  }
+
+  // Sestavit nový název: caption__base.ext (nebo foto__timestamp.ext při prázdném popisku)
+  var parsed = parseCaption(oldName);
+  var base = parsed.base; // původní část za "__" (nebo celý název pokud "__" neobsahuje)
+  var extMatch = base.match(/\.(jpg|jpeg|png|webp)$/i);
+  var ext = extMatch ? extMatch[1].toLowerCase() : 'jpg';
+  var baseNoExt = base.replace(/\.(jpg|jpeg|png|webp)$/i, '');
+  var newName;
+  if (newCaption) {
+    var capSan = newCaption.replace(/[^a-zA-Z0-9áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ ]/g, '').trim().replace(/\s+/g, '_');
+    if (!capSan) capSan = 'foto';
+    newName = capSan + '__' + baseNoExt + '.' + ext;
+  } else {
+    newName = 'foto__' + Date.now() + '.' + ext;
+  }
+  newName = newName.replace(/[^a-zA-Z0-9áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ._-]/g, '_');
+
+  if (newName === oldName) {
+    status.textContent = 'ℹ️ Popisek se nezměnil';
+    status.className = 'status';
+    resetUI();
+    return;
+  }
+
+  status.textContent = '🔍 Čtu obsah starého souboru...';
+  status.className = 'status';
+
+  var apiBase = 'https://api.github.com/repos/kladyx/kladyxland/contents/gallery/';
+  var oldUrl = apiBase + encodeURIComponent(oldName);
+  var newUrl = apiBase + encodeURIComponent(newName);
+
+  // Krok 1: GET obsah starého souboru
+  var xhrGet = new XMLHttpRequest();
+  xhrGet.open('GET', oldUrl);
+  xhrGet.setRequestHeader('Authorization', 'token ' + token);
+  xhrGet.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+  xhrGet.onload = function() {
+    if (xhrGet.status !== 200) {
+      status.textContent = '❌ Nelze načíst starý soubor (' + xhrGet.status + ')';
+      status.className = 'status';
+      resetUI();
+      return;
+    }
+    var oldData = null;
+    try { oldData = JSON.parse(xhrGet.responseText); } catch(e) {}
+    if (!oldData || !oldData.content) {
+      status.textContent = '❌ Prázdný obsah starého souboru';
+      status.className = 'status';
+      resetUI();
+      return;
+    }
+    var contentB64 = oldData.content.replace(/\n/g, '');
+    var oldSha = oldData.sha || sha;
+
+    // Krok 2: PUT nový soubor
+    status.textContent = '📤 Vytvářím nový soubor...';
+    var xhrPut = new XMLHttpRequest();
+    xhrPut.open('PUT', newUrl);
+    xhrPut.setRequestHeader('Authorization', 'token ' + token);
+    xhrPut.setRequestHeader('Content-Type', 'application/json');
+    xhrPut.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+    xhrPut.onload = function() {
+      if (xhrPut.status !== 200 && xhrPut.status !== 201) {
+        var errMsg = ''; try { errMsg = JSON.parse(xhrPut.responseText).message || ''; } catch(e) {}
+        status.textContent = '❌ PUT selhal (' + xhrPut.status + '): ' + errMsg;
+        status.className = 'status';
+        resetUI();
+        return;
+      }
+      // Krok 3: DELETE starý soubor
+      status.textContent = '🗑 Mažu starý soubor...';
+      var xhrDel = new XMLHttpRequest();
+      xhrDel.open('DELETE', oldUrl);
+      xhrDel.setRequestHeader('Authorization', 'token ' + token);
+      xhrDel.setRequestHeader('Content-Type', 'application/json');
+      xhrDel.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+      xhrDel.onload = function() {
+        if (xhrDel.status !== 200) {
+          var errMsg = ''; try { errMsg = JSON.parse(xhrDel.responseText).message || ''; } catch(e) {}
+          status.textContent = '⚠️ Nový soubor vytvořen, ale DELETE starého selhal (' + xhrDel.status + '): ' + errMsg + ' — smaž ručně: ' + oldName;
+          status.className = 'status';
+          addGhHistoryItem('commit', 'kladyxland/gallery/' + newName + ' [RENAME-DUPL]');
+          resetUI();
+          return;
+        }
+        addGhHistoryItem('commit', 'kladyxland/gallery/' + oldName + ' → ' + newName);
+        // Krok 4: Firebase /gallery sync
+        syncGalleryFirebase(oldName, newName, status, resetUI);
+      };
+      xhrDel.onerror = function() {
+        status.textContent = '⚠️ Nový soubor vytvořen, DELETE starého — chyba sítě. Smaž ručně: ' + oldName;
+        status.className = 'status';
+        resetUI();
+      };
+      xhrDel.send(JSON.stringify({ message: 'Rename gallery: delete old ' + oldName, sha: oldSha }));
+    };
+    xhrPut.onerror = function() {
+      status.textContent = '❌ PUT — chyba sítě';
+      status.className = 'status';
+      resetUI();
+    };
+    xhrPut.send(JSON.stringify({ message: 'Rename gallery: ' + oldName + ' → ' + newName, content: contentB64 }));
+  };
+  xhrGet.onerror = function() {
+    status.textContent = '❌ GET — chyba sítě';
+    status.className = 'status';
+    resetUI();
+  };
+  xhrGet.send();
+}
+
+function syncGalleryFirebase(oldName, newName, status, resetUI) {
+  status.textContent = '📡 Aktualizuji Firebase /gallery...';
+  var fbBase = 'https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/gallery';
+  var newUrl = 'https://kladyx.github.io/kladyxland/gallery/' + newName;
+  var oldPath = 'gallery/' + oldName;
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', fbBase + '.json');
+  xhr.onload = function() {
+    if (xhr.status !== 200) {
+      status.textContent = '✅ Přejmenováno, ale Firebase GET vrátil ' + xhr.status + ' — záznam neaktualizován';
+      status.className = 'status done';
+      playDing();
+      resetUI();
+      setTimeout(function() { loadFotoList(); }, 800);
+      return;
+    }
+    var data = null;
+    try { data = JSON.parse(xhr.responseText); } catch(e) {}
+    if (!data) {
+      status.textContent = '✅ Přejmenováno (Firebase /gallery prázdné)';
+      status.className = 'status done';
+      playDing();
+      resetUI();
+      setTimeout(function() { loadFotoList(); }, 800);
+      return;
+    }
+    // Najít záznam podle path
+    var fbKey = null;
+    for (var k in data) {
+      if (data[k] && data[k].path === oldPath) { fbKey = k; break; }
+    }
+    if (!fbKey) {
+      status.textContent = '✅ Přejmenováno (Firebase záznam nenalezen)';
+      status.className = 'status done';
+      playDing();
+      resetUI();
+      setTimeout(function() { loadFotoList(); }, 800);
+      return;
+    }
+    // PATCH záznam
+    var patchUrl = fbBase + '/' + encodeURIComponent(fbKey) + '.json';
+    var xhrP = new XMLHttpRequest();
+    xhrP.open('PATCH', patchUrl);
+    xhrP.setRequestHeader('Content-Type', 'application/json');
+    xhrP.onload = function() {
+      if (xhrP.status === 200) {
+        status.textContent = '✅ Přejmenováno + Firebase záznam aktualizován';
+        status.className = 'status done';
+      } else {
+        status.textContent = '✅ Přejmenováno, Firebase PATCH selhal (' + xhrP.status + ')';
+        status.className = 'status done';
+      }
+      playDing();
+      resetUI();
+      setTimeout(function() { loadFotoList(); }, 800);
+    };
+    xhrP.onerror = function() {
+      status.textContent = '✅ Přejmenováno (Firebase PATCH — chyba sítě)';
+      status.className = 'status done';
+      playDing();
+      resetUI();
+      setTimeout(function() { loadFotoList(); }, 800);
+    };
+    xhrP.send(JSON.stringify({ path: 'gallery/' + newName, url: newUrl, name: newName }));
+  };
+  xhr.onerror = function() {
+    status.textContent = '✅ Přejmenováno (Firebase GET — chyba sítě)';
+    status.className = 'status done';
+    playDing();
+    resetUI();
+    setTimeout(function() { loadFotoList(); }, 800);
+  };
+  xhr.send();
+}
+
 // ─── PC Historie (v4.6Kl) ────────────────────────────
 function addPcHistoryItem(filename) {
   var store = getStorage();
@@ -2035,7 +2304,7 @@ function renderPcHistory() {
   var store = getStorage();
   var hist = [];
   try { hist = JSON.parse(store.getItem('pc_history') || '[]'); } catch(e) {}
-  if (hist.length === 0) { 
+  if (hist.length === 0) {
     el.innerHTML = '<div class="pc-history-empty">Zatím žádné odeslaní</div>';
     wrap.style.display = 'none';
     return;
