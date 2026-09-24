@@ -43,7 +43,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v5.4St</div>
+<div class="sub">KLADYXLAND · v5.5St</div>
 
 <div class="section">
   <div class="sec-title">🌐 Weby</div>
@@ -365,13 +365,14 @@ function checkPi4() {
     });
 }
 
-// ── OBS Status – reálný stav z obs_status/lastSeen ──
+// ── OBS Status – reálný stav z status/obs (bridge v35 píše ts) ──
 function checkOBS() {
-  var url='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/obs_status/lastSeen.json';
+  var url='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/status/obs.json';
   setS('fb-obs','checking','…');
   return withTimeout(fetch(url,{cache:'no-store'}),7000)
     .then(function(r){return r.json();})
-    .then(function(ts){
+    .then(function(d){
+      var ts=(d&&d.ts)?d.ts:0;
       var alive=(typeof ts==='number')&&(Date.now()-ts<90000);
       setS('fb-obs', alive?'ok':'err', alive?'Online ✓':'Offline ✗');
     })
