@@ -299,7 +299,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.3.8PlPro 2026/9 Kladyx</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.3.9PlPro 2026/9 Kladyx</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -4209,45 +4209,147 @@ APP_HTML["architektura"] = `<!DOCTYPE html>
     <div class="flow-box">Panel: ON AIR stav</div>
   </div>
 
-  <!-- SIGNÁLOVÁ CESTA ZVUKU (aktuální 25.9.2026) -->
-  <div class="sh">Signálová cesta zvuku · aktuální (25.9.2026)</div>
-  <div class="flow">
-    <div class="flow-box">VirtualDJ + RadioDJ (USB)</div>
-    <div class="flow-arr">→</div>
-    <div class="flow-box">AR8c · Super Channel ST 7/8 (USB Return)</div>
-    <div class="flow-arr">→</div>
-    <div class="flow-box">AR8c Main out</div>
-    <div class="flow-arr">→</div>
-    <div class="flow-box">ES4 vstup 3/4</div>
-  </div>
-  <div class="flow">
-    <div class="flow-box">Mikrofon → RØDECaster Duo (ANALOG)</div>
-    <div class="flow-arr">→</div>
-    <div class="flow-box">ES4 vstup 1/2</div>
-  </div>
-  <div class="flow">
-    <div class="flow-box" style="border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.06);color:#4ade80;">ES4 · Loopback 2 ← ZDE se řeší hlasitost</div>
-    <div class="flow-arr">→</div>
-    <div class="flow-box">OBS: Zisk → LoudMax (−1.6) → SPAN / YouLean / Bitter</div>
-    <div class="flow-arr">→</div>
-    <div class="flow-box">Mixcloud / Icecast</div>
-  </div>
-  <div class="svc-grid">
-    <div class="svc">
-      <div class="label">Loudness</div>
-      <div class="val">≈ −12 LUFS<br>cíl −14 až −16</div>
+  <!-- SIGNÁLOVÁ MAPA ZVUKU (grafická, aktuální 25.9.2026) -->
+  <div class="sh">Signálová mapa zvuku · aktuální (25.9.2026)</div>
+  <style>
+    #sigmap{--sbg:#080b16;--sbg2:#0e1424;--spanel:#121a2e;--spanel2:#16203a;--sline:#25314f;--sink:#e8eefc;--smuted:#8a97b8;--scyan:#2fd8ff;--sgreen:#37f5a5;--samber:#ffcf5c;--sviolet:#9d8bff;
+      background:linear-gradient(180deg,#16203a,transparent 320px),var(--sbg);color:var(--sink);border:1px solid var(--sline);border-radius:14px;overflow:hidden;margin:8px 0 12px;font-family:'Exo 2',sans-serif;}
+    #sigmap *{box-sizing:border-box}
+    #sigmap .swrap{max-width:820px;margin:0 auto;padding:20px 16px}
+    #sigmap .shead h2{font-size:clamp(20px,5vw,28px);margin:0 0 4px;letter-spacing:.5px;background:linear-gradient(90deg,var(--scyan),var(--sgreen));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-family:'Orbitron',monospace;}
+    #sigmap .shead p{margin:0 0 2px;color:var(--smuted);font-size:13px}
+    #sigmap .sstamp{color:var(--smuted);font-size:11px;letter-spacing:.6px;text-transform:uppercase}
+    #sigmap .sstage{margin-top:22px}
+    #sigmap .slabel{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--scyan);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+    #sigmap .slabel::after{content:"";flex:1;height:1px;background:var(--sline)}
+    #sigmap .srow{display:flex;flex-wrap:wrap;gap:10px}
+    #sigmap .sbox{background:var(--spanel);border:1px solid var(--sline);border-radius:12px;padding:11px 13px;flex:1 1 180px;min-width:0}
+    #sigmap .sbox .st{font-weight:700;font-size:14px;display:flex;align-items:center;gap:7px}
+    #sigmap .sbox .sd{color:var(--smuted);font-size:12px;margin-top:3px}
+    #sigmap .stag{font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 7px;border-radius:20px;white-space:nowrap;display:inline-block}
+    #sigmap .s-usb{background:rgba(47,216,255,.14);color:var(--scyan);border:1px solid rgba(47,216,255,.35)}
+    #sigmap .s-ana{background:rgba(157,139,255,.14);color:var(--sviolet);border:1px solid rgba(157,139,255,.35)}
+    #sigmap .sarrow{text-align:center;color:var(--smuted);font-size:20px;line-height:1;margin:9px 0 2px}
+    #sigmap .shub{background:linear-gradient(180deg,var(--spanel2),var(--spanel));border:1px solid var(--sline);border-radius:14px;padding:14px}
+    #sigmap .shub h3{margin:0 0 4px;font-size:16px}
+    #sigmap .shub .ssub{color:var(--smuted);font-size:12px;margin-bottom:11px}
+    #sigmap .sports{display:flex;flex-wrap:wrap;gap:9px}
+    #sigmap .sport{background:var(--sbg2);border:1px solid var(--sline);border-radius:10px;padding:9px 11px;flex:1 1 150px}
+    #sigmap .sport .sp{font-size:11px;letter-spacing:.5px;color:var(--smuted);text-transform:uppercase}
+    #sigmap .sport .sv{font-size:13px;font-weight:600;margin-top:2px}
+    #sigmap .skey{border:1px solid var(--sgreen);background:linear-gradient(180deg,rgba(55,245,165,.10),rgba(55,245,165,.03));border-radius:14px;padding:14px;position:relative;margin-top:14px}
+    #sigmap .skey .sbadge{position:absolute;top:-10px;left:14px;background:var(--sgreen);color:#052616;font-size:10px;font-weight:800;letter-spacing:.8px;padding:3px 9px;border-radius:20px;text-transform:uppercase}
+    #sigmap .skey h3{margin:6px 0 4px;font-size:16px;color:var(--sgreen)}
+    #sigmap .skey .sd{font-size:13px;color:var(--sink)}
+    #sigmap .smetrics{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}
+    #sigmap .smetric{background:var(--sbg2);border:1px solid var(--sline);border-radius:9px;padding:8px 12px;flex:1 1 120px}
+    #sigmap .smetric .sm{font-size:11px;color:var(--smuted);text-transform:uppercase;letter-spacing:.5px}
+    #sigmap .smetric .sn{font-size:18px;font-weight:800;color:var(--sgreen)}
+    #sigmap .schain{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:4px}
+    #sigmap .schip{background:var(--sbg2);border:1px solid var(--sline);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600}
+    #sigmap .schip.slim{border-color:var(--samber);color:var(--samber)}
+    #sigmap .ssep{color:var(--smuted)}
+    #sigmap .sside{border-color:rgba(157,139,255,.35)}
+    #sigmap .sfoot{margin-top:24px;color:var(--smuted);font-size:12px;border-top:1px solid var(--sline);padding-top:12px}
+    #sigmap .sfoot b{color:var(--sink)}
+    #sigmap .sfoot p{margin:0 0 6px}
+  </style>
+  <div id="sigmap">
+    <div class="swrap">
+      <div class="shead">
+        <div class="sstamp">Kladyxland · Broadcasting</div>
+        <h2>Signálová mapa</h2>
+        <p>Kudy teče zvuk od zdrojů až do streamu — stav po přechodu VDJ na AR8c.</p>
+        <div class="sstamp" style="margin-top:6px"><span class="stag s-usb">USB</span> digitál &nbsp;·&nbsp; <span class="stag s-ana">ANALOG</span> kabel</div>
+      </div>
+
+      <div class="sstage">
+        <div class="slabel">1 · Zdroje</div>
+        <div class="srow">
+          <div class="sbox"><div class="st">🎧 VirtualDJ <span class="stag s-usb">USB</span></div><div class="sd">PC → AR8c (Playback 1/2 → Super Channel ST 7/8)</div></div>
+          <div class="sbox"><div class="st">📻 RadioDJ <span class="stag s-usb">USB</span></div><div class="sd">PC → AR8c (USB Return, Super Channel)</div></div>
+        </div>
+        <div class="srow" style="margin-top:10px">
+          <div class="sbox"><div class="st">💿 Gramofon · CDJ · DDJ <span class="stag s-ana">ANALOG</span></div><div class="sd">Reloop RP1000 / CDJ800 / DDJ-800 → kanály AR8c</div></div>
+          <div class="sbox"><div class="st">🎙 Mikrofon <span class="stag s-ana">ANALOG</span></div><div class="sd">PodMic → TubePre V2 → EQ3B → COMP16 → RodeCaster Duo</div></div>
+        </div>
+      </div>
+
+      <div class="sarrow">▼</div>
+
+      <div class="sstage">
+        <div class="slabel">2 · Mixy</div>
+        <div class="srow">
+          <div class="sbox"><div class="st">🎛 AR8c</div><div class="sd">Hudba + DJ vstupy → <b>Main out</b> → ES4 vstup 3/4<br><span style="color:var(--scyan)">USB/SD Return musí být na USB!</span></div></div>
+          <div class="sbox"><div class="st">🎚 RodeCaster Duo</div><div class="sd">Jen mikrofon. Výstup <b>analogově</b> → ES4 vstup 1/2.<br><span style="color:var(--samber)">Odpojen z USB → uleveno sběrnici</span></div></div>
+        </div>
+      </div>
+
+      <div class="sarrow">▼</div>
+
+      <div class="sstage">
+        <div class="slabel">3 · Zvukovka Quantum ES4 <span class="stag s-usb" style="margin-left:6px">USB</span></div>
+        <div class="shub">
+          <h3>PreSonus Quantum ES4</h3>
+          <div class="ssub">Sbíhá se sem hudba i mikrofon, míchá do programu pro OBS.</div>
+          <div class="sports">
+            <div class="sport"><div class="sp">Vstup 1/2</div><div class="sv">🎙 Mikrofon (z RodeCasteru)</div></div>
+            <div class="sport"><div class="sp">Vstup 3/4</div><div class="sv">🎵 Hudba (z AR8c Main)</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sarrow">▼</div>
+
+      <div class="sstage">
+        <div class="skey">
+          <span class="sbadge">Zde se řeší hlasitost</span>
+          <h3>ES4 · Loopback 2 → OBS</h3>
+          <div class="sd">Program (hudba + mic) jde do OBS přes <b>Loopback 2</b>. Úroveň streamu se nastavuje <b>tady</b> — ne v OBS Zisku, ne na vstupech. Cíl kolem −14 až −16 LUFS.</div>
+          <div class="smetrics">
+            <div class="smetric"><div class="sm">Loudness</div><div class="sn">−12 LUFS</div></div>
+            <div class="smetric"><div class="sm">True Peak</div><div class="sn">−1.6 dB</div></div>
+            <div class="smetric"><div class="sm">Clip</div><div class="sn">0</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sarrow">▼</div>
+
+      <div class="sstage">
+        <div class="slabel">4 · OBS → Stream</div>
+        <div class="shub">
+          <h3>OBS · řetězec filtrů</h3>
+          <div class="ssub">Jeden loudness řetězec pro celý program.</div>
+          <div class="schain">
+            <span class="schip">Zisk</span><span class="ssep">→</span>
+            <span class="schip">Ozone Imager</span><span class="ssep">→</span>
+            <span class="schip slim">LoudMax (strop −1.6)</span><span class="ssep">→</span>
+            <span class="schip">SPAN</span><span class="schip">Youlean</span><span class="schip">Bitter</span>
+          </div>
+          <div class="ssub" style="margin:11px 0 0">Bridge: <b>obs-bridge.js</b> (Firebase + OnAirScreen + MIDI) běží vedle a hlídá stav.</div>
+        </div>
+        <div class="sarrow">▼</div>
+        <div class="srow">
+          <div class="sbox" style="border-color:rgba(55,245,165,.4)"><div class="st">🌐 Stream ven</div><div class="sd">Icecast / Mixcloud (Mixcloud řeší licence i normalizaci)</div></div>
+        </div>
+      </div>
+
+      <div class="sstage">
+        <div class="slabel">Vedlejší větev · Monitoring</div>
+        <div class="srow">
+          <div class="sbox sside"><div class="st">🔊 Monitory</div><div class="sd">ES4 výstup 1/2 → Monitor Station V2 → Sub8 / Eris 4.5</div></div>
+          <div class="sbox sside"><div class="st">🎧 Sluchátka</div><div class="sd">ES4 výstup 3/4 → HP4 → Pioneer / Rode NTH-100</div></div>
+          <div class="sbox sside"><div class="st">📊 VU metry</div><div class="sd">Nobsound L3-3 · RTA-31 spektrum</div></div>
+        </div>
+      </div>
+
+      <div class="sfoot">
+        <p><b>USB sběrnice:</b> teď jen ES4 + AR8c (RodeCaster jede analogově → v limitu 2 USB zvukovek).</p>
+        <p><b>Když je hudba slabá/silná:</b> ladí se na <b>ES4 Loopback 2</b>, ne v OBS. Když clipuje ES4 vstup → uber tam a přidej na AR8c Main.</p>
+        <p><b>Když nehraje z PC přes AR8c:</b> Super Channel ST 7/8 = <b>USB Return na USB</b> (ne SD karta) + knob a Main nahoře.</p>
+      </div>
     </div>
-    <div class="svc">
-      <div class="label">True Peak</div>
-      <div class="val">−1.6 dB<br>LoudMax strop</div>
-    </div>
-    <div class="svc">
-      <div class="label">USB sběrnice</div>
-      <div class="val">jen ES4 + AR8c<br>RØDECaster jede analogově</div>
-    </div>
-  </div>
-  <div class="note">
-    Hlasitost streamu se ladí na <b>ES4 Loopback 2</b> (ne v OBS Zisku, ne na vstupech). AR8c Super Channel ST 7/8 musí být na <b>USB Return</b> (ne SD karta). Když je hudba slabá: Loopback 2 + AR8c Main nahoru. Když clipuje ES4 vstup: uber vstup a přidej na AR8c Main. RØDECaster odpojen z USB → úleva USB sběrnici (limit 2 USB zvukovky).
   </div>
 
   <!-- SYSTEMD SERVICES -->
@@ -14408,7 +14510,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v5.3.8PlPro 2026/9 Kladyx</div>
+<div class="ver">v5.3.9PlPro 2026/9 Kladyx</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -15549,7 +15651,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='v5.3.8PlPro 2026/9 Kladyx';
+  var CURRENT='v5.3.9PlPro 2026/9 Kladyx';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
