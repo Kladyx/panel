@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v6.2.6Kl</title>
+<title>KladyxTransfer v6.2.7Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v6.2.6Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma + Caption + Přejmenování popisků</div>
+  <div class="version">v6.2.7Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma + Caption + Přejmenování popisků</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -2019,7 +2019,7 @@ function deleteFotoFromGithub(filename, sha, itemId, folder) {
   xhr.send(JSON.stringify({ message: 'Delete foto: ' + filename, sha: sha }));
 }
 
-// ─── Přejmenování popisku fotky v gallery/ (v6.2.6Kl) ─
+// ─── Přejmenování popisku fotky v gallery/ (v6.2.7Kl) ─
 // Popisek = část názvu před "__". Změna popisku = přejmenování souboru přes GitHub API
 // (GET obsah+SHA → PUT nový název → DELETE starý název) + PATCH záznamu v Firebase /gallery
 function parseCaption(filename) {
@@ -2100,7 +2100,7 @@ function renameGalleryFoto(oldName, sha, newCaption, safeId, resetUI) {
 
   // Sestavit nový název: caption__base.ext (nebo foto__timestamp.ext při prázdném popisku)
   var parsed = parseCaption(oldName);
-  var base = parsed.base; // původní část za "__" (nebo celý název pokud "__" neobsahuje)
+  var base = parsed.base;
   var extMatch = base.match(/\.(jpg|jpeg|png|webp)$/i);
   var ext = extMatch ? extMatch[1].toLowerCase() : 'jpg';
   var baseNoExt = base.replace(/\.(jpg|jpeg|png|webp)$/i, '');
@@ -2128,30 +2128,8 @@ function renameGalleryFoto(oldName, sha, newCaption, safeId, resetUI) {
   var oldUrl = apiBase + encodeURIComponent(oldName);
   var newUrl = apiBase + encodeURIComponent(newName);
 
-  // Krok 1: GET obsah starého souboru
-  var xhrGet = new XMLHttpRequest();
-  xhrGet.open('GET', oldUrl);
-  xhrGet.setRequestHeader('Authorization', 'token ' + token);
-  xhrGet.setRequestHeader('Accept', 'application/vnd.github.v3+json');
-  xhrGet.onload = function() {
-    if (xhrGet.status !== 200) {
-      status.textContent = '❌ Nelze načíst starý soubor (' + xhrGet.status + ')';
-      status.className = 'status';
-      resetUI();
-      return;
-    }
-    var oldData = null;
-    try { oldData = JSON.parse(xhrGet.responseText); } catch(e) {}
-    if (!oldData || !oldData.content) {
-      status.textContent = '❌ Prázdný obsah starého souboru';
-      status.className = 'status';
-      resetUI();
-      return;
-    }
-    var contentB64 = oldData.content.replace(/\n/g, '');
-    var oldSha = oldData.sha || sha;
-
-    // Krok 2: PUT nový soubor
+  // Vnitřní funkce: PUT nový + DELETE starý + Firebase sync
+  function putNewAndDeleteOld(contentB64, oldSha) {
     status.textContent = '📤 Vytvářím nový soubor...';
     var xhrPut = new XMLHttpRequest();
     xhrPut.open('PUT', newUrl);
@@ -2166,7 +2144,6 @@ function renameGalleryFoto(oldName, sha, newCaption, safeId, resetUI) {
         resetUI();
         return;
       }
-      // Krok 3: DELETE starý soubor
       status.textContent = '🗑 Mažu starý soubor...';
       var xhrDel = new XMLHttpRequest();
       xhrDel.open('DELETE', oldUrl);
@@ -2183,7 +2160,6 @@ function renameGalleryFoto(oldName, sha, newCaption, safeId, resetUI) {
           return;
         }
         addGhHistoryItem('commit', 'kladyxland/gallery/' + oldName + ' → ' + newName);
-        // Krok 4: Firebase /gallery sync
         syncGalleryFirebase(oldName, newName, status, resetUI);
       };
       xhrDel.onerror = function() {
@@ -2199,6 +2175,80 @@ function renameGalleryFoto(oldName, sha, newCaption, safeId, resetUI) {
       resetUI();
     };
     xhrPut.send(JSON.stringify({ message: 'Rename gallery: ' + oldName + ' → ' + newName, content: contentB64 }));
+  }
+
+  // Krok 1: GET metadata starého souboru
+  var xhrGet = new XMLHttpRequest();
+  xhrGet.open('GET', oldUrl);
+  xhrGet.setRequestHeader('Authorization', 'token ' + token);
+  xhrGet.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+  xhrGet.onload = function() {
+    if (xhrGet.status !== 200) {
+      status.textContent = '❌ Nelze načíst starý soubor (' + xhrGet.status + ')';
+      status.className = 'status';
+      resetUI();
+      return;
+    }
+    var oldData = null;
+    try { oldData = JSON.parse(xhrGet.responseText); } catch(e) {}
+    if (!oldData) {
+      status.textContent = '❌ Nelze zparsovat metadata starého souboru';
+      status.className = 'status';
+      resetUI();
+      return;
+    }
+    var oldSha = oldData.sha || sha;
+
+    // Když GitHub Contents API vrátí content (soubory < 1 MB), použij ho přímo
+    if (oldData.content) {
+      var contentB64 = oldData.content.replace(/\n/g, '');
+      putNewAndDeleteOld(contentB64, oldSha);
+      return;
+    }
+
+    // Fallback pro soubory > 1 MB: stáhni obsah z download_url a překonvertuj na base64
+    if (!oldData.download_url) {
+      status.textContent = '❌ Chybí obsah i download_url v odpovědi API';
+      status.className = 'status';
+      resetUI();
+      return;
+    }
+    status.textContent = '⬇️ Stahuji obsah (velký soubor)...';
+    var xhrRaw = new XMLHttpRequest();
+    xhrRaw.open('GET', oldData.download_url);
+    xhrRaw.responseType = 'blob';
+    xhrRaw.onload = function() {
+      if (xhrRaw.status !== 200) {
+        status.textContent = '❌ Nelze stáhnout obsah (' + xhrRaw.status + ')';
+        status.className = 'status';
+        resetUI();
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var dataUrl = ev.target.result;
+        var b64 = dataUrl.indexOf(',') >= 0 ? dataUrl.split(',')[1] : '';
+        if (!b64) {
+          status.textContent = '❌ Chyba převodu obsahu na base64';
+          status.className = 'status';
+          resetUI();
+          return;
+        }
+        putNewAndDeleteOld(b64, oldSha);
+      };
+      reader.onerror = function() {
+        status.textContent = '❌ Chyba čtení staženého obsahu';
+        status.className = 'status';
+        resetUI();
+      };
+      reader.readAsDataURL(xhrRaw.response);
+    };
+    xhrRaw.onerror = function() {
+      status.textContent = '❌ Chyba sítě při stahování obsahu';
+      status.className = 'status';
+      resetUI();
+    };
+    xhrRaw.send();
   };
   xhrGet.onerror = function() {
     status.textContent = '❌ GET — chyba sítě';
