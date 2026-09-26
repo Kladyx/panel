@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v6.2.7Kl</title>
+<title>KladyxTransfer v6.2.8Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v6.2.7Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma + Caption + Přejmenování popisků</div>
+  <div class="version">v6.2.8Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma + Caption + Přejmenování popisků</div>
 
   <div class="box">
     <div class="icon">📤</div>
@@ -937,29 +937,53 @@ function loadMobileQueue() {
   }
   var listEl = document.getElementById('mobileQueueList');
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', DB_TO_MOBILE + '.json');
+  xhr.open('GET', DB_TO_MOBILE + '.json?shallow=true');
   xhr.onload = function() {
     if (xhr.status < 200 || xhr.status >= 300) {
       setTimeout(loadMobileQueue, MOBILE_POLL_INTERVAL);
       return;
     }
-    var data = null;
-    try { data = JSON.parse(xhr.responseText); } catch (e) {}
-    if (!data) {
+    var keys = null;
+    try { keys = JSON.parse(xhr.responseText); } catch (e) {}
+    var keyList = [];
+    if (keys) { for (var k in keys) keyList.push(k); }
+    if (keyList.length === 0) {
       listEl.innerHTML = '<div class="pifile-empty">Žádné soubory nečekají</div>';
-    } else {
+      setTimeout(loadMobileQueue, MOBILE_POLL_INTERVAL);
+      return;
+    }
+    var names = {};
+    var pending = keyList.length;
+    var renderList = function() {
       var html = '';
-      for (var key in data) {
-        var f = data[key];
+      for (var i = 0; i < keyList.length; i++) {
+        var key = keyList[i];
+        var ts = parseInt(key.split('_')[0], 10) || 0;
+        var nm = names[key] || key;
         html += '<div class="pifile-item">';
-        html += '<div class="pifile-name">' + escapeHtml(f.name) + '</div>';
-        html += '<div class="pifile-meta">' + formatSize(f.size || 0) + ' · ' + formatAgo(f.ts) + '</div>';
+        html += '<div class="pifile-name">' + escapeHtml(nm) + '</div>';
+        html += '<div class="pifile-meta">' + formatAgo(ts) + '</div>';
         html += '<button class="pickbtn" style="margin-top:6px;font-size:.8rem;padding:6px 16px" onclick="downloadMobileFile(\'' + key.replace(/'/g, "\\'") + '\')">⬇️ Stáhnout</button>';
         html += '</div>';
       }
       listEl.innerHTML = html;
-    }
-    setTimeout(loadMobileQueue, MOBILE_POLL_INTERVAL);
+    };
+    keyList.forEach(function(key) {
+      var xn = new XMLHttpRequest();
+      xn.open('GET', DB_TO_MOBILE + '/' + encodeURIComponent(key) + '/name.json');
+      xn.onload = function() {
+        var nm = null;
+        try { nm = JSON.parse(xn.responseText); } catch (e) {}
+        if (nm) names[key] = nm;
+        pending--;
+        if (pending === 0) { renderList(); setTimeout(loadMobileQueue, MOBILE_POLL_INTERVAL); }
+      };
+      xn.onerror = function() {
+        pending--;
+        if (pending === 0) { renderList(); setTimeout(loadMobileQueue, MOBILE_POLL_INTERVAL); }
+      };
+      xn.send();
+    });
   };
   xhr.onerror = function() {
     setTimeout(loadMobileQueue, MOBILE_POLL_INTERVAL);
