@@ -853,6 +853,36 @@
   const _app = getApps().length ? getApps()[0] : initializeApp(_FBCFG);
   const _db = getDatabase(_app);
   const _btn = document.getElementById('live-mode-btn');
+
+  // Admin flag — aktivace 5× tap na hlavní logo (do 3s)
+  const _logo = document.querySelector('.logo-ring');
+  if (_logo) {
+    let _tapCount = 0;
+    let _tapTimer = null;
+    _logo.style.cursor = 'pointer';
+    _logo.addEventListener('click', () => {
+      _tapCount++;
+      if (_tapTimer) clearTimeout(_tapTimer);
+      _tapTimer = setTimeout(() => { _tapCount = 0; }, 3000);
+      if (_tapCount >= 5) {
+        _tapCount = 0;
+        clearTimeout(_tapTimer);
+        try {
+          const cur = localStorage.getItem('kladyx_admin');
+          if (cur === '1') {
+            localStorage.removeItem('kladyx_admin');
+            if (_btn) _btn.style.display = 'none';
+            alert('Admin OFF');
+          } else {
+            localStorage.setItem('kladyx_admin', '1');
+            if (_btn) _btn.style.display = 'block';
+            alert('Admin ON');
+          }
+        } catch (e) { alert('localStorage nedostupné: ' + e.message); }
+      }
+    });
+  }
+
   if (_btn) {
     try {
       if (localStorage.getItem('kladyx_admin') === '1') { _btn.style.display = 'block'; }
