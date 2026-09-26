@@ -837,7 +837,14 @@
 </div>
 
 <!-- LIVE MODE tlačítko (admin-only, localStorage flag: kladyx_admin=1) -->
-<div id="live-mode-btn" style="display:none;position:fixed;top:8px;right:8px;z-index:10000;padding:8px 16px;border-radius:8px;background:rgba(80,80,80,0.7);color:#fff;font-family:'Orbitron',monospace;font-size:0.72rem;letter-spacing:0.08em;cursor:pointer;user-select:none;border:2px solid #666;box-shadow:0 2px 8px rgba(0,0,0,0.4);">⚫ LIVE OFF</div>
+<style>
+  @keyframes liveModePulse {
+    0%,100% { box-shadow: 0 0 8px rgba(0,255,136,0.6), 0 0 16px rgba(0,255,136,0.3); transform: scale(1); }
+    50%     { box-shadow: 0 0 18px rgba(0,255,136,0.95), 0 0 32px rgba(0,255,136,0.6); transform: scale(1.05); }
+  }
+  #live-mode-btn.is-on { animation: liveModePulse 1.6s ease-in-out infinite; }
+</style>
+<div id="live-mode-btn" style="display:none;position:fixed;top:8px;right:8px;z-index:10000;padding:8px 16px;border-radius:8px;background:rgba(255,68,68,0.85);color:#fff;font-family:'Orbitron',monospace;font-size:0.72rem;letter-spacing:0.08em;cursor:pointer;user-select:none;border:2px solid #ff4444;box-shadow:0 2px 8px rgba(0,0,0,0.4);">🔴 LIVE OFF</div>
 
 <script type="module">
   // LIVE MODE — přepíše song.txt na "KLADYXLAND LIVE" (přes obs-bridge.js listener na radio/liveMode).
@@ -893,13 +900,17 @@
       const v = snap.val();
       _currentState = (v === true);
       if (_currentState) {
+        _btn.style.background = 'rgba(0,255,136,0.85)';
+        _btn.style.borderColor = '#00ff88';
+        _btn.style.color = '#000';
+        _btn.textContent = '🟢 LIVE ON';
+        _btn.classList.add('is-on');
+      } else {
         _btn.style.background = 'rgba(255,68,68,0.85)';
         _btn.style.borderColor = '#ff4444';
-        _btn.textContent = '🔴 LIVE ON';
-      } else {
-        _btn.style.background = 'rgba(80,80,80,0.7)';
-        _btn.style.borderColor = '#666';
-        _btn.textContent = '⚫ LIVE OFF';
+        _btn.style.color = '#fff';
+        _btn.textContent = '🔴 LIVE OFF';
+        _btn.classList.remove('is-on');
       }
     });
     _btn.onclick = () => { set(_liveRef, !_currentState); };
