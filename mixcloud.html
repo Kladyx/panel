@@ -835,5 +835,46 @@
 <div class="float-notes">
   <span>🎵</span><span>🎶</span><span>♪</span><span>🎵</span><span>♫</span><span>🎧</span><span>🎧</span>
 </div>
+
+<!-- LIVE MODE tlačítko (admin-only, localStorage flag: kladyx_admin=1) -->
+<div id="live-mode-btn" style="display:none;position:fixed;top:8px;right:8px;z-index:10000;padding:8px 16px;border-radius:8px;background:rgba(80,80,80,0.7);color:#fff;font-family:'Orbitron',monospace;font-size:0.72rem;letter-spacing:0.08em;cursor:pointer;user-select:none;border:2px solid #666;box-shadow:0 2px 8px rgba(0,0,0,0.4);">⚫ LIVE OFF</div>
+
+<script type="module">
+  // LIVE MODE — přepíše song.txt na "KLADYXLAND LIVE" (přes obs-bridge.js listener na radio/liveMode).
+  // Tlačítko viditelné jen pro admina (localStorage.kladyx_admin === "1").
+  import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getDatabase, ref, onValue, set } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+  const _FBCFG = {
+    apiKey: "AIzaSyDmAf2CZILbYKR72XYd3iCj3pQgnqFYTp8",
+    databaseURL: "https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "kladyxland"
+  };
+  const _app = getApps().length ? getApps()[0] : initializeApp(_FBCFG);
+  const _db = getDatabase(_app);
+  const _btn = document.getElementById('live-mode-btn');
+  if (_btn) {
+    try {
+      if (localStorage.getItem('kladyx_admin') === '1') { _btn.style.display = 'block'; }
+    } catch (e) {}
+    const _liveRef = ref(_db, 'radio/liveMode');
+    let _currentState = false;
+    onValue(_liveRef, (snap) => {
+      const v = snap.val();
+      _currentState = (v === true);
+      if (_currentState) {
+        _btn.style.background = 'rgba(255,68,68,0.85)';
+        _btn.style.borderColor = '#ff4444';
+        _btn.textContent = '🔴 LIVE ON';
+      } else {
+        _btn.style.background = 'rgba(80,80,80,0.7)';
+        _btn.style.borderColor = '#666';
+        _btn.textContent = '⚫ LIVE OFF';
+      }
+    });
+    _btn.onclick = () => { set(_liveRef, !_currentState); };
+  }
+</script>
+
 </body>
 </html>
