@@ -581,15 +581,16 @@
             allowtransparency="true"
             loading="lazy">
           </iframe>
-          <div style="text-align:center;padding:12px;">
-            <a id="live-btn" href="https://www.mixcloud.com/live/kladyx/" target="_blank" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#ff006e,#a855f7);border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-decoration:none;text-transform:uppercase;">🔴 SLEDOVAT ŽIVĚ</a>
-            <div style="margin-top:12px;">
-              <a href="https://kladyx.github.io/" target="_blank" class="pulse-link">
-                <span class="pulse-inner1">
-                  <span class="pulse-inner2">🌐 KLADYXLAND.CZ</span>
-                </span>
-              </a>
-            </div>
+          <div style="text-align:center;padding:16px;">
+            <style>
+              @keyframes liveBtnPulse {
+                0%,100% { box-shadow: 0 0 12px rgba(255,0,110,0.55), 0 0 28px rgba(168,85,247,0.35); transform: scale(1); }
+                50%     { box-shadow: 0 0 24px rgba(255,0,110,0.95), 0 0 44px rgba(168,85,247,0.7); transform: scale(1.05); }
+              }
+              #live-btn { animation: liveBtnPulse 1.6s ease-in-out infinite; }
+              #live-btn:hover { filter: brightness(1.15); }
+            </style>
+            <a id="live-btn" href="https://www.mixcloud.com/live/kladyx/" target="_blank" style="display:inline-block;padding:20px 48px;background:linear-gradient(135deg,#ff006e,#a855f7);border-radius:14px;color:#fff;font-family:'Orbitron',monospace;font-size:1.05rem;font-weight:900;letter-spacing:.16em;text-decoration:none;text-transform:uppercase;">🔴 SLEDOVAT ŽIVĚ</a>
           </div>
         </div>
       </div>
