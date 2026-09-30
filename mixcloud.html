@@ -494,7 +494,7 @@
     .star{position:absolute;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starPulse 2s ease-in-out infinite;}
     .star.big{width:8px;height:8px;}
     @keyframes starPulse{0%,100%{opacity:.15;transform:scale(.5);}50%{opacity:1;transform:scale(2.2);box-shadow:0 0 8px #00f5ff,0 0 16px rgba(0,245,255,.5),0 0 24px rgba(0,245,255,.2);}}
-  
+
     /* Brand logos footer */
     .app-brand-bar {
       position: fixed;
@@ -621,7 +621,7 @@
           Poslouchej hudbu z <span class="hl">KLADYXLAND</span>
         </div>
         <div class="footer-brand">Powered by Mixcloud</div>
-        <div class="footer-brand" style="margin-top:6px;color:#00ff88;font-weight:700;">v14.8</div>
+        <div class="footer-brand" style="margin-top:6px;color:#00ff88;font-weight:700;">v14.9</div>
         <div style="margin-top:10px;font-family:'Rajdhani',sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.25);letter-spacing:0.05em;padding:0 20px;">
           Fender® and PreSonus® are registered trademarks of their respective owners. KLADYXLAND has no commercial affiliation with these brands — their equipment is used for personal broadcasting purposes only.
         </div>
@@ -837,19 +837,25 @@
   <span>🎵</span><span>🎶</span><span>♪</span><span>🎵</span><span>♫</span><span>🎧</span><span>🎧</span>
 </div>
 
-<!-- LIVE MODE tlačítko (admin-only, localStorage flag: kladyx_admin=1) -->
+<!-- LIVE MODE tlačítka (admin-only, localStorage flag: kladyx_admin=1) — v14.9: 2 tlačítka RADIO DJ / VDJ -->
 <style>
   @keyframes liveModePulse {
     0%,100% { box-shadow: 0 0 8px rgba(0,255,136,0.6), 0 0 16px rgba(0,255,136,0.3); transform: scale(1); }
     50%     { box-shadow: 0 0 18px rgba(0,255,136,0.95), 0 0 32px rgba(0,255,136,0.6); transform: scale(1.05); }
   }
-  #live-mode-btn.is-on { animation: liveModePulse 1.6s ease-in-out infinite; }
+  .mode-btn.is-on { animation: liveModePulse 1.6s ease-in-out infinite; }
 </style>
-<div id="live-mode-btn" style="display:none;position:fixed;top:8px;right:8px;z-index:10000;padding:8px 16px;border-radius:8px;background:rgba(255,68,68,0.85);color:#fff;font-family:'Orbitron',monospace;font-size:0.72rem;letter-spacing:0.08em;cursor:pointer;user-select:none;border:2px solid #ff4444;box-shadow:0 2px 8px rgba(0,0,0,0.4);">🔴 LIVE OFF</div>
+<div id="mode-btns" style="display:none;flex-direction:column;gap:6px;position:fixed;top:8px;right:8px;z-index:10000;">
+  <div id="mode-radiodj-btn" class="mode-btn" style="padding:8px 16px;border-radius:8px;background:rgba(255,68,68,0.85);color:#fff;font-family:'Orbitron',monospace;font-size:0.72rem;letter-spacing:0.08em;cursor:pointer;user-select:none;border:2px solid #ff4444;box-shadow:0 2px 8px rgba(0,0,0,0.4);text-align:center;">📻 RADIO DJ</div>
+  <div id="mode-vdj-btn" class="mode-btn" style="padding:8px 16px;border-radius:8px;background:rgba(255,68,68,0.85);color:#fff;font-family:'Orbitron',monospace;font-size:0.72rem;letter-spacing:0.08em;cursor:pointer;user-select:none;border:2px solid #ff4444;box-shadow:0 2px 8px rgba(0,0,0,0.4);text-align:center;">🎧 VDJ</div>
+</div>
 
 <script type="module">
-  // LIVE MODE — přepíše song.txt na "KLADYXLAND LIVE" (přes obs-bridge.js listener na radio/liveMode).
-  // Tlačítko viditelné jen pro admina (localStorage.kladyx_admin === "1").
+  // LIVE MODE — píše režim do radio/liveMode ("off"/"radiodj"/"vdj"), čte ho obs-bridge.js.
+  //   off     → OnAirScreen "KLADYXLAND LIVE"
+  //   radiodj → aktuální skladba z RadioDJ
+  //   vdj     → aktuální track z VirtualDJ (NowPlaying)
+  // Tlačítka viditelná jen pro admina (localStorage.kladyx_admin === "1"), aktivace 5× tap na logo.
   import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
   import { getDatabase, ref, onValue, set } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
@@ -860,7 +866,11 @@
   };
   const _app = getApps().length ? getApps()[0] : initializeApp(_FBCFG);
   const _db = getDatabase(_app);
-  const _btn = document.getElementById('live-mode-btn');
+  const _wrap = document.getElementById('mode-btns');
+  const _btnR = document.getElementById('mode-radiodj-btn');
+  const _btnV = document.getElementById('mode-vdj-btn');
+
+  function _showAdmin(on) { if (_wrap) _wrap.style.display = on ? 'flex' : 'none'; }
 
   // Admin flag — aktivace 5× tap na hlavní logo (do 3s)
   const _logo = document.querySelector('.logo-ring');
@@ -879,11 +889,11 @@
           const cur = localStorage.getItem('kladyx_admin');
           if (cur === '1') {
             localStorage.removeItem('kladyx_admin');
-            if (_btn) _btn.style.display = 'none';
+            _showAdmin(false);
             alert('Admin OFF');
           } else {
             localStorage.setItem('kladyx_admin', '1');
-            if (_btn) _btn.style.display = 'block';
+            _showAdmin(true);
             alert('Admin ON');
           }
         } catch (e) { alert('localStorage nedostupné: ' + e.message); }
@@ -891,31 +901,38 @@
     });
   }
 
-  if (_btn) {
-    try {
-      if (localStorage.getItem('kladyx_admin') === '1') { _btn.style.display = 'block'; }
-    } catch (e) {}
-    const _liveRef = ref(_db, 'radio/liveMode');
-    let _currentState = false;
-    onValue(_liveRef, (snap) => {
-      const v = snap.val();
-      _currentState = (v === true);
-      if (_currentState) {
-        _btn.style.background = 'rgba(0,255,136,0.85)';
-        _btn.style.borderColor = '#00ff88';
-        _btn.style.color = '#000';
-        _btn.textContent = '🟢 LIVE ON';
-        _btn.classList.add('is-on');
-      } else {
-        _btn.style.background = 'rgba(255,68,68,0.85)';
-        _btn.style.borderColor = '#ff4444';
-        _btn.style.color = '#fff';
-        _btn.textContent = '🔴 LIVE OFF';
-        _btn.classList.remove('is-on');
-      }
-    });
-    _btn.onclick = () => { set(_liveRef, !_currentState); };
+  try {
+    if (localStorage.getItem('kladyx_admin') === '1') { _showAdmin(true); }
+  } catch (e) {}
+
+  const _liveRef = ref(_db, 'radio/liveMode');
+  let _mode = 'off';
+
+  function _normalize(v) {
+    if (v === true) return 'radiodj';
+    if (v === false || v === null || v === undefined) return 'off';
+    const s = String(v).toLowerCase();
+    return (s === 'radiodj' || s === 'vdj' || s === 'off') ? s : 'off';
   }
+
+  function _paintBtn(btn, on, iconOn, iconOff, label) {
+    if (!btn) return;
+    btn.style.background = on ? 'rgba(0,255,136,0.85)' : 'rgba(255,68,68,0.85)';
+    btn.style.borderColor = on ? '#00ff88' : '#ff4444';
+    btn.style.color = on ? '#000' : '#fff';
+    btn.textContent = (on ? iconOn : iconOff) + ' ' + label;
+    if (on) btn.classList.add('is-on'); else btn.classList.remove('is-on');
+  }
+
+  function _paint() {
+    _paintBtn(_btnR, _mode === 'radiodj', '🟢', '📻', 'RADIO DJ');
+    _paintBtn(_btnV, _mode === 'vdj', '🟢', '🎧', 'VDJ');
+  }
+
+  onValue(_liveRef, (snap) => { _mode = _normalize(snap.val()); _paint(); });
+
+  if (_btnR) _btnR.onclick = () => { set(_liveRef, _mode === 'radiodj' ? 'off' : 'radiodj'); };
+  if (_btnV) _btnV.onclick = () => { set(_liveRef, _mode === 'vdj' ? 'off' : 'vdj'); };
 </script>
 
 </body>
