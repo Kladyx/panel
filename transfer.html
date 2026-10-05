@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v6.2.9Kl</title>
+<title>KladyxTransfer v6.3.0Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v6.2.9Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma + Caption + Přejmenování popisků + FB sdílení Mixcloud</div>
+  <div class="version">v6.3.0Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma + Caption + Přejmenování popisků + FB sdílení Mixcloud</div>
 
   <a class="pickbtn" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.mixcloud.com%2Flive%2Fkladyx%2F" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none;margin-bottom:20px;background:linear-gradient(135deg,#1877f2,#00c6ff);box-shadow:0 4px 12px rgba(24,119,242,.35);">📘 Sdílet Mixcloud na FB</a>
 
@@ -424,6 +424,7 @@
       <option value="bg">🌅 Pozadí webu (bg/)</option>
       <option value="hw">🔧 Hardware (hw/)</option>
       <option value="gallery">🖼️ Galerie (gallery/)</option>
+      <option value="honor">🏆 Wall of Honor (honor/)</option>
     </select>
     <div id="bgThemeWrap" style="display:none;margin-bottom:10px;">
       <div style="font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:5px;">Přiřadit k tématu webu:</div>
@@ -1758,7 +1759,7 @@ function onFotoFolderChange() {
   var wrap = document.getElementById('bgThemeWrap');
   var captionWrap = document.getElementById('galleryCaptionWrap');
   if (wrap) wrap.style.display = (folder === 'bg') ? 'block' : 'none';
-  if (captionWrap) captionWrap.style.display = (folder === 'gallery') ? 'block' : 'none';
+  if (captionWrap) captionWrap.style.display = (folder === 'gallery' || folder === 'honor') ? 'block' : 'none';
 }
 
 function sendFotoToGithub() {
@@ -1781,6 +1782,15 @@ function sendFotoToGithub() {
       filename = caption + '__' + baseName + '.' + ext;
     } else {
       filename = 'foto__' + Date.now() + '.' + ext;
+    }
+  }
+  // Wall of Honor: popisek před __ v názvu souboru; bez popisku zůstane zadaný název
+  if (folder === 'honor') {
+    var capH = (document.getElementById('galleryCaption') || {}).value || '';
+    capH = capH.trim().replace(/[^a-zA-Z0-9áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ ]/g, '').trim().replace(/\s+/g, '_');
+    if (capH) {
+      var baseH = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '');
+      filename = capH + '__' + baseH + '.' + ext;
     }
   }
   var safeName = filename.replace(/[^a-zA-Z0-9áčďéěíňóřšťůúýžÁČĎÉĚÍŇÓŘŠŤŮÚÝŽ._-]/g, '_');
