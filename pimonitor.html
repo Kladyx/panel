@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v6.9Pi">
-<title>Pi Monitor v6.9Pi</title>
+<meta name="version" content="v7.0Pi">
+<title>Pi Monitor v7.0Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -136,7 +136,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v6.9Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v7.0Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -965,14 +965,16 @@ function checkCloudStatus() {
   xp.send();
   // Web KladyxLand - přímý fetch na GitHub Pages
   var wEl=document.getElementById('cloud-web');
-  fetch('https://kladyx.github.io/',{mode:'no-cors',cache:'no-store'}).then(function(){
+  fetch('https://kladyx.github.io/kladyxland/version.json',{cache:'no-store'}).then(function(r){
+    if(!r.ok)throw new Error('HTTP '+r.status);
     wEl.innerHTML='<span class="dot dot-ok"></span> <span style="color:#00ff88;font-weight:700;">ONLINE</span>';
   }).catch(function(){
     wEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">OFFLINE</span>';
   });
   // Multifunkční Panel - přímý fetch na GitHub Pages
   var pEl=document.getElementById('cloud-panel');
-  fetch('https://kladyx.github.io/Panel_final.html',{mode:'no-cors',cache:'no-store'}).then(function(){
+  fetch('https://kladyx.github.io/panel/version.json',{cache:'no-store'}).then(function(r){
+    if(!r.ok)throw new Error('HTTP '+r.status);
     pEl.innerHTML='<span class="dot dot-ok"></span> <span style="color:#00ff88;font-weight:700;">ONLINE</span>';
   }).catch(function(){
     pEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">OFFLINE</span>';
