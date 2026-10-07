@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v6.8Pi">
-<title>Pi Monitor v6.8Pi</title>
+<meta name="version" content="v6.9Pi">
+<title>Pi Monitor v6.9Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -136,7 +136,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v6.8Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v6.9Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -181,7 +181,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
   <div class="svc-row"><div class="dot dot-wait" id="d-obs"></div><div class="svc-name">kladyx-obsbridge</div><div class="svc-st" id="s-obs">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-prijate"></div><div class="svc-name">kladyx-prijatelister</div><div class="svc-st" id="s-prijate">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-eq"></div><div class="svc-name">kladyx-equalizer</div><div class="svc-st" id="s-eq">…</div></div>
-  <div class="svc-row"><div class="dot dot-wait" id="d-irbridge"></div><div class="svc-name">kladyx-irbridge</div><div class="svc-st" id="s-irbridge">…</div></div>
+  <div class="svc-row"><div class="dot dot-wait" id="d-irbridge"></div><div class="svc-name">kladyx-broadlink</div><div class="svc-st" id="s-irbridge">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-rpi"></div><div class="svc-name">kladyx-rpi</div><div class="svc-st" id="s-rpi">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-pitransfer"></div><div class="svc-name">kladyx-pitransfer</div><div class="svc-st" id="s-pitransfer">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-pimonitor"></div><div class="svc-name">kladyx-pimonitor</div><div class="svc-st" id="s-pimonitor">…</div></div>
@@ -413,7 +413,7 @@ var PC_SVC=['transfer','upload','nextsync','obs','eq'];
 var _pcOnline=false;
 var _svcActive={};
 // Ticker zobrazuje jen tyto sluzby (ostatni - rpi, tuyaplug, transfer, nextsync atd. - do tickeru nepatri)
-var _tickerNames={'tapo':'tapobridge','tapopy':'tapo-py','prijate':'prijatelister','pitransfer':'pitransfer','irbridge':'irbridge','pimonitor':'pimonitor','taporestart':'tapo-restart','obs':'obs-bridge','weareone':'weareone'};
+var _tickerNames={'tapo':'tapobridge','tapopy':'tapo-py','prijate':'prijatelister','pitransfer':'pitransfer','irbridge':'broadlink','pimonitor':'pimonitor','taporestart':'tapo-restart','obs':'obs-bridge','weareone':'weareone'};
 function updateTicker(){
   var list=Object.keys(_tickerNames).filter(function(k){return !!_svcActive[k];}).map(function(k){return _tickerNames[k];});
   var scrEl=document.getElementById('net-scripts-inner');
@@ -665,9 +665,18 @@ function loadStats(){
   fbFetch(fbUrl('/irDb/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(ts){
-    setSvc('irbridge',ts&&(Date.now()-ts<60000));
+    var irOk=!!(ts&&(Date.now()-ts<60000));
+    setSvc('irbridge',irOk);
+    var rd=document.getElementById('d-dev-rm4'),rs=document.getElementById('s-dev-rm4');
+    if(rd)rd.className='dot '+(irOk?'dot-ok':'dot-err');
+    if(rs){rs.textContent=irOk?'CONNECTED ON':'CONNECTED OFF';rs.className='svc-stat '+(irOk?'on':'off');}
   })
-  .catch(function(){setSvc('irbridge',false);});
+  .catch(function(){
+    setSvc('irbridge',false);
+    var rd=document.getElementById('d-dev-rm4'),rs=document.getElementById('s-dev-rm4');
+    if(rd)rd.className='dot dot-err';
+    if(rs){rs.textContent='CONNECTED OFF';rs.className='svc-stat off';}
+  });
   // Tuya Plug Bridge (plug_bridge.py) - čte connected a on z tuyaDb
   fbFetch(fbUrl('/tuyaDb.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
