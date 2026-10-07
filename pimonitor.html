@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v7.1Pi">
-<title>Pi Monitor v7.1Pi</title>
+<meta name="version" content="v7.2Pi">
+<title>Pi Monitor v7.2Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -136,7 +136,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v7.1Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v7.2Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -185,7 +185,6 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
   <div class="svc-row"><div class="dot dot-wait" id="d-rpi"></div><div class="svc-name">kladyx-rpi</div><div class="svc-st" id="s-rpi">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-pitransfer"></div><div class="svc-name">kladyx-pitransfer</div><div class="svc-st" id="s-pitransfer">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-pimonitor"></div><div class="svc-name">kladyx-pimonitor</div><div class="svc-st" id="s-pimonitor">…</div></div>
-  <div class="svc-row"><div class="dot dot-wait" id="d-taporestart"></div><div class="svc-name">kladyx-tapo-restart</div><div class="svc-st" id="s-taporestart">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-tuyaplug"></div><div class="svc-name">kladyx-plugbridge (Tuya)</div><div class="svc-st" id="s-tuyaplug">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-weareone"></div><div class="svc-name">kladyx-weareone (HouseTime)</div><div class="svc-st" id="s-weareone">…</div></div>
 </div>
@@ -198,7 +197,6 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
   <div class="svc-row"><div class="dot dot-wait" id="d-dev-p100sam"></div><div class="svc-name">Radio system Samsung (P100sam)</div><div class="svc-st" id="s-dev-p100sam">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-dev-p110"></div><div class="svc-name">System rpi 4 (P110)</div><div class="svc-st" id="s-dev-p110">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-dev-zxnext"></div><div class="svc-name">ZX Next KS3</div><div class="svc-st" id="s-dev-zxnext">…</div></div>
-  <div class="svc-row"><div class="dot dot-disc" id="d-dev-ax55"></div><div class="svc-name">Switch TP-Link AX55</div><div class="svc-stat" id="s-dev-ax55">PŘIPRAVENO</div></div>
   <div class="svc-row"><div class="dot dot-disc" id="d-dev-rm4"></div><div class="svc-name">IR Bridge BroadLink RM4 Mini</div><div class="svc-stat disc" id="s-dev-rm4">ČEKÁ NA ZAŘÍZENÍ</div></div>
 </div>
 
@@ -219,7 +217,6 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
   <div class="net-row"><div class="net-lbl">Ethernet</div><div class="net-val" id="hw-eth">—</div></div>
   <div class="net-row"><div class="net-lbl">PC (NextSync)</div><div class="net-val" id="hw-pc">—</div></div>
   <div class="net-row"><div class="net-lbl">Mixcloud stream</div><div class="net-val" id="hw-mixcloud">—</div></div>
-  <div class="net-row"><div class="net-lbl">Router AX55 Pro</div><div class="net-val" id="hw-router">—</div></div>
   <div class="net-row"><div class="net-lbl">Poslední boot</div><div class="net-val" id="hw-boot">—</div></div>
   <div class="net-row"><div class="net-lbl">CPU frekvence</div><div class="net-val" id="hw-cpumhz">—</div></div>
   <div class="net-row"><div class="net-lbl">Disk volné</div><div class="net-val" id="hw-diskfree">—</div></div>
@@ -615,9 +612,6 @@ function loadStats(){
       else if(obsText.indexOf('CONNECTED OFF')>=0){mcEl.textContent='OFFLINE';mcEl.style.color='var(--red)';}
       else{mcEl.textContent='DISCONNECTED';mcEl.style.color='var(--warn)';}
     }
-    // Router - pokud Pi4 posílá data do Firebase, router funguje
-    var rtEl=document.getElementById('hw-router');
-    if(rtEl){rtEl.textContent='CONNECTED';rtEl.style.color='var(--green)';}
     // Spotřeba od začátku provozu (s průměrem CPU% z Historie)
     updateConsumption(d.uptime_sec||0, avgCpuFromHistory);
     // Síť
@@ -652,7 +646,6 @@ function loadStats(){
     setPiState(true);
     setSvc('rpi',true);
     setSvc('pimonitor',true);    // piStats přišla = pimonitor evidentně běží
-    setSvc('taporestart',true);  // Pi ON = cron nastaven = aktivní
     // Procesy (pokud Pi posle realna data, prepise ACTIVE ON)
     if(d.proc_count!==undefined){var el=document.getElementById('net-proc');el.textContent=d.proc_count;el.classList.remove('net-active');}
     // Restarty služeb
