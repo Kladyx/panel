@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v7.2Pi">
-<title>Pi Monitor v7.2Pi</title>
+<meta name="version" content="v7.3Pi">
+<title>Pi Monitor v7.3Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -136,7 +136,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v7.2Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v7.3Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -185,7 +185,6 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
   <div class="svc-row"><div class="dot dot-wait" id="d-rpi"></div><div class="svc-name">kladyx-rpi</div><div class="svc-st" id="s-rpi">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-pitransfer"></div><div class="svc-name">kladyx-pitransfer</div><div class="svc-st" id="s-pitransfer">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-pimonitor"></div><div class="svc-name">kladyx-pimonitor</div><div class="svc-st" id="s-pimonitor">…</div></div>
-  <div class="svc-row"><div class="dot dot-wait" id="d-tuyaplug"></div><div class="svc-name">kladyx-plugbridge (Tuya)</div><div class="svc-st" id="s-tuyaplug">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-weareone"></div><div class="svc-name">kladyx-weareone (HouseTime)</div><div class="svc-st" id="s-weareone">…</div></div>
 </div>
 
@@ -206,7 +205,6 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
   <div class="svc-row"><div class="svc-name">tapobridge</div><div class="svc-st" id="r-tb">—</div></div>
   <div class="svc-row"><div class="svc-name">irbridge</div><div class="svc-st" id="r-ir">—</div></div>
   <div class="svc-row"><div class="svc-name">pimonitor</div><div class="svc-st" id="r-pm">—</div></div>
-  <div class="svc-row"><div class="svc-name">plugbridge</div><div class="svc-st" id="r-pb">—</div></div>
   <div class="svc-row"><div class="svc-name">pitransfer</div><div class="svc-st" id="r-pt">—</div></div>
   <div class="svc-row"><div class="svc-name">prijatelister</div><div class="svc-st" id="r-pl">—</div></div>
   <div class="svc-row"><div class="svc-name">weareone</div><div class="svc-st" id="r-wo">—</div></div>
@@ -637,7 +635,7 @@ function loadStats(){
     // Services z piStats - POUZE sluzby ktere skutecne bezi na Pi4 jako systemd.
     // transfer/upload/nextsync/obs jsou .bat na PC, Pi4 je nevidi -> resi checkPC()
     if(d.services){
-      ['tapo','prijate','pitransfer','pimonitor','taporestart','tuyaplug'].forEach(function(k){
+      ['tapo','prijate','pitransfer','pimonitor','taporestart'].forEach(function(k){
         if(d.services[k]!==undefined)setSvc(k,d.services[k]===true||d.services[k]==='active');
       });
     }
@@ -649,7 +647,7 @@ function loadStats(){
     // Procesy (pokud Pi posle realna data, prepise ACTIVE ON)
     if(d.proc_count!==undefined){var el=document.getElementById('net-proc');el.textContent=d.proc_count;el.classList.remove('net-active');}
     // Restarty služeb
-    if(d.restarts){var rmap={'tp':'tapo-py','tb':'tapobridge','ir':'irbridge','pm':'pimonitor','pb':'plugbridge','pt':'pitransfer','pl':'prijatelister','wo':'weareone'};Object.keys(rmap).forEach(function(k){var e=document.getElementById('r-'+k);if(e){var cnt=d.restarts[rmap[k]]!==undefined?d.restarts[rmap[k]]:0;e.textContent=cnt;e.style.color=cnt>0?'#ffaa00':'#00ff88';if(cnt>0){e.classList.add('restart-active');}else{e.classList.remove('restart-active');}}});}
+    if(d.restarts){var rmap={'tp':'tapo-py','tb':'tapobridge','ir':'irbridge','pm':'pimonitor','pt':'pitransfer','pl':'prijatelister','wo':'weareone'};Object.keys(rmap).forEach(function(k){var e=document.getElementById('r-'+k);if(e){var cnt=d.restarts[rmap[k]]!==undefined?d.restarts[rmap[k]]:0;e.textContent=cnt;e.style.color=cnt>0?'#ffaa00':'#00ff88';if(cnt>0){e.classList.add('restart-active');}else{e.classList.remove('restart-active');}}});}
     // Ticker se aktualizuje automaticky ze _svcActive (setSvc to resi)
     updateTicker();
   })
@@ -670,15 +668,14 @@ function loadStats(){
     if(rd)rd.className='dot dot-err';
     if(rs){rs.textContent='CONNECTED OFF';rs.className='svc-stat off';}
   });
-  // Tuya Plug Bridge (plug_bridge.py) - čte connected a on z tuyaDb
+  // ZX Next KS3 (Tapo .53, uzel tuyaDb) - jen stav zasuvky
   fbFetch(fbUrl('/tuyaDb.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(d){
-    setSvc('tuyaplug',d&&d.connected===true);
     var fresh=!!(d&&d.lastSeen&&(Date.now()-d.lastSeen<150000));
     setDev('zxnext',d&&d.on===true,fresh);
   })
-  .catch(function(){setSvc('tuyaplug',false);setDev('zxnext',false,false);});
+  .catch(function(){setDev('zxnext',false,false);});
   // WeAreOne Bridge - čte timestamp z radio/housetime
   fbFetch(fbUrl('/radio/housetime/ts.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
