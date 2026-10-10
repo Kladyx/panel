@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v7.4Pi">
-<title>Pi Monitor v7.4Pi</title>
+<meta name="version" content="v7.5Pi">
+<title>Pi Monitor v7.5Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -136,7 +136,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v7.4Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v7.5Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -653,22 +653,13 @@ function loadStats(){
     updateTicker();
   })
   .catch(function(){showOffline(true);loadFallback();});
-  // IR Bridge - čte heartbeat přímo z irDb/lastSeen
+  // IR Bridge service - čte heartbeat z irDb/lastSeen (zařízení řeší Radio Samsung níže)
   fbFetch(fbUrl('/irDb/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(ts){
-    var irOk=!!(ts&&(Date.now()-ts<60000));
-    setSvc('irbridge',irOk);
-    var rd=document.getElementById('d-dev-rm4'),rs=document.getElementById('s-dev-rm4');
-    if(rd)rd.className='dot '+(irOk?'dot-ok':'dot-err');
-    if(rs){rs.textContent=irOk?'CONNECTED ON':'CONNECTED OFF';rs.className='svc-stat '+(irOk?'on':'off');}
+    setSvc('irbridge',!!(ts&&(Date.now()-ts<60000)));
   })
-  .catch(function(){
-    setSvc('irbridge',false);
-    var rd=document.getElementById('d-dev-rm4'),rs=document.getElementById('s-dev-rm4');
-    if(rd)rd.className='dot dot-err';
-    if(rs){rs.textContent='CONNECTED OFF';rs.className='svc-stat off';}
-  });
+  .catch(function(){setSvc('irbridge',false);});
   // ZX Next KS3 (Tapo .53, uzel tuyaDb) - jen stav zasuvky
   fbFetch(fbUrl('/tuyaDb.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
@@ -720,12 +711,24 @@ function loadStats(){
     setDev('p100',d&&d.on===true,!!(ts&&(Date.now()-ts<150000)));
   })
   .catch(function(){setDev('p100',false,false);});
-  // ZARIZENI - Radio system Samsung (tapoDbP100Sam)
+  // ZARIZENI - Radio system Samsung (tapoDbP100Sam) + BroadLink RM4 (zrcadlí zásuvku)
   fbFetch(fbUrl('/tapoDbP100Sam.json'),{signal:AbortSignal.timeout(5000)})
     .then(function(r){return r.json();}).then(function(d){
     var ts=d&&d.lastSeen;
-    setDev('p100sam',d&&d.on===true,!!(ts&&(Date.now()-ts<150000)));
-  }).catch(function(){setDev('p100sam',false,false);});
+    var fresh=!!(ts&&(Date.now()-ts<150000));
+    var isOn=d&&d.on===true;
+    setDev('p100sam',isOn,fresh);
+    // BroadLink RM4 Mini - zrcadlí přesně stav zásuvky Radio Samsung
+    var rd=document.getElementById('d-dev-rm4'),rs=document.getElementById('s-dev-rm4');
+    var rm4On=isOn&&fresh;
+    if(rd)rd.className='dot '+(rm4On?'dot-ok':'dot-err');
+    if(rs){rs.textContent=rm4On?'CONNECTED ON':'CONNECTED OFF';rs.className='svc-stat '+(rm4On?'on':'off');}
+  }).catch(function(){
+    setDev('p100sam',false,false);
+    var rd=document.getElementById('d-dev-rm4'),rs=document.getElementById('s-dev-rm4');
+    if(rd)rd.className='dot dot-err';
+    if(rs){rs.textContent='CONNECTED OFF';rs.className='svc-stat off';}
+  });
   // ZARIZENI - System rpi 4 (tapoDbP110)
   fbFetch(fbUrl('/tapoDbP110.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
