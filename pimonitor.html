@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v7.5Pi">
-<title>Pi Monitor v7.5Pi</title>
+<meta name="version" content="v7.6Pi">
+<title>Pi Monitor v7.6Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -136,7 +136,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v7.5Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v7.6Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -983,7 +983,7 @@ function checkCloudStatus() {
   });
   // Transfer app - přímý fetch na GitHub Pages
   var trEl=document.getElementById('cloud-transfer');
-  fetch('https://kladyx.github.io/transfer.html',{method:'HEAD',cache:'no-store'}).then(function(r){
+  fetch('https://kladyx.github.io/panel/transfer.html',{method:'HEAD',cache:'no-store'}).then(function(r){
     if(!r.ok)throw new Error('HTTP '+r.status);
     trEl.innerHTML='<span class="dot dot-ok"></span> <span style="color:#00ff88;font-weight:700;">ONLINE</span>';
   }).catch(function(){
