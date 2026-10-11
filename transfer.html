@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KladyxTransfer v6.3.1Kl</title>
+<title>KladyxTransfer v6.3.2Kl</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body {
@@ -224,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="title">KladyxTransfer</div>
-  <div class="version">v6.3.1Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma + Caption + Přejmenování popisků + FB sdílení Mixcloud</div>
+  <div class="version">v6.3.2Kl • Firebase + GitHub + PC Historie + Video rotace + Správa videí + Foto/BG/HW/Gallery Upload + Auto-téma + Caption + Přejmenování popisků + FB sdílení Mixcloud</div>
 
   <a class="pickbtn" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.mixcloud.com%2Flive%2Fkladyx%2F" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none;margin-bottom:20px;background:linear-gradient(135deg,#1877f2,#00c6ff);box-shadow:0 4px 12px rgba(24,119,242,.35);">📘 Sdílet Mixcloud na FB</a>
 
@@ -264,8 +264,16 @@
 
   <div class="box" style="margin-top:20px">
     <div class="icon">🍓</div>
-    <div class="desc">Vyber soubor v mobilu - uloží se na <b>Pi4</b> do /home/pi/prijate/</div>
+    <div class="desc">Vyber soubor v mobilu a cílovou složku - uloží se na <b>Pi4</b></div>
     <div class="desc2">Max. velikost cca 4 MB</div>
+
+    <select id="piTargetDir" style="width:100%;margin-bottom:10px;padding:8px;background:#1a1a2e;color:#fff;border:1px solid rgba(0,200,255,.3);border-radius:6px;font-size:.9rem;">
+      <option value="prijate" selected>/home/pi/prijate (výchozí)</option>
+      <option value="tuya">/home/pi/tuya</option>
+      <option value="tapo">/home/pi/tapo</option>
+      <option value="broadlink">/home/pi/broadlink</option>
+      <option value="home">/home/pi</option>
+    </select>
 
     <label class="pickbtn" for="fileInputPi">📁 Vybrat soubor</label>
     <input type="file" id="fileInputPi" onchange="onFileSelectedPi()">
@@ -575,6 +583,7 @@ function onFileSelectedPi() {
 
 function sendFileToPi() {
   if (!selectedFilePi) return;
+  var piDir = document.getElementById('piTargetDir').value || 'prijate';
   var btn = document.getElementById('sendBtnPi');
   var status = document.getElementById('statusPi');
   var pWrap = document.getElementById('progressWrapPi');
@@ -593,7 +602,7 @@ function sendFileToPi() {
     pBar.style.width = '30%';
     pText.textContent = '30%';
     status.textContent = '📡 Odesílám na Pi4...';
-    var payload = JSON.stringify({ name: selectedFilePi.name, data: base64, ts: Date.now() });
+    var payload = JSON.stringify({ name: selectedFilePi.name, data: base64, dir: piDir, ts: Date.now() });
     var url = DB_TO_PI + '/' + encodeURIComponent(safeKey) + '.json';
     var xhr = new XMLHttpRequest();
     xhr.open('PUT', url);
@@ -612,7 +621,7 @@ function sendFileToPi() {
         status.textContent = '✅ Odesláno na Pi4! Čeká na stažení.';
         status.className = 'status done';
         playDing();
-        addPiSentItem(selectedFilePi.name);
+        addPiSentItem(selectedFilePi.name, piDir);
         setTimeout(function() { pWrap.style.display = 'none'; }, 2000);
       } else {
         pWrap.style.display = 'none';
@@ -1020,11 +1029,11 @@ function downloadMobileFile(key) {
 loadMobileQueue();
 
 // ─── Pi4 Sent History ─────────────────────────────────
-function addPiSentItem(name) {
+function addPiSentItem(name, dir) {
   var store = getStorage();
   var hist = [];
   try { hist = JSON.parse(store.getItem('pi_sent') || '[]'); } catch(e) {}
-  hist.unshift({ name: name, ts: Date.now() });
+  hist.unshift({ name: name, dir: dir || 'prijate', ts: Date.now() });
   if (hist.length > 20) hist = hist.slice(0, 20);
   store.setItem('pi_sent', JSON.stringify(hist));
   renderPiSent();
@@ -1046,13 +1055,13 @@ function renderPiSent() {
     html += '<div style="padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;">';
     html += '<span style="color:#00ccff;flex:1;">🍓 ' + h.name + '</span>';
     html += '<span style="color:rgba(255,255,255,.35);font-size:.75rem;margin-right:8px;">' + ts + '</span>';
-    html += '<span onclick="deletePiFile(' + i + ',\'' + h.name.replace(/'/g, "\\'") + '\')" style="cursor:pointer;font-size:.85rem;color:#ff4444;padding:2px 6px;">✕</span>';
+    html += '<span onclick="deletePiFile(' + i + ',\'' + h.name.replace(/'/g, "\\'") + '\',\'' + (h.dir || 'prijate') + '\')" style="cursor:pointer;font-size:.85rem;color:#ff4444;padding:2px 6px;">✕</span>';
     html += '</div>';
   }
   el.innerHTML = html;
 }
 
-function deletePiFile(idx, name) {
+function deletePiFile(idx, name, dir) {
   var xhr = new XMLHttpRequest();
   xhr.open('PUT', DB_TO_PI.replace('transfer_to_pi', 'piTransfer/delete') + '.json');
   xhr.setRequestHeader('Content-Type', 'application/json');
@@ -1064,7 +1073,7 @@ function deletePiFile(idx, name) {
     store.setItem('pi_sent', JSON.stringify(hist));
     renderPiSent();
   };
-  xhr.send(JSON.stringify(name));
+  xhr.send(JSON.stringify((dir || 'prijate') + '/' + name));
 }
 
 renderPiSent();
