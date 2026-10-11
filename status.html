@@ -43,7 +43,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v5.5St</div>
+<div class="sub">KLADYXLAND · v5.6St</div>
 
 <div class="section">
   <div class="sec-title">🌐 Weby</div>
@@ -161,6 +161,15 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
     <div class="dot checking" id="d-p115"></div>
     <div style="flex:1"><div class="name">⚡ Tapo P115</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">DJ Sound · PreSonus</div></div>
     <div class="st checking" id="s-p115">Načítám…</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">📡 IR ovládání</div>
+  <div class="item checking" id="i-broadlink">
+    <div class="dot checking" id="d-broadlink"></div>
+    <div style="flex:1"><div class="name">📡 Broadlink IR</div><div style="font-size:.58rem;color:rgba(255,255,255,.3)">RM4 mini · bridge na Pi4</div></div>
+    <div class="st checking" id="s-broadlink">Načítám…</div>
   </div>
 </div>
 
@@ -330,6 +339,18 @@ function checkP115() {
     });
 }
 
+// ── Broadlink IR bridge – heartbeat irDb/lastSeen (1 číslo) ──
+function checkBroadlink() {
+  var url='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/irDb/lastSeen.json';
+  return withTimeout(fetch(url,{cache:'no-store'}),7000)
+    .then(function(r){return r.json();})
+    .then(function(ts){
+      var alive=(typeof ts==='number')&&(Date.now()-ts<120000);
+      setS('broadlink', alive?'ok':'err', alive?'Online ✓':'Offline ✗');
+    })
+    .catch(function(){ setS('broadlink','err','Nedostupné'); });
+}
+
 // ── Raspberry Pi 4 z Firebase nextsync/status ──
 function checkPi4() {
   fetch('https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/piStats.json')
@@ -380,7 +401,7 @@ function checkOBS() {
 }
 
 // ── RUN ALL ──
-var ALL_IDS=['web-kladyxland','web-panel','firebase','pocasi','mixcloud','reader','cotoje','kladyxamp','speedtest','transfer','kladyxhome','pimonitor','equalizer','prekladac','italstina','songup','speakup','mictest','scripty','web','repo','kiss98','blanik','krokodyl','rcity','radio1','impuls','orion','radiocas','signal','intense','funkstar','afc','dancecz','p115','pi4','obs'];
+var ALL_IDS=['web-kladyxland','web-panel','firebase','pocasi','mixcloud','reader','cotoje','kladyxamp','speedtest','transfer','kladyxhome','pimonitor','equalizer','prekladac','italstina','songup','speakup','mictest','scripty','web','repo','kiss98','blanik','krokodyl','rcity','radio1','impuls','orion','radiocas','signal','intense','funkstar','afc','dancecz','p115','broadlink','pi4','obs'];
 
 function runAll() {
   // Vizuální reset — vše do checking
@@ -439,6 +460,9 @@ function runAll() {
 
   // P115
   checkP115();
+
+  // Broadlink IR
+  checkBroadlink();
 
   // Pi4 Server
   checkPi4();
