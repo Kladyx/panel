@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="5.1.1.home">
+<meta name="version" content="5.1.2.home">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -298,6 +298,21 @@ h1 {
   box-shadow: 0 4px 25px rgba(255, 51, 68, 0.3), inset 0 1px 0 rgba(255, 51, 68, 0.15);
 }
 
+/* Stitky "IR POWER" a "APP" - zelene svítí, jemně pulzují */
+#dev-ir .device-status,
+.device-card .device-status {
+  background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
+  color: #000;
+  border-color: #00ff41;
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.45);
+  animation: badge-pulse-green 3s ease-in-out infinite;
+}
+
+@keyframes badge-pulse-green {
+  0%, 100% { box-shadow: 0 0 6px rgba(0, 255, 65, 0.35); opacity: 0.85; }
+  50% { box-shadow: 0 0 14px rgba(0, 255, 65, 0.8); opacity: 1; }
+}
+
 .footer {
   text-align: center;
   margin-top: 25px;
@@ -342,7 +357,7 @@ h1 {
 <div class="container">
 <h1>KLADYX HOME</h1>
 <div class="subtitle">SMART HOME CONTROL</div>
-<div class="version-badge">v5.1.1.home</div>
+<div class="version-badge">v5.1.2.home</div>
 
 <div class="device unknown" id="dev-p115">
   <div class="device-header">
@@ -458,7 +473,7 @@ h1 {
 
 </div>
 
-<div class="footer">KLADYXHOME v5.1.1.home - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v5.1.2.home - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
