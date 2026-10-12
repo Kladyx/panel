@@ -43,7 +43,7 @@ h1{text-align:center;font-size:1rem;letter-spacing:3px;color:#00ff88;text-transf
 </head>
 <body>
 <h1>⬡ STATUS CHECKER</h1>
-<div class="sub">KLADYXLAND · v5.6St</div>
+<div class="sub">KLADYXLAND · v5.7St</div>
 
 <div class="section">
   <div class="sec-title">🌐 Weby</div>
@@ -339,9 +339,9 @@ function checkP115() {
     });
 }
 
-// ── Broadlink IR bridge – heartbeat irDb/lastSeen (1 číslo) ──
+// ── Broadlink IR bridge – heartbeat irDbSoundbar/lastSeen (1 číslo; irDb a irDbTv píše i tuya_bridge) ──
 function checkBroadlink() {
-  var url='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/irDb/lastSeen.json';
+  var url='https://kladyxland-default-rtdb.europe-west1.firebasedatabase.app/irDbSoundbar/lastSeen.json';
   return withTimeout(fetch(url,{cache:'no-store'}),7000)
     .then(function(r){return r.json();})
     .then(function(ts){
