@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="5.1.2.home">
+<meta name="version" content="5.1.3.home">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -299,7 +299,6 @@ h1 {
 }
 
 /* Stitky "IR POWER" a "APP" - zelene svítí, jemně pulzují */
-#dev-ir .device-status,
 .device-card .device-status {
   background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
   color: #000;
@@ -357,7 +356,7 @@ h1 {
 <div class="container">
 <h1>KLADYX HOME</h1>
 <div class="subtitle">SMART HOME CONTROL</div>
-<div class="version-badge">v5.1.2.home</div>
+<div class="version-badge">v5.1.3.home</div>
 
 <div class="device unknown" id="dev-p115">
   <div class="device-header">
@@ -438,18 +437,6 @@ h1 {
   </div>
 </div>
 
-<div class="device" id="dev-ir">
-  <div class="device-header">
-    <div class="device-name">📡 IR ovládání (BroadLink)</div>
-    <div class="device-status">IR POWER</div>
-  </div>
-  <div class="buttons" style="margin-bottom:8px;"><button class="btn btn-blue" id="btn-ir-radio">Samsung Rádio · IR Power</button></div>
-  <div class="buttons" style="margin-bottom:8px;"><button class="btn btn-blue" id="btn-ir-tv">TV Sharp · IR Power</button></div>
-  <div class="buttons" style="margin-bottom:8px;"><button class="btn btn-blue" id="btn-ir-soundbar">Soundbar · IR Power</button></div>
-  <div class="buttons" style="margin-bottom:8px;"><button class="btn btn-blue" id="btn-ir-cd">CD Receiver · IR Power</button></div>
-  <div class="buttons"><button class="btn btn-blue" id="btn-ir-stb">Set-top Box · IR Power</button></div>
-</div>
-
 <div class="device-card">
   <div class="device-header">
     <div class="device-name">BroadLink</div>
@@ -473,7 +460,7 @@ h1 {
 
 </div>
 
-<div class="footer">KLADYXHOME v5.1.2.home - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v5.1.3.home - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -571,21 +558,6 @@ try {
   setupDevice('tapoDbP110', 'p110');
   setupDevice('tapoDbP100Sam', 'p100sam');
   setupDevice('tapoDbP100Ma', 'p100ma');
-
-  // IR ovládání (BroadLink bridge) - jen zápis příkazu 'power', bez čtení z Firebase
-  var irLock = {};
-  function sendIr(node) {
-    if (irLock[node]) return;
-    irLock[node] = true;
-    sendCmd(node, 'power');
-    setTimeout(function() { irLock[node] = false; }, 3000);
-  }
-  [['irDb','radio'],['irDbTv','tv'],['irDbSoundbar','soundbar'],['irDbCd','cd'],['irDbStb','stb']].forEach(function(p) {
-    var b = document.getElementById('btn-ir-' + p[1]);
-    if (!b) return;
-    b.addEventListener('touchstart', function(e) { e.preventDefault(); sendIr(p[0]); }, {passive: false});
-    b.addEventListener('click', function() { sendIr(p[0]); });
-  });
 
   // ZX Next KS3 – jen ukazatel stavu z tuyaDb
   var zxnextData = null;
