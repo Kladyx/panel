@@ -299,7 +299,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.4.6PlPro 10/2026</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.4.7PlPro 10/2026</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -7117,6 +7117,7 @@ header h1{font-family:'Orbitron',monospace;font-size:1.55rem;font-weight:900;let
   <div class="ei-row">
     <span class="ei-desc">Vyber měsíc ke smazání:</span>
     <select class="add-input" id="del-month" style="max-width:130px;"></select>
+    <select class="add-input" id="del-year" style="max-width:90px;"></select>
     <button class="ei-btn" id="btn-del-month" style="border-color:rgba(255,68,102,.35);color:var(--warn);background:rgba(255,68,102,.07);">✕ Smazat měsíc</button>
   </div>
   <div class="ei-msg" id="del-month-msg"></div>
@@ -7495,13 +7496,25 @@ function fillMonthSelects(){
     const sel=document.getElementById(id);sel.innerHTML='';
     MONTHS.forEach((name,i)=>{const o=document.createElement('option');o.value=i;o.textContent=name;if(id==='copy-from'&&i===currentMonth)o.selected=true;if(id==='copy-to'&&i===(currentMonth+1)%12)o.selected=true;if(id==='del-month'&&i===currentMonth)o.selected=true;sel.appendChild(o);});
   });
+  const ys=document.getElementById('del-year');ys.innerHTML='';
+  for(let y=currentYear-3;y<=currentYear+1;y++){const o=document.createElement('option');o.value=y;o.textContent=y;if(y===currentYear)o.selected=true;ys.appendChild(o);}
 }
 document.getElementById('btn-del-month').onclick=()=>{
   const m=parseInt(document.getElementById('del-month').value);
+  const y=parseInt(document.getElementById('del-year').value);
   const msg=document.getElementById('del-month-msg');
   msg.className='ei-msg err';
-  msg.innerHTML='Opravdu smazat <b>'+MONTHS[m]+'</b>? &nbsp;<button class="ei-btn" id="confirm-del" style="font-size:.58rem;padding:5px 10px;border-color:rgba(255,68,102,.4);color:var(--warn);">ANO, smazat</button> &nbsp;<button class="ei-btn" id="cancel-del" style="font-size:.58rem;padding:5px 10px;border-color:rgba(255,255,255,.15);color:var(--muted);">Zrušit</button>';
-  document.getElementById('confirm-del').onclick=()=>{localStorage.setItem(sKey(m),JSON.stringify([]));_platbyRef.set(_getAllLocal()).catch(e=>console.error(e));msg.className='ei-msg ok';msg.textContent='✓ Měsíc '+MONTHS[m]+' byl smazán.';if(m===currentMonth){items=[];renderCards();updateSummary();}};
+  msg.innerHTML='Opravdu smazat <b>'+MONTHS[m]+' '+y+'</b>? &nbsp;<button class="ei-btn" id="confirm-del" style="font-size:.58rem;padding:5px 10px;border-color:rgba(255,68,102,.4);color:var(--warn);">ANO, smazat</button> &nbsp;<button class="ei-btn" id="cancel-del" style="font-size:.58rem;padding:5px 10px;border-color:rgba(255,255,255,.15);color:var(--muted);">Zrušit</button>';
+  document.getElementById('confirm-del').onclick=()=>{
+    if(y===currentYear){
+      localStorage.setItem(sKey(m),JSON.stringify([]));_platbyRef.set(_getAllLocal()).catch(e=>console.error(e));
+      if(m===currentMonth){items=[];renderCards();updateSummary();}
+    }else{
+      try{localStorage.removeItem('platby_'+y+'_'+m);}catch(e){}
+      _db.ref('platby/'+y+'/'+m).remove().catch(e=>console.error(e));
+    }
+    msg.className='ei-msg ok';msg.textContent='✓ '+MONTHS[m]+' '+y+' byl smazán.';
+  };
   document.getElementById('cancel-del').onclick=()=>{msg.textContent='';};
 };
 document.getElementById('btn-copy-month').onclick=()=>{
@@ -14523,7 +14536,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v5.4.6PlPro 10/2026</div>
+<div class="ver">v5.4.7PlPro 10/2026</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -15739,7 +15752,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='v5.4.6PlPro 10/2026';
+  var CURRENT='v5.4.7PlPro 10/2026';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
