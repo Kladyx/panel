@@ -299,7 +299,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.4.7PlPro 10/2026</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.4.8PlPro 10/2026</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -11605,196 +11605,10 @@ h1{font-size:1.1rem;color:#00ccff;text-shadow:3px 3px #0088ff,-1px -1px #0055cc;
   📁 OPEN GAMES FOLDER ON GOOGLE DRIVE
 </a>
 
-<p class="hint">⚠ FOR BEST EXPERIENCE USE PC · SEARCH GAME BELOW → CLICK ▼ DL TO DOWNLOAD · OR OPEN GOOGLE DRIVE FOLDER</p>
+<p class="hint">⚠ FOR BEST EXPERIENCE USE PC · OPEN GOOGLE DRIVE FOLDER TO DOWNLOAD GAMES</p>
 
-<div class="score-bar">
-  <div class="score-item">TOTAL<span class="score-val" id="statTotal">—</span></div>
-  <div class="score-item">SHOWN<span class="score-val" id="statShown">—</span></div>
-  <div class="score-item">PAGE<span class="score-val" id="statPage">—</span></div>
-</div>
-
-<div id="loadingMsg" class="loading">▶ LOADING GAMES FROM DRIVE...<br>PLEASE WAIT ◀</div>
-
-<div id="mainSection" style="display:none">
-  <div class="search-wrap">
-    <input class="search-input" id="searchInput" type="text" placeholder="SEARCH GAME..." autocomplete="off" spellcheck="false">
-    <button class="clear-btn" id="clearBtn">CLR</button>
-  </div>
-  <div class="filter-bar" id="filterBar"></div>
-  <div class="results-info" id="resultsInfo"></div>
-</div>
-
-<div class="games-list" id="gamesList"></div>
-
-<div class="pagination" id="pagination" style="display:none">
-  <button class="page-btn" id="btnFirst">◀◀</button>
-  <button class="page-btn" id="btnPrev">◀</button>
-  <span class="page-info" id="pageInfo"></span>
-  <button class="page-btn" id="btnNext">▶</button>
-  <button class="page-btn" id="btnLast">▶▶</button>
-  <div class="page-jump">
-    <input class="page-input" id="pageJumpInput" type="number" min="1" placeholder="##">
-    <button class="page-go" id="pageGoBtn">GO</button>
-  </div>
-</div>
 
 <script>
-const PAGE_SIZE = 100;
-const FILE_ID = '18S2D1r8IiCkq2XzpogdnKRWGkA2gUJ-m';
-const API_KEY = 'AIzaSyAd5weXm18FyZ21zo9Y1JsdVYRW1hxecOw';
-const JSON_URL = \`https://www.googleapis.com/drive/v3/files/\${FILE_ID}?alt=media&key=\${API_KEY}\`;
-
-let allGames = [], filtered = [], currentPage = 1, activeExt = '';
-
-fetch(JSON_URL)
-  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-  .then(data => {
-    
-    allGames = data.games.filter(g =>
-      g.name && g.name.trim() !== '' &&
-      !g.name.startsWith('._')
-    );
-    allGames.sort((a, b) => a.name.localeCompare(b.name));
-    document.getElementById('statTotal').textContent = allGames.length.toLocaleString();
-    document.getElementById('loadingMsg').style.display = 'none';
-    document.getElementById('mainSection').style.display = 'block';
-    buildFilterButtons();
-    applyFilter();
-  })
-  .catch(err => {
-    document.getElementById('loadingMsg').innerHTML =
-      '▶ ERROR LOADING DATA ◀<br><span style="font-size:0.4rem;color:#ff4444">' + err.message + '</span>';
-  });
-
-function buildFilterButtons() {
-  const ec = {};
-  allGames.forEach(g => { ec[g.ext] = (ec[g.ext] || 0) + 1; });
-  const sorted = Object.entries(ec).sort((a, b) => b[1] - a[1]).slice(0, 12);
-  const bar = document.getElementById('filterBar');
-  bar.innerHTML = '<button class="filter-btn active" data-ext="">ALL (' + allGames.length.toLocaleString() + ')</button>';
-  sorted.forEach(([ext, cnt]) => {
-    bar.innerHTML += \`<button class="filter-btn" data-ext="\${ext}">.\${ext.toUpperCase()} (\${cnt.toLocaleString()})</button>\`;
-  });
-  bar.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      bar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeExt = btn.dataset.ext;
-      currentPage = 1;
-      applyFilter();
-    });
-  });
-}
-
-function applyFilter() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  filtered = allGames.filter(g =>
-    (!activeExt || g.ext === activeExt) && (!q || g.name.toLowerCase().includes(q))
-  );
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  if (currentPage > totalPages) currentPage = totalPages;
-  document.getElementById('statShown').textContent = filtered.length.toLocaleString();
-  document.getElementById('resultsInfo').textContent = '▶ FOUND: ' + filtered.length.toLocaleString() + ' / ' + allGames.length.toLocaleString();
-  renderPage(q);
-  updatePagination();
-}
-
-function renderPage(q) {
-  const list = document.getElementById('gamesList');
-  const start = (currentPage - 1) * PAGE_SIZE;
-  const page = filtered.slice(start, start + PAGE_SIZE);
-  if (page.length === 0) { list.innerHTML = '<div class="no-games">▶ NO RESULTS ◀</div>'; return; }
-  const frag = document.createDocumentFragment();
-  page.forEach((g, i) => {
-    const idx = start + i + 1;
-    const nameHl = q ? g.name.replace(new RegExp('(' + escRe(q) + ')', 'gi'), '<span class="hl">$1</span>') : g.name;
-    const div = document.createElement('div');
-    div.className = 'game-item';
-    const folder = g.folder ? g.folder.split('/').pop() : '';
-    const safeUrl = g.downloadUrl.replace(/&/g, '&amp;');
-    div.innerHTML =
-      '<span class="game-num">' + String(idx).padStart(5, '0') + '</span>' +
-      '<span class="game-name">' + nameHl + '</span>' +
-      (folder ? '<span class="game-folder" title="' + folder + '">' + folder + '</span>' : '') +
-      '<span class="game-ext">.' + g.ext.toUpperCase() + '</span>' +
-      '<button class="dl-btn" onclick="dlGame(this,\\'' + g.downloadUrl.replace(/'/g, "\\\\'") + '\\',\\'' + g.fullName.replace(/'/g, "\\\\'") + '\\')">▼ DL</button>';
-    frag.appendChild(div);
-  });
-  list.innerHTML = '';
-  list.appendChild(frag);
-  window.scrollTo(0, 0);
-}
-
-function updatePagination() {
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  document.getElementById('pagination').style.display = filtered.length > 0 ? 'flex' : 'none';
-  document.getElementById('pageInfo').textContent = currentPage + ' / ' + totalPages;
-  document.getElementById('statPage').textContent = currentPage + '/' + totalPages;
-  document.getElementById('btnFirst').disabled = currentPage === 1;
-  document.getElementById('btnPrev').disabled = currentPage === 1;
-  document.getElementById('btnNext').disabled = currentPage === totalPages;
-  document.getElementById('btnLast').disabled = currentPage === totalPages;
-}
-
-function goToPage(p) {
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  currentPage = Math.max(1, Math.min(p, totalPages));
-  renderPage(document.getElementById('searchInput').value.toLowerCase().trim());
-  updatePagination();
-}
-
-document.getElementById('btnFirst').addEventListener('click', () => goToPage(1));
-document.getElementById('btnPrev').addEventListener('click', () => goToPage(currentPage - 1));
-document.getElementById('btnNext').addEventListener('click', () => goToPage(currentPage + 1));
-document.getElementById('btnLast').addEventListener('click', () => goToPage(Math.ceil(filtered.length / PAGE_SIZE)));
-document.getElementById('pageGoBtn').addEventListener('click', () => {
-  const v = parseInt(document.getElementById('pageJumpInput').value);
-  if (!isNaN(v)) { goToPage(v); document.getElementById('pageJumpInput').value = ''; }
-});
-document.getElementById('pageJumpInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('pageGoBtn').click(); });
-
-let st;
-document.getElementById('searchInput').addEventListener('input', () => {
-  clearTimeout(st); st = setTimeout(() => { currentPage = 1; applyFilter(); }, 300);
-});
-document.getElementById('clearBtn').addEventListener('click', () => {
-  document.getElementById('searchInput').value = ''; currentPage = 1; applyFilter();
-});
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') document.getElementById('clearBtn').click();
-  if ((e.ctrlKey || e.metaKey) && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
-});
-
-function escRe(s) { return s.replace(/[.*+?^\${}()|[\\]\\\\]/g, '\\\\$&'); }
-
-async function dlGame(btn, url, filename) {
-  const orig = btn.textContent;
-  btn.textContent = '...';
-  btn.style.pointerEvents = 'none';
-  let corsUrl = url;
-  try {
-    const m = url.match(/[-\\w]{25,}/);
-    if (!m) throw new Error('no file id');
-    corsUrl = 'https://www.googleapis.com/drive/v3/files/' + m[0] + '?alt=media&key=' + API_KEY;
-    const resp = await fetch(corsUrl);
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    const blob = await resp.blob();
-    const blobUrl = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = blobUrl;
-    a.download = filename || 'game';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
-    btn.textContent = '✓ OK';
-  } catch (e) {
-    console.error('DL fail:', e.message, '| tried:', corsUrl);
-    btn.textContent = '✗ ERR';
-  }
-  setTimeout(() => { btn.textContent = orig; btn.style.pointerEvents = ''; }, 2000);
-}
-
 // ── HODINY + DATUM (stejně jako Panel) ──
 (function(){
   var DNY=['NEDĚLE','PONDĚLÍ','ÚTERÝ','STŘEDA','ČTVRTEK','PÁTEK','SOBOTA'];
@@ -14536,7 +14350,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v5.4.7PlPro 10/2026</div>
+<div class="ver">v5.4.8PlPro 10/2026</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -15752,7 +15566,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='v5.4.7PlPro 10/2026';
+  var CURRENT='v5.4.8PlPro 10/2026';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
