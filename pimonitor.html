@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v8.0Pi">
-<title>Pi Monitor v8.0Pi</title>
+<meta name="version" content="v8.2Pi">
+<title>Pi Monitor v8.2Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -48,7 +48,6 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .uptime-val.cons{color:var(--warn);text-shadow:0 0 8px rgba(255,170,0,0.4);}
 .uptime-lbl{font-size:0.45rem;letter-spacing:2px;color:var(--muted);margin-top:2px;}
 /* SERVICES */
-/* ═══ ANIMACE v5.7Pi ══════════════════════════════════ */
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .gear-spin{display:inline-block;animation:spin 1.5s linear infinite;transform-origin:center;font-size:1.2em;color:var(--red);filter:drop-shadow(0 0 6px rgba(255,60,90,0.9));}
 @keyframes scanline{0%{transform:translateX(-200%)}100%{transform:translateX(600%)}}
@@ -64,7 +63,6 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .restart-active{animation:count-glow 1.5s ease-in-out infinite;}
 @keyframes barpulse{0%,100%{opacity:1}50%{opacity:0.3}}
 .dot-wait{animation:barpulse 1s ease-in-out infinite;}
-/* ══════════════════════════════════════════════════════ */
 .section{background:rgba(255,255,255,0.03);border:1px solid rgba(255,60,90,0.12);border-radius:10px;padding:8px 12px;margin-bottom:10px;transition:border-color 0.3s,box-shadow 0.3s;}
 .section:hover{border-color:rgba(255,60,90,0.4);box-shadow:0 0 18px rgba(255,60,90,0.12);}
 .sec-title{font-size:0.48rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;animation:glitch 3s infinite;}
@@ -86,6 +84,26 @@ h1{font-size:1.0rem;color:var(--red);text-shadow:0 0 10px rgba(255,60,90,0.5);le
 .svc-stat.disc{color:var(--warn);text-shadow:0 0 8px var(--warn);animation:pulse-yellow 2s infinite;}
 .svc-name{flex:1;font-size:0.65rem;color:#c0cce0;}
 .svc-st{font-size:0.58rem;color:var(--muted);}
+
+/* Tlačítko Edit */
+.edit-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.5rem;
+  padding: 1px 4px;
+  border-radius: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+  transition: all 0.2s;
+}
+.edit-btn:hover {
+  background: rgba(0, 212, 255, 0.15);
+  color: var(--cyan);
+  border-color: var(--cyan);
+}
+
 /* NET */
 .net-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
 .net-row:last-child{border-bottom:none;}
@@ -136,7 +154,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v8.0Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v8.2Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -250,7 +268,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
   <div class="net-row"><div class="net-lbl">KladyxTransfer</div><div class="net-val" id="cloud-kladyxtransfer"><span class="dot dot-wait"></span> ...</div></div>
   <div class="net-row"><div class="net-lbl">OBS Stream</div><div class="net-val" id="cloud-obs"><span class="dot dot-wait"></span> ...</div></div>
   <div class="net-row"><div class="net-lbl">Mixcloud followers</div><div class="net-val" id="cloud-mixcloud-followers">—</div></div>
-  <div style="text-align:right;margin-top:6px;"><button onclick="clearPrijate()" style="background:rgba(255,50,50,.15);border:1px solid rgba(255,50,50,.4);color:#ff4444;padding:4px 12px;border-radius:6px;font-size:.7rem;cursor:pointer;">🗑 Smazat přijaté</button></div>
+  <div style="text-align:right;margin-top:6px;"><button onclick="clearPrijate(event)" style="background:rgba(255,50,50,.15);border:1px solid rgba(255,50,50,.4);color:#ff4444;padding:4px 12px;border-radius:6px;font-size:.7rem;cursor:pointer;">🗑 Smazat přijaté</button></div>
 </div>
 
 <div class="offline" id="offline-msg">
@@ -286,7 +304,7 @@ function fbFetch(url,opts){
     return r;
   });
 }
-var avgCpuFromHistory=4.5; // výchozí: 4.5% průměru (idle + trocha zátěže)
+var avgCpuFromHistory=4.5;
 
 function drawSpark(id,values,color){
   var c=document.getElementById(id);
@@ -314,10 +332,8 @@ function loadHistory(){
   .then(function(d){
     if(!d)return;
     var entries=Object.values(d).sort(function(a,b){return a.ts-b.ts;});
-    // Kreslit sparkline
     drawSpark('spark-cpu',entries.map(function(e){return e.cpu;}),'#ff3c5a');
     drawSpark('spark-temp',entries.map(function(e){return e.temp;}),'#ff6600');
-    // Počítat průměr CPU%
     if(entries.length>0){
       var cpuSum=0;
       entries.forEach(function(e){cpuSum+=parseFloat(e.cpu||0);});
@@ -341,9 +357,9 @@ function updateConsumption(uptimeSec,avgCpuPct){
     return;
   }
   var hoursTotal=uptimeSec/3600;
-  var powerW=3+(avgCpuPct/100)*3; // idle 3W, full 6W
+  var powerW=3+(avgCpuPct/100)*3;
   var wh=(hoursTotal*powerW);
-  var czk=wh*6.50/1000; // 6.50 Kč/kWh (Míšova smlouva)
+  var czk=wh*6.50/1000;
   var el=document.getElementById('val-cons');
   var whStr=wh>=1000?(wh/1000).toFixed(2)+' kWh':wh.toFixed(1)+' Wh';
   if(el) el.textContent=whStr+' · '+czk.toFixed(2)+' Kč';
@@ -365,13 +381,10 @@ function fmtAge(ms){
 }
 
 function setSvc(id,ok,isPC){
-  // Sleduj stav pro ticker (jen Pi sluzby, PC sluzby resi _svcActive primo)
   if(!isPC) _svcActive[id]=!!ok;
   var d=document.getElementById('d-'+id);
   var s=document.getElementById('s-'+id);
   if(isPC){
-    // ok===null/undefined => natvrdo zelene (equalizer, nema zdroj dat)
-    // ok true/false       => realny stav z nextsync/status heartbeatu
     var pcOn=(ok===null||ok===undefined)?true:!!ok;
     if(d)d.className='dot '+(pcOn?'dot-ok':'dot-err');
     if(s){
@@ -391,7 +404,6 @@ function setSvc(id,ok,isPC){
     s.className='svc-stat '+(ok?'on':'off');
   }
 }
-// Stav zarizeni (zasuvky). fresh=false -> bridge neposila heartbeat.
 function setDev(id,on,fresh){
   var d=document.getElementById('d-dev-'+id);
   var s=document.getElementById('s-dev-'+id);
@@ -407,14 +419,9 @@ function setRm4(on){
   if(rd)rd.className='dot '+(on?'dot-ok':'dot-err');
   if(rs){rs.textContent=on?'CONNECTED ON':'CONNECTED OFF';rs.className='svc-stat '+(on?'on':'off');}
 }
-// PC SLUZBY - Pi4 o nich NEVI (bezi jako .bat na PC, ne jako systemd na Pi4),
-// proto piStats.services u nich vzdy hlasi false. Jediny spolehlivy zdroj je
-// heartbeat nextsync/status/lastSeen, ktery zapisuje PC.
-// POZOR: pole "online" je NESPOLEHLIVE - PC ho pri vypnuti nestihne prepsat na false.
 var PC_SVC=['transfer','upload','nextsync','obs','eq'];
 var _pcOnline=false;
 var _svcActive={};
-// Ticker zobrazuje jen tyto sluzby (ostatni - rpi, tuyaplug, transfer, nextsync atd. - do tickeru nepatri)
 var _tickerNames={'tapo':'tapobridge','tapopy':'tapo-py','prijate':'prijatelister','pitransfer':'pitransfer','irbridge':'broadlink','pimonitor':'pimonitor','taporestart':'tapo-restart','obs':'obs-bridge','weareone':'weareone'};
 function updateTicker(){
   var list=Object.keys(_tickerNames).filter(function(k){return !!_svcActive[k];}).map(function(k){return _tickerNames[k];});
@@ -427,11 +434,9 @@ function setPCAll(on){
   updateTicker();
 }
 function checkPC(){
-  // cteme JEN lastSeen (male cislo), ne cely status objekt - setri download
   fbFetch(fbUrl('/nextsync/status/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(ts){
-    // PC heartbeat ~90s -> tolerance 180s = 2 zmeskane
     setPCAll(!!ts&&(Date.now()-ts<180000));
   })
   .catch(function(){setPCAll(false);});
@@ -454,13 +459,10 @@ function showOffline(fromFirebase){
   var sysEl=document.getElementById('val-sysuptime');
   if(sysEl)sysEl.textContent='—';
   ['hw-eth','hw-pc','hw-mixcloud','hw-router','hw-boot','hw-cpumhz','hw-diskfree','hw-throttle'].forEach(function(id){var el=document.getElementById(id);if(el){el.textContent='—';el.style.color='';}});
-  // Pi vypnuty - net-rx/tx/proc: pomlcka a odstranit zelenou aktivaci
   ['net-rx','net-tx','net-proc'].forEach(function(id){
     var el=document.getElementById(id);
     if(el){el.textContent='—';el.classList.remove('net-active');}
   });
-  // Pi4 offline = nemame data z piStats -> u techto sluzeb nelzeme, ukazeme ?
-  // tapopy a irbridge maji vlastni fetch (tapoDb/irDb lastSeen), PC sluzby resi checkPC()
   ['tapo','prijate','pitransfer','pimonitor','taporestart'].forEach(function(id){
     var d=document.getElementById('d-'+id);
     if(d)d.className='dot dot-wait';
@@ -468,11 +470,8 @@ function showOffline(fromFirebase){
     if(s){s.textContent='?';s.className='svc-st';}
   });
   setSvc('rpi',false);
-  // Reset OBS status
   var obsEl=document.getElementById('cloud-obs');
   if(obsEl){obsEl.innerHTML='<span class="dot dot-wait"></span> ...';obsEl.className='net-val';obsEl.style.cssText='';}
-  // Equalizer je nyni soucasti PC_SVC -> resi ho checkPC() spolu s ostatnimi PC sluzbami
-  // Pi OFF (data nepřišla → Pi je vypnutý)
   setPiState(false);
   if(fromFirebase){
     var b=document.getElementById('btn-shutdown');
@@ -482,29 +481,23 @@ function showOffline(fromFirebase){
 
 function loadStats(){
   document.getElementById('offline-msg').style.display='none';
-  // Zkus piStats node
   fbFetch(fbUrl('/piStats.json'),{signal:AbortSignal.timeout(8000)})
   .then(function(r){return r.json();})
   .then(function(d){
     if(!d){showOffline(true);loadFallback();return;}
     var age=Date.now()-(d.ts||0);
-    // pi_monitor.py zapisuje po 60s (INTERVAL=60) -> tolerance 150s = 2 zmeskane zapisy
     if(age>150000){showOffline(true);loadFallback();return;}
-    // CPU
     var cpu=Math.round(d.cpu_pct||0);
     document.getElementById('val-cpu').textContent=cpu;
     setBar('bar-cpu',cpu);
-    // Reset shutdown button pokud pulsuje (Pi je zpět online)
     var sb=document.getElementById('btn-shutdown');
     if(sb&&sb.classList.contains('pulsing')){
       sb.classList.remove('pulsing');
       sb.textContent='🔴 VYPNOUT RPi';
     }
-    // RAM
     var ram=Math.round(d.ram_pct||0);
     document.getElementById('val-ram').textContent=ram;
     setBar('bar-ram',ram);
-    // Teplota
     var temp=parseFloat(d.temp_c||0).toFixed(1);
     var tempVal=document.getElementById('val-temp');
     tempVal.textContent=temp;
@@ -517,22 +510,16 @@ function loadStats(){
       else if(t>60){tempCard.className='card';tempVal.style.color='var(--warn)';if(tempBar)tempBar.className='bar bar-warm';}
       else{tempCard.className='card';tempVal.style.color='var(--green)';if(tempBar)tempBar.className='bar bar-ok';}
     }
-    // Disk
     var disk=Math.round(d.disk_pct||0);
     document.getElementById('val-disk').textContent=disk;
     setBar('bar-disk',disk);
-    // Uptime
     document.getElementById('val-uptime').textContent=fmtUptime(d.uptime_sec||0);
-    // Systémový uptime (od bootu) — pokud Pi4 posílá sys_uptime
     var sysEl=document.getElementById('val-sysuptime');
     if(sysEl){sysEl.textContent=d.sys_uptime?fmtUptime(d.sys_uptime):'—';}
-    // Poslední boot — vypočítáno z sys_uptime (žádný extra request)
     var bootEl=document.getElementById('hw-boot');
     if(bootEl&&d.sys_uptime){var bootMs=Date.now()-d.sys_uptime*1000;bootEl.textContent=new Date(bootMs).toLocaleString('cs-CZ',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'});}
-    // CPU frekvence
     var mhzEl=document.getElementById('hw-cpumhz');
     if(mhzEl){mhzEl.textContent=d.cpu_mhz?d.cpu_mhz+' MHz':'—';}
-    // Disk volné (celkem - použito)
     var dfEl=document.getElementById('hw-diskfree');
     if(dfEl&&d.disk_pct!==undefined&&d.disk_used_gb!==undefined){
       var totalGb=d.disk_used_gb/(d.disk_pct/100);
@@ -540,14 +527,12 @@ function loadStats(){
       dfEl.textContent=freeGb+' GB';
       dfEl.style.color=parseFloat(freeGb)<2?'var(--red)':parseFloat(freeGb)<5?'var(--warn)':'var(--cyan)';
     }
-    // Throttling
     var thrEl=document.getElementById('hw-throttle');
     if(thrEl){
       if(d.throttled===undefined){thrEl.textContent='—';}
       else if(d.throttled==='0x0'){thrEl.textContent='OK';thrEl.style.color='var(--green)';}
       else{thrEl.textContent=d.throttled;thrEl.style.color='var(--red)';}
     }
-    // Zařízení v síti (ARP)
     var arpEl=document.getElementById('hw-arp');
     if(arpEl){
       if(d.arp_devices!==undefined&&d.arp_devices!==null){
@@ -555,7 +540,6 @@ function loadStats(){
         arpEl.style.color='var(--cyan)';
       } else {arpEl.textContent='—';arpEl.style.color='';}
     }
-    // SD karta zapsáno od bootu
     var sdEl=document.getElementById('hw-sd');
     if(sdEl){
       if(d.sd_written_mb!==undefined&&d.sd_written_mb!==null){
@@ -565,7 +549,6 @@ function loadStats(){
         sdEl.style.color=mb>5000?'var(--warn)':'var(--cyan)';
       } else {sdEl.textContent='—';sdEl.style.color='';}
     }
-    // WiFi v místnosti
     var wifiEl=document.getElementById('hw-wifi');
     var wifiNets=d.wifi_nets;
     if(wifiEl){
@@ -595,20 +578,17 @@ function loadStats(){
         }
       }
     }
-    // Ethernet
     var ethEl=document.getElementById('hw-eth');
     if(ethEl){
       if(d.eth_state==='up'){ethEl.textContent='CONNECTED';ethEl.style.color='var(--green)';}
       else if(d.eth_state){ethEl.textContent='DISCONNECTED';ethEl.style.color='var(--red)';}
       else{ethEl.textContent='—';ethEl.style.color='';}
     }
-    // PC status (z existující _pcOnline proměnné)
     var pcEl=document.getElementById('hw-pc');
     if(pcEl){
       if(_pcOnline){pcEl.textContent='ONLINE';pcEl.style.color='var(--green)';}
       else{pcEl.textContent='OFFLINE';pcEl.style.color='var(--red)';}
     }
-    // Mixcloud stream (z existujícího cloud-obs elementu)
     var mcEl=document.getElementById('hw-mixcloud');
     var obsEl=document.getElementById('cloud-obs');
     if(mcEl&&obsEl){
@@ -617,18 +597,14 @@ function loadStats(){
       else if(obsText.indexOf('CONNECTED OFF')>=0){mcEl.textContent='OFFLINE';mcEl.style.color='var(--red)';}
       else{mcEl.textContent='DISCONNECTED';mcEl.style.color='var(--warn)';}
     }
-    // Spotřeba od začátku provozu (s průměrem CPU% z Historie)
     updateConsumption(d.uptime_sec||0, avgCpuFromHistory);
-    // Síť
     document.getElementById('net-ip').textContent=d.ip||'—';
     document.getElementById('net-hb').textContent=new Date(d.ts).toLocaleTimeString('cs-CZ');
     document.getElementById('net-age').textContent=fmtAge(age);
-    // Pi je online → default zeleny ACTIVE ON pro net-rx/tx/proc
     ['net-rxtx','net-proc'].forEach(function(id){
       var el=document.getElementById(id);
       if(el){el.textContent='ACTIVE ON';el.classList.add('net-active');}
     });
-    // Provoz celkem (rx+tx součet od bootu)
     var rx=d.net_rx_mb,tx=d.net_tx_mb;
     if(rx!==undefined&&tx!==undefined){
       var total=rx+tx;
@@ -639,44 +615,36 @@ function loadStats(){
       else if(total>=600){el.classList.add('net-warn');}
       else{el.classList.add('net-active');}
     }
-    // Services z piStats - POUZE sluzby ktere skutecne bezi na Pi4 jako systemd.
-    // transfer/upload/nextsync/obs jsou .bat na PC, Pi4 je nevidi -> resi checkPC()
     if(d.services){
       ['tapo','prijate','pitransfer','pimonitor','taporestart'].forEach(function(k){
         if(d.services[k]!==undefined)setSvc(k,d.services[k]===true||d.services[k]==='active');
       });
     }
-    // Equalizer (audio_analyzer.py) bezi na PC -> je v PC_SVC, resi ho checkPC()
-    // Pi ON (data přišla → Pi běží)
     setPiState(true);
     setSvc('rpi',true);
-    setSvc('pimonitor',true);    // piStats přišla = pimonitor evidentně běží
-    // Procesy (pokud Pi posle realna data, prepise ACTIVE ON)
+    setSvc('pimonitor',true);
     if(d.proc_count!==undefined){var el=document.getElementById('net-proc');el.textContent=d.proc_count;el.classList.remove('net-active');}
-    // Restarty služeb
     if(d.restarts){var rmap={'tp':'tapo-py','tb':'tapobridge','ir':'irbridge','pm':'pimonitor','pt':'pitransfer','pl':'prijatelister','wo':'weareone'};Object.keys(rmap).forEach(function(k){var e=document.getElementById('r-'+k);if(e){var cnt=d.restarts[rmap[k]]!==undefined?d.restarts[rmap[k]]:0;e.textContent=cnt;e.style.color=cnt>0?'#ffaa00':'#00ff88';if(cnt>0){e.classList.add('restart-active');}else{e.classList.remove('restart-active');}}});}
-    // Ticker se aktualizuje automaticky ze _svcActive (setSvc to resi)
     updateTicker();
   })
   .catch(function(){showOffline(true);loadFallback();});
-  // IR Bridge service - čte heartbeat z irDb/lastSeen (zařízení řeší Radio Samsung níže)
+  
   fbFetch(fbUrl('/irDb/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(ts){
     setSvc('irbridge',!!(ts&&(Date.now()-ts<60000)));
   })
   .catch(function(){setSvc('irbridge',false);});
-  // ZX Next KS3 (Tapo .53, uzel tuyaDb) - jen stav zasuvky
+
   fbFetch(fbUrl('/tuyaDb.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(d){
     var fresh=!!(d&&d.lastSeen&&(Date.now()-d.lastSeen<150000));
     setDev('zxnext',d&&d.on===true,fresh);
-    // BroadLink RM4 Mini - zrcadlí stav zásuvky Router AX55 (tuyaDb)
     setRm4(!!(d&&d.on===true&&fresh));
   })
   .catch(function(){setDev('zxnext',false,false);setRm4(false);});
-  // ON AIR cedule (Tapo .44, uzel tapoDbOnair) - jen stav zasuvky
+
   fbFetch(fbUrl('/tapoDbOnair.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(d){
@@ -684,16 +652,14 @@ function loadStats(){
     setDev('onair',d&&d.on===true,!!(ts&&(Date.now()-ts<150000)));
   })
   .catch(function(){setDev('onair',false,false);});
-  // WeAreOne Bridge - čte timestamp z radio/housetime
+
   fbFetch(fbUrl('/radio/housetime/ts.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(ts){
     setSvc('weareone',ts&&(Date.now()-ts<600000));
   })
   .catch(function(){setSvc('weareone',false);});
-  // Tapo Python bridge (kladyx-tapo-py na Pi4) + stav zasuvky DJ Studio.
-  // Cteme cely uzel tapoDb misto jen lastSeen -> jeden fetch pokryje obojí,
-  // zadny request navic.
+
   fbFetch(fbUrl('/tapoDb.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(d){
@@ -703,7 +669,7 @@ function loadStats(){
     setDev('p115',d&&d.on===true,fresh);
   })
   .catch(function(){setSvc('tapopy',false);setDev('p115',false,false);});
-  // ZARIZENI - Lavova lampa (tapoDbP100Ma, tapo-bridge zapisuje po 60s)
+
   fbFetch(fbUrl('/tapoDbP100Ma.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(d){
@@ -711,7 +677,7 @@ function loadStats(){
     setDev('lampa',d&&d.on===true,!!(ts&&(Date.now()-ts<150000)));
   })
   .catch(function(){setDev('lampa',false,false);});
-  // ZARIZENI - TV System Sharp (tapoDbP100)
+
   fbFetch(fbUrl('/tapoDbP100.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(d){
@@ -719,7 +685,7 @@ function loadStats(){
     setDev('p100',d&&d.on===true,!!(ts&&(Date.now()-ts<150000)));
   })
   .catch(function(){setDev('p100',false,false);});
-  // ZARIZENI - Radio system Samsung (tapoDbP100Sam)
+
   fbFetch(fbUrl('/tapoDbP100Sam.json'),{signal:AbortSignal.timeout(5000)})
     .then(function(r){return r.json();}).then(function(d){
     var ts=d&&d.lastSeen;
@@ -729,7 +695,7 @@ function loadStats(){
   }).catch(function(){
     setDev('p100sam',false,false);
   });
-  // ZARIZENI - System rpi 4 (tapoDbP110)
+
   fbFetch(fbUrl('/tapoDbP110.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(d){
@@ -737,7 +703,7 @@ function loadStats(){
     setDev('p110',d&&d.on===true,!!(ts&&(Date.now()-ts<150000)));
   })
   .catch(function(){setDev('p110',false,false);});
-  // OBS Stream status - obs-bridge.js na PC zapisuje do /status/obs
+
   fbFetch(fbUrl('/status/obs.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(d){
@@ -756,7 +722,6 @@ function loadStats(){
     var age=Date.now()-ts;
     var active=d.state==='online';
     var fresh=ts>0&&age<120000;
-    // Ticker: obs-bridge je aktivni kdyz ma cerstvy heartbeat (ts < 2 min)
     _svcActive['obs']=fresh;
     updateTicker();
     if(!fresh){
@@ -795,12 +760,10 @@ function loadStats(){
       el.style.fontWeight='';
     }
   });
-  // PC sluzby - nezavisle na piStats (funguje i kdyz je Pi4 vypnuty)
   checkPC();
 }
 
 function loadFallback(){
-  // Fallback: cte jen lastSeen (male cislo) - setri download
   fbFetch(fbUrl('/nextsync/status/lastSeen.json'),{signal:AbortSignal.timeout(5000)})
   .then(function(r){return r.json();})
   .then(function(ts){
@@ -841,16 +804,52 @@ document.getElementById('btn-shutdown').onclick=function(){
   fetch(fbUrl('/piShutdown.json'),{method:'PUT',body:JSON.stringify({ts:Date.now()}),headers:{'Content-Type':'application/json'}});
   showOffline();
 };
+
+/* ── Automatické přidání tlačítka EDIT k položkám ── */
+document.addEventListener('DOMContentLoaded', function() {
+    var savedNames = JSON.parse(localStorage.getItem('pimonitor_custom_names') || '{}');
+    
+    document.querySelectorAll('.svc-row').forEach(function(row) {
+        var nameEl = row.querySelector('.svc-name');
+        if (!nameEl) return;
+        
+        if (!nameEl.hasAttribute('data-original')) {
+            nameEl.setAttribute('data-original', nameEl.textContent.trim());
+        }
+        var origText = nameEl.getAttribute('data-original');
+        var key = 'item_' + origText.replace(/[^a-zA-Z0-9]/g, '_');
+        
+        if (savedNames[key]) {
+            nameEl.textContent = savedNames[key];
+        }
+        
+        if (!row.querySelector('.edit-btn')) {
+            var btn = document.createElement('button');
+            btn.className = 'edit-btn';
+            btn.innerHTML = '✏️ Edit';
+            btn.title = 'Přejmenovat položku';
+            btn.onclick = function(e) {
+                e.stopPropagation();
+                var currentName = nameEl.textContent.trim();
+                var newName = prompt('Zadej nový název pro "' + origText + '":', currentName);
+                if (newName !== null && newName.trim() !== '') {
+                    var cleaned = newName.trim();
+                    nameEl.textContent = cleaned;
+                    savedNames[key] = cleaned;
+                    localStorage.setItem('pimonitor_custom_names', JSON.stringify(savedNames));
+                }
+            };
+            nameEl.parentNode.insertBefore(btn, nameEl.nextSibling);
+        }
+    });
+});
+
 (function(){
   function startPolling(){
     loadStats();
     loadHistory();
-    // pi_monitor.py zapisuje po 60s -> cist casteji nema smysl a zbytecne zere download
     setInterval(loadStats,60000);
     setInterval(loadHistory,120000);
-    // Mobilni prohlizec zmrazi setInterval kdyz je stranka na pozadi (zamceny
-    // telefon / prepnuta zalozka). Pri navratu bychom videli zastaraly stav,
-    // proto nacteme data hned. Jen loadStats (~450 B), historii ne - je tezsi.
     var _lastLoadTs=0;
     function smartReload(){
       var now=Date.now();
@@ -882,7 +881,6 @@ document.getElementById('btn-shutdown').onclick=function(){
           startPolling();
         }).catch(function(){startPolling();});
       }catch(e){startPolling();}
-      // ── Theme sync z prologu ──────────────────────────
       try {
         var s3=document.createElement('script');
         s3.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js';
@@ -905,9 +903,7 @@ document.getElementById('btn-shutdown').onclick=function(){
   document.head.appendChild(s1);
 })();
 
-// ─── CLOUD STATUS ────────────────────────────────────
 function checkCloudStatus() {
-  // GitHub status - veřejné API, nulový Firebase download
   var ghEl = document.getElementById('cloud-github');
   var xg = new XMLHttpRequest();
   xg.open('GET', 'https://www.githubstatus.com/api/v2/status.json');
@@ -929,7 +925,6 @@ function checkCloudStatus() {
   xg.ontimeout = function() { ghEl.innerHTML = '<span class="dot dot-err"></span> TIMEOUT'; };
   xg.send();
 
-  // Firebase RTDB - GET shallow s limitem, pár bytů
   var fbEl = document.getElementById('cloud-firebase');
   var xf = new XMLHttpRequest();
   xf.open('GET', FB + '/.json?shallow=true&limitToFirst=1');
@@ -944,7 +939,7 @@ function checkCloudStatus() {
   xf.onerror = function() { fbEl.innerHTML = '<span class="dot dot-err"></span> NEDOSTUPNÝ'; };
   xf.ontimeout = function() { fbEl.innerHTML = '<span class="dot dot-err"></span> TIMEOUT'; };
   xf.send();
-  // Pi Transfer - posledni přijatý soubor
+
   var ptEl = document.getElementById('cloud-pitransfer');
   var xp = new XMLHttpRequest();
   xp.open('GET', FB + '/nextsync/piTransfer.json');
@@ -965,7 +960,7 @@ function checkCloudStatus() {
   };
   xp.onerror = function() { ptEl.innerHTML = '—'; };
   xp.send();
-  // Web KladyxLand - přímý fetch na GitHub Pages
+
   var wEl=document.getElementById('cloud-web');
   fetch('https://kladyx.github.io/kladyxland/version.json',{cache:'no-store'}).then(function(r){
     if(!r.ok)throw new Error('HTTP '+r.status);
@@ -973,7 +968,7 @@ function checkCloudStatus() {
   }).catch(function(){
     wEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">OFFLINE</span>';
   });
-  // Multifunkční Panel - přímý fetch na GitHub Pages
+
   var pEl=document.getElementById('cloud-panel');
   fetch('https://kladyx.github.io/panel/version.json',{cache:'no-store'}).then(function(r){
     if(!r.ok)throw new Error('HTTP '+r.status);
@@ -981,7 +976,7 @@ function checkCloudStatus() {
   }).catch(function(){
     pEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">OFFLINE</span>';
   });
-  // Transfer app - přímý fetch na GitHub Pages
+
   var trEl=document.getElementById('cloud-transfer');
   fetch('https://kladyx.github.io/panel/transfer.html',{method:'HEAD',cache:'no-store'}).then(function(r){
     if(!r.ok)throw new Error('HTTP '+r.status);
@@ -990,7 +985,6 @@ function checkCloudStatus() {
     trEl.innerHTML='<span class="dot dot-err"></span> <span style="color:#ff4444;font-weight:700;">OFFLINE</span>';
   });
 
-  // KladyxTransfer - přímý fetch na GitHub Pages (panel repo)
   var ktEl=document.getElementById('cloud-kladyxtransfer');
   fetch('https://kladyx.github.io/panel/transfer.html',{method:'HEAD',cache:'no-store'}).then(function(r){
     if(!r.ok)throw new Error('HTTP '+r.status);
@@ -1002,7 +996,6 @@ function checkCloudStatus() {
 checkCloudStatus();
 setInterval(checkCloudStatus, 120000);
 
-// ─── VENKOVNÍ TEPLOTA (OpenWeatherMap) ───────────────────
 function checkOutdoorTemp() {
   var el = document.getElementById('hw-outdoor-temp');
   if (!el) return;
@@ -1028,9 +1021,8 @@ function checkOutdoorTemp() {
   xhr.send();
 }
 checkOutdoorTemp();
-setInterval(checkOutdoorTemp, 600000); // každých 10 minut
+setInterval(checkOutdoorTemp, 600000);
 
-// ─── MIXCLOUD FOLLOWERS ───────────────────────────────────
 function checkMixcloudFollowers() {
   var el = document.getElementById('cloud-mixcloud-followers');
   if (!el) return;
@@ -1053,10 +1045,10 @@ function checkMixcloudFollowers() {
   xhr.send();
 }
 checkMixcloudFollowers();
-setInterval(checkMixcloudFollowers, 300000); // každých 5 minut
+setInterval(checkMixcloudFollowers, 300000);
 
-function clearPrijate() {
-  var btn = event.target;
+function clearPrijate(e) {
+  var btn = e ? e.target : event.target;
   btn.textContent = '⏳ Mažu...';
   btn.disabled = true;
   var xhr = new XMLHttpRequest();
