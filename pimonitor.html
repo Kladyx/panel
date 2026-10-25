@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v8.3Pi">
-<title>Pi Monitor v8.3Pi</title>
+<meta name="version" content="v8.4Pi">
+<title>Pi Monitor v8.4Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -158,7 +158,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v8.3Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v8.4Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -818,9 +818,17 @@ document.getElementById('btn-shutdown').onclick=function(){
 document.addEventListener('DOMContentLoaded', function() {
     var savedNames = JSON.parse(localStorage.getItem('pimonitor_custom_names') || '{}');
     
-    document.querySelectorAll('.svc-row').forEach(function(row) {
+    document.querySelectorAll('.svc-row, .net-row').forEach(function(row) {
         var nameEl = row.querySelector('.svc-name');
-        if (!nameEl) return;
+        if (!nameEl) {
+            var lbl = row.querySelector('.net-lbl');
+            if (!lbl) return;
+            nameEl = document.createElement('span');
+            nameEl.className = 'lbl-txt';
+            nameEl.textContent = lbl.textContent.trim();
+            lbl.textContent = '';
+            lbl.appendChild(nameEl);
+        }
         
         if (!nameEl.hasAttribute('data-original')) {
             nameEl.setAttribute('data-original', nameEl.textContent.trim());
