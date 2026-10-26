@@ -13,69 +13,61 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--c:#00d4ff;--pink:#ff006e;--pur:#a855f7;--bg:#06081a;--glass:rgba(14,19,48,.62);--line:rgba(0,212,255,.16);--tx:#e8eaef;--dim:#7d86ad}
-body{background:var(--bg);color:var(--tx);font-family:'Rajdhani',sans-serif;min-height:100vh;padding:56px 14px 72px;overflow-x:hidden;-webkit-text-size-adjust:100%}
-.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 15% 10%,rgba(0,212,255,.13),transparent 60%),radial-gradient(ellipse 60% 50% at 90% 40%,rgba(255,0,110,.10),transparent 60%),radial-gradient(ellipse 60% 60% at 40% 100%,rgba(168,85,247,.12),transparent 60%)}
-.bg::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.035) 1px,transparent 1px);background-size:56px 56px;animation:drift 24s linear infinite}
-@keyframes drift{to{background-position:56px 56px}}
+body{background:var(--bg);color:#e8eaef;font-family:'Rajdhani',sans-serif;min-height:100vh;padding:56px 14px 72px;overflow-x:hidden}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--bgimg)}
 .deco{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
 .star{position:absolute;width:3px;height:3px;background:#00a0ff;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:sp 2.5s ease-in-out infinite}
 .star.big{width:8px;height:8px}
 @keyframes sp{0%,100%{opacity:.15;transform:scale(.5)}50%{opacity:1;transform:scale(2)}}
 .particle{position:absolute;bottom:-10px;width:3px;height:3px;border-radius:50%;background:var(--c);opacity:0;animation:pf linear infinite}
-.particle:nth-child(odd){background:var(--pink)}
 @keyframes pf{10%,90%{opacity:.7}100%{opacity:0;transform:translateY(-110vh)}}
 .notes span{position:absolute;bottom:-40px;opacity:.3;animation:fn linear infinite}
-@keyframes fn{25%{transform:translate(30px,-25vh) rotate(40deg)}50%{transform:translate(-20px,-50vh) rotate(-20deg)}75%{transform:translate(25px,-75vh) rotate(30deg)}100%{transform:translate(-10px,-110vh);opacity:0}}
-.ticker-wrap{position:fixed;top:0;left:0;right:0;height:34px;overflow:hidden;z-index:20;background:rgba(6,8,26,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center}
+@keyframes fn{50%{transform:translate(-20px,-50vh) rotate(-20deg)}100%{transform:translate(-10px,-110vh);opacity:0}}
+.ticker-wrap{position:fixed;top:0;left:0;right:0;height:34px;overflow:hidden;z-index:20;background:rgba(6,8,26,.85);display:flex;align-items:center;border-bottom:1px solid var(--line)}
 .ticker-track{display:flex;white-space:nowrap;animation:tick 30s linear infinite}
 @keyframes tick{to{transform:translateX(-50%)}}
-.ticker-item{font:700 10px 'Orbitron',monospace;letter-spacing:3px;color:rgba(0,212,255,.65);padding:0 26px;text-transform:uppercase}
-.ticker-item .dot{color:var(--pink);margin:0 6px}
-.wrap{position:relative;z-index:2;max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px;animation:in .7s cubic-bezier(.22,1,.36,1)}
-@keyframes in{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-.card{background:var(--glass);border:1px solid var(--line);border-radius:22px;backdrop-filter:blur(18px);box-shadow:0 20px 50px rgba(0,0,0,.45),0 0 60px rgba(0,212,255,.06);position:relative;overflow:hidden}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--c),var(--pink),var(--pur),transparent)}
-.hero{padding:30px 18px 16px;text-align:center}
-.logo-ring{width:80px;height:80px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,rgba(0,212,255,.16),rgba(6,8,26,.95));box-shadow:0 0 0 2px rgba(0,212,255,.45),0 0 30px rgba(0,212,255,.3);animation:ring 3s ease-in-out infinite;cursor:pointer;-webkit-tap-highlight-color:transparent}
-@keyframes ring{50%{box-shadow:0 0 0 2px rgba(255,0,110,.6),0 0 40px rgba(255,0,110,.35)}}
-.logo-icon{font-size:34px}
-h1{font:900 clamp(28px,8vw,44px) 'Orbitron',monospace;letter-spacing:.12em;background:linear-gradient(90deg,var(--c),var(--pur) 55%,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
-.subtitle{font:600 12px 'Rajdhani',sans-serif;letter-spacing:.45em;color:var(--dim);text-transform:uppercase;margin-top:4px}
+.ticker-item{font:700 10px 'Orbitron',monospace;letter-spacing:3px;color:var(--c);opacity:.7;padding:0 26px;text-transform:uppercase}
+.ticker-item .dot{color:var(--a);margin:0 6px}
+.wrap{position:relative;z-index:2;max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px;animation:in .6s ease}
+@keyframes in{from{opacity:0}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);position:relative;overflow:hidden}
+.hero{padding:26px 18px 16px;text-align:center}
+.logo-ring{margin:0 auto 12px;display:grid;place-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+h1{font-weight:900;letter-spacing:.12em;font-size:clamp(28px,8vw,44px)}
+.subtitle{font:600 12px 'Rajdhani',sans-serif;letter-spacing:.45em;color:#7d86ad;text-transform:uppercase;margin-top:4px}
+.onair{display:none;margin:0 auto 14px;width:max-content;padding:6px 22px;border:2px solid #ff2d4d;border-radius:10px;color:#ff2d4d;font:900 1.1rem 'Orbitron',monospace;letter-spacing:.3em;text-shadow:0 0 12px #ff2d4d;box-shadow:0 0 22px rgba(255,45,77,.5),inset 0 0 12px rgba(255,45,77,.3);animation:dotBlink 1.4s infinite}
+body.live .onair{display:block}
 .pill{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:8px 18px;border-radius:99px;font:700 11px 'Orbitron',monospace;letter-spacing:.18em;color:#ff6684;background:rgba(255,68,102,.1);border:1px solid rgba(255,68,102,.4)}
 .pill i{width:9px;height:9px;border-radius:50%;background:#ff4466}
-.pill.on{color:#00ff88;background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.5);box-shadow:0 0 22px rgba(0,255,136,.25)}
+.pill.on{color:#00ff88;background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.5)}
 .pill.on i{background:#00ff88;animation:dotBlink 1s infinite}
 .viz{margin-top:18px}
 .eq-strip{display:flex;justify-content:center;align-items:flex-end;gap:3px;height:50px;overflow:hidden}
-.eq-bar{width:4px;border-radius:2px;background:linear-gradient(to top,var(--c),var(--pink));animation:eqb 1s ease-in-out infinite alternate;opacity:.65}
+.eq-bar{width:4px;border-radius:2px;background:linear-gradient(to top,var(--c),var(--a));animation:eqb 1s ease-in-out infinite alternate;opacity:.7}
 @keyframes eqb{0%{height:6px}100%{height:var(--h)}}
 .signal-strip{display:flex;justify-content:center;align-items:flex-end;gap:4px;margin-top:10px;height:58px;overflow:hidden}
 .sig-bar{width:5px;border-radius:2px 2px 0 0;animation:sig 1.2s ease-in-out infinite alternate}
 @keyframes sig{0%{opacity:.2;transform:scaleY(.4)}100%{opacity:1;transform:scaleY(1)}}
-.sig-label{text-align:center;font:700 9px 'Orbitron',monospace;letter-spacing:.4em;color:rgba(0,212,255,.35);padding-top:6px}
-.player{padding:14px}
-.player-wrapper{border-radius:16px;overflow:hidden;border:1px solid var(--line);background:rgba(0,0,0,.3)}
+.sig-label{text-align:center;font:700 9px 'Orbitron',monospace;letter-spacing:.4em;color:var(--c);opacity:.4;padding-top:6px}
+.player{padding:14px;box-shadow:0 0 40px var(--glow)}
+.player-wrapper{border-radius:calc(var(--r) - 8px);overflow:hidden;border:1px solid var(--line);background:rgba(0,0,0,.3)}
 iframe{width:100%;height:500px;border:none;display:block}
-.actions{display:flex;flex-direction:column;gap:12px;padding:16px 2px 4px}
-#live-btn{display:block;text-align:center;padding:18px 20px;border-radius:14px;background:linear-gradient(135deg,var(--pink),var(--pur));color:#fff;font:900 1rem 'Orbitron',monospace;letter-spacing:.14em;text-decoration:none;text-transform:uppercase;animation:lp 1.6s ease-in-out infinite}
-@keyframes lp{50%{box-shadow:0 0 30px rgba(255,0,110,.8),0 0 50px rgba(168,85,247,.5)}}
-.share{padding:14px;border-radius:14px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.4);color:var(--c);font:700 .78rem 'Orbitron',monospace;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.share:active{transform:scale(.98)}
+.actions{display:flex;flex-direction:column;gap:12px}
+#live-btn{display:block;text-align:center;padding:18px 20px;border-radius:var(--rb);background:var(--btn);color:var(--btxt);font:900 1rem 'Orbitron',monospace;letter-spacing:.14em;text-decoration:none;text-transform:uppercase;animation:lp 1.6s ease-in-out infinite}
+@keyframes lp{50%{box-shadow:0 0 30px var(--a)}}
+.share{padding:14px;border-radius:var(--rb);background:transparent;border:1px solid var(--c);color:var(--c);font:700 .78rem 'Orbitron',monospace;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px}
-.stat{text-align:center;padding:14px 6px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.stat{text-align:center;padding:14px 6px;border-radius:calc(var(--r) - 8px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
 .stat-icon{font-size:22px;display:block}
-.stat-label{font:700 9px 'Orbitron',monospace;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;margin-top:6px}
-.stat-value{font:700 .95rem 'Rajdhani',sans-serif;letter-spacing:.06em;margin-top:2px}
+.stat-label{font:700 9px 'Orbitron',monospace;letter-spacing:.2em;color:#7d86ad;text-transform:uppercase;margin-top:6px}
+.stat-value{font:700 .95rem 'Rajdhani',sans-serif;margin-top:2px}
 .footer{text-align:center;padding:20px}
-.footer-text{font-size:1rem;color:var(--dim)}
-.hl{color:var(--c);font-weight:700}
-.footer-brand{font:600 .7rem 'Orbitron',monospace;letter-spacing:.2em;color:rgba(0,212,255,.4);margin-top:6px;text-transform:uppercase}
-.ver{color:#00ff88;font-weight:700}
-.legal{margin-top:10px;font-size:.62rem;color:rgba(255,255,255,.28);letter-spacing:.04em}
+.footer-text{color:#7d86ad}.hl{color:var(--c);font-weight:700}
+.footer-brand{font:600 .7rem 'Orbitron',monospace;letter-spacing:.2em;color:var(--c);opacity:.5;margin-top:6px;text-transform:uppercase}
+.ver{color:#00ff88;font-weight:700;opacity:1}
+.legal{margin-top:10px;font-size:.62rem;color:rgba(255,255,255,.28)}
 @media(max-width:768px){iframe{height:400px}}
-@media(max-width:480px){body{padding-left:10px;padding-right:10px}.card{border-radius:16px}iframe{height:350px}.stat-value{font-size:.85rem}}
-@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+@media(max-width:480px){body{padding-left:10px;padding-right:10px}iframe{height:350px}}
 
 /* Brand logos footer */
     .app-brand-bar {
@@ -101,9 +93,29 @@ iframe{width:100%;height:500px;border:none;display:block}
     @keyframes dotBlink{0%,100%{opacity:1;}50%{opacity:0.2;}}
     #live-btn.is-live{background:linear-gradient(135deg,#00cc55,#00ff88)!important;color:#003a10!important;animation:liveGlow 1s ease-in-out infinite,liveBlink 1.2s ease-in-out infinite;}
     #live-btn.is-live .live-dot{display:inline-block;width:10px;height:10px;background:#ff0000;border-radius:50%;margin-right:8px;vertical-align:middle;animation:dotBlink 0.8s ease-in-out infinite;box-shadow:0 0 6px #ff0000;}
-  </style>
+  
+
+/* Laser */
+.t8{--c:#5aa9ff;--a:#9fd0ff;--card:rgba(4,12,30,.76);--line:rgba(47,140,255,.38);--glow:rgba(47,140,255,.28);--r:14px;--rb:10px;--btn:linear-gradient(180deg,#3d9bff,#1b63d6);--btxt:#fff}
+.t8{--bg:#02050d;--bgimg:radial-gradient(ellipse 80% 50% at 50% 30%,rgba(20,70,160,.35),transparent 70%),linear-gradient(#02050d,#030b1c)}
+.t8 .bg{overflow:hidden}
+.t8 .bg::before{content:'';position:absolute;left:50%;top:38%;width:140vmax;height:140vmax;margin:-70vmax 0 0 -70vmax;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%201000%201000%27%3E%3Cdefs%3E%3Cfilter%20id%3D%27g%27%20x%3D%27-20%25%27%20y%3D%27-20%25%27%20width%3D%27140%25%27%20height%3D%27140%25%27%3E%3CfeGaussianBlur%20stdDeviation%3D%274%27/%3E%3C/filter%3E%3C/defs%3E%3Cg%20filter%3D%27url%28%23g%29%27%20stroke%3D%27%232f8cff%27%20stroke-width%3D%276%27%20opacity%3D%27.85%27%3E%3Cline%20x1%3D%270%27%20y1%3D%27180%27%20x2%3D%271000%27%20y2%3D%2740%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27720%27%20x2%3D%271000%27%20y2%3D%27880%27/%3E%3Cline%20x1%3D%27180%27%20y1%3D%270%27%20x2%3D%27260%27%20y2%3D%271000%27/%3E%3Cline%20x1%3D%27740%27%20y1%3D%270%27%20x2%3D%27820%27%20y2%3D%271000%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27420%27%20x2%3D%271000%27%20y2%3D%27640%27/%3E%3Cline%20x1%3D%2760%27%20y1%3D%271000%27%20x2%3D%27520%27%20y2%3D%270%27/%3E%3Cline%20x1%3D%27960%27%20y1%3D%271000%27%20x2%3D%27480%27%20y2%3D%270%27/%3E%3Cline%20x1%3D%27300%27%20y1%3D%270%27%20x2%3D%27700%27%20y2%3D%271000%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27900%27%20x2%3D%271000%27%20y2%3D%27300%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27100%27%20x2%3D%271000%27%20y2%3D%27800%27/%3E%3C/g%3E%3Cg%20stroke%3D%27%23bfe0ff%27%20stroke-width%3D%271.6%27%3E%3Cline%20x1%3D%270%27%20y1%3D%27180%27%20x2%3D%271000%27%20y2%3D%2740%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27720%27%20x2%3D%271000%27%20y2%3D%27880%27/%3E%3Cline%20x1%3D%27180%27%20y1%3D%270%27%20x2%3D%27260%27%20y2%3D%271000%27/%3E%3Cline%20x1%3D%27740%27%20y1%3D%270%27%20x2%3D%27820%27%20y2%3D%271000%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27420%27%20x2%3D%271000%27%20y2%3D%27640%27/%3E%3Cline%20x1%3D%2760%27%20y1%3D%271000%27%20x2%3D%27520%27%20y2%3D%270%27/%3E%3Cline%20x1%3D%27960%27%20y1%3D%271000%27%20x2%3D%27480%27%20y2%3D%270%27/%3E%3Cline%20x1%3D%27300%27%20y1%3D%270%27%20x2%3D%27700%27%20y2%3D%271000%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27900%27%20x2%3D%271000%27%20y2%3D%27300%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27100%27%20x2%3D%271000%27%20y2%3D%27800%27/%3E%3C/g%3E%3C/svg%3E") center/cover;opacity:.6;animation:lz 90s linear infinite;-webkit-mask-image:radial-gradient(circle,transparent 0 6%,#000 22%,#000 40%,transparent 62%);mask-image:radial-gradient(circle,transparent 0 6%,#000 22%,#000 40%,transparent 62%)}
+@keyframes lz{to{transform:rotate(360deg)}}
+.t8 .hero{isolation:isolate}
+.t8 .hero::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(47,140,255,.3),transparent 70%)}
+.t8 h1{font-weight:600;letter-spacing:.02em;text-transform:lowercase;background:linear-gradient(#fff,#c4cddb 55%,#8e99ab);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 14px rgba(47,140,255,.55));margin-bottom:38px;-webkit-box-reflect:below -4px linear-gradient(transparent 45%,rgba(255,255,255,.3))}
+.t8 h1::first-letter{text-transform:uppercase}
+.t8 .subtitle{color:#3d9bff;font-weight:700;letter-spacing:.12em}
+.t8 .logo-ring{width:56px;height:56px;border-radius:50%;border:2px solid #2f8cff;background:#030b1c;box-shadow:0 0 22px rgba(47,140,255,.6)}
+.t8 .eq-bar{width:3px;background:linear-gradient(to top,#1b63d6,#bfe0ff)}
+.t8 .sig-bar{background:#2f8cff!important}
+.t8 .particle{background:#cfe6ff}
+.t8 .star{background:#9fd0ff}
+.t8 .notes{display:none}
+.t8 .stat{border-color:rgba(47,140,255,.2)}
+</style>
 </head>
-<body>
+<body class="t8">
 <div class="bg"></div>
 <div class="deco" id="starfield"></div>
 <div class="deco" id="particles"></div>
@@ -111,6 +123,7 @@ iframe{width:100%;height:500px;border:none;display:block}
 <div class="ticker-wrap"><div class="ticker-track" id="tickerTrack"><span class="ticker-item">🎧 KLADYXLAND RADIO <span class="dot">◆</span></span><span class="ticker-item">DJ MIX SESSION <span class="dot">◆</span></span><span class="ticker-item">LIVE ON MIXCLOUD <span class="dot">◆</span></span><span class="ticker-item">TUNE IN NOW <span class="dot">◆</span></span><span class="ticker-item">🎛️ MIXING LIVE <span class="dot">◆</span></span></div></div>
 <main class="wrap">
   <section class="card hero">
+    <div class="onair" id="onair">ON AIR</div>
     <div class="logo-ring"><span class="logo-icon">💿</span></div>
     <h1>KLADYXLAND</h1>
     <div class="subtitle">Mixcloud Player</div>
@@ -125,11 +138,11 @@ iframe{width:100%;height:500px;border:none;display:block}
     <div class="player-wrapper">
       <iframe src="https://www.mixcloud.com/widget/iframe/?hide_cover=false&light=false&feed=%2Fkladyx%2F" frameborder="0" allowtransparency="true" loading="lazy"></iframe>
     </div>
-    <div class="actions">
+  </section>
+  <div class="actions">
       <a id="live-btn" href="https://www.mixcloud.com/live/kladyx/" target="_blank" rel="noopener">🔴 SLEDOVAT ŽIVĚ</a>
       <button class="share" id="share-btn" type="button">🔗 SDÍLET</button>
     </div>
-  </section>
   <section class="card stats">
     <div class="stat"><span class="stat-icon">🎛️</span><div class="stat-label">Platform</div><div class="stat-value">Mixcloud</div></div>
     <div class="stat"><span class="stat-icon">🎚️</span><div class="stat-label">Styl</div><div class="stat-value">Radio</div></div>
@@ -138,7 +151,7 @@ iframe{width:100%;height:500px;border:none;display:block}
   <section class="card footer">
     <div class="footer-text">Poslouchej hudbu z <span class="hl">KLADYXLAND</span></div>
     <div class="footer-brand">Powered by Mixcloud</div>
-    <div class="footer-brand ver">v15.1</div>
+    <div class="footer-brand ver">v15.2</div>
     <div class="legal">Fender® and PreSonus® are registered trademarks of their respective owners. KLADYXLAND has no commercial affiliation with these brands — their equipment is used for personal broadcasting purposes only.</div>
   </section>
 </main>
@@ -196,6 +209,7 @@ iframe{width:100%;height:500px;border:none;display:block}
         btn.classList.remove('is-live');
         btn.innerHTML = '🔴 SLEDOVAT ŽIVĚ';
       }
+      document.body.classList.toggle('live', isLive);
       const pill = document.getElementById('status-pill');
       if (pill) { pill.classList.toggle('on', isLive); pill.querySelector('.txt').textContent = isLive ? 'VYSÍLÁM ŽIVĚ' : 'OFFLINE'; }
       const sv = document.getElementById('status-value');
