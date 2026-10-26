@@ -113,9 +113,31 @@ iframe{width:100%;height:500px;border:none;display:block}
 .t8 .star{background:#9fd0ff}
 .t8 .notes{display:none}
 .t8 .stat{border-color:rgba(47,140,255,.2)}
+
+/* LAYOUTY */
+.lt,.deck,.dial{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* 3 RADIO */
+.l3{--c:#3d9bff;--a:#8fc8ff;--card:rgba(0,0,0,.28);--line:#1f4f8f;--glow:rgba(61,155,255,.2);--btn:#3d9bff;--btxt:#02122b;--bg:#030a18;--bgimg:radial-gradient(circle at 50% 0,#123a73,transparent 60%)}
+.l3 .bg::before,.l3 .deco,.l3 .hero::before{display:none}
+.l3 .wrap{max-width:560px;background:linear-gradient(#0d2347,#07132a);border:3px solid #1f4f8f;border-radius:24px;padding:16px;box-shadow:0 20px 50px #000,inset 0 2px 0 rgba(255,255,255,.08)}
+.l3 .dial{display:block;position:relative;height:64px;margin:14px 0 4px;border-radius:10px;background:#020812;border:2px solid #1f4f8f;box-shadow:inset 0 0 18px #000;overflow:hidden}
+.l3 .dial::before{content:'';position:absolute;left:10px;right:10px;top:32px;height:14px;background:repeating-linear-gradient(90deg,#3d9bff 0 1px,transparent 1px 12px)}
+.l3 .scale{position:absolute;left:10px;right:10px;top:8px;display:flex;justify-content:space-between;font:700 11px 'Orbitron',monospace;color:#3d9bff}
+.l3 .needle{position:absolute;top:4px;bottom:4px;width:2px;left:20%;background:#e3f1ff;box-shadow:0 0 10px #3d9bff;animation:nd 7s ease-in-out infinite alternate}
+@keyframes nd{to{left:78%}}
+body.live.l3 .needle{animation:none;left:62%}
+.l3 h1{background:linear-gradient(#cfe6ff,#3d9bff);-webkit-background-clip:text;background-clip:text;filter:none;margin-bottom:6px;-webkit-box-reflect:below 0 linear-gradient(transparent,transparent)}
+.l3 .subtitle{color:#3d9bff}
+.l3 .signal-strip,.l3 .sig-label{display:none}
+.l3 .eq-bar{background:linear-gradient(to top,#8fc8ff,#cfe6ff)}
+.l3 .logo-ring{border-color:#3d9bff;box-shadow:0 0 16px rgba(61,155,255,.5);background:#02122b}
+.l3 #live-btn{border-bottom:4px solid #1b4fa8;border-radius:6px;animation:none}
+.l3 .share{border-radius:6px}
+.l3 .player-wrapper{border:6px solid #01050d;border-radius:12px}
 </style>
 </head>
-<body class="t8">
+<body class="t8 l3">
 <div class="bg"></div>
 <div class="deco" id="starfield"></div>
 <div class="deco" id="particles"></div>
@@ -128,6 +150,7 @@ iframe{width:100%;height:500px;border:none;display:block}
     <h1>KLADYXLAND</h1>
     <div class="subtitle">Mixcloud Player</div>
     <div class="pill" id="status-pill"><i></i><span class="txt">OFFLINE</span></div>
+    <div class="dial"><div class="scale"><span>88</span><span>92</span><span>96</span><span>100</span><span>104</span><span>108</span></div><i class="needle"></i></div>
     <div class="viz">
       <div class="eq-strip" id="eqStrip"></div>
       <div class="signal-strip" id="signalStrip"></div>
@@ -135,9 +158,7 @@ iframe{width:100%;height:500px;border:none;display:block}
     </div>
   </section>
   <section class="card player">
-    <div class="player-wrapper">
-      <iframe src="https://www.mixcloud.com/widget/iframe/?hide_cover=false&light=false&feed=%2Fkladyx%2F" frameborder="0" allowtransparency="true" loading="lazy"></iframe>
-    </div>
+    <div class="player-wrapper"><iframe src="https://www.mixcloud.com/widget/iframe/?hide_cover=false&light=false&feed=%2Fkladyx%2F" frameborder="0" allowtransparency="true" loading="lazy"></iframe></div>
   </section>
   <div class="actions">
       <a id="live-btn" href="https://www.mixcloud.com/live/kladyx/" target="_blank" rel="noopener">🔴 SLEDOVAT ŽIVĚ</a>
@@ -151,7 +172,7 @@ iframe{width:100%;height:500px;border:none;display:block}
   <section class="card footer">
     <div class="footer-text">Poslouchej hudbu z <span class="hl">KLADYXLAND</span></div>
     <div class="footer-brand">Powered by Mixcloud</div>
-    <div class="footer-brand ver">v15.2</div>
+    <div class="footer-brand ver">v15.6</div>
     <div class="legal">Fender® and PreSonus® are registered trademarks of their respective owners. KLADYXLAND has no commercial affiliation with these brands — their equipment is used for personal broadcasting purposes only.</div>
   </section>
 </main>
