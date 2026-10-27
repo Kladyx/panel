@@ -64,7 +64,7 @@ iframe{width:100%;height:500px;border:none;display:block}
 .footer{text-align:center;padding:20px}
 .footer-text{color:#7d86ad}.hl{color:var(--c);font-weight:700}
 .footer-brand{font:600 .7rem 'Orbitron',monospace;letter-spacing:.2em;color:var(--c);opacity:.5;margin-top:6px;text-transform:uppercase}
-.ver{color:#00ff88;font-weight:700;opacity:1}
+.ver{color:#00ff88;font-weight:700;opacity:1;text-transform:none}
 .legal{margin-top:10px;font-size:.62rem;color:rgba(255,255,255,.28)}
 @media(max-width:768px){iframe{height:400px}}
 @media(max-width:480px){body{padding-left:10px;padding-right:10px}iframe{height:350px}}
@@ -114,34 +114,30 @@ iframe{width:100%;height:500px;border:none;display:block}
 .t8 .notes{display:none}
 .t8 .stat{border-color:rgba(47,140,255,.2)}
 
-/* LAYOUTY */
-.lt,.deck,.dial{display:none}
-@keyframes spin{to{transform:rotate(360deg)}}
-/* 3 RADIO */
-.l3{--c:#3d9bff;--a:#8fc8ff;--card:rgba(0,0,0,.28);--line:#1f4f8f;--glow:rgba(61,155,255,.2);--btn:#3d9bff;--btxt:#02122b;--bg:#030a18;--bgimg:radial-gradient(circle at 50% 0,#123a73,transparent 60%)}
-.l3 .bg::before,.l3 .deco,.l3 .hero::before{display:none}
-.l3 .wrap{max-width:560px;background:linear-gradient(#0d2347,#07132a);border:3px solid #1f4f8f;border-radius:24px;padding:16px;box-shadow:0 20px 50px #000,inset 0 2px 0 rgba(255,255,255,.08)}
-.l3 .dial{display:block;position:relative;height:64px;margin:14px 0 4px;border-radius:10px;background:#020812;border:2px solid #1f4f8f;box-shadow:inset 0 0 18px #000;overflow:hidden}
-.l3 .dial::before{content:'';position:absolute;left:10px;right:10px;top:32px;height:14px;background:repeating-linear-gradient(90deg,#3d9bff 0 1px,transparent 1px 12px)}
-.l3 .scale{position:absolute;left:10px;right:10px;top:8px;display:flex;justify-content:space-between;font:700 11px 'Orbitron',monospace;color:#3d9bff}
-.l3 .needle{position:absolute;top:4px;bottom:4px;width:2px;left:20%;background:#e3f1ff;box-shadow:0 0 10px #3d9bff;animation:nd 7s ease-in-out infinite alternate}
-@keyframes nd{to{left:78%}}
-body.live.l3 .needle{animation:none;left:62%}
-.l3 h1{background:linear-gradient(#cfe6ff,#3d9bff);-webkit-background-clip:text;background-clip:text;filter:none;margin-bottom:6px;-webkit-box-reflect:below 0 linear-gradient(transparent,transparent)}
-.l3 .subtitle{color:#3d9bff}
-.l3 .signal-strip,.l3 .sig-label{display:none}
-.l3 .eq-bar{background:linear-gradient(to top,#8fc8ff,#cfe6ff)}
-.l3 .logo-ring{border-color:#3d9bff;box-shadow:0 0 16px rgba(61,155,255,.5);background:#02122b}
-.l3 #live-btn{border-bottom:4px solid #1b4fa8;border-radius:6px;animation:none}
-.l3 .share{border-radius:6px}
-.l3 .player-wrapper{border:6px solid #01050d;border-radius:12px}
+/* VU */
+.vus{display:flex;gap:12px;padding:14px;justify-content:center;flex-wrap:wrap}
+.vu{flex:1 1 150px;max-width:320px}
+.vu svg{display:block;width:100%;height:auto;filter:drop-shadow(0 0 12px rgba(47,140,255,.35))}
+.vucap{width:100%;text-align:center;font:700 9px 'Orbitron',monospace;letter-spacing:.4em;color:rgba(143,200,255,.5)}
+.hero{padding:20px 16px 14px}
+.hero h1{margin-bottom:34px}
+/* 3 VELKY VU */
+.v3 .vus{order:1}.v3 .actions{order:2}.v3 .player{order:3}.v3 .stats{order:4}.v3 .footer{order:5}
+.v3 .vus{display:grid;grid-template-columns:1fr 44px 1fr;gap:10px;align-items:center}
+.v3 .vu{max-width:none;flex:none}
+.v3 .vucap{grid-column:1/-1}
+.led{display:flex;flex-direction:column-reverse;gap:2px;align-self:stretch;min-height:70px;padding:5px;border-radius:8px;background:#060b16;border:1px solid rgba(47,140,255,.4)}
+.led i{flex:1;border-radius:1px;background:#16203a}
+.led i.pk{background:#fff;opacity:.9}
+.led i.g.on{background:#2be28a;box-shadow:0 0 6px #2be28a;opacity:1}
+.led i.y.on{background:#ffd23d;box-shadow:0 0 6px #ffd23d;opacity:1}
+.led i.r.on{background:#ff4d4d;box-shadow:0 0 6px #ff4d4d;opacity:1}
 </style>
 </head>
-<body class="t8 l3">
+<body class="t8 v3">
 <div class="bg"></div>
 <div class="deco" id="starfield"></div>
 <div class="deco" id="particles"></div>
-<div class="deco notes" id="notes"></div>
 <div class="ticker-wrap"><div class="ticker-track" id="tickerTrack"><span class="ticker-item">🎧 KLADYXLAND RADIO <span class="dot">◆</span></span><span class="ticker-item">DJ MIX SESSION <span class="dot">◆</span></span><span class="ticker-item">LIVE ON MIXCLOUD <span class="dot">◆</span></span><span class="ticker-item">TUNE IN NOW <span class="dot">◆</span></span><span class="ticker-item">🎛️ MIXING LIVE <span class="dot">◆</span></span></div></div>
 <main class="wrap">
   <section class="card hero">
@@ -150,15 +146,10 @@ body.live.l3 .needle{animation:none;left:62%}
     <h1>KLADYXLAND</h1>
     <div class="subtitle">Mixcloud Player</div>
     <div class="pill" id="status-pill"><i></i><span class="txt">OFFLINE</span></div>
-    <div class="dial"><div class="scale"><span>88</span><span>92</span><span>96</span><span>100</span><span>104</span><span>108</span></div><i class="needle"></i></div>
-    <div class="viz">
-      <div class="eq-strip" id="eqStrip"></div>
-      <div class="signal-strip" id="signalStrip"></div>
-      <div class="sig-label">SIGNAL STRENGTH</div>
-    </div>
   </section>
+  <section class="card vus" id="vus"><div class="vu" data-l="L"></div><div class="led" id="led"></div><div class="vu" data-l="R"></div><div class="vucap">LEVEL</div></section>
   <section class="card player">
-    <div class="player-wrapper"><iframe src="https://www.mixcloud.com/widget/iframe/?hide_cover=false&light=false&feed=%2Fkladyx%2F" frameborder="0" allowtransparency="true" loading="lazy"></iframe></div>
+    <div class="player-wrapper"><iframe id="mc-player" src="https://www.mixcloud.com/widget/iframe/?hide_cover=false&light=false&feed=%2Fkladyx%2F" frameborder="0" allowtransparency="true" loading="lazy"></iframe></div>
   </section>
   <div class="actions">
       <a id="live-btn" href="https://www.mixcloud.com/live/kladyx/" target="_blank" rel="noopener">🔴 SLEDOVAT ŽIVĚ</a>
@@ -172,7 +163,7 @@ body.live.l3 .needle{animation:none;left:62%}
   <section class="card footer">
     <div class="footer-text">Poslouchej hudbu z <span class="hl">KLADYXLAND</span></div>
     <div class="footer-brand">Powered by Mixcloud</div>
-    <div class="footer-brand ver">v15.6</div>
+    <div class="footer-brand ver">v6.3Mx 11-2026</div>
     <div class="legal">Fender® and PreSonus® are registered trademarks of their respective owners. KLADYXLAND has no commercial affiliation with these brands — their equipment is used for personal broadcasting purposes only.</div>
   </section>
 </main>
@@ -188,14 +179,33 @@ body.live.l3 .needle{animation:none;left:62%}
   var sf=document.getElementById('starfield');
   for(var i=0;i<30;i++){var s=document.createElement('div');s.className=i%5===0?'star big':'star';s.style.cssText='left:'+r(100)+'%;top:'+r(100)+'%;animation-delay:'+r(3)+'s;animation-duration:'+(1.5+r(3))+'s';sf.appendChild(s);}
   var pc=document.getElementById('particles');
-  for(var i=0;i<14;i++){var p=document.createElement('div');p.className='particle';p.style.cssText='left:'+r(100)+'%;animation-duration:'+(8+r(14))+'s;animation-delay:'+r(10)+'s';pc.appendChild(p);}
-  var nt=document.getElementById('notes'),ic=['🎵','🎶','♪','♫','🎧'];
-  for(var i=0;i<7;i++){var n=document.createElement('span');n.textContent=ic[i%ic.length];n.style.cssText='left:'+(5+r(90))+'%;font-size:'+(1.2+r(.8))+'rem;animation-duration:'+(16+r(8))+'s;animation-delay:'+r(12)+'s';nt.appendChild(n);}
+  for(var i=0;i<14;i++){var q=document.createElement('div');q.className='particle';q.style.cssText='left:'+r(100)+'%;animation-duration:'+(8+r(14))+'s;animation-delay:'+r(10)+'s';pc.appendChild(q);}
   var tt=document.getElementById('tickerTrack');tt.innerHTML+=tt.innerHTML;
-  var eq=document.getElementById('eqStrip');
-  for(var i=0;i<40;i++){var b=document.createElement('div');b.className='eq-bar';b.style.setProperty('--h',(8+r(28))+'px');b.style.animationDuration=(.4+r(.8))+'s';b.style.animationDelay=r(1)+'s';eq.appendChild(b);}
-  var ss=document.getElementById('signalStrip'),col=['#00d4ff','#00d4ff','#00ffaa','#00ffaa','#a855f7','#ff006e','#ff006e'];
-  for(var i=0;i<18;i++){var g=document.createElement('div');g.className='sig-bar';g.style.height=(8+r(32))+'px';g.style.background=col[Math.floor(r(col.length))];g.style.animationDuration=(.5+r(1.2))+'s';g.style.animationDelay=r(1.5)+'s';ss.appendChild(g);}
+  function svg(l,id){
+    var s='<svg viewBox="0 0 200 120"><defs><linearGradient id="vf'+id+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#12264d"/><stop offset="1" stop-color="#050c1d"/></linearGradient></defs><rect x="1" y="1" width="198" height="118" rx="10" fill="url(#vf'+id+')" stroke="#2f8cff" stroke-opacity=".5"/>';
+    s+='<path d="M40.3 61.9 A78 78 0 0 1 159.7 61.9" fill="none" stroke="#bfe0ff" stroke-width="1"/><path d="M133 41.3 A78 78 0 0 1 159.7 61.9" fill="none" stroke="#ff4d4d" stroke-width="3"/>';
+    var lb=['-20','-10','-5','0','+3'];
+    for(var i=0;i<=20;i++){var a=(-50+i*5)*Math.PI/180,mj=i%5===0,r1=mj?64:70,x1=100+r1*Math.sin(a),y1=112-r1*Math.cos(a),x2=100+78*Math.sin(a),y2=112-78*Math.cos(a);
+      s+='<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="'+(i>=15?'#ff4d4d':'#bfe0ff')+'" stroke-width="'+(mj?2:1)+'"/>';
+      if(mj){s+='<text x="'+(100+52*Math.sin(a)).toFixed(1)+'" y="'+(116-52*Math.cos(a)).toFixed(1)+'" text-anchor="middle" font-size="8" fill="#8fc8ff" font-family="Orbitron,monospace">'+lb[i/5]+'</text>';}}
+    s+='<text x="100" y="94" text-anchor="middle" font-size="11" fill="#8fc8ff" font-family="Orbitron,monospace" letter-spacing="3">VU</text>';
+    s+='<text x="12" y="112" font-size="10" fill="#8fc8ff" font-family="Orbitron,monospace">'+l+'</text>';
+    s+='<g class="nd" transform="rotate(-48 100 112)"><line x1="100" y1="112" x2="100" y2="40" stroke="#ff5a4d" stroke-width="2"/><circle cx="100" cy="112" r="5" fill="#cfd6e6"/></g></svg>';
+    return s;}
+  var vs=document.querySelectorAll('.vu');
+  vs.forEach(function(v,i){v.innerHTML=svg(v.getAttribute('data-l'),i);});
+  var nds=document.querySelectorAll('.nd'),pos=[-48,-48];
+  function tg(i,t){
+    if(window._vuLvl!=null)return window._vuLvl;
+    if(window._mcPlaying||document.body.classList.contains('live')){var v=.5+.22*Math.sin(t/230+i*1.7)+.18*Math.sin(t/97+i)+.1*Math.random();return Math.max(.08,Math.min(1,v));}
+    return .05+.02*Math.sin(t/900+i);}
+  var led=document.getElementById('led'),N=12,seg=[],lv=0,pk=0,last=-1;
+  for(var k=0;k<N;k++){var e=document.createElement('i');e.className=k<8?'g':k<10?'y':'r';led.appendChild(e);seg.push(e);}
+  function f(t){nds.forEach(function(n,i){pos[i]+=((-48+tg(i,t)*96)-pos[i])*.12;n.setAttribute('transform','rotate('+pos[i].toFixed(1)+' 100 112)');});
+    var m=((pos[0]+pos[1])/2+48)/96;lv+=(m-lv)*.35;var on=Math.round(Math.max(0,Math.min(1,lv))*N);pk=Math.max(on,pk-.08);var pi=Math.round(pk);
+    var key=on*100+pi;if(key!==last){last=key;for(var k=0;k<N;k++){seg[k].classList.toggle('on',k<on);seg[k].classList.toggle('pk',k===pi-1&&pi>on);}}
+    requestAnimationFrame(f);}
+  requestAnimationFrame(f);
 })();
 </script>
 <script>
@@ -208,6 +218,23 @@ body.live.l3 .needle{animation:none;left:62%}
     else if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(U).then(ok,fb);}
     else fb();
   });
+})();
+</script>
+<script src="https://widget.mixcloud.com/media/js/widgetApi.js"></script>
+<script>
+(function(){
+  try{
+    var fr=document.getElementById('mc-player');
+    if(!fr||!window.Mixcloud)return;
+    var w=Mixcloud.PlayerWidget(fr);
+    w.ready.then(function(){
+      w.events.play.on(function(){window._mcPlaying=true;});
+      w.events.progress.on(function(){window._mcPlaying=true;});
+      w.events.pause.on(function(){window._mcPlaying=false;});
+      w.events.ended.on(function(){window._mcPlaying=false;});
+      w.events.error.on(function(){window._mcPlaying=false;});
+    });
+  }catch(e){}
 })();
 </script>
 <script type="module">
@@ -248,6 +275,7 @@ body.live.l3 .needle{animation:none;left:62%}
   let _drawActive = false;
 
   function stopAudioViz() {
+    window._vuLvl = null;
     _audioActive = false;
     _drawActive = false;
     if (_audioStream) { _audioStream.getTracks().forEach(t => t.stop()); _audioStream = null; }
@@ -298,6 +326,7 @@ body.live.l3 .needle{animation:none;left:62%}
           bar.style.opacity = 0.4 + val * 0.6;
         });
         const avg = dataArr.reduce((a, b) => a + b, 0) / bufLen / 255;
+        window._vuLvl = Math.min(1, avg * 2.2);
         sigBars.forEach((bar, i) => {
           const idx = Math.floor(i * bufLen / sigBars.length);
           const val = dataArr[idx] / 255;
