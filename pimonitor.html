@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v8.4Pi">
-<title>Pi Monitor v8.4Pi</title>
+<meta name="version" content="v8.5Pi">
+<title>Pi Monitor v8.5Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -158,7 +158,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v8.4Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v8.5Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -196,7 +196,6 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 
 <div class="section">
   <div class="sec-title"><span class="gear-spin">⚙</span> SYSTEMD SERVICES</div>
-  <div class="svc-row"><div class="dot dot-wait" id="d-tapo"></div><div class="svc-name">kladyx-tapobridge</div><div class="svc-st" id="s-tapo">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-tapopy"></div><div class="svc-name">kladyx-tapo-py</div><div class="svc-st" id="s-tapopy">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-transfer"></div><div class="svc-name">kladyx-transferwatcher</div><div class="svc-st" id="s-transfer">…</div></div>
   <div class="svc-row"><div class="dot dot-wait" id="d-upload"></div><div class="svc-name">kladyx-uploadserver</div><div class="svc-st" id="s-upload">…</div></div>
@@ -227,7 +226,6 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 <div class="section">
   <div class="sec-title">🔄 RESTARTY (od bootu)</div>
   <div class="svc-row"><div class="svc-name">tapo-py</div><div class="svc-st" id="r-tp">—</div></div>
-  <div class="svc-row"><div class="svc-name">tapobridge</div><div class="svc-st" id="r-tb">—</div></div>
   <div class="svc-row"><div class="svc-name">irbridge</div><div class="svc-st" id="r-ir">—</div></div>
   <div class="svc-row"><div class="svc-name">pimonitor</div><div class="svc-st" id="r-pm">—</div></div>
   <div class="svc-row"><div class="svc-name">pitransfer</div><div class="svc-st" id="r-pt">—</div></div>
@@ -427,7 +425,7 @@ function setRm4(on){
 var PC_SVC=['transfer','upload','nextsync','obs','eq'];
 var _pcOnline=false;
 var _svcActive={};
-var _tickerNames={'tapo':'tapobridge','tapopy':'tapo-py','prijate':'prijatelister','pitransfer':'pitransfer','irbridge':'broadlink','pimonitor':'pimonitor','taporestart':'tapo-restart','obs':'obs-bridge','weareone':'weareone'};
+var _tickerNames={'tapopy':'tapo-py','prijate':'prijatelister','pitransfer':'pitransfer','irbridge':'broadlink','pimonitor':'pimonitor','taporestart':'tapo-restart','obs':'obs-bridge','weareone':'weareone'};
 function updateTicker(){
   var list=Object.keys(_tickerNames).filter(function(k){return !!_svcActive[k];}).map(function(k){return _tickerNames[k];});
   var scrEl=document.getElementById('net-scripts-inner');
@@ -468,7 +466,7 @@ function showOffline(fromFirebase){
     var el=document.getElementById(id);
     if(el){el.textContent='—';el.classList.remove('net-active');}
   });
-  ['tapo','prijate','pitransfer','pimonitor','taporestart'].forEach(function(id){
+  ['prijate','pitransfer','pimonitor','taporestart'].forEach(function(id){
     var d=document.getElementById('d-'+id);
     if(d)d.className='dot dot-wait';
     var s=document.getElementById('s-'+id);
@@ -621,7 +619,7 @@ function loadStats(){
       else{el.classList.add('net-active');}
     }
     if(d.services){
-      ['tapo','prijate','pitransfer','pimonitor','taporestart'].forEach(function(k){
+      ['prijate','pitransfer','pimonitor','taporestart'].forEach(function(k){
         if(d.services[k]!==undefined)setSvc(k,d.services[k]===true||d.services[k]==='active');
       });
     }
@@ -629,7 +627,7 @@ function loadStats(){
     setSvc('rpi',true);
     setSvc('pimonitor',true);
     if(d.proc_count!==undefined){var el=document.getElementById('net-proc');el.textContent=d.proc_count;el.classList.remove('net-active');}
-    if(d.restarts){var rmap={'tp':'tapo-py','tb':'tapobridge','ir':'irbridge','pm':'pimonitor','pt':'pitransfer','pl':'prijatelister','wo':'weareone'};Object.keys(rmap).forEach(function(k){var e=document.getElementById('r-'+k);if(e){var cnt=d.restarts[rmap[k]]!==undefined?d.restarts[rmap[k]]:0;e.textContent=cnt;e.style.color=cnt>0?'#ffaa00':'#00ff88';if(cnt>0){e.classList.add('restart-active');}else{e.classList.remove('restart-active');}}});}
+    if(d.restarts){var rmap={'tp':'tapo-py','ir':'irbridge','pm':'pimonitor','pt':'pitransfer','pl':'prijatelister','wo':'weareone'};Object.keys(rmap).forEach(function(k){var e=document.getElementById('r-'+k);if(e){var cnt=d.restarts[rmap[k]]!==undefined?d.restarts[rmap[k]]:0;e.textContent=cnt;e.style.color=cnt>0?'#ffaa00':'#00ff88';if(cnt>0){e.classList.add('restart-active');}else{e.classList.remove('restart-active');}}});}
     updateTicker();
   })
   .catch(function(){showOffline(true);loadFallback();});
