@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SpeakUp v7.2Kl</title>
+<title>SpeakUp v7.3Kl</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
@@ -399,13 +399,19 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 .cu-item-cz{font-size:.7rem;color:rgba(255,255,255,.4);}
 .cu-del{background:transparent;border:none;color:#ff4466;font-size:.9rem;cursor:pointer;padding:2px 6px;}
 .cu-count{font-size:.68rem;color:rgba(0,212,255,.6);margin-bottom:10px;}
+.trn-btns{display:flex;gap:8px;margin-bottom:12px;}
+.trn-mic{flex:1;padding:11px 6px;border-radius:8px;border:1.5px solid rgba(0,255,136,.4);background:rgba(0,255,136,.08);color:#00ff88;font-size:.8rem;font-weight:700;cursor:pointer;}
+.trn-mic.listening{background:rgba(255,68,102,.2);border-color:#ff4466;color:#ff4466;}
+.trn-mic:disabled{opacity:.4;cursor:not-allowed;}
+.trn-box{min-height:44px;padding:10px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#e8f0ff;font-size:.9rem;margin-bottom:10px;word-break:break-word;}
+.trn-status{font-size:.7rem;min-height:16px;color:rgba(255,255,255,.5);margin-bottom:10px;}
 </style>
 </head>
 <body>
 
 <div class="hdr">
   <h1>SPEAKUP</h1>
-  <span class="ver">v7.2Kl</span>
+  <span class="ver">v7.3Kl</span>
 </div>
 <div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
 
@@ -480,6 +486,7 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 
 <!-- CUSTOM PHRASES BUTTON -->
 <button class="cu-btn" onclick="openCuModal()">➕ Přidat vlastní frázi</button>
+<button class="cu-btn" onclick="trnOpen()">🌐 Překladač CZ ↔ EN</button>
 
 <!-- CUSTOM PHRASES MODAL -->
 <div class="cu-overlay" id="cuOverlay">
@@ -511,6 +518,26 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
     </div>
 
     <div class="cu-list" id="cuList"></div>
+  </div>
+</div>
+
+<!-- TRANSLATOR MODAL -->
+<div class="cu-overlay" id="trnOverlay">
+  <div class="cu-modal">
+    <h3>🌐 PŘEKLADAČ</h3>
+    <div class="trn-btns">
+      <button class="trn-mic" id="trnBtnCs" onclick="trnListen('cs')">🎤 CZ → EN</button>
+      <button class="trn-mic" id="trnBtnEn" onclick="trnListen('en')">🎤 EN → CZ</button>
+    </div>
+    <label class="cu-label">Slyšeno</label>
+    <div class="trn-box" id="trnHeard">—</div>
+    <label class="cu-label">Překlad</label>
+    <div class="trn-box" id="trnOut">—</div>
+    <div class="trn-status" id="trnStatus">Stiskni tlačítko a mluv.</div>
+    <div>
+      <button class="cu-save" onclick="trnSpeakAgain()">🔊 Přehrát znovu</button>
+      <button class="cu-close" onclick="trnClose()">✕ Zavřít</button>
+    </div>
   </div>
 </div>
 
@@ -7424,4 +7451,118 @@ function importProgress(inp){
   reader.readAsText(file);
 }
 
+</script>
+
+<script>
+/* ===== PREKLADAC CZ<->EN (v7.3Kl) - samostatny blok, kviz nezasahuje ===== */
+try{
+(function(){
+  var rec=null, state='idle', last={text:'',lang:''};
+  function el(id){ return document.getElementById(id); }
+  function setStatus(t,err){ var e=el('trnStatus'); e.textContent=t; e.style.color=err?'#ff6680':'rgba(255,255,255,.5)'; }
+  function setBusy(b){ el('trnBtnCs').disabled=b; el('trnBtnEn').disabled=b; }
+  function resetBtns(){
+    state='idle'; setBusy(false);
+    el('trnBtnCs').textContent='🎤 CZ → EN'; el('trnBtnEn').textContent='🎤 EN → CZ';
+    el('trnBtnCs').classList.remove('listening'); el('trnBtnEn').classList.remove('listening');
+  }
+  function decode(t){ var a=document.createElement('textarea'); a.innerHTML=t; return a.value; }
+
+  window.trnOpen=function(){
+    try{ if(typeof recRunning!=='undefined' && recRunning && typeof stopMic==='function') stopMic(); }catch(e){}
+    el('trnOverlay').classList.add('show');
+  };
+  window.trnClose=function(){
+    try{ if(rec && state==='listening') rec.abort(); }catch(e){}
+    try{ window.speechSynthesis.cancel(); }catch(e){}
+    resetBtns();
+    el('trnOverlay').classList.remove('show');
+  };
+
+  window.trnListen=function(src){
+    if(state==='listening'){ try{ rec.stop(); }catch(e){} return; }
+    if(state!=='idle') return;
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){ setStatus('Prohlížeč nepodporuje rozpoznání hlasu.',true); return; }
+    if(navigator.onLine===false){ setStatus('Jsi offline, překlad není dostupný.',true); return; }
+    try{ window.speechSynthesis.cancel(); }catch(e){}
+    var tgt=(src==='cs')?'en':'cs';
+    var btn=(src==='cs')?el('trnBtnCs'):el('trnBtnEn');
+    var other=(src==='cs')?el('trnBtnEn'):el('trnBtnCs');
+    rec=new SR();
+    rec.lang=(src==='cs')?'cs-CZ':'en-US';
+    rec.interimResults=false; rec.maxAlternatives=1; rec.continuous=false;
+    var gotResult=false;
+    rec.onstart=function(){
+      state='listening'; btn.classList.add('listening'); btn.textContent='⏹ Zastavit'; other.disabled=true;
+      setStatus('🎤 Poslouchám…');
+    };
+    rec.onresult=function(ev){
+      gotResult=true;
+      var text=(ev.results[0][0].transcript||'').trim();
+      el('trnHeard').textContent=text||'—';
+      if(!text){ resetBtns(); setStatus('Nic neslyšeno, zkus znovu.',true); return; }
+      state='translating'; btn.classList.remove('listening'); btn.textContent='⏳ Překládám…'; setBusy(true);
+      trnTranslate(text,src,tgt);
+    };
+    rec.onerror=function(ev){
+      gotResult=true;
+      resetBtns();
+      if(ev.error==='no-speech') setStatus('Nic neslyšeno, zkus znovu.',true);
+      else if(ev.error==='not-allowed'||ev.error==='service-not-allowed') setStatus('Mikrofon není povolen v prohlížeči.',true);
+      else setStatus('Chyba rozpoznání: '+ev.error,true);
+    };
+    rec.onend=function(){ if(state==='listening' && !gotResult){ resetBtns(); setStatus('Nic neslyšeno, zkus znovu.',true); } };
+    try{ rec.start(); }catch(e){ resetBtns(); setStatus('Mikrofon se nepodařilo spustit.',true); }
+  };
+
+  function trnTranslate(text,src,tgt){
+    var q=text.slice(0,200);
+    var url='https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair='+src+'|'+tgt;
+    var ctrl=(typeof AbortController!=='undefined')?new AbortController():null;
+    var to=setTimeout(function(){ if(ctrl) ctrl.abort(); },10000);
+    fetch(url,ctrl?{signal:ctrl.signal}:undefined)
+      .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+      .then(function(d){
+        clearTimeout(to);
+        var st=Number(d&&d.responseStatus);
+        var out=(d&&d.responseData&&d.responseData.translatedText)?decode(String(d.responseData.translatedText)):'';
+        if(st!==200 || !out || /^MYMEMORY WARNING/i.test(out)){
+          resetBtns();
+          el('trnOut').textContent='—';
+          setStatus('Služba překladu vrátila chybu'+(st&&st!==200?' ('+st+')':'')+'. Možná je vyčerpaný denní limit.',true);
+          return;
+        }
+        el('trnOut').textContent=out;
+        last={text:out,lang:tgt};
+        resetBtns();
+        setStatus('Hotovo.');
+        trnSpeak(out,tgt);
+      })
+      .catch(function(e){
+        clearTimeout(to);
+        resetBtns();
+        el('trnOut').textContent='—';
+        setStatus('Překlad se nepodařil: '+(e&&e.name==='AbortError'?'vypršel čas':(e&&e.message?e.message:'chyba sítě')),true);
+      });
+  }
+
+  function trnSpeak(text,lang){
+    try{
+      if(!('speechSynthesis' in window)) return;
+      var code=(lang==='en')?'en-US':'cs-CZ';
+      var base=code.slice(0,2).toLowerCase();
+      var voices=window.speechSynthesis.getVoices()||[];
+      var v=null;
+      for(var i=0;i<voices.length;i++){ if((voices[i].lang||'').toLowerCase().indexOf(base)===0){ v=voices[i]; break; } }
+      if(voices.length && !v){ setStatus('Hlas pro tento jazyk v telefonu nenalezen, text je zobrazen.',true); return; }
+      window.speechSynthesis.cancel();
+      var u=new SpeechSynthesisUtterance(text);
+      u.lang=code; if(v) u.voice=v;
+      window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+  window.trnSpeakAgain=function(){ if(last.text) trnSpeak(last.text,last.lang); };
+})();
+}catch(e){ try{ console.error('Preklad: init chyba',e); }catch(_){} }
 </script>
