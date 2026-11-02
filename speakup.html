@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SpeakUp v7.3Kl</title>
+<title>SpeakUp v7.4Kl</title>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
@@ -404,6 +404,8 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 .trn-mic.listening{background:rgba(255,68,102,.2);border-color:#ff4466;color:#ff4466;}
 .trn-mic:disabled{opacity:.4;cursor:not-allowed;}
 .trn-box{min-height:44px;padding:10px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#e8f0ff;font-size:.9rem;margin-bottom:10px;word-break:break-word;}
+.trn-quota{font-size:.72rem;color:#00d4ff;margin-bottom:10px;line-height:1.5;}
+.trn-email-note{font-size:.62rem;color:rgba(255,255,255,.35);margin:-4px 0 10px;line-height:1.4;}
 .trn-status{font-size:.7rem;min-height:16px;color:rgba(255,255,255,.5);margin-bottom:10px;}
 </style>
 </head>
@@ -411,7 +413,7 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
 
 <div class="hdr">
   <h1>SPEAKUP</h1>
-  <span class="ver">v7.3Kl</span>
+  <span class="ver">v7.4Kl</span>
 </div>
 <div class="subhdr" id="subhdr">Trénink anglické konverzace · Úroveň 1 — Základy</div>
 
@@ -533,6 +535,10 @@ h1 { font-size:1.1rem; color:#00d4ff; letter-spacing:2px; }
     <div class="trn-box" id="trnHeard">—</div>
     <label class="cu-label">Překlad</label>
     <div class="trn-box" id="trnOut">—</div>
+    <div class="trn-quota" id="trnQuota">—</div>
+    <label class="cu-label">E-mail (nepovinné, zvýší denní limit na 50 000 znaků)</label>
+    <input class="cu-input" id="trnEmail" type="email" inputmode="email" autocomplete="off" placeholder="jmeno@example.com" onchange="trnSaveEmail()" />
+    <div class="trn-email-note">Uloží se jen v tomto telefonu (není v souboru ani v záloze pokroku). Odesílá se službě MyMemory spolu s textem k překladu.</div>
     <div class="trn-status" id="trnStatus">Stiskni tlačítko a mluv.</div>
     <div>
       <button class="cu-save" onclick="trnSpeakAgain()">🔊 Přehrát znovu</button>
@@ -7454,7 +7460,7 @@ function importProgress(inp){
 </script>
 
 <script>
-/* ===== PREKLADAC CZ<->EN (v7.3Kl) - samostatny blok, kviz nezasahuje ===== */
+/* ===== PREKLADAC CZ<->EN (v7.4Kl) - samostatny blok, kviz nezasahuje ===== */
 try{
 (function(){
   var rec=null, state='idle', last={text:'',lang:''};
@@ -7468,8 +7474,34 @@ try{
   }
   function decode(t){ var a=document.createElement('textarea'); a.innerHTML=t; return a.value; }
 
+  /* ---- e-mail + odhad dennich znaku (jen localStorage, klice bez prefixu su_) ---- */
+  var K_MAIL='trn_email', K_USED='trn_used', LIM_ANON=5000, LIM_MAIL=50000;
+  function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  function validMail(m){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m); }
+  function getMail(){ var m=(lsGet(K_MAIL)||'').trim(); return validMail(m)?m:''; }
+  function todayUtc(){ return new Date().toISOString().slice(0,10); }
+  function getUsed(){
+    try{ var o=JSON.parse(lsGet(K_USED)||'null'); if(o && o.d===todayUtc() && typeof o.n==='number') return o.n; }catch(e){}
+    return 0;
+  }
+  function addUsed(n){ lsSet(K_USED, JSON.stringify({d:todayUtc(), n:getUsed()+n})); }
+  function fmt(n){ return String(Math.max(0,Math.round(n))).replace(/\B(?=(\d{3})+(?!\d))/g,' '); }
+  function renderQuota(){
+    var lim=getMail()?LIM_MAIL:LIM_ANON, used=getUsed(), left=lim-used;
+    var t='Odhad dnes: využito '+fmt(used)+' z '+fmt(lim)+' znaků · zbývá ~'+fmt(left)+' znaků (≈ '+fmt(left/6)+' slov)';
+    var e=el('trnQuota'); e.textContent=t; e.style.color=(left<=0)?'#ff6680':'#00d4ff';
+  }
+  window.trnSaveEmail=function(){
+    var v=(el('trnEmail').value||'').trim();
+    if(!v){ lsSet(K_MAIL,''); setStatus('E-mail smazán.'); renderQuota(); return; }
+    if(!validMail(v)){ setStatus('E-mail nemá správný tvar, nebyl uložen.',true); return; }
+    lsSet(K_MAIL,v); setStatus('E-mail uložen v tomto telefonu.'); renderQuota();
+  };
+
   window.trnOpen=function(){
     try{ if(typeof recRunning!=='undefined' && recRunning && typeof stopMic==='function') stopMic(); }catch(e){}
+    el('trnEmail').value=getMail(); renderQuota();
     el('trnOverlay').classList.add('show');
   };
   window.trnClose=function(){
@@ -7518,7 +7550,9 @@ try{
 
   function trnTranslate(text,src,tgt){
     var q=text.slice(0,200);
-    var url='https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair='+src+'|'+tgt;
+    var mail=getMail();
+    var url='https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair='+src+'|'+tgt+(mail?'&de='+encodeURIComponent(mail):'');
+    addUsed(q.length); renderQuota();
     var ctrl=(typeof AbortController!=='undefined')?new AbortController():null;
     var to=setTimeout(function(){ if(ctrl) ctrl.abort(); },10000);
     fetch(url,ctrl?{signal:ctrl.signal}:undefined)
