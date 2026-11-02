@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs"><head><meta charset="utf-8">
+<html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>KLADYX TAPE PLAYER</title>
 <style>
@@ -44,7 +44,7 @@ input[type=file]{display:none}
 </style></head><body>
 <div class="app" id="app">
 <h1>KLADYX TAPE PLAYER<i id="led"></i></h1>
-<div class="sub">ZX Spectrum TAP / TZX &bull; v1.9Tp</div><div class="laser"></div>
+<div class="sub">ZX Spectrum TAP / TZX &bull; v2.1Tp</div><div class="laser"></div>
 <div class="card c1">
 <div class="lbl">PROGRAM</div><div class="val" id="nm">-</div>
 <svg id="cs" viewBox="0 0 320 130">
@@ -62,18 +62,18 @@ input[type=file]{display:none}
 <div class="vus"><div class="vu"><svg viewBox="0 0 160 90"><path d="M15 80A65 65 0 0 1 145 80" fill="none" stroke="#555" stroke-width="3"/><path d="M118 29A65 65 0 0 1 145 80" fill="none" stroke="#c0392b" stroke-width="5"/><path d="M80 12V20M40 24L44 31M120 24L116 31" stroke="#555" stroke-width="2"/><line id="n1" x1="80" y1="80" x2="80" y2="22" stroke="#c0392b" stroke-width="3" stroke-linecap="round" transform="rotate(-38 80 80)"/><circle cx="80" cy="80" r="6" fill="#333"/></svg>L</div><div class="vu"><svg viewBox="0 0 160 90"><path d="M15 80A65 65 0 0 1 145 80" fill="none" stroke="#555" stroke-width="3"/><path d="M118 29A65 65 0 0 1 145 80" fill="none" stroke="#c0392b" stroke-width="5"/><path d="M80 12V20M40 24L44 31M120 24L116 31" stroke="#555" stroke-width="2"/><line id="n2" x1="80" y1="80" x2="80" y2="22" stroke="#c0392b" stroke-width="3" stroke-linecap="round" transform="rotate(-38 80 80)"/><circle cx="80" cy="80" r="6" fill="#333"/></svg>R</div></div>
 <div class="leds" id="lg"></div>
 <canvas id="cv" width="320" height="240"></canvas>
-<div class="row"><div><div class="lbl">BLOK</div><div class="val" id="bk">0/0</div></div>
-<div><div class="lbl">ZBÝVÁ</div><div class="val" id="rm">-00:00</div></div></div>
-<div class="lbl" style="margin-top:10px" id="st">ČEKÁ</div>
+<div class="row"><div><div class="lbl">BLOCK</div><div class="val" id="bk">0/0</div></div>
+<div><div class="lbl">REMAINING</div><div class="val" id="rm">-00:00</div></div></div>
+<div class="lbl" style="margin-top:10px" id="st">WAITING</div>
 </div>
 <div class="card c2">
 <div class="row" style="margin-bottom:6px"><span class="val" id="el" style="font-size:16px">00:00</span><span class="val" id="du" style="font-size:16px;color:var(--dm)">00:00</span></div>
 <div class="bar"><i id="pg"></i></div>
 <div class="warn" id="wr"></div>
 </div>
-<div class="btns" style="margin-bottom:8px"><label class="file">Vybrat soubor<input type="file" id="f" accept=".tap,.tzx"></label></div>
-<div class="btns"><button id="bp" disabled>▶ Play</button><button id="bu" disabled>❚❚ Pauza</button><button id="bs" disabled>■ Stop</button></div>
-<div class="card c3" style="margin-top:12px"><div class="lbl" id="lc">ULOŽENO 0/10</div><div id="ls"></div></div>
+<div class="btns" style="margin-bottom:8px"><label class="file">Select file<input type="file" id="f" accept=".tap,.tzx"></label></div>
+<div class="btns"><button id="bp" disabled>▶ Play</button><button id="bu" disabled>❚❚ Pause</button><button id="bs" disabled>■ Stop</button></div>
+<div class="card c3" style="margin-top:12px"><div class="lbl" id="lc">SAVED 0/10</div><div id="ls"></div></div>
 </div>
 <script>
 //CORE_START
@@ -86,7 +86,7 @@ function parseTap(d){
   const bl=[];let o=0;
   while(o+2<=d.length){
     const l=u16(d,o);
-    if(o+2+l>d.length){W.push('Soubor je zkrácený, poslední blok vynechán.');break}
+    if(o+2+l>d.length){W.push('File is truncated, the last block was skipped.');break}
     const data=d.subarray(o+2,o+2+l);
     bl.push({t:'d',p:2168,pn:(data[0]<128)?8063:3223,s1:667,s2:735,z:855,o:1710,u:8,pause:1000,data});
     o+=2+l;
@@ -115,7 +115,7 @@ function parseTzx(d){
     else if(id===0x5A){o+=9}
     else if(id===0x2A){o+=4}
     else if(id===0x2B){o+=5}
-    else{W.push('Nepodporovaný blok 0x'+id.toString(16).toUpperCase()+' - přehrání končí před ním.');break}
+    else{W.push('Unsupported block 0x'+id.toString(16).toUpperCase()+' - playback stops before it.');break}
   }
   return bl;
 }
@@ -179,6 +179,7 @@ function decScr(d,n){
   }
   x.putImageData(im,0,0);
 }
+const COL={1:['#cd0000','#00cdcd'],2:['#cdcd00','#0000cd']};
 function bg(){gc.fillStyle='#0b111b';gc.fillRect(0,0,320,240)}
 function paper(sm){
   if(imgD){
@@ -236,7 +237,7 @@ function setS(s){
   $('app').classList.toggle('play',s==='play');
   $('app').classList.toggle('pz',s==='pause');
   if(s==='idle'||s==='done'){clearStripes();restM()}
-  $('st').textContent={idle:'PŘIPRAVENO',play:'PŘEHRÁVÁM',pause:'PAUZA',done:'HOTOVO'}[s]||'ČEKÁ';
+  $('st').textContent={idle:'READY',play:'PLAYING',pause:'PAUSED',done:'DONE'}[s]||'WAITING';
   $('bp').disabled=!(buf&&(s==='idle'||s==='pause'||s==='done'));
   $('bu').disabled=s!=='play';
   $('bs').disabled=!(buf&&s!=='idle');
@@ -297,7 +298,7 @@ async function openData(name,d){
     const isTzx=String.fromCharCode(...d.subarray(0,7))==='ZXTape!';
     const bl=isTzx?parseTzx(d):parseTap(d);
     const r=build(bl);
-    if(!r.P.length)throw new Error('Soubor neobsahuje žádná přehratelná data.');
+    if(!r.P.length)throw new Error('The file contains no playable data.');
     const o=render(r.P,r.starts,ctx.sampleRate,r.marks);
     buf=ctx.createBuffer(1,o.out.length,ctx.sampleRate);
     buf.copyToChannel(o.out,0);
@@ -317,7 +318,7 @@ async function openData(name,d){
     }catch(e2){imgD=null;imgAt=Infinity;imgS=Infinity}
     $('du').textContent=fmt(dur);
   }catch(err){
-    buf=null;chan=null;ty=[];dur=0;nb=0;bs=[];W.push('Chyba: '+err.message);$('du').textContent='00:00';
+    buf=null;chan=null;ty=[];dur=0;nb=0;bs=[];W.push('Error: '+err.message);$('du').textContent='00:00';
   }
   $('wr').textContent=W.join('\n');
   stop();
@@ -325,9 +326,9 @@ async function openData(name,d){
 }
 async function refreshList(){
   const ls=$('ls');ls.textContent='';
-  if(!db){ls.textContent='Ukládání není dostupné (úložiště prohlížeče je zablokované).';return}
+  if(!db){ls.textContent='Saving is not available (browser storage is blocked).';return}
   const all=(await dbTx('readonly',s=>s.getAll())).sort((a,b)=>b.time-a.time);
-  $('lc').textContent='ULOŽENO '+all.length+'/'+LIMIT;
+  $('lc').textContent='SAVED '+all.length+'/'+LIMIT;
   for(const r of all){
     const it=document.createElement('div');it.className='it';
     const sp=document.createElement('span');sp.textContent=r.name+' ('+Math.max(1,Math.round(r.size/1024))+' kB)';
@@ -344,9 +345,9 @@ $('f').onchange=async e=>{
   if(await openData(f.name,d)){
     try{
       const s=await saveFile(f.name,d);
-      if(s==='full')W.push('Limit '+LIMIT+' uložených souborů je plný, soubor se přehraje, ale neuložil se. Smaž některý křížkem.');
-      if(s==='off')W.push('Soubor se neuložil, úložiště prohlížeče není dostupné.');
-    }catch(err){W.push('Soubor se neuložil: '+err.message)}
+      if(s==='full')W.push('Limit of '+LIMIT+' saved files is full. The file will play but was not saved. Delete one with the cross.');
+      if(s==='off')W.push('File was not saved, browser storage is not available.');
+    }catch(err){W.push('File was not saved: '+err.message)}
     $('wr').textContent=W.join('\n');
     refreshList();
   }
