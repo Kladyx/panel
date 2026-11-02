@@ -44,7 +44,7 @@ input[type=file]{display:none}
 </style></head><body>
 <div class="app" id="app">
 <h1>KLADYX TAPE PLAYER<i id="led"></i></h1>
-<div class="sub">ZX Spectrum TAP / TZX &bull; v1.8Tp</div><div class="laser"></div>
+<div class="sub">ZX Spectrum TAP / TZX &bull; v1.9Tp</div><div class="laser"></div>
 <div class="card c1">
 <div class="lbl">PROGRAM</div><div class="val" id="nm">-</div>
 <svg id="cs" viewBox="0 0 320 130">
@@ -162,27 +162,35 @@ function render(P,starts,sr,marks){
 const $=id=>document.getElementById(id);
 let pname='',ty=[],chan=null,ctx=null,buf=null,src=null,state='idle',t0=0,dur=0,bs=[],nb=0,raf=0;
 const gc=$('cv').getContext('2d');
-let img=null,imgAt=Infinity;
-function decScr(d){
-  const c=document.createElement('canvas');c.width=256;c.height=192;
-  const x=c.getContext('2d'),im=x.createImageData(256,192),px=im.data;
+let imgD=null,imgAt=Infinity,imgS=Infinity,imgL=6912,imgQ=-1,imgC=null;
+function decScr(d,n){
+  if(!imgC){imgC=document.createElement('canvas');imgC.width=256;imgC.height=192}
+  const x=imgC.getContext('2d'),im=x.createImageData(256,192),px=im.data;
   const col=(k,b)=>{const v=b?255:205;return[(k&2)?v:0,(k&4)?v:0,(k&1)?v:0]};
   for(let y=0;y<192;y++){
     const a=((y&0xC0)<<5)|((y&7)<<8)|((y&0x38)<<2),ar=6144+((y>>3)<<5);
     for(let cx=0;cx<32;cx++){
-      const by=d[a+cx],at=d[ar+cx],br=(at>>6)&1,ink=col(at&7,br),pap=col((at>>3)&7,br);
+      const i1=a+cx,i2=ar+cx,by=i1<n?d[i1]:0,at=i2<n?d[i2]:7,br=(at>>6)&1,ink=col(at&7,br),pap=col((at>>3)&7,br);
       for(let i=0;i<8;i++){
         const c3=((by>>(7-i))&1)?ink:pap,o=(y*256+cx*8+i)*4;
         px[o]=c3[0];px[o+1]=c3[1];px[o+2]=c3[2];px[o+3]=255;
       }
     }
   }
-  x.putImageData(im,0,0);return c;
+  x.putImageData(im,0,0);
 }
-const COL={1:['#cd0000','#00cdcd'],2:['#cdcd00','#0000cd']};
 function bg(){gc.fillStyle='#0b111b';gc.fillRect(0,0,320,240)}
 function paper(sm){
-  if(img&&(state==='done'||(sm!==undefined&&sm>=imgAt))){gc.imageSmoothingEnabled=false;gc.drawImage(img,32,24);return}
+  if(imgD){
+    let n=-1;
+    if(state==='done')n=6912;
+    else if(sm!==undefined&&sm>=imgS&&imgAt>imgS)n=Math.min(6912,Math.floor((sm-imgS)/(imgAt-imgS)*imgL));
+    if(n>=0){
+      const q=n>=6912?6912:n-n%64;
+      if(q!==imgQ){decScr(imgD,q);imgQ=q}
+      gc.imageSmoothingEnabled=false;gc.drawImage(imgC,32,24);return
+    }
+  }
   gc.fillStyle='#050a12';gc.fillRect(40,36,240,168);gc.strokeStyle='#2c3a52';gc.lineWidth=1;gc.strokeRect(40.5,36.5,239,167);
   gc.textAlign='center';gc.fillStyle='#19c3ff';gc.font='bold 15px monospace';
   gc.fillText((pname||'KLADYX TAPE').toUpperCase().slice(0,24),160,114);
@@ -283,7 +291,7 @@ async function saveFile(name,d){
 }
 //DB_END
 async function openData(name,d){
-  killSrc();buf=null;img=null;imgAt=Infinity;W=[];$('wr').textContent='';$('nm').textContent=name;pname=name;$('cl').textContent=name.toUpperCase().slice(0,26);
+  killSrc();buf=null;imgD=null;imgAt=Infinity;imgS=Infinity;imgQ=-1;W=[];$('wr').textContent='';$('nm').textContent=name;pname=name;$('cl').textContent=name.toUpperCase().slice(0,26);
   try{
     if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();
     const isTzx=String.fromCharCode(...d.subarray(0,7))==='ZXTape!';
@@ -295,15 +303,18 @@ async function openData(name,d){
     buf.copyToChannel(o.out,0);
     bs=o.bs;ty=o.ty;chan=buf.getChannelData(0);nb=r.count;dur=buf.duration;
     try{
-      const si=bl.findIndex(b=>b.t==='d'&&b.data.length===6914&&b.data[0]===255);
+      let si=bl.findIndex(b=>b.t==='d'&&b.data.length===6914&&b.data[0]===255);
+      if(si<0)si=bl.findIndex(b=>b.t==='d'&&b.data[0]===255&&b.data.length>6914&&b.data.length<=7300);
       if(si>=0){
-        img=decScr(bl[si].data.subarray(1,6913));
+        imgD=bl[si].data.subarray(1,6913);imgL=bl[si].data.length-2;
         if(!bl.some(b=>b.t==='loop'||b.t==='end')){
           const nx=(si+1<o.bs.length)?o.bs[si+1]:o.out.length;
           imgAt=Math.max(o.bs[si],nx-Math.round((bl[si].pause||0)*ctx.sampleRate/1000));
+          const sy=o.ty.find(e=>e[1]===2&&e[0]>=o.bs[si]);
+          imgS=sy?sy[0]:o.bs[si];
         }
       }
-    }catch(e2){img=null;imgAt=Infinity}
+    }catch(e2){imgD=null;imgAt=Infinity;imgS=Infinity}
     $('du').textContent=fmt(dur);
   }catch(err){
     buf=null;chan=null;ty=[];dur=0;nb=0;bs=[];W.push('Chyba: '+err.message);$('du').textContent='00:00';
