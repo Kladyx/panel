@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="cs"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KLADYX TAPE PLAYER</title>
+<style>
+:root{--bg:#0b111b;--tx:#e6ecf5;--dm:#8a97ad;--am:#19c3ff;--wr:#ff8a2a}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--tx);font-family:system-ui,Arial,sans-serif;display:flex;justify-content:center;padding:16px}
+.app{width:100%;max-width:460px}
+h1{font-size:15px;font-weight:600;letter-spacing:4px;margin:0 0 2px;color:#e6ecf5}
+.sub{font-size:11px;letter-spacing:1px;color:#6f7d95}
+.laser{height:1px;margin:8px 0 14px;background:linear-gradient(90deg,var(--am),transparent)}
+#led{display:inline-block;width:8px;height:8px;border-radius:50%;background:#12304a;margin-left:10px;vertical-align:middle}
+.play #led{background:var(--am);box-shadow:0 0 6px var(--am)}
+.pz #led{background:var(--wr);box-shadow:0 0 6px var(--wr);animation:bl 1s ease-in-out infinite}
+@keyframes bl{50%{opacity:.3}}
+.card{background:linear-gradient(180deg,#1d2738,#121926);border:1px solid #2c3a52;border-radius:10px;padding:14px;box-shadow:inset 0 1px 0 #34445f,0 2px 8px #000;margin-bottom:12px}
+.lbl{font-size:10px;letter-spacing:2px;color:var(--dm);text-transform:uppercase}
+.val{display:block;margin-top:4px;padding:4px 8px;background:#02060c;border:1px solid #22304a;border-radius:4px;font-family:'Courier New',monospace;font-size:22px;letter-spacing:1px;color:var(--am);text-shadow:0 0 5px #19c3ff88;word-break:break-all}
+span.val{display:inline-block;margin:0}
+.row{display:flex;justify-content:space-between;gap:10px}
+#cs{display:block;width:100%;margin:12px 0}
+.vus{display:flex;gap:10px;margin:4px 0 10px}
+.vu{flex:1;background:#f1ecd9;border:2px solid #3c4a63;border-radius:8px;padding:4px;text-align:center;font-size:11px;color:#333}
+.vu svg{display:block;width:100%}
+.leds{display:flex;gap:3px;height:30px;align-items:flex-end;margin-bottom:10px}
+.leds i{flex:1;border-radius:2px;background:#222c3d}
+#cv{display:block;width:100%;aspect-ratio:320/240;border-radius:4px;background:#000;margin:8px 0;box-shadow:0 0 0 2px #2c3a52}
+.hub{animation:spin 2s linear infinite;animation-play-state:paused}
+.play .hub{animation-play-state:running}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bar{height:8px;border-radius:2px;background:#02060c;border:1px solid #22304a;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0a8fc0,var(--am))}
+.btns{display:flex;gap:8px}
+button,.file{flex:1;padding:16px 6px;border-radius:8px;border:1px solid #51617d;background:linear-gradient(180deg,#3c4a63,#242e41);color:#eef3fa;font-size:15px;font-weight:600;letter-spacing:1px;text-align:center;box-shadow:0 2px 0 #000,inset 0 1px 0 #5a6b8a}
+button:active,.file:active{transform:translateY(1px);box-shadow:0 1px 0 #000}
+button:disabled{opacity:.45}
+.play #bp{background:linear-gradient(180deg,#19c3ff,#0a8fc0);color:#00131c;border-color:#7fdcff}
+input[type=file]{display:none}
+.it{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px;background:#0f1622;border:1px solid #2c3a52;border-radius:6px;margin-top:6px;font-size:14px}
+.it span{flex:1;word-break:break-all}
+.it b{padding:4px 10px;color:var(--wr)}
+.warn{color:var(--wr);font-size:12px;margin-top:8px;white-space:pre-line}
+</style></head><body>
+<div class="app" id="app">
+<h1>KLADYX TAPE PLAYER<i id="led"></i></h1>
+<div class="sub">ZX Spectrum TAP / TZX &bull; v1.8Tp</div><div class="laser"></div>
+<div class="card c1">
+<div class="lbl">PROGRAM</div><div class="val" id="nm">-</div>
+<svg id="cs" viewBox="0 0 320 130">
+<rect x="2" y="2" width="316" height="126" rx="10" fill="#17202e" stroke="#3c4a63" stroke-width="2"/>
+<circle cx="14" cy="14" r="3" fill="#0b111b" stroke="#51617d"/><circle cx="306" cy="14" r="3" fill="#0b111b" stroke="#51617d"/><circle cx="14" cy="116" r="3" fill="#0b111b" stroke="#51617d"/><circle cx="306" cy="116" r="3" fill="#0b111b" stroke="#51617d"/>
+<rect x="30" y="12" width="260" height="34" rx="4" fill="#e9e4cf"/>
+<rect x="30" y="40" width="260" height="6" fill="#19c3ff"/>
+<text id="cl" x="160" y="30" text-anchor="middle" fill="#222" font-size="13" font-weight="bold" font-family="monospace">KLADYX</text>
+<rect x="50" y="56" width="220" height="60" rx="30" fill="#060a10" stroke="#51617d" stroke-width="2"/>
+<circle id="tl" cx="100" cy="86" r="27" fill="#5b3b22"/>
+<circle id="tr" cx="220" cy="86" r="12" fill="#5b3b22"/>
+<g class="hub" style="transform-origin:100px 86px"><circle cx="100" cy="86" r="10" fill="#060a10" stroke="#e9e4cf" stroke-width="2"/><path d="M100 78V94M92 86H108" stroke="#e9e4cf" stroke-width="2"/></g>
+<g class="hub" style="transform-origin:220px 86px"><circle cx="220" cy="86" r="10" fill="#060a10" stroke="#e9e4cf" stroke-width="2"/><path d="M220 78V94M212 86H228" stroke="#e9e4cf" stroke-width="2"/></g>
+</svg>
+<div class="vus"><div class="vu"><svg viewBox="0 0 160 90"><path d="M15 80A65 65 0 0 1 145 80" fill="none" stroke="#555" stroke-width="3"/><path d="M118 29A65 65 0 0 1 145 80" fill="none" stroke="#c0392b" stroke-width="5"/><path d="M80 12V20M40 24L44 31M120 24L116 31" stroke="#555" stroke-width="2"/><line id="n1" x1="80" y1="80" x2="80" y2="22" stroke="#c0392b" stroke-width="3" stroke-linecap="round" transform="rotate(-38 80 80)"/><circle cx="80" cy="80" r="6" fill="#333"/></svg>L</div><div class="vu"><svg viewBox="0 0 160 90"><path d="M15 80A65 65 0 0 1 145 80" fill="none" stroke="#555" stroke-width="3"/><path d="M118 29A65 65 0 0 1 145 80" fill="none" stroke="#c0392b" stroke-width="5"/><path d="M80 12V20M40 24L44 31M120 24L116 31" stroke="#555" stroke-width="2"/><line id="n2" x1="80" y1="80" x2="80" y2="22" stroke="#c0392b" stroke-width="3" stroke-linecap="round" transform="rotate(-38 80 80)"/><circle cx="80" cy="80" r="6" fill="#333"/></svg>R</div></div>
+<div class="leds" id="lg"></div>
+<canvas id="cv" width="320" height="240"></canvas>
+<div class="row"><div><div class="lbl">BLOK</div><div class="val" id="bk">0/0</div></div>
+<div><div class="lbl">ZBÝVÁ</div><div class="val" id="rm">-00:00</div></div></div>
+<div class="lbl" style="margin-top:10px" id="st">ČEKÁ</div>
+</div>
+<div class="card c2">
+<div class="row" style="margin-bottom:6px"><span class="val" id="el" style="font-size:16px">00:00</span><span class="val" id="du" style="font-size:16px;color:var(--dm)">00:00</span></div>
+<div class="bar"><i id="pg"></i></div>
+<div class="warn" id="wr"></div>
+</div>
+<div class="btns" style="margin-bottom:8px"><label class="file">Vybrat soubor<input type="file" id="f" accept=".tap,.tzx"></label></div>
+<div class="btns"><button id="bp" disabled>▶ Play</button><button id="bu" disabled>❚❚ Pauza</button><button id="bs" disabled>■ Stop</button></div>
+<div class="card c3" style="margin-top:12px"><div class="lbl" id="lc">ULOŽENO 0/10</div><div id="ls"></div></div>
+</div>
+<script>
+//CORE_START
+const CPU=3500000;
+let W=[];
+function u16(d,o){return d[o]|d[o+1]<<8}
+function u24(d,o){return d[o]|d[o+1]<<8|d[o+2]<<16}
+function u32(d,o){return (d[o]|d[o+1]<<8|d[o+2]<<16|d[o+3]<<24)>>>0}
+function parseTap(d){
+  const bl=[];let o=0;
+  while(o+2<=d.length){
+    const l=u16(d,o);
+    if(o+2+l>d.length){W.push('Soubor je zkrácený, poslední blok vynechán.');break}
+    const data=d.subarray(o+2,o+2+l);
+    bl.push({t:'d',p:2168,pn:(data[0]<128)?8063:3223,s1:667,s2:735,z:855,o:1710,u:8,pause:1000,data});
+    o+=2+l;
+  }
+  return bl;
+}
+function parseTzx(d){
+  const bl=[];let o=10;
+  while(o<d.length){
+    const id=d[o++];
+    if(id===0x10){const l=u16(d,o+2);bl.push({t:'d',p:2168,pn:(d[o+4]<128)?8063:3223,s1:667,s2:735,z:855,o:1710,u:8,pause:u16(d,o),data:d.subarray(o+4,o+4+l)});o+=4+l}
+    else if(id===0x11){const l=u24(d,o+15);bl.push({t:'d',p:u16(d,o),s1:u16(d,o+2),s2:u16(d,o+4),z:u16(d,o+6),o:u16(d,o+8),pn:u16(d,o+10),u:d[o+12],pause:u16(d,o+13),data:d.subarray(o+18,o+18+l)});o+=18+l}
+    else if(id===0x12){bl.push({t:'tone',len:u16(d,o),n:u16(d,o+2)});o+=4}
+    else if(id===0x13){const n=d[o];const a=[];for(let k=0;k<n;k++)a.push(u16(d,o+1+2*k));bl.push({t:'seq',a});o+=1+2*n}
+    else if(id===0x14){const l=u24(d,o+7);bl.push({t:'d',p:0,pn:0,s1:0,s2:0,z:u16(d,o),o:u16(d,o+2),u:d[o+4],pause:u16(d,o+5),data:d.subarray(o+10,o+10+l)});o+=10+l}
+    else if(id===0x20){bl.push({t:'pause',ms:u16(d,o)});o+=2}
+    else if(id===0x21){o+=1+d[o]}
+    else if(id===0x22){}
+    else if(id===0x24){bl.push({t:'loop',n:u16(d,o)});o+=2}
+    else if(id===0x25){bl.push({t:'end'})}
+    else if(id===0x30){o+=1+d[o]}
+    else if(id===0x31){o+=2+d[o+1]}
+    else if(id===0x32){o+=2+u16(d,o)}
+    else if(id===0x33){o+=1+3*d[o]}
+    else if(id===0x35){o+=14+u32(d,o+10)}
+    else if(id===0x5A){o+=9}
+    else if(id===0x2A){o+=4}
+    else if(id===0x2B){o+=5}
+    else{W.push('Nepodporovaný blok 0x'+id.toString(16).toUpperCase()+' - přehrání končí před ním.');break}
+  }
+  return bl;
+}
+function build(bl){
+  const P=[],starts=[],marks=[],ms=CPU/1000;let n=0;const stack=[];
+  const pause=m=>{if(m>0){P.push(ms);if(m>1)P.push(-(m-1)*ms)}};
+  for(let i=0;i<bl.length;i++){
+    const b=bl[i];
+    if(b.t==='loop'){stack.push({i,n:b.n});continue}
+    if(b.t==='end'){const L=stack[stack.length-1];if(L&&--L.n>0)i=L.i;else stack.pop();continue}
+    starts.push(P.length);n++;
+    if(b.t==='tone'){marks.push([P.length,1]);for(let k=0;k<b.n;k++)P.push(b.len)}
+    else if(b.t==='seq'){marks.push([P.length,2]);for(const v of b.a)if(v>0)P.push(v)}
+    else if(b.t==='pause'){if(b.ms>0)P.push(-b.ms*ms)}
+    else if(b.t==='d'){
+      marks.push([P.length,1]);for(let k=0;k<b.pn;k++)P.push(b.p);
+      marks.push([P.length,2]);if(b.s1>0)P.push(b.s1);if(b.s2>0)P.push(b.s2);
+      const dl=b.data.length;
+      for(let k=0;k<dl;k++){
+        const by=b.data[k],bits=(k===dl-1)?(b.u||8):8;
+        for(let q=7;q>=8-bits;q--){const v=(by>>q)&1?b.o:b.z;P.push(v,v)}
+      }
+      pause(b.pause);
+    }
+  }
+  return{P,starts,marks,count:n};
+}
+function render(P,starts,sr,marks){
+  marks=marks||[];
+  const k=sr/CPU;let tot=0;
+  for(let j=0;j<P.length;j++)tot+=Math.abs(P[j]);
+  const out=new Float32Array(Math.ceil(tot*k)+1);
+  let pos=0,lvl=1,m=0,mi=0;const bs=[],ty=[];
+  for(let j=0;j<P.length;j++){
+    while(m<starts.length&&starts[m]===j){bs.push(Math.round(pos));m++}
+    while(mi<marks.length&&marks[mi][0]===j){ty.push([Math.round(pos),marks[mi][1]]);mi++}
+    const v=P[j],e=pos+Math.abs(v)*k;
+    if(v>0){lvl=-lvl;out.fill(lvl*0.8,Math.round(pos),Math.round(e))}
+    pos=e;
+  }
+  return{out,bs,ty};
+}
+//CORE_END
+const $=id=>document.getElementById(id);
+let pname='',ty=[],chan=null,ctx=null,buf=null,src=null,state='idle',t0=0,dur=0,bs=[],nb=0,raf=0;
+const gc=$('cv').getContext('2d');
+let img=null,imgAt=Infinity;
+function decScr(d){
+  const c=document.createElement('canvas');c.width=256;c.height=192;
+  const x=c.getContext('2d'),im=x.createImageData(256,192),px=im.data;
+  const col=(k,b)=>{const v=b?255:205;return[(k&2)?v:0,(k&4)?v:0,(k&1)?v:0]};
+  for(let y=0;y<192;y++){
+    const a=((y&0xC0)<<5)|((y&7)<<8)|((y&0x38)<<2),ar=6144+((y>>3)<<5);
+    for(let cx=0;cx<32;cx++){
+      const by=d[a+cx],at=d[ar+cx],br=(at>>6)&1,ink=col(at&7,br),pap=col((at>>3)&7,br);
+      for(let i=0;i<8;i++){
+        const c3=((by>>(7-i))&1)?ink:pap,o=(y*256+cx*8+i)*4;
+        px[o]=c3[0];px[o+1]=c3[1];px[o+2]=c3[2];px[o+3]=255;
+      }
+    }
+  }
+  x.putImageData(im,0,0);return c;
+}
+const COL={1:['#cd0000','#00cdcd'],2:['#cdcd00','#0000cd']};
+function bg(){gc.fillStyle='#0b111b';gc.fillRect(0,0,320,240)}
+function paper(sm){
+  if(img&&(state==='done'||(sm!==undefined&&sm>=imgAt))){gc.imageSmoothingEnabled=false;gc.drawImage(img,32,24);return}
+  gc.fillStyle='#050a12';gc.fillRect(40,36,240,168);gc.strokeStyle='#2c3a52';gc.lineWidth=1;gc.strokeRect(40.5,36.5,239,167);
+  gc.textAlign='center';gc.fillStyle='#19c3ff';gc.font='bold 15px monospace';
+  gc.fillText((pname||'KLADYX TAPE').toUpperCase().slice(0,24),160,114);
+  gc.fillStyle='#8fb4cc';gc.font='bold 13px monospace';
+  gc.fillText({idle:buf?'PRESS PLAY':'LOAD A TAPE',play:'LOADING...',pause:'PAUSED',done:'0 OK, 0:1'}[state],160,138);
+}
+function clearStripes(){bg();paper()}
+function reels(p){$('tl').setAttribute('r',12+15*(1-p));$('tr').setAttribute('r',12+15*p)}
+function stripes(sm){
+  bg();
+  if(!chan){paper();return}
+  const step=291*buf.sampleRate/CPU;
+  for(let r=0;r<240;r++){
+    const s=Math.floor(sm+r*step);
+    if(s>=chan.length)break;
+    const v=chan[s];if(v===0)continue;
+    let lo=0,hi=ty.length-1,t=0;
+    while(lo<=hi){const mid=(lo+hi)>>1;if(ty[mid][0]<=s){t=ty[mid][1];lo=mid+1}else hi=mid-1}
+    if(!t)continue;
+    gc.fillStyle=COL[t][v>0?0:1];gc.fillRect(0,r,320,1);
+  }
+  paper(sm);
+}
+//VU_START
+const nd1=$('n1'),nd2=$('n2'),lg=$('lg'),NL=18;let a1=-38,a2=-38,pk=0;
+for(let i=0;i<NL;i++){const e=document.createElement('i');e.style.height=(30+i*4)+'%';lg.appendChild(e)}
+function lvl(s,w){let e=0,pv=0;const end=Math.min(chan.length,s+w);for(let i=Math.max(0,s);i<end;i++){const v=chan[i]>0?1:chan[i]<0?-1:0;if(v){if(pv&&v!==pv)e++;pv=v}}return Math.min(1,e/36)}
+function meters(sm,on){
+  const s=Math.floor(sm),w=Math.round(buf.sampleRate*.01);
+  const l1=on?lvl(s,w):0,l2=on?lvl(s+w,w):0;
+  a1+=((-38+l1*76)-a1)*.3;a2+=((-38+l2*76)-a2)*.3;
+  nd1.setAttribute('transform','rotate('+a1.toFixed(1)+' 80 80)');
+  nd2.setAttribute('transform','rotate('+a2.toFixed(1)+' 80 80)');
+  const m=(l1+l2)/2;pk=Math.max(m,pk-.02);
+  const n=Math.round(m*NL),p=Math.min(NL-1,Math.round(pk*NL));
+  [...lg.children].forEach((e,i)=>{e.style.background=(i<n||(i===p&&pk>.03))?(i<11?'#2ecc71':i<15?'#f1c40f':'#e74c3c'):'#222c3d'});
+}
+function restM(){a1=a2=-38;pk=0;nd1.setAttribute('transform','rotate(-38 80 80)');nd2.setAttribute('transform','rotate(-38 80 80)');[...lg.children].forEach(e=>{e.style.background='#222c3d'})}
+//VU_END
+const fmt=s=>{s=Math.max(0,Math.round(s));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+function setS(s){
+  state=s;
+  $('app').classList.toggle('play',s==='play');
+  $('app').classList.toggle('pz',s==='pause');
+  if(s==='idle'||s==='done'){clearStripes();restM()}
+  $('st').textContent={idle:'PŘIPRAVENO',play:'PŘEHRÁVÁM',pause:'PAUZA',done:'HOTOVO'}[s]||'ČEKÁ';
+  $('bp').disabled=!(buf&&(s==='idle'||s==='pause'||s==='done'));
+  $('bu').disabled=s!=='play';
+  $('bs').disabled=!(buf&&s!=='idle');
+}
+function tick(){
+  cancelAnimationFrame(raf);
+  if(!src)return;
+  const el=Math.min(dur,Math.max(0,ctx.currentTime-t0));
+  $('el').textContent=fmt(el);
+  $('rm').textContent='-'+fmt(dur-el);
+  $('pg').style.width=(dur?el/dur*100:0)+'%';
+  stripes(el*buf.sampleRate);reels(dur?el/dur:0);meters(el*buf.sampleRate,state==='play');
+  let c=0;const sm=el*buf.sampleRate;
+  for(let i=0;i<bs.length;i++){if(bs[i]<=sm)c=i+1}
+  $('bk').textContent=c+'/'+nb;
+  raf=requestAnimationFrame(tick);
+}
+function killSrc(){
+  cancelAnimationFrame(raf);
+  if(src){const s=src;src=null;s.onended=null;try{s.stop()}catch(e){}}
+}
+function stop(){
+  killSrc();
+  if(ctx&&ctx.state==='suspended')ctx.resume();
+  clearStripes();reels(0);
+  $('el').textContent='00:00';$('rm').textContent='-'+fmt(dur);$('pg').style.width='0';$('bk').textContent='0/'+nb;
+  setS('idle');
+}
+function play(){
+  if(!buf)return;
+  if(state==='pause'){ctx.resume().then(()=>setS('play'));return}
+  if(state==='play')return;
+  killSrc();
+  const s=ctx.createBufferSource();s.buffer=buf;s.connect(ctx.destination);
+  s.onended=()=>{if(src===s){killSrc();reels(1);$('pg').style.width='100%';$('rm').textContent='-00:00';setS('done')}};
+  src=s;
+  ctx.resume().then(()=>{t0=ctx.currentTime;s.start();setS('play');tick()});
+}
+function pause(){if(state==='play')ctx.suspend().then(()=>setS('pause'))}
+$('bp').onclick=play;$('bu').onclick=pause;$('bs').onclick=stop;
+//DB_START
+const LIMIT=10;let db=null;
+function dbOpen(){return new Promise((res,rej)=>{try{const r=indexedDB.open('kladyx-tape',1);r.onupgradeneeded=()=>r.result.createObjectStore('files',{keyPath:'name'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}})}
+function dbTx(mode,fn){return new Promise((res,rej)=>{const t=db.transaction('files',mode);const q=fn(t.objectStore('files'));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)})}
+async function saveFile(name,d){
+  if(!db)return 'off';
+  const ex=await dbTx('readonly',s=>s.getKey(name));
+  const n=await dbTx('readonly',s=>s.count());
+  if(ex===undefined&&n>=LIMIT)return 'full';
+  await dbTx('readwrite',s=>s.put({name,size:d.length,time:Date.now(),data:d}));
+  return 'ok';
+}
+//DB_END
+async function openData(name,d){
+  killSrc();buf=null;img=null;imgAt=Infinity;W=[];$('wr').textContent='';$('nm').textContent=name;pname=name;$('cl').textContent=name.toUpperCase().slice(0,26);
+  try{
+    if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const isTzx=String.fromCharCode(...d.subarray(0,7))==='ZXTape!';
+    const bl=isTzx?parseTzx(d):parseTap(d);
+    const r=build(bl);
+    if(!r.P.length)throw new Error('Soubor neobsahuje žádná přehratelná data.');
+    const o=render(r.P,r.starts,ctx.sampleRate,r.marks);
+    buf=ctx.createBuffer(1,o.out.length,ctx.sampleRate);
+    buf.copyToChannel(o.out,0);
+    bs=o.bs;ty=o.ty;chan=buf.getChannelData(0);nb=r.count;dur=buf.duration;
+    try{
+      const si=bl.findIndex(b=>b.t==='d'&&b.data.length===6914&&b.data[0]===255);
+      if(si>=0){
+        img=decScr(bl[si].data.subarray(1,6913));
+        if(!bl.some(b=>b.t==='loop'||b.t==='end')){
+          const nx=(si+1<o.bs.length)?o.bs[si+1]:o.out.length;
+          imgAt=Math.max(o.bs[si],nx-Math.round((bl[si].pause||0)*ctx.sampleRate/1000));
+        }
+      }
+    }catch(e2){img=null;imgAt=Infinity}
+    $('du').textContent=fmt(dur);
+  }catch(err){
+    buf=null;chan=null;ty=[];dur=0;nb=0;bs=[];W.push('Chyba: '+err.message);$('du').textContent='00:00';
+  }
+  $('wr').textContent=W.join('\n');
+  stop();
+  return !!buf;
+}
+async function refreshList(){
+  const ls=$('ls');ls.textContent='';
+  if(!db){ls.textContent='Ukládání není dostupné (úložiště prohlížeče je zablokované).';return}
+  const all=(await dbTx('readonly',s=>s.getAll())).sort((a,b)=>b.time-a.time);
+  $('lc').textContent='ULOŽENO '+all.length+'/'+LIMIT;
+  for(const r of all){
+    const it=document.createElement('div');it.className='it';
+    const sp=document.createElement('span');sp.textContent=r.name+' ('+Math.max(1,Math.round(r.size/1024))+' kB)';
+    const x=document.createElement('b');x.textContent='✕';
+    it.onclick=async()=>{const q=await dbTx('readonly',s=>s.get(r.name));if(q)await openData(q.name,q.data)};
+    x.onclick=async ev=>{ev.stopPropagation();await dbTx('readwrite',s=>s.delete(r.name));refreshList()};
+    it.append(sp,x);ls.append(it);
+  }
+}
+$('f').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  const d=new Uint8Array(await f.arrayBuffer());
+  e.target.value='';
+  if(await openData(f.name,d)){
+    try{
+      const s=await saveFile(f.name,d);
+      if(s==='full')W.push('Limit '+LIMIT+' uložených souborů je plný, soubor se přehraje, ale neuložil se. Smaž některý křížkem.');
+      if(s==='off')W.push('Soubor se neuložil, úložiště prohlížeče není dostupné.');
+    }catch(err){W.push('Soubor se neuložil: '+err.message)}
+    $('wr').textContent=W.join('\n');
+    refreshList();
+  }
+};
+dbOpen().then(x=>{db=x;refreshList()}).catch(()=>refreshList());
+setS('idle');
+</script></body></html>
