@@ -299,7 +299,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.5.0PlPro 10/2026</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.5.1PlPro 10/2026</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -597,6 +597,11 @@
         <button class="scene-b" onclick="scDefault()" title="Výchozí pozadí" style="background:rgba(255,180,0,0.12);border-color:rgba(255,180,0,0.5);color:#ffb800;font-size:0.8rem;width:44px;letter-spacing:0;">HV</button>
         <button class="scene-b" onclick="scDelete()" title="Smazat aktuální" style="background:rgba(255,50,50,0.12);border-color:rgba(255,50,50,0.5);color:#ff4444;font-size:1rem;">&#128465;</button>
         <input type="file" id="sc-file" accept="image/*" style="display:none" onchange="scDoUpload(this)">
+      </div>
+      <div id="ord-bar" style="display:flex;gap:8px;justify-content:center;margin:6px 0;">
+        <button class="scene-b" id="ord-edit" onclick="ordToggle()" style="width:auto;padding:0 12px;">✥ Pořadí</button>
+        <button class="scene-b" id="ord-save" onclick="ordSave()" style="width:auto;padding:0 12px;display:none;">✔ Uložit</button>
+        <button class="scene-b" id="ord-reset" onclick="ordReset()" style="width:auto;padding:0 12px;display:none;">↺ Výchozí</button>
       </div>
       <div class="wgrid">
         <div class="wcard" onclick="openApp('housetime')" onmouseover="this.style.borderColor='#00d4ff';this.style.boxShadow='0 0 14px rgba(0,212,255,0.2)'" onmouseout="this.style.borderColor='';this.style.boxShadow=''"><span class="wdot" style="background:#aa00ff;box-shadow:0 0 6px #aa00ff"></span><div class="wi">🎵</div><div class="wn">HouseTime</div><div class="wd">Now Playing</div></div>
@@ -14355,7 +14360,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v5.5.0PlPro 10/2026</div>
+<div class="ver">v5.5.1PlPro 10/2026</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -15575,7 +15580,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='v5.5.0PlPro 10/2026';
+  var CURRENT='v5.5.1PlPro 10/2026';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
@@ -15690,5 +15695,59 @@ var _origUnlock = window.unlockPanel;
 <div class="float-notes">
   <span>🎵</span><span>🎶</span><span>♪</span><span>🎵</span><span>♫</span><span>🎧</span><span>🎧</span><span>🔈</span><span>🎤</span>
 </div>
+<style>
+  body.ord-edit .wcard { outline:1px dashed rgba(0,212,255,.6); }
+  .wcard.ord-sel { outline:2px solid #00ff88 !important; box-shadow:0 0 14px #00ff88; }
+</style>
+<script>
+(function(){
+  var LS='kladyx_tile_order', PATH='kladyx_panel/order', sel=null;
+  function grid(){ return document.querySelector('.wgrid'); }
+  function tiles(){ return Array.prototype.slice.call(grid().querySelectorAll(':scope > .wcard')); }
+  function tid(el,i){ var m=(el.getAttribute('onclick')||'').match(/openApp\('([^']+)'/); return m?m[1]:'t'+i; }
+  function apply(order){
+    if(!order||!order.length) return;
+    var map={}; tiles().forEach(function(el,i){ map[tid(el,i)]=el; });
+    order.forEach(function(id){ if(map[id]){ grid().appendChild(map[id]); delete map[id]; } });
+    Object.keys(map).forEach(function(id){ grid().appendChild(map[id]); });
+  }
+  function cur(){ return tiles().map(tid); }
+  function db(){ try{ return firebase.app('gate-app').database(); }catch(e){ return null; } }
+  window.ordToggle=function(){
+    var on=!document.body.classList.contains('ord-edit');
+    document.body.classList.toggle('ord-edit',on); if(sel) sel.classList.remove('ord-sel'); sel=null;
+    document.getElementById('ord-save').style.display=on?'':'none';
+    document.getElementById('ord-reset').style.display=on?'':'none';
+  };
+  window.ordSave=function(){
+    var o=cur(); try{localStorage.setItem(LS,JSON.stringify(o));}catch(e){}
+    var d=db(); if(d) d.ref(PATH).set(o).catch(function(){});
+    window.ordToggle();
+  };
+  window.ordReset=function(){
+    try{localStorage.removeItem(LS);}catch(e){}
+    var d=db(); if(d) d.ref(PATH).remove().catch(function(){});
+    location.reload();
+  };
+  document.addEventListener('click',function(e){
+    if(!document.body.classList.contains('ord-edit')) return;
+    var t=e.target.closest('.wcard'); if(!t||t.parentNode!==grid()) return;
+    e.preventDefault(); e.stopPropagation();
+    if(!sel){ sel=t; t.classList.add('ord-sel'); return; }
+    if(sel!==t){
+      var before=(sel.compareDocumentPosition(t)&4)?t.nextSibling:t;
+      grid().insertBefore(sel,before);
+    }
+    sel.classList.remove('ord-sel'); sel=null;
+  },true);
+  try{ apply(JSON.parse(localStorage.getItem(LS)||'null')); }catch(e){}
+  setTimeout(function(){
+    var d=db(); if(!d) return;
+    d.ref(PATH).once('value').then(function(s){
+      var o=s.val(); if(o&&o.length){ apply(o); try{localStorage.setItem(LS,JSON.stringify(o));}catch(e){} }
+    }).catch(function(){});
+  },2000);
+})();
+</script>
 </body>
 </html>
