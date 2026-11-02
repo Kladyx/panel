@@ -10,8 +10,9 @@ body{margin:0;min-height:100vh;background:var(--bg);color:var(--tx);font-family:
 h1{font-size:15px;font-weight:600;letter-spacing:4px;margin:0 0 2px;color:#e6ecf5}
 .sub{font-size:11px;letter-spacing:1px;color:#6f7d95}
 .laser{height:1px;margin:8px 0 14px;background:linear-gradient(90deg,var(--am),transparent)}
-#led{display:inline-block;width:8px;height:8px;border-radius:50%;background:#12304a;margin-left:10px;vertical-align:middle}
-.play #led{background:var(--am);box-shadow:0 0 6px var(--am)}
+#led{flex:none;width:18px;height:18px;border-radius:50%;background:#12304a}
+.play #led{background:#2ecc71;animation:gp 1.2s ease-in-out infinite}
+@keyframes gp{0%,100%{transform:scale(1);box-shadow:0 0 6px #2ecc71}50%{transform:scale(1.3);box-shadow:0 0 18px 5px #2ecc71}}
 .pz #led{background:var(--wr);box-shadow:0 0 6px var(--wr);animation:bl 1s ease-in-out infinite}
 @keyframes bl{50%{opacity:.3}}
 .card{background:linear-gradient(180deg,#1d2738,#121926);border:1px solid #2c3a52;border-radius:10px;padding:14px;box-shadow:inset 0 1px 0 #34445f,0 2px 8px #000;margin-bottom:12px}
@@ -43,8 +44,8 @@ input[type=file]{display:none}
 .warn{color:var(--wr);font-size:12px;margin-top:8px;white-space:pre-line}
 </style></head><body>
 <div class="app" id="app">
-<h1>KLADYX TAPE PLAYER<i id="led"></i></h1>
-<div class="sub">ZX Spectrum TAP / TZX &bull; v2.2Tp</div><div class="laser"></div>
+<h1>KLADYX TAPE PLAYER</h1>
+<div class="sub">ZX Spectrum TAP / TZX &bull; v2.3Tp</div><div class="laser"></div>
 <div class="card c1">
 <div class="lbl">PROGRAM</div><div class="val" id="nm">-</div>
 <svg id="cs" viewBox="0 0 320 130">
@@ -56,15 +57,15 @@ input[type=file]{display:none}
 <rect x="50" y="56" width="220" height="60" rx="30" fill="#060a10" stroke="#51617d" stroke-width="2"/>
 <circle id="tl" cx="100" cy="86" r="27" fill="#5b3b22"/>
 <circle id="tr" cx="220" cy="86" r="12" fill="#5b3b22"/>
-<g class="hub" style="transform-origin:100px 86px"><circle cx="100" cy="86" r="10" fill="#060a10" stroke="#e9e4cf" stroke-width="2"/><path d="M100 78V94M92 86H108" stroke="#e9e4cf" stroke-width="2"/></g>
-<g class="hub" style="transform-origin:220px 86px"><circle cx="220" cy="86" r="10" fill="#060a10" stroke="#e9e4cf" stroke-width="2"/><path d="M220 78V94M212 86H228" stroke="#e9e4cf" stroke-width="2"/></g>
+<g class="hub" style="transform-origin:100px 86px"><circle cx="100" cy="86" r="11.5" fill="#e9e4cf"/><circle cx="100" cy="86" r="8" fill="#060a10"/><g transform="translate(100 86)" fill="#e9e4cf"><rect x="-1.3" y="-7.8" width="2.6" height="3.6" transform="rotate(0)"/><rect x="-1.3" y="-7.8" width="2.6" height="3.6" transform="rotate(60)"/><rect x="-1.3" y="-7.8" width="2.6" height="3.6" transform="rotate(120)"/><rect x="-1.3" y="-7.8" width="2.6" height="3.6" transform="rotate(180)"/><rect x="-1.3" y="-7.8" width="2.6" height="3.6" transform="rotate(240)"/><rect x="-1.3" y="-7.8" width="2.6" height="3.6" transform="rotate(300)"/></g><circle cx="100" cy="76.2" r="1.4" fill="#19c3ff"/></g>
+<g class="hub" style="transform-origin:220px 86px"><circle cx="220" cy="86" r="11.5" fill="#e9e4cf"/><circle cx="220" cy="86" r="8" fill="#060a10"/><g transform="translate(220 86)" fill="#e9e4cf"><rect x="-1.3" y="-7.8" width="2.6" height="3.6" transform="rotate(0)"/><rect x="-1.3" y="-7.8" width="2.6" height="3.6" transform="rotate(60)"/><rect x="-1.3" y="-7.8" width="2.6" height="3.6" transform="rotate(120)"/><rect x="-1.3" y="-7.8" width="2.6" height="3.6" transform="rotate(180)"/><rect x="-1.3" y="-7.8" width="2.6" height="3.6" transform="rotate(240)"/><rect x="-1.3" y="-7.8" width="2.6" height="3.6" transform="rotate(300)"/></g><circle cx="220" cy="76.2" r="1.4" fill="#19c3ff"/></g>
 </svg>
 <div class="vus"><div class="vu"><svg viewBox="0 0 160 90"><path d="M15 80A65 65 0 0 1 145 80" fill="none" stroke="#555" stroke-width="3"/><path d="M118 29A65 65 0 0 1 145 80" fill="none" stroke="#c0392b" stroke-width="5"/><path d="M80 12V20M40 24L44 31M120 24L116 31" stroke="#555" stroke-width="2"/><line id="n1" x1="80" y1="80" x2="80" y2="22" stroke="#c0392b" stroke-width="3" stroke-linecap="round" transform="rotate(-38 80 80)"/><circle cx="80" cy="80" r="6" fill="#333"/></svg>L</div><div class="vu"><svg viewBox="0 0 160 90"><path d="M15 80A65 65 0 0 1 145 80" fill="none" stroke="#555" stroke-width="3"/><path d="M118 29A65 65 0 0 1 145 80" fill="none" stroke="#c0392b" stroke-width="5"/><path d="M80 12V20M40 24L44 31M120 24L116 31" stroke="#555" stroke-width="2"/><line id="n2" x1="80" y1="80" x2="80" y2="22" stroke="#c0392b" stroke-width="3" stroke-linecap="round" transform="rotate(-38 80 80)"/><circle cx="80" cy="80" r="6" fill="#333"/></svg>R</div></div>
 <div class="leds" id="lg"></div>
 <canvas id="cv" width="320" height="240"></canvas>
 <div class="row"><div><div class="lbl">BLOCK</div><div class="val" id="bk">0/0</div></div>
 <div><div class="lbl">REMAINING</div><div class="val" id="rm">-00:00</div></div></div>
-<div class="lbl" style="margin-top:10px" id="st">WAITING</div>
+<div style="margin-top:10px;display:flex;align-items:center;gap:12px"><i id="led"></i><div class="lbl" id="st">WAITING</div></div>
 </div>
 <div class="card c2">
 <div class="row" style="margin-bottom:6px"><span class="val" id="el" style="font-size:16px">00:00</span><span class="val" id="du" style="font-size:16px;color:var(--dm)">00:00</span></div>
