@@ -299,7 +299,7 @@
 <div id="panel-gate">
   <div class="gate-logo-neon">KLADYXLAND MULTIFUNKČNÍ PANEL INC.</div>
   <div class="gate-sub">Control Panel · Private Access</div>
-  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.5.3PlPro 10/2026</div>
+  <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;font-weight:bold;text-shadow:0 0 10px rgba(0,255,136,0.4);margin-top:12px;">v5.5.4PlPro 10/2026</div>
   <div style="font-size:0.7rem;letter-spacing:3px;color:#00ff88;font-family:'Courier New',monospace;text-shadow:0 0 8px rgba(0,255,136,0.4);margin-top:4px;animation:emailPulse 4s ease-in-out infinite;">create kovalcikmichal@kladyx.cz</div>
   <button class="gate-btn" onclick="googleSignIn()">
     <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -7690,6 +7690,7 @@ h1{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;letter-spac
 .elist{max-width:580px;margin:0 auto;display:flex;flex-direction:column;gap:6px;}
 .ecard{background:#0e1118;border:1px solid rgba(0,245,255,.12);border-radius:7px;padding:10px 12px;display:flex;align-items:center;gap:8px;}
 .edate{font-family:'Orbitron',monospace;font-size:.55rem;color:rgba(200,216,232,.4);min-width:52px;}
+.etime{display:block;font-size:.42rem;color:rgba(200,216,232,.3);white-space:nowrap;margin-top:2px;}
 .eamt{font-family:'Orbitron',monospace;font-size:.9rem;font-weight:700;color:#ff8c00;min-width:80px;text-align:right;}
 .enote{flex:1;font-size:.7rem;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
 .delbtn{background:transparent;border:none;color:rgba(255,68,102,.4);cursor:pointer;font-size:.8rem;padding:2px 5px;flex-shrink:0;}
@@ -7784,6 +7785,7 @@ function SS(m,c){var e=document.getElementById('sync-dot');if(e){e.textContent=m
 function yr(){return parseInt(CUR.split('-')[0]);}
 function mo(){return parseInt(CUR.split('-')[1]);}
 function GM(ym){return(DAT[ym]||[]).slice().sort(function(a,b){return a.d<b.d?-1:1;});}
+function FT(ts){var x=new Date(ts);function p(n){return('0'+n).slice(-2);}return p(x.getDate())+'.'+p(x.getMonth()+1)+'. '+p(x.getHours())+':'+p(x.getMinutes());}
 
 function SAVE(){
   try{localStorage.setItem('jidlo2',JSON.stringify(DAT));}catch(e){}
@@ -7830,7 +7832,7 @@ function RZ(){
     var c=document.createElement('div');c.className='ecard';
     var dp=e.d?e.d.split('-').slice(1).join('.'):'';
     var ym=e.d?e.d.substring(0,7):CUR;
-    c.innerHTML='<span class="edate">'+dp+'</span><span class="eamt">'+e.a.toLocaleString('cs-CZ')+' Kč</span><span class="enote">'+(e.n||'—')+'</span>';
+    c.innerHTML='<span class="edate">'+dp+(e.ts?'<span class="etime">'+FT(e.ts)+'</span>':'')+'</span><span class="eamt">'+e.a.toLocaleString('cs-CZ')+' Kč</span><span class="enote">'+(e.n||'—')+'</span>';
     var db=document.createElement('button');db.className='delbtn';db.textContent='✕';
     (function(y2,i2){db.onclick=function(){DEL(y2,i2);};})(ym,e.id);
     c.appendChild(db);
@@ -7872,7 +7874,7 @@ if(ba)ba.onclick=function(){
   if(isNaN(amt)||amt===0){alert('Zadej částku!');return;}
   var ym=date.substring(0,7);
   if(!DAT[ym])DAT[ym]=[];
-  DAT[ym].push({id:Date.now(),d:date,a:amt,n:note});
+  DAT[ym].push({id:Date.now(),d:date,a:amt,n:note,ts:Date.now()});
   document.getElementById('fi-amt').value='';
   document.getElementById('fi-note').value='';
   CUR=ym;SAVE();RL();
@@ -7893,7 +7895,7 @@ function printJidlo(){
   function rows(list){
     return list.map(function(e,i){
       var dp=e.d?e.d.split('-').slice(1).join('.'):'';
-      return '<tr><td>'+(i+1)+'</td><td>'+(e.n||'—')+'</td><td style="text-align:right;">'+dp+'</td><td style="text-align:right;font-weight:bold;">'+e.a.toLocaleString('cs-CZ')+' Kč</td></tr>';
+      return '<tr><td>'+(i+1)+'</td><td>'+(e.n||'—')+'</td><td style="text-align:right;">'+dp+'</td><td style="text-align:right;">'+(e.ts?FT(e.ts):'')+'</td><td style="text-align:right;font-weight:bold;">'+e.a.toLocaleString('cs-CZ')+' Kč</td></tr>';
     }).join('');
   }
   var printHTML='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Jídlo – '+monthName+'</title>'+
@@ -7906,8 +7908,8 @@ function printJidlo(){
     '@media print{button{display:none;}}'+
     '</style></head><body>'+
     '<h2>🍽️ JÍDLO — '+monthName+'</h2>'+
-    '<table><thead><tr><th>č.</th><th>Poznámka</th><th>Datum</th><th>Částka</th></tr></thead><tbody>'+rows(es)+'</tbody>'+
-    '<tfoot><tr class="summary-box"><td colspan="3"><strong>CELKEM</strong></td><td style="text-align:right;font-weight:bold;font-size:15px;">'+tot.toLocaleString('cs-CZ')+' Kč</td></tr></tfoot>'+
+    '<table><thead><tr><th>č.</th><th>Poznámka</th><th>Datum</th><th>Zapsáno</th><th>Částka</th></tr></thead><tbody>'+rows(es)+'</tbody>'+
+    '<tfoot><tr class="summary-box"><td colspan="4"><strong>CELKEM</strong></td><td style="text-align:right;font-weight:bold;font-size:15px;">'+tot.toLocaleString('cs-CZ')+' Kč</td></tr></tfoot>'+
     '</table>'+
     '<button onclick="window.print()" style="margin-top:14px;padding:8px 20px;font-size:13px;">🖨 Tisknout</button>'+
     '</body></html>';
@@ -14361,7 +14363,7 @@ textarea:focus{border-color:rgba(255,107,53,0.6);}
   <div class="eq-bar" style="--d:0.35s;--h:70%;background:#ffc800;"></div>
   <div class="eq-bar" style="--d:0.5s;--h:85%;background:#00ff88;"></div>
 </div>
-<div class="ver">v5.5.3PlPro 10/2026</div>
+<div class="ver">v5.5.4PlPro 10/2026</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"><\/script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"><\/script>
@@ -15579,7 +15581,7 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 <script>
 // === KLADYX version check (jednou při načtení, ~30 B download) ===
 (function(){
-  var CURRENT='v5.5.3PlPro 10/2026';
+  var CURRENT='v5.5.4PlPro 10/2026';
   var ev=document.getElementById('wclock-ver');if(ev)ev.textContent='v'+CURRENT;
   var URL_JSON='https://kladyx.github.io/panel/version.json?t='+Date.now();
   fetch(URL_JSON,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
