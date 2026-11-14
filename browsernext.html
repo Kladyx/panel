@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#020814">
+<title>Browser Next v1.2.0</title>
+<style>
+:root{--cyan:#00f5ff;--blue:#0055ff;--green:#00ff88;--orange:#ff6600;--text:#e0f4ff;--muted:#7fa6c4;--card:rgba(6,16,36,.78);--glow:0 0 8px #00f5ff,0 0 22px rgba(0,245,255,.45)}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100vh;color:var(--text);font:16px/1.4 "Exo 2","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;overflow-x:hidden}
+body{background:
+  radial-gradient(ellipse at 15% 0%,rgba(0,85,255,.28),transparent 55%),
+  radial-gradient(ellipse at 95% 100%,rgba(0,245,255,.14),transparent 50%),
+  linear-gradient(180deg,#020814 0%,#04122b 45%,#020a1c 100%) fixed}
+/* hvezdy a jemne rádky (jen CSS, zadne pozadavky) */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;animation:twinkle 7s ease-in-out infinite;
+  background-image:
+  radial-gradient(1.3px 1.3px at 8% 12%,#fff,transparent),radial-gradient(1px 1px at 22% 38%,#9fe8ff,transparent),
+  radial-gradient(1.4px 1.4px at 35% 8%,#fff,transparent),radial-gradient(1px 1px at 48% 27%,#bfefff,transparent),
+  radial-gradient(1.2px 1.2px at 61% 14%,#fff,transparent),radial-gradient(1px 1px at 74% 41%,#9fe8ff,transparent),
+  radial-gradient(1.5px 1.5px at 88% 9%,#fff,transparent),radial-gradient(1px 1px at 94% 33%,#bfefff,transparent),
+  radial-gradient(1.2px 1.2px at 14% 58%,#fff,transparent),radial-gradient(1px 1px at 29% 76%,#9fe8ff,transparent),
+  radial-gradient(1.3px 1.3px at 43% 64%,#fff,transparent),radial-gradient(1px 1px at 57% 88%,#bfefff,transparent),
+  radial-gradient(1.2px 1.2px at 71% 72%,#fff,transparent),radial-gradient(1px 1px at 83% 91%,#9fe8ff,transparent),
+  radial-gradient(1.4px 1.4px at 96% 66%,#fff,transparent),radial-gradient(1px 1px at 5% 92%,#bfefff,transparent)}
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px)}
+@keyframes twinkle{0%,100%{opacity:.4}50%{opacity:.9}}
+.ver.off{color:#ff4466;text-shadow:0 0 8px rgba(255,68,102,.6)}
+.ver.off .dot{background:#ff4466;box-shadow:0 0 8px #ff4466;animation:pulse .8s ease-in-out infinite}
+.offmsg{display:none;margin:10px 0 0;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,68,102,.5);background:rgba(255,68,102,.1);color:#ff8fa3;font-size:13px}
+.offmsg.on{display:block}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+header,main,footer{position:relative;z-index:1}
+header{position:sticky;top:0;z-index:5;padding:12px 16px 8px;background:linear-gradient(180deg,rgba(2,5,18,.94),rgba(2,5,18,.86));border-bottom:1px solid rgba(0,245,255,.3);box-shadow:0 4px 18px rgba(0,245,255,.08)}
+.brand{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.logo{font-family:"Orbitron","Segoe UI",system-ui,sans-serif;font-weight:900;font-size:17px;letter-spacing:.18em;color:var(--cyan);text-shadow:var(--glow);white-space:nowrap}
+.logo b{color:var(--green);text-shadow:0 0 8px rgba(0,255,136,.65)}
+.ver{font-family:"Orbitron","Segoe UI",system-ui,sans-serif;font-size:10px;font-weight:700;color:var(--green);letter-spacing:.08em;text-shadow:0 0 8px rgba(0,255,136,.5);display:flex;align-items:center;gap:6px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 1.6s ease-in-out infinite}
+.sub{font-size:10px;letter-spacing:.22em;color:var(--muted);margin:2px 0 8px;text-transform:uppercase}
+
+input[type=search]{width:100%;padding:12px 14px 12px 42px;font-size:16px;border-radius:12px;border:1px solid rgba(0,245,255,.35);background:rgba(2,10,28,.88) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f5ff' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 13px center/20px;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
+input[type=search]::placeholder{color:#5f87a6}
+input[type=search]:focus{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 18px rgba(0,245,255,.35)}
+
+/* barvy podle pripony */
+[data-t]{--c:#7fa6c4;--cr:127,166,196}
+[data-t="nex"]{--c:#00ff88;--cr:0,255,136}
+[data-t="tap"]{--c:#00f5ff;--cr:0,245,255}
+[data-t="tzx"]{--c:#ff6600;--cr:255,102,0}
+[data-t="z80"],[data-t="sna"]{--c:#5c9dff;--cr:92,157,255}
+[data-t="zip"],[data-t="rar"],[data-t="7z"]{--c:#c07bff;--cr:192,123,255}
+[data-t="dsk"],[data-t="trd"],[data-t="mgt"],[data-t="img"]{--c:#ffd24a;--cr:255,210,74}
+
+.chips{display:flex;gap:7px;overflow-x:auto;padding:9px 0 4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;padding:7px 12px;border-radius:999px;border:1px solid rgba(0,245,255,.25);background:rgba(2,10,28,.75);color:var(--muted);font-size:13px;cursor:pointer;transition:all .2s}
+.chip[data-t]{border-color:rgba(var(--cr),.45);color:var(--c)}
+.chip.on{color:#021018;background:linear-gradient(90deg,var(--cyan),var(--green));border-color:transparent;font-weight:700;box-shadow:0 0 14px rgba(0,245,255,.45)}
+.chip[data-t].on{background:var(--c);box-shadow:0 0 14px rgba(var(--cr),.55)}
+
+main{padding:6px 16px 40px}
+.info{color:var(--cyan);font-family:"Orbitron","Segoe UI",system-ui,sans-serif;font-size:11px;letter-spacing:.1em;padding:10px 0 4px;text-shadow:0 0 8px rgba(0,245,255,.35)}
+.row{background:var(--card);border:1px solid rgba(var(--cr,0,245,255),.22);border-left:3px solid var(--c,#00f5ff);border-radius:12px;padding:11px 12px 12px;margin:9px 0;transition:box-shadow .2s,border-color .2s}
+.row:hover,.row:active{border-color:rgba(var(--cr,0,245,255),.55);box-shadow:0 0 14px rgba(var(--cr,0,245,255),.25)}
+.name{font-weight:600;word-break:break-word}
+.meta{color:var(--muted);font-size:12px;margin-top:4px;word-break:break-word}
+.badge{display:inline-block;font-family:"Orbitron","Segoe UI",system-ui,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;padding:2px 7px;border-radius:6px;background:rgba(var(--cr,0,245,255),.14);color:var(--c,#00f5ff);border:1px solid rgba(var(--cr,0,245,255),.4);margin-right:7px;text-transform:uppercase}
+.btns{display:flex;gap:8px;margin-top:10px}
+.btns a{flex:1;text-align:center;padding:12px 0;border-radius:10px;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(0,245,255,.4);color:var(--cyan);background:rgba(0,245,255,.06);transition:transform .1s,box-shadow .2s}
+.btns a:hover{box-shadow:0 0 12px rgba(0,245,255,.35)}
+.btns a:active{transform:scale(.98)}
+.btns a.dl{background:linear-gradient(90deg,#00ff88,#00f5ff);color:#021018;border-color:transparent;box-shadow:0 0 14px rgba(0,255,136,.3)}
+button.more{width:100%;padding:13px;border-radius:12px;border:1px solid rgba(0,245,255,.4);background:rgba(0,245,255,.07);color:var(--cyan);font-size:14px;font-weight:600;letter-spacing:.06em;margin-top:10px;text-shadow:0 0 8px rgba(0,245,255,.4)}
+button.more:active{transform:scale(.99)}
+footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;padding:0 16px 26px;text-transform:uppercase}
+@media (prefers-reduced-motion:reduce){body::before,.dot{animation:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">BROWSER <b>NEXT</b></div>
+    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.2.0</div>
+  </div>
+  <div class="sub">ZX Spectrum Next · Games</div>
+  <input id="q" type="search" placeholder="Hledat hru…" autocomplete="off" autocapitalize="off" spellcheck="false">
+  <div id="chips" class="chips"></div>
+</header>
+<main>
+  <div id="offmsg" class="offmsg">Bez připojení – odkazy na Disk nepůjdou otevřít. Hledání v načteném seznamu funguje dál.</div>
+  <div id="info" class="info">Načítám seznam…</div>
+  <div id="list"></div>
+  <button id="more" class="more" style="display:none"></button>
+</main>
+<footer>Browser Next v1.2.0 · Kladyxland</footer>
+<script>
+(function () {
+  'use strict';
+  var PAGE = 100;
+  var items = [];
+  var view = [];
+  var shown = 0;
+  var typ = null; // null = vsechny typy
+  var $ = function (id) { return document.getElementById(id); };
+
+  function norm(s) {
+    return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  }
+  function tkey(t) {
+    return String(t).toLowerCase().replace(/[^a-z0-9]/g, '') || 'none';
+  }
+
+  function load() {
+    $('info').textContent = 'Načítám seznam…';
+    fetch('games.json')
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (d) {
+        items = d.map(function (x) {
+          return { n: x[0], t: x[1] || '', p: x[2] || '', id: x[3], k: norm(x[0]), s: norm(x[0] + ' ' + (x[2] || '')) };
+        });
+        items.sort(function (a, b) { return a.k < b.k ? -1 : (a.k > b.k ? 1 : 0); });
+        buildChips();
+        apply();
+      })
+      .catch(function (e) {
+        var info = $('info');
+        info.textContent = 'Seznam se nepodařilo načíst (' + e.message + '). ';
+        var b = document.createElement('button');
+        b.className = 'more';
+        b.textContent = 'Zkusit znovu';
+        b.onclick = load;
+        info.appendChild(b);
+      });
+  }
+
+  function buildChips() {
+    var counts = {};
+    items.forEach(function (it) { counts[it.t] = (counts[it.t] || 0) + 1; });
+    var types = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
+    var box = $('chips');
+    box.innerHTML = '';
+    function add(label, value) {
+      var c = document.createElement('div');
+      c.className = 'chip' + (typ === value ? ' on' : '');
+      if (value !== null) c.dataset.t = tkey(value);
+      c.textContent = label;
+      c.onclick = function () { typ = value; buildChips(); apply(); };
+      box.appendChild(c);
+    }
+    add('Vše (' + items.length + ')', null);
+    types.forEach(function (t) {
+      add((t === '' ? 'bez přípony' : '.' + t) + ' (' + counts[t] + ')', t);
+    });
+  }
+
+  function apply() {
+    var words = norm($('q').value).split(/\s+/).filter(Boolean);
+    view = items.filter(function (it) {
+      if (typ !== null && it.t !== typ) return false;
+      for (var i = 0; i < words.length; i++) {
+        if (it.s.indexOf(words[i]) < 0) return false;
+      }
+      return true;
+    });
+    $('list').innerHTML = '';
+    shown = 0;
+    renderMore();
+    $('info').textContent = 'NALEZENO: ' + view.length + ' / ' + items.length;
+  }
+
+  function renderMore() {
+    var frag = document.createDocumentFragment();
+    var end = Math.min(shown + PAGE, view.length);
+    for (var i = shown; i < end; i++) frag.appendChild(row(view[i]));
+    $('list').appendChild(frag);
+    shown = end;
+    var btn = $('more');
+    var left = view.length - shown;
+    if (left > 0) {
+      btn.style.display = '';
+      btn.textContent = 'Zobrazit další (zbývá ' + left + ')';
+    } else {
+      btn.style.display = 'none';
+    }
+  }
+
+  function row(it) {
+    var r = document.createElement('div');
+    r.className = 'row';
+    r.dataset.t = tkey(it.t);
+    var n = document.createElement('div');
+    n.className = 'name';
+    n.textContent = it.n;
+    var m = document.createElement('div');
+    m.className = 'meta';
+    var b = document.createElement('span');
+    b.className = 'badge';
+    b.textContent = it.t === '' ? '?' : it.t;
+    m.appendChild(b);
+    m.appendChild(document.createTextNode(it.p));
+    var btns = document.createElement('div');
+    btns.className = 'btns';
+    var id = encodeURIComponent(it.id);
+    var open = document.createElement('a');
+    open.href = 'https://drive.google.com/file/d/' + id + '/view';
+    open.target = '_blank';
+    open.rel = 'noopener';
+    open.textContent = 'Otevřít';
+    var dl = document.createElement('a');
+    dl.className = 'dl';
+    dl.href = 'https://drive.google.com/uc?export=download&id=' + id;
+    dl.target = '_blank';
+    dl.rel = 'noopener';
+    dl.textContent = 'Stáhnout';
+    btns.appendChild(open);
+    btns.appendChild(dl);
+    r.appendChild(n);
+    r.appendChild(m);
+    r.appendChild(btns);
+    return r;
+  }
+
+  function status() {
+    var on = navigator.onLine !== false;
+    $('ver').className = 'ver' + (on ? '' : ' off');
+    $('st').textContent = on ? 'ONLINE' : 'OFFLINE';
+    $('offmsg').className = 'offmsg' + (on ? '' : ' on');
+  }
+  window.addEventListener('online', status);
+  window.addEventListener('offline', status);
+  status();
+  $('q').addEventListener('input', apply);
+  $('more').addEventListener('click', renderMore);
+  load();
+})();
+</script>
+</body>
+</html>
