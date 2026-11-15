@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#020814">
-<title>Browser Next v1.2.0</title>
+<title>Browser Next v1.3.0</title>
 <style>
 :root{--cyan:#00f5ff;--blue:#0055ff;--green:#00ff88;--orange:#ff6600;--text:#e0f4ff;--muted:#7fa6c4;--card:rgba(6,16,36,.78);--glow:0 0 8px #00f5ff,0 0 22px rgba(0,245,255,.45)}
 *{box-sizing:border-box}
@@ -61,6 +61,8 @@ input[type=search]:focus{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cya
 .chip.on{color:#021018;background:linear-gradient(90deg,var(--cyan),var(--green));border-color:transparent;font-weight:700;box-shadow:0 0 14px rgba(0,245,255,.45)}
 .chip[data-t].on{background:var(--c);box-shadow:0 0 14px rgba(var(--cr),.55)}
 
+.sys{display:flex;align-items:center;gap:8px;margin:8px 0 2px;font-size:13px;color:var(--muted);cursor:pointer;user-select:none}
+.sys input{width:18px;height:18px;accent-color:#00f5ff}
 main{padding:6px 16px 40px}
 .info{color:var(--cyan);font-family:"Orbitron","Segoe UI",system-ui,sans-serif;font-size:11px;letter-spacing:.1em;padding:10px 0 4px;text-shadow:0 0 8px rgba(0,245,255,.35)}
 .row{background:var(--card);border:1px solid rgba(var(--cr,0,245,255),.22);border-left:3px solid var(--c,#00f5ff);border-radius:12px;padding:11px 12px 12px;margin:9px 0;transition:box-shadow .2s,border-color .2s}
@@ -83,11 +85,12 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
 <header>
   <div class="brand">
     <div class="logo">BROWSER <b>NEXT</b></div>
-    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.2.0</div>
+    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.3.0</div>
   </div>
   <div class="sub">ZX Spectrum Next · Games</div>
   <input id="q" type="search" placeholder="Hledat hru…" autocomplete="off" autocapitalize="off" spellcheck="false">
   <div id="chips" class="chips"></div>
+  <label class="sys"><input type="checkbox" id="hideSys" checked> Skrýt systémové soubory z Macu (._ , .DS_Store, __MACOSX)</label>
 </header>
 <main>
   <div id="offmsg" class="offmsg">Bez připojení – odkazy na Disk nepůjdou otevřít. Hledání v načteném seznamu funguje dál.</div>
@@ -95,7 +98,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
   <div id="list"></div>
   <button id="more" class="more" style="display:none"></button>
 </main>
-<footer>Browser Next v1.2.0 · Kladyxland</footer>
+<footer>Browser Next v1.3.0 · Kladyxland</footer>
 <script>
 (function () {
   'use strict';
@@ -108,6 +111,13 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
 
   function norm(s) {
     return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  }
+  function isJunk(n, p) {
+    n = String(n);
+    return n.indexOf('._') === 0 || n.toLowerCase() === '.ds_store' || String(p).indexOf('__MACOSX') >= 0;
+  }
+  function pool() {
+    return $('hideSys').checked ? items.filter(function (it) { return !it.j; }) : items;
   }
   function tkey(t) {
     return String(t).toLowerCase().replace(/[^a-z0-9]/g, '') || 'none';
@@ -122,7 +132,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
       })
       .then(function (d) {
         items = d.map(function (x) {
-          return { n: x[0], t: x[1] || '', p: x[2] || '', id: x[3], k: norm(x[0]), s: norm(x[0] + ' ' + (x[2] || '')) };
+          return { n: x[0], t: x[1] || '', p: x[2] || '', id: x[3], k: norm(x[0]), s: norm(x[0] + ' ' + (x[2] || '')), j: isJunk(x[0], x[2] || '') };
         });
         items.sort(function (a, b) { return a.k < b.k ? -1 : (a.k > b.k ? 1 : 0); });
         buildChips();
@@ -141,7 +151,9 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
 
   function buildChips() {
     var counts = {};
-    items.forEach(function (it) { counts[it.t] = (counts[it.t] || 0) + 1; });
+    var base = pool();
+    base.forEach(function (it) { counts[it.t] = (counts[it.t] || 0) + 1; });
+    if (typ !== null && !counts[typ]) typ = null;
     var types = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
     var box = $('chips');
     box.innerHTML = '';
@@ -153,7 +165,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
       c.onclick = function () { typ = value; buildChips(); apply(); };
       box.appendChild(c);
     }
-    add('Vše (' + items.length + ')', null);
+    add('Vše (' + base.length + ')', null);
     types.forEach(function (t) {
       add((t === '' ? 'bez přípony' : '.' + t) + ' (' + counts[t] + ')', t);
     });
@@ -161,7 +173,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
 
   function apply() {
     var words = norm($('q').value).split(/\s+/).filter(Boolean);
-    view = items.filter(function (it) {
+    view = pool().filter(function (it) {
       if (typ !== null && it.t !== typ) return false;
       for (var i = 0; i < words.length; i++) {
         if (it.s.indexOf(words[i]) < 0) return false;
@@ -171,7 +183,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     $('list').innerHTML = '';
     shown = 0;
     renderMore();
-    $('info').textContent = 'NALEZENO: ' + view.length + ' / ' + items.length;
+    $('info').textContent = 'NALEZENO: ' + view.length + ' / ' + pool().length;
   }
 
   function renderMore() {
@@ -235,6 +247,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
   window.addEventListener('online', status);
   window.addEventListener('offline', status);
   status();
+  $('hideSys').addEventListener('change', function () { buildChips(); apply(); });
   $('q').addEventListener('input', apply);
   $('more').addEventListener('click', renderMore);
   load();
