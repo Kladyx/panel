@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="version" content="v8.6Pi">
-<title>Pi Monitor v8.6Pi</title>
+<meta name="version" content="v8.7Pi">
+<title>Pi Monitor v8.7Pi</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -158,7 +158,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
 <body>
 
 <h1><span class="h1-wrap">🍓 PI MONITOR</span></h1>
-<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v8.6Pi</span></div>
+<div class="sub">KLADYXLAND · 192.168.0.50 · <span style="color:#00ff88;font-weight:700">v8.7Pi</span></div>
 
 <button class="refresh-btn" id="btn-refresh">⟳ OBNOVIT</button>
 <button class="restart-btn" id="btn-restart">⚡ RESTART PI4</button>
@@ -191,6 +191,7 @@ html[data-theme="light"] .shutdown-btn{background:rgba(180,0,0,0.08);}
   <div class="uptime-half" onclick="setKwhPrice()" style="cursor:pointer">
     <div class="uptime-val cons" id="val-cons">—</div>
     <div class="uptime-lbl">SPOTŘEBA CELKEM (EST)</div>
+    <div class="uptime-lbl" id="val-price">—</div>
   </div>
 </div>
 
@@ -372,6 +373,8 @@ function setKwhPrice(){
 }
 function updateConsumption(uptimeSec,avgCpuPct){
   lastConsArgs=[uptimeSec,avgCpuPct];
+  var pe=document.getElementById('val-price');
+  if(pe) pe.textContent=getKwhPrice().toFixed(2).replace('.',',')+' Kč/kWh';
   if(!uptimeSec||uptimeSec<=0){
     var el=document.getElementById('val-cons');
     if(el) el.textContent='—';
