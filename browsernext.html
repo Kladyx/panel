@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#020814">
-<title>Browser Next v1.3.0</title>
+<title>Browser Next v1.4.0</title>
 <style>
 :root{--cyan:#00f5ff;--blue:#0055ff;--green:#00ff88;--orange:#ff6600;--text:#e0f4ff;--muted:#7fa6c4;--card:rgba(6,16,36,.78);--glow:0 0 8px #00f5ff,0 0 22px rgba(0,245,255,.45)}
 *{box-sizing:border-box}
@@ -85,7 +85,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
 <header>
   <div class="brand">
     <div class="logo">BROWSER <b>NEXT</b></div>
-    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.3.0</div>
+    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.4.0</div>
   </div>
   <div class="sub">ZX Spectrum Next · Games</div>
   <input id="q" type="search" placeholder="Hledat hru…" autocomplete="off" autocapitalize="off" spellcheck="false">
@@ -98,7 +98,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
   <div id="list"></div>
   <button id="more" class="more" style="display:none"></button>
 </main>
-<footer>Browser Next v1.3.0 · Kladyxland</footer>
+<footer>Browser Next v1.4.0 · Kladyxland</footer>
 <script>
 (function () {
   'use strict';
@@ -226,7 +226,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     open.textContent = 'Otevřít';
     var dl = document.createElement('a');
     dl.className = 'dl';
-    dl.href = 'https://drive.google.com/uc?export=download&id=' + id;
+    dl.href = 'https://drive.usercontent.google.com/download?id=' + id + '&export=download&confirm=t';
     dl.target = '_blank';
     dl.rel = 'noopener';
     dl.textContent = 'Stáhnout';
