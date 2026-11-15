@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#020814">
-<title>Browser Next v1.4.0</title>
+<title>Browser Next v1.5.0</title>
 <style>
 :root{--cyan:#00f5ff;--blue:#0055ff;--green:#00ff88;--orange:#ff6600;--text:#e0f4ff;--muted:#7fa6c4;--card:rgba(6,16,36,.78);--glow:0 0 8px #00f5ff,0 0 22px rgba(0,245,255,.45)}
 *{box-sizing:border-box}
@@ -85,7 +85,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
 <header>
   <div class="brand">
     <div class="logo">BROWSER <b>NEXT</b></div>
-    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.4.0</div>
+    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.5.0</div>
   </div>
   <div class="sub">ZX Spectrum Next · Games</div>
   <input id="q" type="search" placeholder="Hledat hru…" autocomplete="off" autocapitalize="off" spellcheck="false">
@@ -98,11 +98,12 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
   <div id="list"></div>
   <button id="more" class="more" style="display:none"></button>
 </main>
-<footer>Browser Next v1.4.0 · Kladyxland</footer>
+<footer>Browser Next v1.5.0 · Kladyxland</footer>
 <script>
 (function () {
   'use strict';
   var PAGE = 100;
+  var LAUNCH = ['nex', 'nxt', 'tap', 'tzx', 'z80', 'sna', 'dsk', 'trd', 'zip'];
   var items = [];
   var view = [];
   var shown = 0;
@@ -131,8 +132,30 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
         return r.json();
       })
       .then(function (d) {
-        items = d.map(function (x) {
-          return { n: x[0], t: x[1] || '', p: x[2] || '', id: x[3], k: norm(x[0]), s: norm(x[0] + ' ' + (x[2] || '')), j: isJunk(x[0], x[2] || '') };
+        var arr = Array.isArray(d) ? d : ((d && d.g) || []);
+        var fmap = (!Array.isArray(d) && d && d.f) || {};
+        var groups = {};
+        items = [];
+        arr.forEach(function (x) {
+          var name = String(x[0]), t = String(x[1] || '').toLowerCase(), p = String(x[2] || ''), id = x[3];
+          var junk = isJunk(name, p);
+          var segs = p.split('/').filter(Boolean);
+          if (!junk && segs[0] === 'Next' && segs.length >= 3) {
+            var key = segs.slice(0, 3).join('/');
+            var g = groups[key];
+            if (!g) g = groups[key] = { key: key, title: segs[2], cnt: 0, best: null, bi: 99 };
+            g.cnt++;
+            var li = LAUNCH.indexOf(t);
+            if (li >= 0 && li < g.bi) { g.bi = li; g.best = { t: t, id: id }; }
+            return;
+          }
+          if (!junk && LAUNCH.indexOf(t) < 0) return;
+          items.push({ n: name, t: t, p: p, id: id, k: norm(name), s: norm(name + ' ' + p), j: junk });
+        });
+        Object.keys(groups).forEach(function (key) {
+          var g = groups[key];
+          if (!g.best) return;
+          items.push({ n: g.title, t: g.best.t, p: key, id: g.best.id, fid: fmap[key] || '', c: g.cnt, g: true, k: norm(g.title), s: norm(g.title + ' ' + key), j: false });
         });
         items.sort(function (a, b) { return a.k < b.k ? -1 : (a.k > b.k ? 1 : 0); });
         buildChips();
@@ -215,10 +238,27 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     b.className = 'badge';
     b.textContent = it.t === '' ? '?' : it.t;
     m.appendChild(b);
-    m.appendChild(document.createTextNode(it.p));
+    m.appendChild(document.createTextNode(it.g ? 'celá hra · ' + it.c + ' souborů' : it.p));
     var btns = document.createElement('div');
     btns.className = 'btns';
     var id = encodeURIComponent(it.id);
+    if (it.g && it.fid) {
+      var fl = document.createElement('a');
+      fl.className = 'dl';
+      fl.href = 'https://drive.google.com/drive/folders/' + encodeURIComponent(it.fid);
+      fl.target = '_blank';
+      fl.rel = 'noopener';
+      fl.textContent = 'Stáhnout hru';
+      btns.appendChild(fl);
+      var h = document.createElement('div');
+      h.className = 'meta';
+      h.textContent = 'Ve složce klepni na ⋮ → Stáhnout (celá hra jako ZIP).';
+      r.appendChild(n);
+      r.appendChild(m);
+      r.appendChild(btns);
+      r.appendChild(h);
+      return r;
+    }
     var open = document.createElement('a');
     open.href = 'https://drive.google.com/file/d/' + id + '/view';
     open.target = '_blank';
