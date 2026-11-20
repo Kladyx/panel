@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#020814">
-<title>Browser Next v1.5.7</title>
+<title>Browser Next v1.5.9</title>
 <style>
 :root{--cyan:#00f5ff;--blue:#0055ff;--green:#00ff88;--orange:#ff6600;--text:#e0f4ff;--muted:#7fa6c4;--card:rgba(6,16,36,.78);--glow:0 0 8px #00f5ff,0 0 22px rgba(0,245,255,.45)}
 *{box-sizing:border-box}
@@ -57,6 +57,7 @@ input[type=search]:focus{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cya
 .chips{display:flex;gap:7px;overflow-x:auto;padding:9px 0 4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:0 0 auto;padding:7px 12px;border-radius:999px;border:1px solid rgba(0,245,255,.25);background:rgba(2,10,28,.75);color:var(--muted);font-size:13px;cursor:pointer;transition:all .2s}
+[data-t="prog"]{--c:#00ff9c;--cr:0,255,156}
 .chip[data-t]{border-color:rgba(var(--cr),.45);color:var(--c)}
 .chip.on{color:#021018;background:linear-gradient(90deg,var(--cyan),var(--green));border-color:transparent;font-weight:700;box-shadow:0 0 14px rgba(0,245,255,.45)}
 .chip[data-t].on{background:var(--c);box-shadow:0 0 14px rgba(var(--cr),.55)}
@@ -85,7 +86,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
 <header>
   <div class="brand">
     <div class="logo">BROWSER <b>NEXT</b></div>
-    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.5.7</div>
+    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.5.9</div>
   </div>
   <div class="sub">ZX Spectrum Next · Games</div>
   <input id="q" type="search" placeholder="Search games…" autocomplete="off" autocapitalize="off" spellcheck="false">
@@ -98,7 +99,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
   <div id="list"></div>
   <button id="more" class="more" style="display:none"></button>
 </main>
-<footer>Browser Next v1.5.7 · Kladyxland</footer>
+<footer>Browser Next v1.5.9 · Kladyxland</footer>
 <script>
 (function () {
   'use strict';
@@ -144,15 +145,9 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     var deltaP = fetch(DELTA_URL)
       .then(function (r) { return r.ok ? r.json() : null; })
       .catch(function () { return null; });
-    fetch('games.json')
-      .then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(function (d) {
-        return deltaP.then(function (dd) { return mergeDelta(d, dd); });
-      })
-      .then(function (d) {
+    var baseD = null, baseN = 0, deltaD = null, applied = false;
+    function countOf(d) { return (Array.isArray(d) ? d : ((d && d.g) || [])).length; }
+    function build(d) {
         var arr = Array.isArray(d) ? d : ((d && d.g) || []);
         var fmap = (!Array.isArray(d) && d && d.f) || {};
         var groups = {};
@@ -161,6 +156,10 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
           var name = String(x[0]), t = String(x[1] || '').toLowerCase(), p = String(x[2] || ''), id = x[3], added = x[4] ? String(x[4]) : '';
           var junk = isJunk(name, p);
           var segs = p.split('/').filter(Boolean);
+          if (!junk && segs.length >= 1 && segs[0].toLowerCase() === 'programs') {
+            items.push({ n: name, t: t, p: p, id: id, a: added, k: norm(name), s: norm(name + ' ' + p), j: false, pr: true });
+            return;
+          }
           if (!junk && segs[0] === 'Next' && segs.length >= 3) {
             var key = segs.slice(0, 3).join('/');
             var g = groups[key];
@@ -182,6 +181,22 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
         items.sort(function (a, b) { return a.k < b.k ? -1 : (a.k > b.k ? 1 : 0); });
         buildChips();
         apply();
+    }
+    function applyDelta() {
+      if (applied || !baseD || !deltaD || !Array.isArray(deltaD.g)) return;
+      var m = mergeDelta(baseD, deltaD);
+      if (countOf(m) > baseN) { applied = true; build(m); }
+    }
+    deltaP.then(function (dd) { deltaD = dd; applyDelta(); }).catch(function () {});
+    fetch('games.json')
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (d) {
+        baseD = d; baseN = countOf(d);
+        build(d);
+        applyDelta();
       })
       .catch(function (e) {
         var info = $('info');
@@ -196,9 +211,10 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
 
   function buildChips() {
     var counts = {};
-    var base = pool();
+    var base = pool().filter(function (it) { return !it.pr; });
+    var progN = pool().length - base.length;
     base.forEach(function (it) { counts[it.t] = (counts[it.t] || 0) + 1; });
-    if (typ !== null && !counts[typ]) typ = null;
+    if (typ === '@prog') { if (progN === 0) typ = null; } else if (typ !== null && !counts[typ]) typ = null;
     var types = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
     var box = $('chips');
     box.innerHTML = '';
@@ -214,12 +230,13 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     types.forEach(function (t) {
       add((t === '' ? 'no extension' : '.' + t) + ' (' + counts[t] + ')', t);
     });
+    if (progN > 0) add('Programs (' + progN + ')', '@prog');
   }
 
   function apply() {
     var words = norm($('q').value).split(/\s+/).filter(Boolean);
     view = pool().filter(function (it) {
-      if (typ !== null && it.t !== typ) return false;
+      if (typ === '@prog') { if (!it.pr) return false; } else { if (it.pr) return false; if (typ !== null && it.t !== typ) return false; }
       for (var i = 0; i < words.length; i++) {
         if (it.s.indexOf(words[i]) < 0) return false;
       }
@@ -228,7 +245,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     $('list').innerHTML = '';
     shown = 0;
     renderMore();
-    $('info').textContent = 'FOUND: ' + view.length + ' / ' + pool().length;
+    $('info').textContent = 'FOUND: ' + view.length + ' / ' + pool().filter(function (it) { return typ === '@prog' ? it.pr : !it.pr; }).length;
   }
 
   function renderMore() {
