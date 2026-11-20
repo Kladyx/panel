@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#020814">
-<title>Browser Next v1.5.5</title>
+<title>Browser Next v1.5.6</title>
 <style>
 :root{--cyan:#00f5ff;--blue:#0055ff;--green:#00ff88;--orange:#ff6600;--text:#e0f4ff;--muted:#7fa6c4;--card:rgba(6,16,36,.78);--glow:0 0 8px #00f5ff,0 0 22px rgba(0,245,255,.45)}
 *{box-sizing:border-box}
@@ -85,7 +85,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
 <header>
   <div class="brand">
     <div class="logo">BROWSER <b>NEXT</b></div>
-    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.5.5</div>
+    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.5.6</div>
   </div>
   <div class="sub">ZX Spectrum Next · Games</div>
   <input id="q" type="search" placeholder="Hledat hru…" autocomplete="off" autocapitalize="off" spellcheck="false">
@@ -98,7 +98,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
   <div id="list"></div>
   <button id="more" class="more" style="display:none"></button>
 </main>
-<footer>Browser Next v1.5.5 · Kladyxland</footer>
+<footer>Browser Next v1.5.6 · Kladyxland</footer>
 <script>
 (function () {
   'use strict';
@@ -158,25 +158,26 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
         var groups = {};
         items = [];
         arr.forEach(function (x) {
-          var name = String(x[0]), t = String(x[1] || '').toLowerCase(), p = String(x[2] || ''), id = x[3];
+          var name = String(x[0]), t = String(x[1] || '').toLowerCase(), p = String(x[2] || ''), id = x[3], added = x[4] ? String(x[4]) : '';
           var junk = isJunk(name, p);
           var segs = p.split('/').filter(Boolean);
           if (!junk && segs[0] === 'Next' && segs.length >= 3) {
             var key = segs.slice(0, 3).join('/');
             var g = groups[key];
-            if (!g) g = groups[key] = { key: key, title: segs[2], cnt: 0, best: null, bi: 99 };
+            if (!g) g = groups[key] = { key: key, title: segs[2], cnt: 0, best: null, bi: 99, add: '' };
             g.cnt++;
+            if (added > g.add) g.add = added;
             var li = LAUNCH.indexOf(t);
             if (li >= 0 && li < g.bi) { g.bi = li; g.best = { t: t, id: id }; }
             return;
           }
           if (!junk && LAUNCH.indexOf(t) < 0) return;
-          items.push({ n: name, t: t, p: p, id: id, k: norm(name), s: norm(name + ' ' + p), j: junk });
+          items.push({ n: name, t: t, p: p, id: id, a: added, k: norm(name), s: norm(name + ' ' + p), j: junk });
         });
         Object.keys(groups).forEach(function (key) {
           var g = groups[key];
           if (!g.best) return;
-          items.push({ n: g.title, t: g.best.t, p: key, id: g.best.id, fid: fmap[key] || '', c: g.cnt, g: true, k: norm(g.title), s: norm(g.title + ' ' + key), j: false });
+          items.push({ n: g.title, t: g.best.t, p: key, id: g.best.id, fid: fmap[key] || '', c: g.cnt, a: g.add, g: true, k: norm(g.title), s: norm(g.title + ' ' + key), j: false });
         });
         items.sort(function (a, b) { return a.k < b.k ? -1 : (a.k > b.k ? 1 : 0); });
         buildChips();
@@ -259,7 +260,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     b.className = 'badge';
     b.textContent = it.t === '' ? '?' : it.t;
     m.appendChild(b);
-    m.appendChild(document.createTextNode(it.g ? 'celá hra · ' + it.c + ' souborů' : it.p));
+    m.appendChild(document.createTextNode((it.g ? 'celá hra · ' + it.c + ' souborů' : it.p) + (it.a ? ' · Přidáno: ' + it.a : '')));
     var btns = document.createElement('div');
     btns.className = 'btns';
     var id = encodeURIComponent(it.id);
