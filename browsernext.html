@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#020814">
-<title>Browser Next v1.5.9</title>
+<title>Browser Next v1.6.0</title>
 <style>
 :root{--cyan:#00f5ff;--blue:#0055ff;--green:#00ff88;--orange:#ff6600;--text:#e0f4ff;--muted:#7fa6c4;--card:rgba(6,16,36,.78);--glow:0 0 8px #00f5ff,0 0 22px rgba(0,245,255,.45)}
 *{box-sizing:border-box}
@@ -86,7 +86,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
 <header>
   <div class="brand">
     <div class="logo">BROWSER <b>NEXT</b></div>
-    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.5.9</div>
+    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.6.0</div>
   </div>
   <div class="sub">ZX Spectrum Next · Games</div>
   <input id="q" type="search" placeholder="Hledat hru…" autocomplete="off" autocapitalize="off" spellcheck="false">
@@ -99,7 +99,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
   <div id="list"></div>
   <button id="more" class="more" style="display:none"></button>
 </main>
-<footer>Browser Next v1.5.9 · Kladyxland</footer>
+<footer>Browser Next v1.6.0 · Kladyxland</footer>
 <script>
 (function () {
   'use strict';
@@ -110,7 +110,6 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
   var view = [];
   var shown = 0;
   var typ = null; // null = vsechny typy
-  try { var svt = localStorage.getItem('bn_typ'); if (svt !== null) typ = JSON.parse(svt); } catch (e) { typ = null; }
   var $ = function (id) { return document.getElementById(id); };
 
   function norm(s) {
@@ -145,7 +144,8 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     var deltaP = fetch(DELTA_URL)
       .then(function (r) { return r.ok ? r.json() : null; })
       .catch(function () { return null; });
-    var baseD = null, baseN = 0, deltaD = null, applied = false;
+    var baseD = null, baseN = 0, deltaD = null, builtN = 0;
+    try { var cd = JSON.parse(localStorage.getItem('bn_delta') || 'null'); if (cd && Array.isArray(cd.g)) deltaD = cd; } catch (e) { deltaD = null; }
     function countOf(d) { return (Array.isArray(d) ? d : ((d && d.g) || [])).length; }
     function build(d) {
         var arr = Array.isArray(d) ? d : ((d && d.g) || []);
@@ -183,18 +183,25 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
         apply();
     }
     function applyDelta() {
-      if (applied || !baseD || !deltaD || !Array.isArray(deltaD.g)) return;
+      if (!baseD || !deltaD || !Array.isArray(deltaD.g)) return;
       var m = mergeDelta(baseD, deltaD);
-      if (countOf(m) > baseN) { applied = true; build(m); }
+      var n = countOf(m);
+      if (n !== builtN) { builtN = n; build(m); }
     }
-    deltaP.then(function (dd) { deltaD = dd; applyDelta(); }).catch(function () {});
+    deltaP.then(function (dd) {
+      if (dd && Array.isArray(dd.g)) {
+        deltaD = dd;
+        try { localStorage.setItem('bn_delta', JSON.stringify(dd)); } catch (e) {}
+        applyDelta();
+      }
+    }).catch(function () {});
     fetch('games.json')
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
       })
       .then(function (d) {
-        baseD = d; baseN = countOf(d);
+        baseD = d; baseN = countOf(d); builtN = baseN;
         build(d);
         applyDelta();
       })
@@ -217,13 +224,14 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     if (typ === '@prog') { if (progN === 0) typ = null; } else if (typ !== null && !counts[typ]) typ = null;
     var types = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
     var box = $('chips');
+    var sl = box.scrollLeft;
     box.innerHTML = '';
     function add(label, value) {
       var c = document.createElement('div');
       c.className = 'chip' + (typ === value ? ' on' : '');
       if (value !== null) c.dataset.t = tkey(value);
       c.textContent = label;
-      c.onclick = function () { typ = value; try { localStorage.setItem('bn_typ', JSON.stringify(value)); } catch (e) {} buildChips(); apply(); };
+      c.onclick = function () { typ = value; buildChips(); apply(); };
       box.appendChild(c);
     }
     add('Vše (' + base.length + ')', null);
@@ -231,6 +239,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
       add((t === '' ? 'bez přípony' : '.' + t) + ' (' + counts[t] + ')', t);
     });
     if (progN > 0) add('Programy (' + progN + ')', '@prog');
+    box.scrollLeft = sl;
   }
 
   function apply() {
@@ -242,10 +251,15 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
       }
       return true;
     });
+    if (words.length) {
+      var w0 = words[0];
+      var rk = function (it) { var i = it.k.indexOf(w0); return i === 0 ? 0 : (i > 0 ? 1 : 2); };
+      view.sort(function (a, b) { return rk(a) - rk(b); });
+    }
     $('list').innerHTML = '';
     shown = 0;
     renderMore();
-    $('info').textContent = 'NALEZENO: ' + view.length + ' / ' + pool().filter(function (it) { return typ === '@prog' ? it.pr : !it.pr; }).length;
+    $('info').textContent = 'NALEZENO: ' + view.length + ' / ' + pool().filter(function (it) { return typ === '@prog' ? it.pr : !it.pr; }).length + (typ === null ? '' : ' · filtr: ' + (typ === '@prog' ? 'Programy' : (typ === '' ? 'bez přípony' : '.' + typ)));
   }
 
   function renderMore() {
