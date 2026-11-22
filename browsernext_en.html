@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#020814">
-<title>Browser Next v1.6.2</title>
+<title>Browser Next v1.6.3</title>
 <style>
 :root{--cyan:#00f5ff;--blue:#0055ff;--green:#00ff88;--orange:#ff6600;--text:#e0f4ff;--muted:#7fa6c4;--card:rgba(6,16,36,.78);--glow:0 0 8px #00f5ff,0 0 22px rgba(0,245,255,.45)}
 *{box-sizing:border-box}
@@ -86,7 +86,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
 <header>
   <div class="brand">
     <div class="logo">BROWSER <b>NEXT</b></div>
-    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.6.2</div>
+    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.6.3</div>
   </div>
   <div class="sub">ZX Spectrum Next · Games</div>
   <input id="q" type="search" placeholder="Search games…" autocomplete="off" autocapitalize="off" spellcheck="false">
@@ -99,7 +99,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
   <div id="list"></div>
   <button id="more" class="more" style="display:none"></button>
 </main>
-<footer>Browser Next v1.6.2 · Kladyxland</footer>
+<footer>Browser Next v1.6.3 · Kladyxland</footer>
 <script>
 (function () {
   'use strict';
@@ -144,6 +144,23 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     Object.keys(f).forEach(function (k) { f2[k] = f[k]; });
     if (dd.f && typeof dd.f === 'object') Object.keys(dd.f).forEach(function (k) { if (!f2[k]) f2[k] = dd.f[k]; });
     return { v: 2, g: base.concat(add), f: f2 };
+  }
+
+  var BASE_TIMEOUT = 40000; // ms; seznam ma ~4,6 MB, na slabem signalu potrebuje cas
+  function fetchBase(n) {
+    var ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var tm = ctl ? setTimeout(function () { ctl.abort(); }, BASE_TIMEOUT) : null;
+    return fetch('games.json', ctl ? { signal: ctl.signal } : undefined)
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (d) { if (tm) clearTimeout(tm); return d; })
+      .catch(function (e) {
+        if (tm) clearTimeout(tm);
+        if (n < 2) { $('info').textContent = 'Loading list… (attempt ' + (n + 2) + '/3)'; return fetchBase(n + 1); }
+        throw (e && e.name === 'AbortError') ? new Error('timeout') : e;
+      });
   }
 
   function load() {
@@ -206,11 +223,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
         applyDelta();
       }
     }).catch(function () {});
-    fetch('games.json')
-      .then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
+    fetchBase(0)
       .then(function (d) {
         loadH(deltaD && deltaD.x); baseD = d; baseN = countOf(d); builtN = baseN + ':' + hcount();
         build(d);
