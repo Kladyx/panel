@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#020814">
-<title>Browser Next v1.6.1</title>
+<title>Browser Next v1.6.2</title>
 <style>
 :root{--cyan:#00f5ff;--blue:#0055ff;--green:#00ff88;--orange:#ff6600;--text:#e0f4ff;--muted:#7fa6c4;--card:rgba(6,16,36,.78);--glow:0 0 8px #00f5ff,0 0 22px rgba(0,245,255,.45)}
 *{box-sizing:border-box}
@@ -86,7 +86,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
 <header>
   <div class="brand">
     <div class="logo">BROWSER <b>NEXT</b></div>
-    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.6.1</div>
+    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.6.2</div>
   </div>
   <div class="sub">ZX Spectrum Next · Games</div>
   <input id="q" type="search" placeholder="Search games…" autocomplete="off" autocapitalize="off" spellcheck="false">
@@ -99,7 +99,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
   <div id="list"></div>
   <button id="more" class="more" style="display:none"></button>
 </main>
-<footer>Browser Next v1.6.1 · Kladyxland</footer>
+<footer>Browser Next v1.6.2 · Kladyxland</footer>
 <script>
 (function () {
   'use strict';
@@ -110,6 +110,13 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
   var view = [];
   var shown = 0;
   var typ = null; // null = vsechny typy
+  var H = {}; // ID odebranych polozek
+  function loadH(extra) {
+    H = {};
+    try { (JSON.parse(localStorage.getItem('bn_del') || '[]') || []).forEach(function (i) { H[i] = 1; }); } catch (e) {}
+    if (Array.isArray(extra)) extra.forEach(function (i) { H[i] = 1; });
+  }
+  function hcount() { return Object.keys(H).length; }
   var $ = function (id) { return document.getElementById(id); };
 
   function norm(s) {
@@ -144,8 +151,9 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     var deltaP = fetch(DELTA_URL)
       .then(function (r) { return r.ok ? r.json() : null; })
       .catch(function () { return null; });
-    var baseD = null, baseN = 0, deltaD = null, builtN = 0;
+    var baseD = null, baseN = 0, deltaD = null, builtN = '';
     try { var cd = JSON.parse(localStorage.getItem('bn_delta') || 'null'); if (cd && Array.isArray(cd.g)) deltaD = cd; } catch (e) { deltaD = null; }
+    loadH(deltaD && deltaD.x);
     function countOf(d) { return (Array.isArray(d) ? d : ((d && d.g) || [])).length; }
     function build(d) {
         var arr = Array.isArray(d) ? d : ((d && d.g) || []);
@@ -153,30 +161,32 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
         var groups = {};
         items = [];
         arr.forEach(function (x) {
+          if (H[x[3]]) return;
           var name = String(x[0]), t = String(x[1] || '').toLowerCase(), p = String(x[2] || ''), id = x[3], added = x[4] ? String(x[4]) : '';
           var junk = isJunk(name, p);
           var segs = p.split('/').filter(Boolean);
           if (!junk && segs.length >= 1 && segs[0].toLowerCase() === 'programs') {
-            items.push({ n: name, t: t, p: p, id: id, a: added, k: norm(name), s: norm(name + ' ' + p), j: false, pr: true });
+            items.push({ n: name, t: t, p: p, id: id, a: added, k: norm(name), s: norm(name + ' ' + p), j: false, pr: true, ids: [id] });
             return;
           }
           if (!junk && segs[0] === 'Next' && segs.length >= 3) {
             var key = segs.slice(0, 3).join('/');
             var g = groups[key];
-            if (!g) g = groups[key] = { key: key, title: segs[2], cnt: 0, best: null, bi: 99, add: '' };
+            if (!g) g = groups[key] = { key: key, title: segs[2], cnt: 0, best: null, bi: 99, add: '', ids: [] };
             g.cnt++;
+            g.ids.push(id);
             if (added > g.add) g.add = added;
             var li = LAUNCH.indexOf(t);
             if (li >= 0 && li < g.bi) { g.bi = li; g.best = { t: t, id: id }; }
             return;
           }
           if (!junk && LAUNCH.indexOf(t) < 0) return;
-          items.push({ n: name, t: t, p: p, id: id, a: added, k: norm(name), s: norm(name + ' ' + p), j: junk });
+          items.push({ n: name, t: t, p: p, id: id, a: added, k: norm(name), s: norm(name + ' ' + p), j: junk, ids: [id] });
         });
         Object.keys(groups).forEach(function (key) {
           var g = groups[key];
           if (!g.best) return;
-          items.push({ n: g.title, t: g.best.t, p: key, id: g.best.id, fid: fmap[key] || '', c: g.cnt, a: g.add, g: true, k: norm(g.title), s: norm(g.title + ' ' + key), j: false });
+          items.push({ n: g.title, t: g.best.t, p: key, id: g.best.id, fid: fmap[key] || '', c: g.cnt, a: g.add, ids: g.ids, g: true, k: norm(g.title), s: norm(g.title + ' ' + key), j: false });
         });
         items.sort(function (a, b) { return a.k < b.k ? -1 : (a.k > b.k ? 1 : 0); });
         buildChips();
@@ -184,8 +194,9 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     }
     function applyDelta() {
       if (!baseD || !deltaD || !Array.isArray(deltaD.g)) return;
+      loadH(deltaD.x);
       var m = mergeDelta(baseD, deltaD);
-      var n = countOf(m);
+      var n = countOf(m) + ':' + hcount();
       if (n !== builtN) { builtN = n; build(m); }
     }
     deltaP.then(function (dd) {
@@ -201,7 +212,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
         return r.json();
       })
       .then(function (d) {
-        baseD = d; baseN = countOf(d); builtN = baseN;
+        loadH(deltaD && deltaD.x); baseD = d; baseN = countOf(d); builtN = baseN + ':' + hcount();
         build(d);
         applyDelta();
       })
@@ -242,6 +253,11 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     box.scrollLeft = sl;
   }
 
+  function infoText() {
+    var words = norm($('q').value).split(/\s+/).filter(Boolean);
+    return 'FOUND: ' + view.length + ' / ' + pool().filter(function (it) { return typ === '@prog' ? it.pr : (!it.pr || (typ === null && words.length > 0)); }).length + (typ === null ? '' : ' · filter: ' + (typ === '@prog' ? 'Programs' : (typ === '' ? 'no extension' : '.' + typ)));
+  }
+
   function apply() {
     var words = norm($('q').value).split(/\s+/).filter(Boolean);
     view = pool().filter(function (it) {
@@ -259,7 +275,7 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
     $('list').innerHTML = '';
     shown = 0;
     renderMore();
-    $('info').textContent = 'FOUND: ' + view.length + ' / ' + pool().filter(function (it) { return typ === '@prog' ? it.pr : (!it.pr || (typ === null && words.length > 0)); }).length + (typ === null ? '' : ' · filter: ' + (typ === '@prog' ? 'Programs' : (typ === '' ? 'no extension' : '.' + typ)));
+    $('info').textContent = infoText();
   }
 
   function renderMore() {
