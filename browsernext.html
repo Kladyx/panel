@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#020814">
-<title>Browser Next v1.6.3</title>
+<title>Browser Next v1.7.0</title>
 <style>
 :root{--cyan:#00f5ff;--blue:#0055ff;--green:#00ff88;--orange:#ff6600;--text:#e0f4ff;--muted:#7fa6c4;--card:rgba(6,16,36,.78);--glow:0 0 8px #00f5ff,0 0 22px rgba(0,245,255,.45)}
 *{box-sizing:border-box}
@@ -88,13 +88,25 @@ footer{color:#4f7490;font-size:10px;letter-spacing:.16em;text-align:center;paddi
 .delbar{display:none;margin:8px 0 2px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,60,90,.6);background:rgba(255,60,90,.1);color:#ff8095;font-size:12px}
 body.del .delbar{display:block}
 body.del .row .name{padding-right:42px}
+
+.pconsent{display:none;position:fixed;left:0;top:0;right:0;bottom:0;z-index:50;background:rgba(2,10,20,.92);align-items:center;justify-content:center;padding:16px}
+.pconsent.on{display:flex}
+.pbox{max-width:420px;width:100%;background:#0b1a2b;border:1px solid rgba(0,245,255,.5);border-radius:14px;padding:16px;color:#dff6ff;font-size:14px;line-height:1.45}
+.pbox input{width:100%;box-sizing:border-box;margin:10px 0;padding:11px;border-radius:10px;border:1px solid rgba(0,245,255,.4);background:#06111d;color:#fff;font-size:16px}
+.pbox button{padding:12px 14px;border-radius:10px;border:1px solid rgba(0,245,255,.5);background:rgba(0,245,255,.1);color:#00f5ff;font-size:14px;font-weight:700;margin:4px 6px 0 0}
+.pbox button.y{background:linear-gradient(90deg,#00ff88,#00f5ff);color:#021018;border-color:transparent}
+.pfoot{color:#6f93ad;font-size:11px;text-align:center;padding:0 16px 26px;text-decoration:underline;cursor:pointer}
+.actbtn{margin-top:8px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,60,90,.6);background:rgba(255,60,90,.12);color:#ff8095;font-size:13px;font-weight:600}
+.actbox{margin-top:8px;font-size:12px;color:#dff6ff}
+.act{border-left:3px solid #4f7490;padding:4px 8px;margin:6px 0;background:rgba(255,255,255,.04);border-radius:6px}
+.act.a{border-left-color:#00ff88}.act.i{border-left-color:#ffd400}.act.b{border-left-color:#4f7490}.act.o{border-left-color:#ff4466}
 </style>
 </head>
 <body>
 <header>
   <div class="brand">
     <div class="logo">BROWSER <b>NEXT</b></div>
-    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.6.3</div>
+    <div class="ver" id="ver"><span class="dot"></span><span id="st">ONLINE</span>&nbsp;·&nbsp;v1.7.0</div>
   </div>
   <div class="sub">ZX Spectrum Next · Games</div>
   <input id="q" type="search" placeholder="Hledat hru…" autocomplete="off" autocapitalize="off" spellcheck="false">
@@ -103,12 +115,14 @@ body.del .row .name{padding-right:42px}
 </header>
 <main>
   <div id="offmsg" class="offmsg">Bez připojení – odkazy na Disk nepůjdou otevřít. Hledání v načteném seznamu funguje dál.</div>
-  <div id="delbar" class="delbar">Režim odebírání je zapnutý. ✕ odebere položku ze seznamu (soubor na Disku zůstane). Vypneš ho 5× klepnutím na ONLINE.</div>
+  <div id="delbar" class="delbar">Režim odebírání je zapnutý. ✕ odebere položku ze seznamu (soubor na Disku zůstane). Vypneš ho 5× klepnutím na ONLINE.<br><button id="actbtn" class="actbtn">Aktivita uživatelů</button><div id="actbox" class="actbox"></div></div>
   <div id="info" class="info">Načítám seznam…</div>
   <div id="list"></div>
   <button id="more" class="more" style="display:none"></button>
 </main>
-<footer>Browser Next v1.6.3 · Kladyxland</footer>
+<footer>Browser Next v1.7.0 · Kladyxland</footer>
+<div id="pconsent" class="pconsent"><div class="pbox"><b>Sdílení aktivity</b><div style="margin-top:6px">Správce aplikace uvidí, že máš aplikaci otevřenou a kdy jsi byl naposledy aktivní. Odesílá se jen tvé jméno, stav (aktivní / bez aktivity / na pozadí) a čas, nic jiného. Data vidí pouze správce. Souhlas můžeš kdykoli změnit dole na stránce.</div><input id="pname" type="text" maxlength="30" placeholder="Tvé jméno" autocomplete="off"><button id="pyes" class="y">Souhlasím</button><button id="pno">Ne, nesdílet</button></div></div>
+<div class="pfoot" id="pfoot"></div>
 <script>
 (function () {
   'use strict';
@@ -440,6 +454,116 @@ body.del .row .name{padding-right:42px}
       apply();
     }
   });
+  var T = {"on": "Sdílení aktivity: zapnuto (změnit)", "off": "Sdílení aktivity: vypnuto (změnit)"};
+
+  // ---- v1.7.0: sdileni aktivity (jen po souhlasu) ----
+  var PRES_MS = 90000, IDLE_MS = 300000, VERS = '1.7.0';
+  var pres = null, pTimer = null, lastTouch = Date.now();
+  try { pres = JSON.parse(localStorage.getItem('bn_pres') || 'null'); } catch (e) { pres = null; }
+  function newId() {
+    var s = '', c = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < 20; i++) s += c.charAt(Math.floor(Math.random() * c.length));
+    return s;
+  }
+  function pstate() {
+    if (document.visibilityState === 'hidden') return 'b';
+    return (Date.now() - lastTouch < IDLE_MS) ? 'a' : 'i';
+  }
+  function psend(act, state, ka) {
+    if (!pres || !pres.d) return;
+    if (act === 'ping' && !pres.on) return;
+    var o = { method: 'POST', body: JSON.stringify({ act: act, d: pres.d, n: pres.name || '', s: state || pstate(), v: VERS }) };
+    if (ka) o.keepalive = true;
+    try { fetch(DELTA_URL, o).catch(function () {}); } catch (e) {}
+  }
+  function pstop() { if (pTimer) { clearInterval(pTimer); pTimer = null; } }
+  function pstart() {
+    pstop();
+    if (!pres || !pres.on || document.visibilityState === 'hidden') return;
+    psend('ping');
+    pTimer = setInterval(function () {
+      if (navigator.onLine !== false && document.visibilityState !== 'hidden') psend('ping');
+    }, PRES_MS);
+  }
+  ['touchstart', 'pointerdown', 'keydown', 'scroll', 'input'].forEach(function (ev) {
+    window.addEventListener(ev, function () { lastTouch = Date.now(); }, { passive: true, capture: true });
+  });
+  document.addEventListener('visibilitychange', function () {
+    if (!pres || !pres.on) return;
+    if (document.visibilityState === 'hidden') { psend('ping', 'b', true); pstop(); }
+    else { lastTouch = Date.now(); pstart(); }
+  });
+  function pfoot() {
+    $('pfoot').textContent = (pres && pres.on) ? T.on : T.off;
+  }
+  function pshow() {
+    $('pname').value = (pres && pres.name) || '';
+    $('pconsent').className = 'pconsent on';
+  }
+  function psave(on) {
+    var name = $('pname').value.replace(/[<>&"']/g, '').trim().slice(0, 30);
+    if (on && !name) { $('pname').focus(); return; }
+    var wasOn = !!(pres && pres.on);
+    var d = (pres && pres.d) || newId();
+    pres = { on: on ? 1 : 0, name: name || (pres && pres.name) || '', d: d };
+    try { localStorage.setItem('bn_pres', JSON.stringify(pres)); } catch (e) {}
+    $('pconsent').className = 'pconsent';
+    if (on) { lastTouch = Date.now(); pstart(); }
+    else { pstop(); if (wasOn) psend('bye'); }
+    pfoot();
+  }
+  $('pyes').addEventListener('click', function () { psave(true); });
+  $('pno').addEventListener('click', function () { psave(false); });
+  $('pfoot').addEventListener('click', pshow);
+  pfoot();
+  if (!pres) pshow(); else pstart();
+
+  // ---- v1.7.0: prehled aktivity pro spravce (jen v rezimu odebirani + PIN) ----
+  function fmtT(ms) {
+    if (!ms) return '—';
+    var d = new Date(ms);
+    return d.toLocaleString('cs-CZ', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+  function ago(ms, now) {
+    if (!ms) return '';
+    var m = Math.max(0, Math.round((now - ms) / 60000));
+    if (m < 1) return 'právě teď';
+    if (m < 60) return 'před ' + m + ' min';
+    var h = Math.floor(m / 60);
+    if (h < 48) return 'před ' + h + ' h ' + (m % 60) + ' min';
+    return 'před ' + Math.floor(h / 24) + ' dny';
+  }
+  var ST = { a: 'AKTIVNÍ', i: 'OTEVŘENÁ, BEZ AKTIVITY', b: 'NEPOUŽÍVÁ (pozadí / zavřená)', o: 'OFFLINE (ztráta signálu)' };
+  function showActivity() {
+    var box = $('actbox');
+    var pin = '';
+    try { pin = localStorage.getItem('bn_pin') || ''; } catch (e) {}
+    if (!pin) { pin = window.prompt('PIN správce:') || ''; if (!pin) return; }
+    box.textContent = 'Načítám…';
+    fetch(DELTA_URL, { method: 'POST', body: JSON.stringify({ act: 'who', pin: pin }) })
+      .then(function (res) { return res.json(); })
+      .then(function (j) {
+        if (!j || !j.ok) {
+          if (j && /PIN/.test(String(j.err))) { try { localStorage.removeItem('bn_pin'); } catch (e) {} }
+          box.textContent = 'Nepodařilo se načíst: ' + (j && j.err ? j.err : 'neznámá chyba');
+          return;
+        }
+        try { localStorage.setItem('bn_pin', pin); } catch (e) {}
+        box.textContent = '';
+        if (!j.list.length) { box.textContent = 'Zatím se nikdo nepřipojil.'; return; }
+        j.list.forEach(function (u) {
+          var d = document.createElement('div');
+          d.className = 'act ' + u.s;
+          var a = document.createElement('b'); a.textContent = u.n + ' – ' + (ST[u.s] || u.s);
+          var b = document.createElement('div'); b.textContent = 'Naposledy aktivní: ' + fmtT(u.a) + (u.a ? ' (' + ago(u.a, j.now) + ')' : '');
+          var c = document.createElement('div'); c.textContent = 'Poslední signál: ' + fmtT(u.t) + ' (' + ago(u.t, j.now) + ')';
+          d.appendChild(a); d.appendChild(b); d.appendChild(c);
+          box.appendChild(d);
+        });
+      })
+      .catch(function (e) { box.textContent = 'Načtení selhalo (' + e.message + ').'; });
+  }
+  $('actbtn').addEventListener('click', showActivity);
   load();
 })();
 </script>
