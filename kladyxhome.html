@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="5.2.5.home">
+<meta name="version" content="5.2.6.home">
 <title>KladyxHome - Smart Home Control</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -357,13 +357,24 @@ h1 {
   border-color: rgba(255, 51, 68, 0.5);
   text-shadow: 0 0 8px rgba(255, 51, 68, 0.7);
 }
+
+/* Editace nazvu: dlouhe podrzeni nazvu (v prohlizeci dvojklik) */
+.device-name { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.device-name input {
+  -webkit-user-select: text; user-select: text;
+  width: 100%; min-width: 0;
+  background: #050818; color: #00d4ff;
+  border: 1px solid #00d4ff; border-radius: 6px;
+  padding: 4px 6px; outline: none;
+  font: inherit; letter-spacing: inherit;
+}
 </style>
 </head>
 <body>
 <div class="container">
 <h1>KLADYX HOME</h1>
 <div class="subtitle">SMART HOME CONTROL</div>
-<div class="version-badge">v5.2.5.home</div>
+<div class="version-badge">v5.2.6.home</div>
 
 <div class="device unknown" id="dev-p115">
   <div class="device-header">
@@ -482,7 +493,7 @@ h1 {
 
 </div>
 
-<div class="footer">KLADYXHOME v5.2.5.home - FIREBASE REAL-TIME</div>
+<div class="footer">KLADYXHOME v5.2.6.home - FIREBASE REAL-TIME</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -682,6 +693,46 @@ try {
   window.addEventListener('online',updateWifiCard);
   window.addEventListener('offline',updateWifiCard);
 
+</script>
+<script>
+(function(){
+  var KEY = 'kladyxhome_names_v1', saved = {}, defs = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e) { saved = {}; }
+  function store() { try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch(e) {} }
+  function keyOf(el) { var c = el.closest('.device, .device-card'); return (c && c.id) || 'broadlink'; }
+  function edit(el) {
+    if (el.querySelector('input')) return;
+    var k = keyOf(el), cur = el.textContent, inp = document.createElement('input'), done = false;
+    inp.type = 'text'; inp.maxLength = 30; inp.value = cur;
+    el.textContent = ''; el.appendChild(inp); inp.focus(); inp.select();
+    function finish(save) {
+      if (done) return; done = true;
+      var v = save ? inp.value.trim() : cur;
+      if (save) {
+        if (v === '') { delete saved[k]; v = defs[k]; } else { saved[k] = v; }
+        store();
+      }
+      el.textContent = v;
+    }
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') finish(true);
+      else if (e.key === 'Escape') finish(false);
+    });
+    inp.addEventListener('blur', function() { finish(true); });
+  }
+  var names = document.querySelectorAll('.device-name');
+  Array.prototype.forEach.call(names, function(el) {
+    var k = keyOf(el);
+    defs[k] = el.textContent;
+    if (saved[k]) el.textContent = saved[k];
+    var t = null;
+    function clear() { if (t) { clearTimeout(t); t = null; } }
+    el.addEventListener('touchstart', function() { clear(); t = setTimeout(function() { t = null; edit(el); }, 600); }, {passive: true});
+    ['touchmove', 'touchend', 'touchcancel'].forEach(function(ev) { el.addEventListener(ev, clear, {passive: true}); });
+    el.addEventListener('dblclick', function() { edit(el); });
+    el.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+  });
+})();
 </script>
 </body>
 </html>
